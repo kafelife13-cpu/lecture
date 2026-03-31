@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>국어왕 김까까 온라인 학습</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  var tag=document.createElement('script');
+  tag.src='https://www.youtube.com/iframe_api';
+  var first=document.getElementsByTagName('script')[0];
+  first.parentNode.insertBefore(tag,first);
+})();
+</script>
+<style>
+:root{
+  --bg:#0f1117;--bg2:#181c27;--bg3:#1e2333;--card:#242938;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --text:#e8eaf0;--text2:#8b90a0;--text3:#555c70;
+  --accent:#4f7cff;--accent2:#3d63e0;
+  --green:#22c55e;--green-bg:rgba(34,197,94,0.1);
+  --amber:#f59e0b;--amber-bg:rgba(245,158,11,0.1);
+  --red:#ef4444;--red-bg:rgba(239,68,68,0.1);
+  --purple:#a78bfa;--purple-bg:rgba(167,139,250,0.1);
+  --teal:#14b8a6;--teal-bg:rgba(20,184,166,0.1);
+  --radius:12px;--radius-sm:8px;
+  --font:'Noto Sans KR',sans-serif;--mono:'DM Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.6}
+input,button{font-family:var(--font)}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+#loading-screen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:16px;transition:opacity 0.3s}
+#loading-screen.hide{opacity:0;pointer-events:none}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:13px;color:var(--text2)}
+.page{display:none;min-height:100vh;flex-direction:column}
+.page.active{display:flex}
+#page-login{align-items:center;justify-content:center;background:var(--bg)}
+.login-wrap{width:100%;max-width:400px;padding:2rem}
+.login-logo{text-align:center;margin-bottom:2rem}
+.login-logo-icon{width:52px;height:52px;background:var(--accent);border-radius:14px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:.75rem}
+.login-logo-icon svg{width:26px;height:26px;fill:white}
+.login-logo h1{font-size:19px;font-weight:700;letter-spacing:-.5px}
+.login-logo p{font-size:13px;color:var(--text2);margin-top:3px}
+.login-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.75rem}
+.form-group{margin-bottom:.875rem}
+.form-group label{display:block;font-size:11px;font-weight:500;color:var(--text2);margin-bottom:5px;letter-spacing:.5px;text-transform:uppercase}
+.form-input{width:100%;padding:9px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:14px;transition:border-color .2s}
+.form-input:focus{outline:none;border-color:var(--accent)}
+.form-input::placeholder{color:var(--text3)}
+.form-select{width:100%;padding:9px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:14px;cursor:pointer}
+.form-select:focus{outline:none;border-color:var(--accent)}
+.role-tabs{display:flex;gap:8px;margin-bottom:1.25rem}
+.role-tab{flex:1;padding:8px;border:1px solid var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--text2);font-size:13px;cursor:pointer;transition:all .2s}
+.role-tab.active{background:var(--accent);border-color:var(--accent);color:white;font-weight:500}
+.btn-primary{width:100%;padding:10px;background:var(--accent);border:none;border-radius:var(--radius-sm);color:white;font-size:14px;font-weight:500;cursor:pointer;transition:background .2s}
+.btn-primary:hover{background:var(--accent2)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+.err-msg{font-size:12px;color:var(--red);margin-top:8px;text-align:center;min-height:16px}
+.login-switch{text-align:center;margin-top:1rem;font-size:13px;color:var(--text2)}
+.login-switch a{color:var(--accent);cursor:pointer;font-weight:500}
+.app-layout{display:flex;flex:1;min-height:0}
+.sidebar{width:220px;min-height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-logo{padding:1.25rem 1.25rem 1rem;border-bottom:1px solid var(--border)}
+.sidebar-logo h2{font-size:14px;font-weight:700;letter-spacing:-.3px}
+.sidebar-logo span{font-size:11px;color:var(--text2)}
+.sidebar-user{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.avatar.teacher{background:var(--purple-bg);color:var(--purple)}
+.avatar.student{background:rgba(79,124,255,.15);color:var(--accent)}
+.sidebar-user-info p{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-nav{flex:1;padding:.75rem 0}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 1.25rem;cursor:pointer;transition:all .15s;color:var(--text2);font-size:13px;user-select:none}
+.nav-item svg{width:16px;height:16px;flex-shrink:0;fill:currentColor}
+.nav-item:hover{background:rgba(255,255,255,.04);color:var(--text)}
+.nav-item.active{background:rgba(79,124,255,.1);color:var(--accent)}
+.nav-item.active svg{fill:var(--accent)}
+.sidebar-footer{padding:1rem 1.25rem;border-top:1px solid var(--border)}
+.btn-logout{width:100%;padding:8px;background:transparent;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:12px;cursor:pointer;transition:all .2s}
+.btn-logout:hover{border-color:var(--red);color:var(--red)}
+.main{flex:1;overflow-y:auto}
+.main-inner{padding:2rem;max-width:1000px}
+.page-header{margin-bottom:1.75rem}
+.page-header h1{font-size:20px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px}
+.page-header p{font-size:13px;color:var(--text2)}
+.panel{display:none}
+.panel.active{display:block}
+.stats-row{display:grid;gap:12px;margin-bottom:1.5rem}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem}
+.stat-label{font-size:11px;color:var(--text2);font-weight:500;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
+.stat-val{font-size:24px;font-weight:700;letter-spacing:-1px}
+.stat-val.green{color:var(--green)}
+.stat-val.amber{color:var(--amber)}
+.stat-val.blue{color:var(--accent)}
+.stat-val.purple{color:var(--purple)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:1rem}
+.card-head{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-head h3{font-size:13px;font-weight:600}
+.card-body{padding:1.25rem}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;padding:8px 12px;color:var(--text2);font-weight:400;font-size:12px;border-bottom:1px solid var(--border);background:var(--bg2)}
+.tbl td{padding:10px 12px;border-bottom:1px solid var(--border)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.02)}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:500}
+.badge.done{background:var(--green-bg);color:var(--green)}
+.badge.partial{background:var(--amber-bg);color:var(--amber)}
+.badge.none{background:rgba(255,255,255,.05);color:var(--text3)}
+.badge.teacher-role{background:var(--purple-bg);color:var(--purple)}
+.badge.student-role{background:rgba(79,124,255,.12);color:var(--accent)}
+.badge.review{background:var(--teal-bg);color:var(--teal)}
+.badge.normal{background:rgba(79,124,255,.12);color:var(--accent)}
+.pbar{width:100%;height:5px;background:var(--bg2);border-radius:3px;overflow:hidden}
+.pbar-fill{height:100%;border-radius:3px;transition:width .4s}
+.btn{padding:6px 13px;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;color:var(--text);font-size:12px;cursor:pointer;transition:all .15s;font-weight:500}
+.btn:hover{background:rgba(255,255,255,.06);border-color:var(--border2)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.blue{background:var(--accent);border-color:var(--accent);color:white}
+.btn.blue:hover{background:var(--accent2)}
+.btn.red{color:var(--red);border-color:rgba(239,68,68,.3)}
+.btn.red:hover{background:var(--red-bg);border-color:var(--red)}
+.btn.green{background:var(--green);border-color:var(--green);color:#071a0e}
+.btn.teal{background:var(--teal);border-color:var(--teal);color:#071a1a}
+.btn.amber{background:var(--amber);border-color:var(--amber);color:#1a0e00}
+.btn-sm{padding:3px 9px;font-size:11px}
+.video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.video-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .2s}
+.video-card:hover{border-color:var(--border2)}
+.video-card.review-card{border-color:rgba(20,184,166,.3)}
+.video-thumb{width:100%;aspect-ratio:16/9;background:var(--bg3);position:relative;overflow:hidden}
+.video-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb-fb{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.yt-icon{width:42px;height:42px;background:#ff0000;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.yt-icon svg{width:18px;height:18px;fill:white;margin-left:2px}
+.lecture-item{display:flex;align-items:center;gap:14px;padding:14px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;transition:border-color .2s}
+.lecture-item:hover{border-color:var(--border2)}
+.lecture-item.review-item{border-color:rgba(20,184,166,.25);background:rgba(20,184,166,.03)}
+.lecture-item.locked{opacity:.6}
+.lecture-thumb{width:88px;height:50px;border-radius:6px;background:var(--bg3);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.lecture-thumb img{width:100%;height:100%;object-fit:cover}
+.lecture-body{flex:1;min-width:0}
+.lecture-body h4{font-size:13px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lmeta{font-size:11px;color:var(--text2);margin-bottom:6px}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:1000;align-items:center;justify-content:center;padding:1rem}
+.modal-bg.show{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto}
+.modal-head{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-head h3{font-size:15px;font-weight:700}
+.modal-close{background:transparent;border:none;color:var(--text2);cursor:pointer;font-size:20px;line-height:1;padding:2px 6px;border-radius:4px}
+.modal-close:hover{color:var(--text);background:rgba(255,255,255,.08)}
+.modal-body{padding:1.5rem}
+.modal-footer{padding:1rem 1.5rem;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
+.player-modal{max-width:700px}
+.player-wrap{width:100%;aspect-ratio:16/9;background:#000;border-radius:var(--radius-sm);overflow:hidden;margin-bottom:1rem}
+.player-wrap>div{width:100%;height:100%}
+.tracking-bar{background:var(--bg3);border-radius:var(--radius-sm);padding:1rem}
+.track-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.track-title{font-size:12px;font-weight:600;color:var(--text2);display:flex;align-items:center;gap:6px}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);transition:opacity .3s}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.live-dot.active{animation:pulse 1.2s infinite}
+.track-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.track-stat{background:var(--bg2);border-radius:var(--radius-sm);padding:8px;text-align:center}
+.track-stat-val{font-size:15px;font-weight:700}
+.track-stat-val.green{color:var(--green)}
+.track-stat-lbl{font-size:10px;color:var(--text2);margin-top:1px}
+.prog-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.prog-row:last-child{border-bottom:none}
+.prog-name{font-size:13px;font-weight:500;min-width:80px}
+.prog-bar-wrap{flex:1;min-width:80px}
+.prog-pct{font-size:12px;font-weight:600;min-width:34px;text-align:right}
+.prog-pct.green{color:var(--green)}
+.prog-pct.amber{color:var(--amber)}
+.prog-pct.muted{color:var(--text3)}
+.dot-grid{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.dot{width:18px;height:18px;border-radius:4px;cursor:pointer;transition:transform .1s;display:inline-block}
+.dot:hover{transform:scale(1.25)}
+.dot.done{background:var(--green)}
+.dot.partial{background:var(--amber)}
+.dot.none{background:var(--bg3);border:1px solid var(--border)}
+.empty{text-align:center;padding:3rem 1rem;color:var(--text2)}
+.empty svg{width:36px;height:36px;fill:var(--text3);margin:0 auto 1rem;display:block}
+.notif{position:fixed;top:1.25rem;right:1.25rem;z-index:9999;background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;box-shadow:0 8px 32px rgba(0,0,0,.4);transform:translateY(-10px);opacity:0;transition:all .3s;pointer-events:none;max-width:300px}
+.notif.show{transform:translateY(0);opacity:1}
+.notif.success{border-left:3px solid var(--green)}
+.notif.error{border-left:3px solid var(--red)}
+.notif.info{border-left:3px solid var(--accent)}
+.tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;background:rgba(79,124,255,.1);color:var(--accent);font-weight:500}
+.tag.green{background:var(--green-bg);color:var(--green)}
+.tag.teal{background:var(--teal-bg);color:var(--teal)}
+.time-badge{display:inline-flex;align-items:center;padding:2px 6px;border-radius:4px;font-size:11px;background:rgba(34,197,94,.08);color:var(--green);font-family:var(--mono)}
+.frow{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.flabel{font-size:11px;color:var(--text2);font-weight:500;letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px;display:block}
+/* 복습 신청 카드 */
+.access-row{display:flex;align-items:center;gap:10px;padding:10px 1.25rem;border-bottom:1px solid var(--border)}
+.access-row:last-child{border-bottom:none}
+/* 섹션 구분자 */
+.section-divider{display:flex;align-items:center;gap:12px;margin:1.5rem 0 1rem}
+.section-divider-line{flex:1;height:1px;background:var(--border)}
+.section-divider-label{font-size:12px;font-weight:600;color:var(--text2);white-space:nowrap;display:flex;align-items:center;gap:6px}
+/* 모바일 */
+@media(max-width:700px){
+  .sidebar{display:none}
+  .stats-row{grid-template-columns:repeat(2,1fr)!important}
+  .video-grid{grid-template-columns:1fr}
+  .main-inner{padding:1rem 1rem 80px}
+  .mobile-tabbar{display:flex!important}
+}
+.mobile-tabbar{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);z-index:500;height:60px}
+.mobile-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--text2);font-size:10px;font-weight:500;transition:color .15s;padding:8px 0;border:none;background:transparent;font-family:var(--font)}
+.mobile-tab svg{width:20px;height:20px;fill:currentColor}
+.mobile-tab.active{color:var(--accent)}
+.mobile-tab.active svg{fill:var(--accent)}
+</style>
+</head>
+<body>
+<div id="loading-screen"><div class="spinner"></div><div class="loading-text">서버에 연결 중...</div></div>
+
+<!-- LOGIN -->
+<div id="page-login" class="page">
+  <div class="login-wrap">
+    <div class="login-logo">
+      <div class="login-logo-icon"><svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg></div>
+      <h1>국어왕 김까까 온라인 학습</h1>
+      <p>서로국어 김이내T</p>
+    </div>
+    <div class="login-card" id="form-login">
+      <div class="role-tabs">
+        <button class="role-tab active" onclick="selectRole('teacher')">강사</button>
+        <button class="role-tab" onclick="selectRole('student')">학생</button>
+      </div>
+      <div class="form-group"><label>아이디</label><input id="login-id" class="form-input" type="text" placeholder="아이디 입력" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+      <div class="form-group"><label>비밀번호</label><input id="login-pw" class="form-input" type="password" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+      <button class="btn-primary" id="login-btn" onclick="doLogin()">로그인</button>
+      <div id="login-err" class="err-msg"></div>
+      <div class="login-switch">계정이 없으신가요? <a onclick="showSignup()">학생 회원가입</a></div>
+    </div>
+    <div class="login-card" id="form-signup" style="display:none">
+      <div style="font-size:15px;font-weight:700;margin-bottom:1.25rem">학생 회원가입</div>
+      <div class="form-group"><label>이름</label><input id="su-name" class="form-input" type="text" placeholder="실명 입력"/></div>
+      <div class="form-group"><label>아이디</label><input id="su-id" class="form-input" type="text" placeholder="영문+숫자 조합"/></div>
+      <div class="form-group"><label>비밀번호</label><input id="su-pw" class="form-input" type="password" placeholder="4자 이상"/></div>
+      <div class="form-group"><label>비밀번호 확인</label><input id="su-pw2" class="form-input" type="password" placeholder="비밀번호 재입력" onkeydown="if(event.key==='Enter')doSignup()"/></div>
+      <button class="btn-primary" id="signup-btn" onclick="doSignup()">가입 신청</button>
+      <div id="signup-err" class="err-msg"></div>
+      <div class="login-switch">이미 계정이 있으신가요? <a onclick="showLogin()">로그인</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- TEACHER -->
+<div id="page-teacher" class="page">
+  <div class="app-layout">
+    <div class="sidebar">
+      <div class="sidebar-logo"><h2>국어왕 김까까</h2><span>서로국어 김이내T</span></div>
+      <div class="sidebar-user">
+        <div class="avatar teacher" id="t-avatar">T</div>
+        <div class="sidebar-user-info"><p id="t-name">강사</p><span class="badge teacher-role" style="font-size:10px">강사</span></div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-item active" onclick="tNav('dashboard')" data-p="dashboard"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>대시보드</div>
+        <div class="nav-item" onclick="tNav('videos')" data-p="videos"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의 관리</div>
+        <div class="nav-item" onclick="tNav('students')" data-p="students" id="nav-students"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>학생 관리</div>
+        <div class="nav-item" onclick="tNav('access')" data-p="access" id="nav-access"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습 신청 관리</div>
+        <div class="nav-item" onclick="tNav('progress')" data-p="progress"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>진도 현황</div>
+      </nav>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="doLogout()">로그아웃</button></div>
+    </div>
+    <div class="main"><div class="main-inner">
+
+      <!-- 대시보드 -->
+      <div class="panel active" id="panel-dashboard">
+        <div class="page-header"><h1>대시보드</h1><p>전체 강의 시청 현황을 한눈에 확인하세요</p></div>
+        <div class="stats-row" style="grid-template-columns:repeat(4,1fr)" id="t-stats"></div>
+        <div class="card"><div class="card-head"><h3>강의별 시청 현황</h3><span id="dash-date" style="font-size:11px;color:var(--text2)"></span></div><div id="dash-videos"></div></div>
+        <div class="card"><div class="card-head"><h3>학생별 진도 요약</h3></div><div style="overflow-x:auto"><table class="tbl" id="dash-students"></table></div></div>
+      </div>
+
+      <!-- 강의 관리 -->
+      <div class="panel" id="panel-videos">
+        <div class="page-header"><h1>강의 관리</h1><p>일반 강의와 복습 신청 영상을 등록하고 관리하세요</p></div>
+        <div class="card" style="margin-bottom:1.5rem">
+          <div class="card-head"><h3>새 강의 등록</h3></div>
+          <div class="card-body">
+            <div class="frow"><div style="flex:1"><label class="flabel">강의 제목</label><input id="v-title" class="form-input" placeholder="예: 1강. 변수와 자료형"/></div></div>
+            <div class="frow"><div style="flex:1"><label class="flabel">유튜브 URL</label><input id="v-url" class="form-input" placeholder="https://www.youtube.com/watch?v=..."/></div></div>
+            <div class="frow">
+              <div style="flex:1"><label class="flabel">강의 설명 (선택)</label><input id="v-desc" class="form-input" placeholder="이 강의에서 배우는 내용"/></div>
+              <div>
+                <label class="flabel">카테고리</label>
+                <select id="v-category" class="form-select" style="width:140px">
+                  <option value="normal">📚 일반 강의</option>
+                  <option value="review">🔁 복습 신청 영상</option>
+                </select>
+              </div>
+              <div style="display:flex;align-items:flex-end"><button class="btn blue" onclick="addVideo()" style="height:40px;white-space:nowrap">등록</button></div>
+            </div>
+          </div>
+        </div>
+        <!-- 일반 강의 목록 -->
+        <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📚</span> 일반 강의</div><div class="section-divider-line"></div></div>
+        <div id="video-list-normal"></div>
+        <!-- 복습 신청 영상 목록 -->
+        <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>🔁</span> 복습 신청 영상</div><div class="section-divider-line"></div></div>
+        <div id="video-list-review"></div>
+      </div>
+
+      <!-- 학생 관리 -->
+      <div class="panel" id="panel-students">
+        <div class="page-header"><h1>학생 관리</h1><p>가입 신청을 승인하고 학생을 관리하세요</p></div>
+        <div class="card" id="pending-card" style="margin-bottom:1rem;border-color:var(--amber)">
+          <div class="card-head" style="background:var(--amber-bg)"><h3 style="color:var(--amber)">⏳ 가입 승인 대기</h3><span id="pending-count" style="font-size:11px;color:var(--amber)"></span></div>
+          <div id="pending-list"></div>
+        </div>
+        <div class="card" style="margin-bottom:1.5rem">
+          <div class="card-head"><h3>학생 직접 등록</h3></div>
+          <div class="card-body">
+            <div class="frow">
+              <div><label class="flabel">이름</label><input id="s-name" class="form-input" style="width:120px" placeholder="학생 이름"/></div>
+              <div><label class="flabel">아이디</label><input id="s-id" class="form-input" style="width:120px" placeholder="로그인 아이디"/></div>
+              <div><label class="flabel">비밀번호</label><input id="s-pw" class="form-input" type="password" style="width:110px" placeholder="비밀번호"/></div>
+              <div style="display:flex;align-items:flex-end"><button class="btn blue" onclick="addStudent()" style="height:40px">등록</button></div>
+            </div>
+          </div>
+        </div>
+        <div class="card"><div class="card-head"><h3>승인된 학생 목록</h3><span id="student-count" style="font-size:11px;color:var(--text2)"></span></div><div style="overflow-x:auto"><table class="tbl" id="student-tbl"></table></div></div>
+      </div>
+
+      <!-- 복습 신청 관리 -->
+      <div class="panel" id="panel-access">
+        <div class="page-header"><h1>복습 신청 관리</h1><p>학생별 복습 영상 시청 권한을 승인하고 해제하세요</p></div>
+        <!-- 신청 대기 -->
+        <div class="card" id="access-pending-card" style="margin-bottom:1rem;border-color:var(--teal)">
+          <div class="card-head" style="background:var(--teal-bg)"><h3 style="color:var(--teal)">📬 복습 신청 대기</h3><span id="access-pending-count" style="font-size:11px;color:var(--teal)"></span></div>
+          <div id="access-pending-list"></div>
+        </div>
+        <!-- 현재 권한 목록 -->
+        <div class="card">
+          <div class="card-head"><h3>현재 시청 권한 목록</h3><span style="font-size:11px;color:var(--text2)">권한 해제 시 즉시 적용</span></div>
+          <div id="access-granted-list"></div>
+        </div>
+      </div>
+
+      <!-- 진도 현황 -->
+      <div class="panel" id="panel-progress">
+        <div class="page-header"><h1>진도 현황</h1><p>실제 시청 시간 기반 정확한 진도를 확인하세요</p></div>
+        <div style="display:flex;gap:8px;margin-bottom:1rem">
+          <button class="btn blue" id="btn-byvideo" onclick="setView('video')">강의별 보기</button>
+          <button class="btn" id="btn-bystudent" onclick="setView('student')">학생별 보기</button>
+        </div>
+        <div id="progress-content"></div>
+      </div>
+
+    </div></div>
+  </div>
+  <div class="mobile-tabbar" id="t-tabbar">
+    <button class="mobile-tab active" onclick="tNav('dashboard')" data-mt="dashboard"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>대시보드</button>
+    <button class="mobile-tab" onclick="tNav('videos')" data-mt="videos"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의</button>
+    <button class="mobile-tab" onclick="tNav('access')" data-mt="access" id="mt-access"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습관리</button>
+    <button class="mobile-tab" onclick="tNav('students')" data-mt="students"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>학생</button>
+    <button class="mobile-tab" onclick="tNav('progress')" data-mt="progress"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>진도</button>
+  </div>
+</div>
+
+<!-- STUDENT -->
+<div id="page-student" class="page">
+  <div class="app-layout">
+    <div class="sidebar">
+      <div class="sidebar-logo"><h2>국어왕 김까까</h2><span>서로국어 김이내T</span></div>
+      <div class="sidebar-user">
+        <div class="avatar student" id="s-avatar">S</div>
+        <div class="sidebar-user-info"><p id="s-name-disp">학생</p><span class="badge student-role" style="font-size:10px">학생</span></div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-item active" onclick="sNav('lectures')" data-p="lectures"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의 목록</div>
+        <div class="nav-item" onclick="sNav('review')" data-p="review"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습 신청</div>
+        <div class="nav-item" onclick="sNav('mypage')" data-p="mypage"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>내 진도</div>
+      </nav>
+      <div class="sidebar-footer"><button class="btn-logout" onclick="doLogout()">로그아웃</button></div>
+    </div>
+    <div class="main"><div class="main-inner">
+      <div class="panel active" id="panel-lectures">
+        <div class="page-header"><h1>강의 목록</h1><p>강의를 시청하면 진도가 자동으로 기록됩니다</p></div>
+        <div id="student-lectures"></div>
+      </div>
+      <div class="panel" id="panel-review">
+        <div class="page-header"><h1>복습 신청</h1><p>복습하고 싶은 영상을 신청하면 강사가 승인 후 시청 가능합니다</p></div>
+        <div id="student-review-list"></div>
+      </div>
+      <div class="panel" id="panel-mypage">
+        <div class="page-header"><h1>내 진도</h1><p>실제 시청 구간 기준으로 기록됩니다</p></div>
+        <div class="stats-row" style="grid-template-columns:repeat(3,1fr)" id="s-stats"></div>
+        <div class="card"><div class="card-head"><h3>강의별 진도</h3></div><div id="mypage-list" style="padding:4px 0"></div></div>
+      </div>
+    </div></div>
+  </div>
+  <div class="mobile-tabbar" id="s-tabbar">
+    <button class="mobile-tab active" onclick="sNav('lectures')" data-ms="lectures"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의</button>
+    <button class="mobile-tab" onclick="sNav('review')" data-ms="review"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습신청</button>
+    <button class="mobile-tab" onclick="sNav('mypage')" data-ms="mypage"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>내 진도</button>
+    <button class="mobile-tab" onclick="doLogout()"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>로그아웃</button>
+  </div>
+</div>
+
+<!-- PLAYER MODAL -->
+<div class="modal-bg" id="modal-play">
+  <div class="modal player-modal">
+    <div class="modal-head"><h3 id="play-title">강의 시청</h3><button class="modal-close" onclick="closePlay()">×</button></div>
+    <div class="modal-body">
+      <div class="player-wrap"><div id="yt-player"></div></div>
+      <div class="tracking-bar">
+        <div class="track-header">
+          <div class="track-title"><span class="live-dot" id="live-dot"></span>실시간 시청 추적</div>
+          <span id="play-badge"></span>
+        </div>
+        <div class="track-stats">
+          <div class="track-stat"><div class="track-stat-val green" id="trk-pct">0%</div><div class="track-stat-lbl">시청 진도</div></div>
+          <div class="track-stat"><div class="track-stat-val" id="trk-watched">0초</div><div class="track-stat-lbl">실제 시청 시간</div></div>
+          <div class="track-stat"><div class="track-stat-val" id="trk-total">-</div><div class="track-stat-lbl">전체 강의 시간</div></div>
+        </div>
+        <div style="margin-top:6px">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:4px"><span>시청 구간</span><span id="trk-seg-pct">0%</span></div>
+          <div class="pbar" style="height:7px"><div id="trk-seg-fill" class="pbar-fill" style="background:var(--green);width:0%"></div></div>
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:var(--text3)">영상을 재생하면 자동으로 진도가 기록됩니다.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESUME MODAL -->
+<div class="modal-bg" id="modal-resume">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-head"><h3>이어서 보시겠어요?</h3><button class="modal-close" onclick="closeResume()">×</button></div>
+    <div class="modal-body">
+      <div style="font-size:13px;color:var(--text2);margin-bottom:1.25rem" id="resume-desc"></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button class="btn blue" style="width:100%;padding:12px;font-size:14px" onclick="confirmResume(false)">
+          ▶ 이어서 보기 <span id="resume-time" style="opacity:.8;font-size:12px"></span>
+        </button>
+        <button class="btn" style="width:100%;padding:12px;font-size:14px" onclick="confirmResume(true)">
+          ↺ 처음부터 다시 보기
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-bg" id="modal-detail">
+  <div class="modal">
+    <div class="modal-head"><h3 id="detail-title">시청 상세</h3><button class="modal-close" onclick="closeDetail()">×</button></div>
+    <div class="modal-body" id="detail-body"></div>
+    <div class="modal-footer"><button class="btn" onclick="closeDetail()">닫기</button></div>
+  </div>
+</div>
+
+<div class="notif" id="notif"></div>
+
+<script>
+const SB_URL='https://zniwzwanlvvmzkkcmikh.supabase.co';
+const SB_KEY='sb_publishable_IbfVcXs5TmXfumrnK4Somg_7MzygCdh';
+const sb=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:false,autoRefreshToken:false}});
+
+let session=null,currentRole='teacher',progressView='video';
+let db={users:[],videos:[],progress:[],access:[],requests:[]};
+let ytPlayer=null,ytApiReady=false,currentVid=null,currentStartPos=0;
+let watchedSet=new Set(),trackTimer=null,saveTimer=null,lastPos=-1,totalDur=0;
+
+window.onYouTubeIframeAPIReady=function(){ytApiReady=true;};
+
+/* ===== UTILS ===== */
+function ytId(url){if(!url)return null;const m=url.match(/(?:youtu\.be\/|v=|embed\/)([A-Za-z0-9_\-]{11})/);return m?m[1]:null;}
+function thumb(url){const id=ytId(url);return id?`https://img.youtube.com/vi/${id}/mqdefault.jpg`:null;}
+function getPct(sid,vid){const r=db.progress.find(p=>p.student_id===sid&&p.video_id===vid);return r?(r.percent||0):0;}
+function getWatchSec(sid,vid){const r=db.progress.find(p=>p.student_id===sid&&p.video_id===vid);return r?(r.watch_seconds||0):0;}
+function getLastPos(sid,vid){const r=db.progress.find(p=>p.student_id===sid&&p.video_id===vid);return r?(r.last_position||0):0;}
+function hasAccess(sid,vid){return db.access.some(a=>a.student_id===sid&&a.video_id===vid);}
+function hasRequested(sid,vid){return db.requests.some(r=>r.student_id===sid&&r.video_id===vid);}
+function pctColor(p){return p>=100?'var(--green)':p>=50?'var(--amber)':'var(--red)';}
+function pctClass(p){return p>=100?'green':p>=50?'amber':'muted';}
+function pctBadge(p){return p>=100?'done':p>0?'partial':'none';}
+function pctLabel(p){return p>=100?'완료':p>0?p+'% 시청':'미시청';}
+function activeStudents(){return db.users.filter(u=>u.role==='student'&&u.status==='active');}
+function pendingStudents(){return db.users.filter(u=>u.role==='student'&&u.status==='pending');}
+function normalVideos(){return db.videos.filter(v=>v.category!=='review');}
+function reviewVideos(){return db.videos.filter(v=>v.category==='review');}
+function fmtTime(sec){if(!sec||isNaN(sec)||sec<=0)return '0초';const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=Math.floor(sec%60);if(h>0)return`${h}시간 ${m}분 ${s}초`;if(m>0)return`${m}분 ${s}초`;return`${s}초`;}
+function notify(msg,type='info'){const n=document.getElementById('notif');n.textContent=msg;n.className=`notif show ${type}`;setTimeout(()=>n.classList.remove('show'),3000);}
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function hideLoading(){document.getElementById('loading-screen').classList.add('hide');}
+
+/* ===== DB ===== */
+async function loadAll(attempt=0){
+  try{
+    const [u,v,p,a,r]=await Promise.all([
+      sb.from('users').select('*'),
+      sb.from('videos').select('*').order('created_at'),
+      sb.from('progress').select('*'),
+      sb.from('video_access').select('*'),
+      sb.from('access_requests').select('*')
+    ]);
+    if(u.error)throw new Error(u.error.message);
+    db.users=u.data||[];db.videos=v.data||[];db.progress=p.data||[];
+    db.access=a.data||[];db.requests=r.data||[];
+  }catch(e){
+    if(attempt<3){
+      document.querySelector('.loading-text').textContent=`재연결 중... (${attempt+1}/3)`;
+      await new Promise(r=>setTimeout(r,1500));
+      return loadAll(attempt+1);
+    }
+    throw e;
+  }
+}
+
+async function upsertProgress(sid,vid,pct,watchSec,lastPosition){
+  const payload={student_id:sid,video_id:vid,percent:Math.min(pct,100),watch_seconds:watchSec,last_position:lastPosition,updated_at:new Date().toISOString()};
+  const{error}=await sb.from('progress').upsert(payload,{onConflict:'student_id,video_id'});
+  if(error){console.error('Save error:',error.message);return;}
+  const ex=db.progress.find(p=>p.student_id===sid&&p.video_id===vid);
+  if(ex)Object.assign(ex,payload);else db.progress.push(payload);
+}
+
+/* ===== AUTH ===== */
+function selectRole(r){currentRole=r;document.querySelectorAll('.role-tab').forEach((b,i)=>b.classList.toggle('active',(i===0&&r==='teacher')||(i===1&&r==='student')));}
+async function doLogin(){
+  const id=document.getElementById('login-id').value.trim();
+  const pw=document.getElementById('login-pw').value;
+  const err=document.getElementById('login-err');
+  const btn=document.getElementById('login-btn');
+  err.textContent='';
+  if(!id||!pw){err.textContent='아이디와 비밀번호를 입력하세요.';return;}
+  btn.disabled=true;btn.textContent='로그인 중...';
+  try{
+    await loadAll();
+    const user=db.users.find(u=>u.id===id&&u.pw===pw&&u.role===currentRole);
+    if(!user){err.textContent='아이디 또는 비밀번호가 올바르지 않습니다.';return;}
+    if(user.status==='pending'){err.textContent='강사 승인 대기 중입니다.';return;}
+    session=user;
+    localStorage.setItem('lms_sess',JSON.stringify({id:user.id,role:user.role}));
+    if(user.role==='teacher')launchTeacher();else launchStudent();
+  }catch(e){err.textContent='연결 오류: '+e.message;}
+  finally{btn.disabled=false;btn.textContent='로그인';}
+}
+function showSignup(){document.getElementById('form-login').style.display='none';document.getElementById('form-signup').style.display='block';}
+function showLogin(){document.getElementById('form-signup').style.display='none';document.getElementById('form-login').style.display='block';}
+async function doSignup(){
+  const name=document.getElementById('su-name').value.trim();
+  const id=document.getElementById('su-id').value.trim();
+  const pw=document.getElementById('su-pw').value;
+  const pw2=document.getElementById('su-pw2').value;
+  const err=document.getElementById('signup-err');
+  const btn=document.getElementById('signup-btn');
+  err.textContent='';
+  if(!name||!id||!pw||!pw2){err.textContent='모든 항목을 입력하세요.';return;}
+  if(!/^[a-zA-Z0-9_]+$/.test(id)){err.textContent='아이디는 영문/숫자/밑줄만 가능합니다.';return;}
+  if(pw.length<4){err.textContent='비밀번호는 4자 이상이어야 합니다.';return;}
+  if(pw!==pw2){err.textContent='비밀번호가 일치하지 않습니다.';return;}
+  btn.disabled=true;btn.textContent='신청 중...';
+  try{
+    await loadAll();
+    if(db.users.find(u=>u.id===id)){err.textContent='이미 사용 중인 아이디입니다.';return;}
+    const{error}=await sb.from('users').insert({id,name,pw,role:'student',status:'pending'});
+    if(error){err.textContent='가입 실패: '+error.message;return;}
+    ['su-name','su-id','su-pw','su-pw2'].forEach(i=>document.getElementById(i).value='');
+    showLogin();
+    notify('가입 신청 완료! 강사 승인 후 로그인하세요.','info');
+  }catch(e){err.textContent='오류: '+e.message;}
+  finally{btn.disabled=false;btn.textContent='가입 신청';}
+}
+function doLogout(){
+  closePlay();session=null;db={users:[],videos:[],progress:[],access:[],requests:[]};
+  localStorage.removeItem('lms_sess');showPage('page-login');
+  document.getElementById('login-id').value='';document.getElementById('login-pw').value='';
+  document.getElementById('login-err').textContent='';
+}
+function launchTeacher(){
+  showPage('page-teacher');
+  document.getElementById('t-name').textContent=session.name;
+  document.getElementById('t-avatar').textContent=session.name[0];
+  document.getElementById('dash-date').textContent=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});
+  tNav('dashboard');
+}
+function launchStudent(){
+  showPage('page-student');
+  document.getElementById('s-name-disp').textContent=session.name;
+  document.getElementById('s-avatar').textContent=session.name[0];
+  sNav('lectures');
+}
+
+/* ===== TEACHER NAV ===== */
+function tNav(panel){
+  document.querySelectorAll('#page-teacher .nav-item').forEach(n=>n.classList.toggle('active',n.dataset.p===panel));
+  document.querySelectorAll('#page-teacher .panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+panel));
+  document.querySelectorAll('#t-tabbar .mobile-tab').forEach(b=>b.classList.toggle('active',b.dataset.mt===panel));
+  if(panel==='dashboard')renderDashboard();
+  if(panel==='videos')renderVideos();
+  if(panel==='students')renderStudents();
+  if(panel==='access')renderAccessPanel();
+  if(panel==='progress')renderProgress();
+}
+
+/* ===== DASHBOARD ===== */
+function renderDashboard(){
+  const sts=activeStudents(),vids=db.videos;
+  const normal=normalVideos();
+  const total=sts.length*normal.length;
+  let done=0;
+  sts.forEach(s=>normal.forEach(v=>{if(getPct(s.id,v.id)>=100)done++;}));
+  const avgAll=total>0?Math.round(sts.reduce((a,s)=>a+normal.reduce((b,v)=>b+getPct(s.id,v.id),0),0)/total):0;
+  const pending=pendingStudents();
+  const accessPending=db.requests.filter(r=>r.status==='pending');
+
+  // 사이드바 뱃지
+  const navSt=document.getElementById('nav-students');
+  navSt.innerHTML=`<svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>학생 관리${pending.length>0?` <span style="background:var(--amber);color:#000;border-radius:100px;font-size:10px;padding:0 5px;font-weight:700">${pending.length}</span>`:''}`;
+  const navAc=document.getElementById('nav-access');
+  navAc.innerHTML=`<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습 신청 관리${accessPending.length>0?` <span style="background:var(--teal);color:#000;border-radius:100px;font-size:10px;padding:0 5px;font-weight:700">${accessPending.length}</span>`:''}`;
+  // 모바일 뱃지
+  const mtAc=document.getElementById('mt-access');
+  if(mtAc)mtAc.innerHTML=`<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>${accessPending.length>0?`<span style="background:var(--teal);color:#000;border-radius:100px;font-size:9px;padding:0 4px;font-weight:700;position:absolute;top:4px;right:4px">${accessPending.length}</span>`:''}복습관리`;
+
+  document.getElementById('t-stats').innerHTML=`
+    <div class="stat"><div class="stat-label">전체 학생</div><div class="stat-val blue">${sts.length}</div></div>
+    <div class="stat"><div class="stat-label">일반 강의</div><div class="stat-val purple">${normal.length}</div></div>
+    <div class="stat"><div class="stat-label">완료율</div><div class="stat-val green">${total>0?Math.round(done/total*100):0}%</div></div>
+    <div class="stat"><div class="stat-label">복습 신청</div><div class="stat-val amber">${accessPending.length}건</div></div>`;
+
+  const vl=document.getElementById('dash-videos');
+  if(!normal.length){vl.innerHTML='<div class="empty"><p>등록된 강의가 없습니다.</p></div>';}
+  else vl.innerHTML=normal.map(v=>{
+    const progs=sts.map(s=>getPct(s.id,v.id));
+    const avgP=sts.length?Math.round(progs.reduce((a,b)=>a+b,0)/sts.length):0;
+    const doneC=progs.filter(p=>p>=100).length;
+    const dots=sts.map(s=>{const p=getPct(s.id,v.id);return`<span class="dot ${pctBadge(p)}" title="${s.name}: ${p}%" onclick="openDetail('${s.id}','${v.id}')"></span>`;}).join('');
+    const t=thumb(v.url);
+    return`<div style="display:flex;align-items:center;gap:14px;padding:12px 1.25rem;border-bottom:1px solid var(--border)">
+      <div style="width:70px;height:40px;border-radius:6px;overflow:hidden;flex-shrink:0;background:var(--bg3)">${t?`<img src="${t}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">`:''}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${v.title}</div>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:5px">${doneC}/${sts.length}명 완료 · 평균 ${avgP}%</div>
+        <div class="pbar" style="max-width:180px;margin-bottom:6px"><div class="pbar-fill" style="width:${avgP}%;background:${pctColor(avgP)}"></div></div>
+        <div class="dot-grid">${dots}</div>
+      </div></div>`;
+  }).join('');
+
+  const tbl=document.getElementById('dash-students');
+  const hc=normal.map(v=>`<th style="min-width:80px">${v.title.substring(0,10)}</th>`).join('');
+  tbl.innerHTML=`<thead><tr><th>학생</th>${hc}<th>평균</th></tr></thead><tbody>`+
+    sts.map(s=>{
+      const progs=normal.map(v=>getPct(s.id,v.id));
+      const avg=progs.length?Math.round(progs.reduce((a,b)=>a+b,0)/progs.length):0;
+      const cols=normal.map((v,i)=>`<td><span class="badge ${pctBadge(progs[i])}">${pctLabel(progs[i])}</span></td>`).join('');
+      return`<tr><td style="font-weight:600">${s.name}</td>${cols}<td style="font-weight:700;color:${pctColor(avg)}">${avg}%</td></tr>`;
+    }).join('')+'</tbody>';
+}
+
+/* ===== VIDEOS ===== */
+async function addVideo(){
+  const title=document.getElementById('v-title').value.trim();
+  const url=document.getElementById('v-url').value.trim();
+  const desc=document.getElementById('v-desc').value.trim();
+  const category=document.getElementById('v-category').value;
+  if(!title||!url){notify('제목과 URL을 입력하세요.','error');return;}
+  if(!ytId(url)){notify('유효한 유튜브 URL을 입력하세요.','error');return;}
+  const id='v'+Date.now();
+  const{error}=await sb.from('videos').insert({id,title,url,description:desc,category});
+  if(error){notify('등록 실패: '+error.message,'error');return;}
+  db.videos.push({id,title,url,description:desc,category,created_at:new Date().toISOString()});
+  ['v-title','v-url','v-desc'].forEach(i=>document.getElementById(i).value='');
+  notify(`강의가 등록되었습니다. (${category==='review'?'복습 신청 영상':'일반 강의'})`, 'success');
+  renderVideos();
+}
+
+async function deleteVideo(id){
+  if(!confirm('정말 삭제하시겠습니까?'))return;
+  await sb.from('progress').delete().eq('video_id',id);
+  await sb.from('video_access').delete().eq('video_id',id);
+  await sb.from('access_requests').delete().eq('video_id',id);
+  await sb.from('videos').delete().eq('id',id);
+  db.videos=db.videos.filter(v=>v.id!==id);
+  db.progress=db.progress.filter(p=>p.video_id!==id);
+  db.access=db.access.filter(a=>a.video_id!==id);
+  db.requests=db.requests.filter(r=>r.video_id!==id);
+  notify('강의가 삭제되었습니다.','info');renderVideos();
+}
+
+function renderVideoGrid(videos, containerId){
+  const el=document.getElementById(containerId);
+  const sts=activeStudents();
+  if(!videos.length){el.innerHTML='<div style="padding:1rem;color:var(--text2);font-size:13px;text-align:center">등록된 강의가 없습니다.</div>';return;}
+  el.innerHTML=`<div class="video-grid">`+videos.map(v=>{
+    const t=thumb(v.url);
+    const progs=sts.map(s=>getPct(s.id,v.id));
+    const avgP=sts.length?Math.round(progs.reduce((a,b)=>a+b,0)/sts.length):0;
+    const doneC=progs.filter(p=>p>=100).length;
+    const isReview=v.category==='review';
+    return`<div class="video-card ${isReview?'review-card':''}">
+      <div class="video-thumb">${t?`<img src="${t}" onerror="this.style.display='none'">`:''}<div class="thumb-fb"><div class="yt-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
+      <div style="padding:12px 14px">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+          <span class="badge ${isReview?'review':'normal'}">${isReview?'🔁 복습':'📚 일반'}</span>
+        </div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${v.title}</div>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:8px">${v.description||'설명 없음'}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
+          <span style="font-size:11px;color:var(--text2)">${isReview?`권한 ${db.access.filter(a=>a.video_id===v.id).length}명`:doneC+'/'+sts.length+'명 완료'}</span>
+          <strong style="font-size:12px;color:${pctColor(avgP)}">${avgP}%</strong>
+        </div>
+        <div class="pbar"><div class="pbar-fill" style="width:${avgP}%;background:${pctColor(avgP)}"></div></div>
+        <div style="display:flex;gap:6px;margin-top:10px">
+          <button class="btn btn-sm" onclick="openDetail2('${v.id}')">진도 확인</button>
+          <button class="btn btn-sm red" onclick="deleteVideo('${v.id}')">삭제</button>
+        </div>
+      </div></div>`;
+  }).join('')+`</div>`;
+}
+
+function renderVideos(){
+  renderVideoGrid(normalVideos(),'video-list-normal');
+  renderVideoGrid(reviewVideos(),'video-list-review');
+}
+
+/* ===== STUDENTS ===== */
+async function addStudent(){
+  const name=document.getElementById('s-name').value.trim();
+  const id=document.getElementById('s-id').value.trim();
+  const pw=document.getElementById('s-pw').value;
+  if(!name||!id||!pw){notify('모든 항목을 입력하세요.','error');return;}
+  if(db.users.find(u=>u.id===id)){notify('이미 존재하는 아이디입니다.','error');return;}
+  const{error}=await sb.from('users').insert({id,name,pw,role:'student',status:'active'});
+  if(error){notify('등록 실패: '+error.message,'error');return;}
+  db.users.push({id,name,pw,role:'student',status:'active'});
+  ['s-name','s-id','s-pw'].forEach(i=>document.getElementById(i).value='');
+  notify(`${name} 학생이 등록되었습니다.`,'success');renderStudents();
+}
+async function approveStudent(id){
+  const u=db.users.find(x=>x.id===id);
+  await sb.from('users').update({status:'active'}).eq('id',id);
+  u.status='active';notify(`${u.name} 학생이 승인되었습니다.`,'success');
+  renderStudents();renderDashboard();
+}
+async function rejectStudent(id){
+  const u=db.users.find(x=>x.id===id);
+  if(!confirm(`${u.name} 학생의 가입을 거절하시겠습니까?`))return;
+  await sb.from('users').delete().eq('id',id);
+  db.users=db.users.filter(x=>x.id!==id);
+  notify('가입이 거절되었습니다.','info');renderStudents();renderDashboard();
+}
+async function deleteStudent(id){
+  const u=db.users.find(x=>x.id===id);
+  if(!confirm(`${u.name} 학생을 삭제하시겠습니까?`))return;
+  await sb.from('progress').delete().eq('student_id',id);
+  await sb.from('video_access').delete().eq('student_id',id);
+  await sb.from('access_requests').delete().eq('student_id',id);
+  await sb.from('users').delete().eq('id',id);
+  db.users=db.users.filter(x=>x.id!==id);
+  db.progress=db.progress.filter(p=>p.student_id!==id);
+  db.access=db.access.filter(a=>a.student_id!==id);
+  db.requests=db.requests.filter(r=>r.student_id!==id);
+  notify('학생이 삭제되었습니다.','info');renderStudents();renderDashboard();
+}
+function renderStudents(){
+  const pending=pendingStudents();
+  const pc=document.getElementById('pending-card');
+  if(!pending.length){pc.style.display='none';}
+  else{
+    pc.style.display='block';
+    document.getElementById('pending-count').textContent=`${pending.length}명 대기 중`;
+    document.getElementById('pending-list').innerHTML=pending.map(s=>`
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 1.25rem;border-bottom:1px solid var(--border)">
+        <div class="avatar student" style="width:30px;height:30px;font-size:11px">${s.name[0]}</div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:600">${s.name}</div><div style="font-size:11px;color:var(--text2)">아이디: ${s.id}</div></div>
+        <button class="btn green btn-sm" onclick="approveStudent('${s.id}')">✓ 승인</button>
+        <button class="btn red btn-sm" onclick="rejectStudent('${s.id}')">✕ 거절</button>
+      </div>`).join('');
+  }
+  const sts=activeStudents();
+  document.getElementById('student-count').textContent=`총 ${sts.length}명`;
+  const tbl=document.getElementById('student-tbl');
+  if(!sts.length){tbl.innerHTML='<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text2)">등록된 학생이 없습니다.</td></tr>';return;}
+  tbl.innerHTML=`<thead><tr><th>이름</th><th>아이디</th><th>평균 진도</th><th>완료 강의</th><th></th></tr></thead><tbody>`+
+    sts.map(s=>{
+      const vids=normalVideos();
+      const progs=vids.map(v=>getPct(s.id,v.id));
+      const avg=progs.length?Math.round(progs.reduce((a,b)=>a+b,0)/progs.length):0;
+      const doneC=progs.filter(p=>p>=100).length;
+      return`<tr><td style="font-weight:600">${s.name}</td><td><code style="font-family:var(--mono);font-size:11px;color:var(--text2)">${s.id}</code></td>
+        <td><div style="display:flex;align-items:center;gap:8px"><div class="pbar" style="width:90px"><div class="pbar-fill" style="width:${avg}%;background:${pctColor(avg)}"></div></div><span style="font-size:12px;font-weight:600;color:${pctColor(avg)}">${avg}%</span></div></td>
+        <td style="font-weight:600;color:${doneC===vids.length&&vids.length>0?'var(--green)':'var(--text)'}">${doneC}/${vids.length}</td>
+        <td><button class="btn btn-sm red" onclick="deleteStudent('${s.id}')">삭제</button></td></tr>`;
+    }).join('')+'</tbody>';
+}
+
+/* ===== 복습 신청 관리 (강사) ===== */
+async function approveAccess(reqId, sid, vid){
+  const s=db.users.find(u=>u.id===sid);
+  const v=db.videos.find(x=>x.id===vid);
+  const accessId='ac'+Date.now();
+  await sb.from('video_access').insert({id:accessId,student_id:sid,video_id:vid});
+  await sb.from('access_requests').update({status:'approved'}).eq('id',reqId);
+  db.access.push({id:accessId,student_id:sid,video_id:vid});
+  const req=db.requests.find(r=>r.id===reqId);
+  if(req)req.status='approved';
+  notify(`${s.name}에게 "${v.title}" 시청 권한을 부여했습니다.`,'success');
+  renderAccessPanel();renderDashboard();
+}
+async function rejectAccess(reqId, sid, vid){
+  const s=db.users.find(u=>u.id===sid);
+  await sb.from('access_requests').update({status:'rejected'}).eq('id',reqId);
+  const req=db.requests.find(r=>r.id===reqId);
+  if(req)req.status='rejected';
+  notify(`${s.name}의 복습 신청을 거절했습니다.`,'info');
+  renderAccessPanel();
+}
+async function revokeAccess(sid, vid){
+  const s=db.users.find(u=>u.id===sid);
+  const v=db.videos.find(x=>x.id===vid);
+  if(!confirm(`${s.name}의 "${v.title}" 시청 권한을 해제하시겠습니까?`))return;
+  await sb.from('video_access').delete().eq('student_id',sid).eq('video_id',vid);
+  await sb.from('access_requests').delete().eq('student_id',sid).eq('video_id',vid);
+  db.access=db.access.filter(a=>!(a.student_id===sid&&a.video_id===vid));
+  db.requests=db.requests.filter(r=>!(r.student_id===sid&&r.video_id===vid));
+  notify(`${s.name}의 시청 권한이 해제되었습니다.`,'info');
+  renderAccessPanel();renderDashboard();
+}
+function renderAccessPanel(){
+  const pending=db.requests.filter(r=>r.status==='pending');
+  const apc=document.getElementById('access-pending-card');
+  const apl=document.getElementById('access-pending-list');
+  if(!pending.length){apc.style.display='none';}
+  else{
+    apc.style.display='block';
+    document.getElementById('access-pending-count').textContent=`${pending.length}건 대기 중`;
+    apl.innerHTML=pending.map(r=>{
+      const s=db.users.find(u=>u.id===r.student_id);
+      const v=db.videos.find(x=>x.id===r.video_id);
+      if(!s||!v)return'';
+      const t=thumb(v.url);
+      return`<div class="access-row">
+        <div class="avatar student" style="width:30px;height:30px;font-size:11px;flex-shrink:0">${s.name[0]}</div>
+        <div style="width:50px;height:30px;border-radius:4px;overflow:hidden;flex-shrink:0;background:var(--bg3)">${t?`<img src="${t}" style="width:100%;height:100%;object-fit:cover">`:''}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:600">${s.name}</div>
+          <div style="font-size:11px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${v.title}</div>
+        </div>
+        <button class="btn green btn-sm" onclick="approveAccess('${r.id}','${r.student_id}','${r.video_id}')">✓ 승인</button>
+        <button class="btn red btn-sm" onclick="rejectAccess('${r.id}','${r.student_id}','${r.video_id}')">✕ 거절</button>
+      </div>`;
+    }).join('');
+  }
+  // 현재 권한 목록
+  const gl=document.getElementById('access-granted-list');
+  if(!db.access.length){gl.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text2);font-size:13px">현재 시청 권한을 가진 학생이 없습니다.</div>';return;}
+  gl.innerHTML=db.access.map(a=>{
+    const s=db.users.find(u=>u.id===a.student_id);
+    const v=db.videos.find(x=>x.id===a.video_id);
+    if(!s||!v)return'';
+    const t=thumb(v.url);
+    const p=getPct(a.student_id,a.video_id);
+    return`<div class="access-row">
+      <div class="avatar student" style="width:30px;height:30px;font-size:11px;flex-shrink:0">${s.name[0]}</div>
+      <div style="width:50px;height:30px;border-radius:4px;overflow:hidden;flex-shrink:0;background:var(--bg3)">${t?`<img src="${t}" style="width:100%;height:100%;object-fit:cover">`:''}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:600">${s.name} <span style="font-weight:400;color:var(--text2)">→</span> ${v.title}</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:3px">
+          <div class="pbar" style="width:80px"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div>
+          <span class="badge ${pctBadge(p)}">${pctLabel(p)}</span>
+        </div>
+      </div>
+      <button class="btn red btn-sm" onclick="revokeAccess('${a.student_id}','${a.video_id}')">권한 해제</button>
+    </div>`;
+  }).join('');
+}
+
+/* ===== PROGRESS ===== */
+function setView(v){
+  progressView=v;
+  document.getElementById('btn-byvideo').classList.toggle('blue',v==='video');
+  document.getElementById('btn-bystudent').classList.toggle('blue',v==='student');
+  renderProgress();
+}
+function renderProgress(){
+  const el=document.getElementById('progress-content');
+  const sts=activeStudents(),vids=normalVideos();
+  if(progressView==='video'){
+    if(!vids.length){el.innerHTML='<div class="empty"><p>강의가 없습니다.</p></div>';return;}
+    el.innerHTML=vids.map(v=>{
+      const rows=sts.map(s=>{
+        const p=getPct(s.id,v.id),ws=getWatchSec(s.id,v.id),lp=getLastPos(s.id,v.id);
+        return`<div class="prog-row">
+          <div class="prog-name">${s.name}</div>
+          <div class="prog-bar-wrap"><div class="pbar"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div></div>
+          <div class="prog-pct ${pctClass(p)}">${p}%</div>
+          <span class="badge ${pctBadge(p)}" style="margin-left:6px">${pctLabel(p)}</span>
+          ${lp>0?`<span class="time-badge" style="margin-left:4px">${p>=100?'완료':fmtTime(lp)+'까지'}</span>`:''}
+          ${ws>0?`<span style="font-size:11px;color:var(--text2);margin-left:4px">(${fmtTime(ws)})</span>`:''}
+          <button class="btn btn-sm" style="margin-left:auto" onclick="openDetail('${s.id}','${v.id}')">상세</button>
+        </div>`;
+      }).join('');
+      const progs=sts.map(s=>getPct(s.id,v.id));
+      const avgP=sts.length?Math.round(progs.reduce((a,b)=>a+b,0)/sts.length):0;
+      const doneC=progs.filter(p=>p>=100).length;
+      return`<div class="card"><div class="card-head"><div style="display:flex;align-items:center;gap:8px"><h3>${v.title}</h3><span class="tag">${doneC}/${sts.length}명 완료</span></div><span style="font-size:12px;font-weight:700;color:${pctColor(avgP)}">평균 ${avgP}%</span></div><div style="padding:4px 1.25rem 12px">${rows||'<div style="padding:1rem;color:var(--text2);font-size:13px">학생이 없습니다.</div>'}</div></div>`;
+    }).join('');
+  } else {
+    if(!sts.length){el.innerHTML='<div class="empty"><p>학생이 없습니다.</p></div>';return;}
+    el.innerHTML=sts.map(s=>{
+      const rows=vids.map(v=>{
+        const p=getPct(s.id,v.id),ws=getWatchSec(s.id,v.id),lp=getLastPos(s.id,v.id);
+        return`<div class="prog-row">
+          <div style="flex:1;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${v.title}</div>
+          <div style="width:90px;margin:0 8px"><div class="pbar"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div></div>
+          <div class="prog-pct ${pctClass(p)}">${p}%</div>
+          <span class="badge ${pctBadge(p)}" style="margin-left:6px">${pctLabel(p)}</span>
+          ${lp>0?`<span class="time-badge" style="margin-left:4px">${p>=100?'완료':fmtTime(lp)+'까지'}</span>`:''}
+          ${ws>0?`<span style="font-size:11px;color:var(--text2);margin-left:4px">(${fmtTime(ws)})</span>`:''}
+        </div>`;
+      }).join('');
+      const progs=vids.map(v=>getPct(s.id,v.id));
+      const avg=progs.length?Math.round(progs.reduce((a,b)=>a+b,0)/progs.length):0;
+      const doneC=progs.filter(p=>p>=100).length;
+      const totalW=vids.reduce((a,v)=>a+getWatchSec(s.id,v.id),0);
+      return`<div class="card"><div class="card-head"><div style="display:flex;align-items:center;gap:8px"><div class="avatar student" style="width:28px;height:28px;font-size:11px">${s.name[0]}</div><h3>${s.name}</h3><span class="tag">${doneC}/${vids.length}개 완료</span>${totalW>0?`<span class="tag green">총 ${fmtTime(totalW)}</span>`:''}</div><span style="font-size:12px;font-weight:700;color:${pctColor(avg)}">평균 ${avg}%</span></div><div style="padding:4px 1.25rem 12px">${rows||'<div style="padding:1rem;color:var(--text2);font-size:13px">강의가 없습니다.</div>'}</div></div>`;
+    }).join('');
+  }
+}
+
+/* ===== DETAIL ===== */
+function openDetail2(vid){
+  const v=db.videos.find(x=>x.id===vid);
+  const sts=activeStudents();
+  document.getElementById('detail-title').textContent=v.title+' — 학생별 현황';
+  document.getElementById('detail-body').innerHTML=sts.map(s=>{
+    const p=getPct(s.id,vid),ws=getWatchSec(s.id,vid),lp=getLastPos(s.id,vid);
+    return`<div class="prog-row"><div class="prog-name">${s.name}</div><div class="prog-bar-wrap"><div class="pbar"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div></div><div class="prog-pct ${pctClass(p)}">${p}%</div><span class="badge ${pctBadge(p)}" style="margin-left:6px">${pctLabel(p)}</span>${lp>0?`<span class="time-badge" style="margin-left:4px">${p>=100?'완료':fmtTime(lp)+'까지'}</span>`:''}</div>`;
+  }).join('')||'<p style="color:var(--text2);font-size:13px">학생이 없습니다.</p>';
+  document.getElementById('modal-detail').classList.add('show');
+}
+function openDetail(sid,vid){
+  const s=db.users.find(u=>u.id===sid);
+  const v=db.videos.find(x=>x.id===vid);
+  const p=getPct(sid,vid),ws=getWatchSec(sid,vid),lp=getLastPos(sid,vid);
+  document.getElementById('detail-title').textContent=`${s.name} — ${v.title}`;
+  document.getElementById('detail-body').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem">
+      <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:14px;text-align:center"><div style="font-size:24px;font-weight:700;color:${pctColor(p)}">${p}%</div><div style="font-size:11px;color:var(--text2);margin-top:3px">시청 진도</div></div>
+      <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:14px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--accent)">${lp>0?fmtTime(lp):'없음'}</div><div style="font-size:11px;color:var(--text2);margin-top:3px">마지막 시청 위치</div></div>
+      <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:14px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--purple)">${ws>0?fmtTime(ws):'없음'}</div><div style="font-size:11px;color:var(--text2);margin-top:3px">실제 시청 시간</div></div>
+      <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:14px;text-align:center"><div style="font-size:18px;font-weight:700">${p>=100?'✅':p>0?'▶':'⬜'}</div><div style="font-size:11px;color:var(--text2);margin-top:3px">${p>=100?'완료':p>0?'진행중':'미시청'}</div></div>
+    </div>
+    <div class="pbar" style="height:10px;margin-bottom:10px"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div>
+    <div style="font-size:12px;padding:10px;background:var(--bg3);border-radius:var(--radius-sm);color:var(--text2)">${p>=100?`✅ 강의 전체를 완료했습니다. (실제 시청: ${fmtTime(ws)})`:lp>0?`▶ <strong style="color:var(--text)">${fmtTime(lp)}</strong> 지점까지 시청했습니다.`:'⬜ 아직 시청하지 않았습니다.'}</div>`;
+  document.getElementById('modal-detail').classList.add('show');
+}
+function closeDetail(){document.getElementById('modal-detail').classList.remove('show');}
+
+/* ===== STUDENT NAV ===== */
+function sNav(panel){
+  document.querySelectorAll('#page-student .nav-item').forEach(n=>n.classList.toggle('active',n.dataset.p===panel));
+  document.querySelectorAll('#page-student .panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+panel));
+  document.querySelectorAll('#s-tabbar .mobile-tab').forEach(b=>b.classList.toggle('active',b.dataset.ms===panel));
+  if(panel==='lectures')renderLectures();
+  if(panel==='review')renderStudentReview();
+  if(panel==='mypage')renderMyPage();
+}
+
+/* ===== 학생: 일반 강의 ===== */
+function renderLectures(){
+  const el=document.getElementById('student-lectures');
+  const vids=normalVideos();
+  if(!vids.length){el.innerHTML='<div class="empty"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg><p>강사가 등록한 강의가 없습니다.</p></div>';return;}
+  el.innerHTML=vids.map(v=>{
+    const p=getPct(session.id,v.id),ws=getWatchSec(session.id,v.id),lp=getLastPos(session.id,v.id);
+    const t=thumb(v.url);
+    return`<div class="lecture-item">
+      <div class="lecture-thumb">${t?`<img src="${t}" alt="">`:
+        `<div class="yt-icon" style="width:32px;height:32px"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>`}</div>
+      <div class="lecture-body">
+        <h4>${v.title}</h4>
+        <div class="lmeta">${v.description||'강의 설명 없음'}${ws>0?` · <span style="color:var(--green)">${fmtTime(ws)} 시청</span>`:''}</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="pbar" style="width:110px"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div>
+          <span class="badge ${pctBadge(p)}">${pctLabel(p)}</span>
+          ${lp>0&&p<100?`<span style="font-size:11px;color:var(--text2)">${fmtTime(lp)}까지</span>`:''}
+        </div>
+      </div>
+      <button class="btn blue btn-sm" onclick="openPlay('${v.id}')">▶ ${lp>0&&p<100?'이어보기':'시청하기'}</button>
+    </div>`;
+  }).join('');
+}
+
+/* ===== 학생: 복습 신청 ===== */
+async function requestReview(vid){
+  const v=db.videos.find(x=>x.id===vid);
+  if(hasRequested(session.id,vid)){notify('이미 신청한 영상입니다.','info');return;}
+  if(hasAccess(session.id,vid)){notify('이미 시청 권한이 있습니다.','info');return;}
+  const id='req'+Date.now();
+  const{error}=await sb.from('access_requests').insert({id,student_id:session.id,video_id:vid,status:'pending'});
+  if(error){notify('신청 실패: '+error.message,'error');return;}
+  db.requests.push({id,student_id:session.id,video_id:vid,status:'pending'});
+  notify(`"${v.title}" 복습 신청이 완료됐습니다. 강사 승인을 기다려주세요.`,'success');
+  renderStudentReview();
+}
+
+function renderStudentReview(){
+  const el=document.getElementById('student-review-list');
+  const vids=reviewVideos();
+  if(!vids.length){el.innerHTML='<div class="empty"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg><p>복습 신청 영상이 없습니다.</p></div>';return;}
+  el.innerHTML=vids.map(v=>{
+    const access=hasAccess(session.id,v.id);
+    const requested=hasRequested(session.id,v.id)&&!access;
+    const p=getPct(session.id,v.id),lp=getLastPos(session.id,v.id);
+    const t=thumb(v.url);
+    return`<div class="lecture-item ${access?'':'locked'}">
+      <div class="lecture-thumb">${t?`<img src="${t}" alt="">`:
+        `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:20px">${access?'▶':'🔒'}</div>`}</div>
+      <div class="lecture-body">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+          <h4 style="margin-bottom:0">${v.title}</h4>
+          ${access?'<span class="badge done">시청 가능</span>':requested?'<span class="badge partial">승인 대기중</span>':'<span class="badge none">신청 필요</span>'}
+        </div>
+        <div class="lmeta">${v.description||'복습 신청 후 시청 가능합니다'}</div>
+        ${access?`<div style="display:flex;align-items:center;gap:8px"><div class="pbar" style="width:110px"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div><span class="badge ${pctBadge(p)}">${pctLabel(p)}</span></div>`:''}
+      </div>
+      <div>
+        ${access
+          ?`<button class="btn teal btn-sm" onclick="openPlay('${v.id}')">▶ ${lp>0&&p<100?'이어보기':'시청하기'}</button>`
+          :requested
+            ?`<button class="btn btn-sm" disabled>대기중</button>`
+            :`<button class="btn amber btn-sm" onclick="requestReview('${v.id}')">복습 신청</button>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ===== 학생: 내 진도 ===== */
+function renderMyPage(){
+  const allVids=[...normalVideos(),...reviewVideos().filter(v=>hasAccess(session.id,v.id))];
+  const progs=allVids.map(v=>getPct(session.id,v.id));
+  const doneC=progs.filter(p=>p>=100).length;
+  const avg=progs.length?Math.round(progs.reduce((a,b)=>a+b,0)/progs.length):0;
+  const totalW=allVids.reduce((a,v)=>a+getWatchSec(session.id,v.id),0);
+  document.getElementById('s-stats').innerHTML=`
+    <div class="stat"><div class="stat-label">완료 강의</div><div class="stat-val green">${doneC}/${allVids.length}</div></div>
+    <div class="stat"><div class="stat-label">평균 진도</div><div class="stat-val amber">${avg}%</div></div>
+    <div class="stat"><div class="stat-label">총 시청 시간</div><div class="stat-val blue" style="font-size:18px">${totalW>0?fmtTime(totalW):'0초'}</div></div>`;
+  document.getElementById('mypage-list').innerHTML=allVids.map(v=>{
+    const p=getPct(session.id,v.id),ws=getWatchSec(session.id,v.id),lp=getLastPos(session.id,v.id);
+    const isReview=v.category==='review';
+    return`<div style="padding:12px 1.25rem;border-bottom:1px solid var(--border)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div style="display:flex;align-items:center;gap:6px">
+          ${isReview?'<span class="badge review" style="font-size:10px">복습</span>':''}
+          <span style="font-size:13px;font-weight:600">${v.title}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          ${lp>0&&p<100?`<span style="font-size:11px;color:var(--text2)">${fmtTime(lp)}까지</span>`:''}
+          ${ws>0?`<span class="time-badge">${fmtTime(ws)}</span>`:''}
+          <span class="badge ${pctBadge(p)}">${pctLabel(p)}</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="pbar" style="flex:1"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div>
+        <span style="font-size:12px;font-weight:700;color:${pctColor(p)};min-width:32px;text-align:right">${p}%</span>
+      </div>
+    </div>`;
+  }).join('')||'<div class="empty"><p>강의가 없습니다.</p></div>';
+}
+
+/* ===== YOUTUBE PLAYER ===== */
+let resumeVid=null;
+function showResumeModal(vid, title, lp){
+  resumeVid=vid;
+  document.getElementById('resume-desc').textContent=`"${title}" 강의를 ${fmtTime(lp)}까지 시청했습니다.`;
+  document.getElementById('resume-time').textContent=`(${fmtTime(lp)}부터)`;
+  document.getElementById('modal-resume').classList.add('show');
+}
+function closeResume(){
+  document.getElementById('modal-resume').classList.remove('show');
+  resumeVid=null;
+}
+function confirmResume(fromStart){
+  const vid=resumeVid;
+  closeResume();
+  openPlay(vid, fromStart);
+}
+
+function openPlay(vid, forceStart){
+  const v=db.videos.find(x=>x.id===vid);
+  if(!v)return;
+  if(v.category==='review'&&!hasAccess(session.id,vid)){notify('시청 권한이 없습니다.','error');return;}
+  const lp=getLastPos(session.id,vid);
+  const pct=getPct(session.id,vid);
+  // 이전 기록이 있고 완료되지 않았으면 선택 모달 표시
+  if(lp>0 && pct<100 && forceStart===undefined){
+    showResumeModal(vid, v.title, lp);
+    return;
+  }
+  currentVid=vid;
+  currentStartPos=(forceStart===true)?0:lp;
+  const id=ytId(v.url);
+  if(!id){notify('유효하지 않은 유튜브 URL입니다.','error');return;}
+  document.getElementById('play-title').textContent=v.title;
+  document.getElementById('modal-play').classList.add('show');
+  let tries=0;
+  const tryInit=()=>{if(ytApiReady){initYT(id);}else if(tries++<20){setTimeout(tryInit,300);}else{notify('YouTube 플레이어 로드 실패. 새로고침해주세요.','error');}};
+  tryInit();
+}
+function initYT(videoId){
+  if(ytPlayer){try{ytPlayer.destroy();}catch(e){}ytPlayer=null;}
+  document.getElementById('yt-player').innerHTML='';
+  watchedSet=new Set();lastPos=-1;totalDur=0;
+  updateTrackUI(0);
+  ytPlayer=new YT.Player('yt-player',{
+    videoId,width:'100%',height:'100%',
+    playerVars:{rel:0,modestbranding:1,playsinline:1},
+    events:{onReady:onYTReady,onStateChange:onYTState}
+  });
+}
+function onYTReady(e){
+  const tryDur=(attempts)=>{
+    const dur=e.target.getDuration();
+    if(dur>0){
+      totalDur=dur;
+      document.getElementById('trk-total').textContent=fmtTime(totalDur);
+      if(!currentVid||!session)return;
+      const pct=getPct(session.id,currentVid);
+      if(pct>0){const ws=Math.floor((pct/100)*totalDur);for(let i=0;i<ws;i++)watchedSet.add(i);updateTrackUI(pct);}
+      // currentStartPos 기반으로 이동
+      if(currentStartPos>0){
+        setTimeout(()=>{
+          try{e.target.seekTo(currentStartPos,true);}catch(err){}
+          notify(`${fmtTime(currentStartPos)}부터 이어서 재생합니다.`,'info');
+        },800);
+      }
+    } else if(attempts>0){setTimeout(()=>tryDur(attempts-1),500);}
+  };
+  tryDur(10);
+}
+function onYTState(e){
+  const dot=document.getElementById('live-dot');
+  if(e.data===YT.PlayerState.PLAYING){dot.classList.add('active');startTracking();}
+  else{dot.classList.remove('active');stopTracking();
+    if(e.data===YT.PlayerState.ENDED){if(totalDur>0)for(let i=0;i<=Math.floor(totalDur);i++)watchedSet.add(i);updateTrackUI(100);scheduleSave();}
+  }
+}
+function startTracking(){
+  stopTracking();
+  trackTimer=setInterval(()=>{
+    if(!ytPlayer||!ytPlayer.getCurrentTime)return;
+    if(totalDur===0){try{totalDur=ytPlayer.getDuration()||0;}catch(e){}if(totalDur===0)return;document.getElementById('trk-total').textContent=fmtTime(totalDur);}
+    const cur=Math.floor(ytPlayer.getCurrentTime());
+    if(lastPos>=0&&cur>lastPos&&cur-lastPos<=3){for(let i=lastPos;i<=cur;i++)watchedSet.add(i);}
+    else{watchedSet.add(cur);}
+    lastPos=cur;
+    const pct=Math.min(Math.round((watchedSet.size/totalDur)*100),100);
+    updateTrackUI(pct);scheduleSave();
+  },1000);
+}
+function stopTracking(){if(trackTimer){clearInterval(trackTimer);trackTimer=null;}}
+function scheduleSave(){
+  if(saveTimer)return;
+  saveTimer=setTimeout(async()=>{saveTimer=null;await doAutoSave();},2000);
+}
+async function doAutoSave(){
+  if(!currentVid||!session||totalDur===0)return;
+  const pct=Math.min(Math.round((watchedSet.size/totalDur)*100),100);
+  const curPct=getPct(session.id,currentVid);
+  const curPos=ytPlayer?Math.floor(ytPlayer.getCurrentTime()):0;
+  if(pct>0||curPct>0){await upsertProgress(session.id,currentVid,Math.max(pct,curPct),watchedSet.size,curPos);}
+}
+function updateTrackUI(pct){
+  document.getElementById('trk-pct').textContent=pct+'%';
+  document.getElementById('trk-seg-fill').style.width=pct+'%';
+  document.getElementById('trk-seg-pct').textContent=pct+'% 시청 완료';
+  document.getElementById('trk-watched').textContent=fmtTime(watchedSet.size);
+  const badge=document.getElementById('play-badge');
+  if(pct>=100)badge.innerHTML='<span class="badge done">완료</span>';
+  else if(pct>0)badge.innerHTML=`<span class="badge partial">${pct}% 시청</span>`;
+  else badge.innerHTML='<span class="badge none">미시청</span>';
+}
+async function closePlay(){
+  stopTracking();
+  if(saveTimer){clearTimeout(saveTimer);saveTimer=null;}
+  if(currentVid&&session&&totalDur>0){
+    const pct=Math.min(Math.round((watchedSet.size/totalDur)*100),100);
+    const curPct=getPct(session.id,currentVid);
+    const curPos=ytPlayer?Math.floor(ytPlayer.getCurrentTime()):0;
+    if(pct>=curPct)await upsertProgress(session.id,currentVid,pct,watchedSet.size,curPos);
+  }
+  if(ytPlayer){try{ytPlayer.stopVideo();ytPlayer.destroy();}catch(e){}ytPlayer=null;}
+  document.getElementById('yt-player').innerHTML='';
+  document.getElementById('modal-play').classList.remove('show');
+  currentVid=null;currentStartPos=0;watchedSet=new Set();lastPos=-1;totalDur=0;
+  if(session&&session.role==='student'){renderLectures();renderStudentReview();}
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closePlay();closeDetail();closeResume();}});
+document.getElementById('modal-play').addEventListener('click',e=>{if(e.target===e.currentTarget)closePlay();});
+document.getElementById('modal-detail').addEventListener('click',e=>{if(e.target===e.currentTarget)closeDetail();});
+document.getElementById('modal-resume').addEventListener('click',e=>{if(e.target===e.currentTarget)closeResume();});
+
+/* ===== INIT ===== */
+(async()=>{
+  if(!navigator.onLine){
+    document.querySelector('.loading-text').textContent='인터넷 연결을 확인해주세요.';
+    setTimeout(()=>{hideLoading();showPage('page-login');},2000);
+    return;
+  }
+  try{
+    // Supabase 슬립 모드 깨우기 (가벼운 요청 먼저)
+    document.querySelector('.loading-text').textContent='서버에 연결 중...';
+    await sb.from('users').select('id').limit(1);
+    // 전체 데이터 로드
+    document.querySelector('.loading-text').textContent='데이터 불러오는 중...';
+    await loadAll();
+    const saved=localStorage.getItem('lms_sess');
+    if(saved){
+      try{
+        const{id,role}=JSON.parse(saved);
+        const user=db.users.find(u=>u.id===id&&u.role===role&&u.status!=='pending');
+        if(user){session=user;hideLoading();if(role==='teacher')launchTeacher();else launchStudent();return;}
+      }catch(e){}
+      localStorage.removeItem('lms_sess');
+    }
+  }catch(e){
+    console.error(e);
+    document.querySelector('.loading-text').textContent='서버 연결 실패. 새로고침해주세요.';
+    setTimeout(()=>{hideLoading();showPage('page-login');},2500);
+    return;
+  }
+  hideLoading();showPage('page-login');
+})();
+</script>
+</body>
+</html>
