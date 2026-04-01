@@ -590,42 +590,41 @@ input,button{font-family:var(--font)}
 
 <!-- Q&A 질문 모달 -->
 <div class="modal-bg" id="modal-qa">
-  <div class="modal" style="max-width:480px">
-    <div class="modal-head">
+  <div class="modal" style="max-width:520px;display:flex;flex-direction:column;max-height:90vh">
+    <div class="modal-head" style="flex-shrink:0">
       <div>
         <h3 id="qa-modal-num">문제 질문</h3>
         <div style="font-size:11px;color:var(--text2);margin-top:2px" id="qa-modal-context"></div>
       </div>
       <button class="modal-close" onclick="closeQaModal()">×</button>
     </div>
-    <div class="modal-body">
-      <div id="qa-ask-area">
-        <div class="flabel">어떤 부분이 헷갈리나요?</div>
-        <textarea id="qa-q-text" class="form-input" style="height:90px;resize:none" placeholder="예: 왜 2번 선지가 틀린지 이해가 안 돼요"></textarea>
-        <div style="height:10px"></div>
-        <div class="flabel">문제 사진 <span style="color:var(--text3);text-transform:none;font-weight:400">(선택)</span></div>
-        <div id="qa-upload-box" onclick="document.getElementById('qa-img-input').click()" style="border:1px dashed var(--border2);border-radius:var(--radius-sm);padding:14px;text-align:center;cursor:pointer;color:var(--text3);font-size:13px;margin-bottom:12px">📷 사진을 눌러 첨부</div>
-        <input type="file" id="qa-img-input" accept="image/*" style="display:none" onchange="qaPreviewImg(event)">
-        <img id="qa-img-preview" style="width:100%;border-radius:var(--radius-sm);margin-bottom:12px;display:none" alt="">
-        <button class="btn blue" style="width:100%;padding:11px" onclick="submitQaQuestion()">질문 제출</button>
+    <!-- 대화 히스토리 -->
+    <div id="qa-chat-history" style="flex:1;overflow-y:auto;padding:1rem 1.5rem;display:flex;flex-direction:column;gap:12px;min-height:120px"></div>
+    <!-- 로딩 -->
+    <div id="qa-loading-area" style="display:none;text-align:center;padding:1rem 1.5rem">
+      <div style="display:flex;align-items:center;gap:8px;justify-content:center">
+        <div class="spinner" style="width:18px;height:18px;border-width:2px"></div>
+        <div style="font-size:13px;color:var(--text2)" id="qa-loading-msg">AI가 답변을 생성하고 있어요...</div>
       </div>
-      <div id="qa-loading-area" style="display:none;text-align:center;padding:2rem">
-        <div class="spinner" style="margin:0 auto 12px"></div>
-        <div style="font-size:13px;color:var(--text2)" id="qa-loading-msg">AI가 해설지를 읽고 답변을 생성하고 있어요...</div>
-      </div>
-      <div id="qa-answer-area" style="display:none">
-        <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:14px;margin-bottom:12px">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-            <span id="qa-ans-badge" class="badge done">AI 답변</span>
-          </div>
-          <div id="qa-ans-body" style="font-size:13px;line-height:1.75;white-space:pre-wrap;color:var(--text)"></div>
-          <div id="qa-teacher-note" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
-            <div style="font-size:11px;color:var(--teal);font-weight:600;margin-bottom:4px">선생님 보충</div>
-            <div id="qa-teacher-note-text" style="font-size:13px;color:var(--text);line-height:1.7"></div>
-          </div>
+    </div>
+    <!-- 입력창 -->
+    <div id="qa-input-area" style="flex-shrink:0;padding:1rem 1.5rem;border-top:1px solid var(--border)">
+      <div style="display:flex;gap:8px;align-items:flex-end">
+        <textarea id="qa-q-text" class="form-input" style="flex:1;height:70px;resize:none;font-size:13px" placeholder="질문을 입력하세요..."></textarea>
+        <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+          <button onclick="document.getElementById('qa-img-input').click()" style="padding:8px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg2);cursor:pointer;font-size:16px" title="사진 첨부">📷</button>
+          <button class="btn blue" style="padding:8px 14px;font-size:13px;white-space:nowrap" onclick="submitQaQuestion()">전송</button>
         </div>
-        <button class="btn" style="width:100%" onclick="closeQaModal()">닫기</button>
       </div>
+      <input type="file" id="qa-img-input" accept="image/*" style="display:none" onchange="qaPreviewImg(event)">
+      <img id="qa-img-preview" style="width:100%;border-radius:var(--radius-sm);margin-top:8px;display:none" alt="">
+    </div>
+    <!-- 검토 대기 상태 -->
+    <div id="qa-pending-area" style="display:none;flex-shrink:0;padding:1rem 1.5rem;border-top:1px solid var(--border)">
+      <div style="background:var(--amber-bg);border:1px solid rgba(245,158,11,.3);border-radius:var(--radius-sm);padding:12px;font-size:13px;color:var(--amber);text-align:center">
+        선생님이 검토 후 답변드릴게요
+      </div>
+      <button class="btn" style="width:100%;margin-top:8px" onclick="closeQaModal()">닫기</button>
     </div>
   </div>
 </div>
@@ -1857,15 +1856,23 @@ function openQaModal(probNum) {
   const week = qaDb.weeks.find(w => w.id === qaState.week);
   document.getElementById('qa-modal-num').textContent = probNum + '번 문제';
   document.getElementById('qa-modal-context').textContent = [school?.name, week?.name].filter(Boolean).join(' · ');
-  document.getElementById('qa-ask-area').style.display = 'block';
+
+  // 초기화
+  qaChatHistory = [];
+  document.getElementById('qa-chat-history').innerHTML = '';
   document.getElementById('qa-loading-area').style.display = 'none';
-  document.getElementById('qa-answer-area').style.display = 'none';
+  document.getElementById('qa-input-area').style.display = 'block';
+  document.getElementById('qa-pending-area').style.display = 'none';
   document.getElementById('qa-q-text').value = '';
+  document.getElementById('qa-q-text').placeholder = '예: 왜 2번 선지가 틀린지 이해가 안 돼요';
   document.getElementById('qa-img-preview').style.display = 'none';
   document.getElementById('qa-img-input').value = '';
 
+  // 기존 답변 있으면 채팅으로 표시
   const existQ = session ? qaDb.questions.find(q => q.week_id === qaState.week && q.prob_num === probNum && q.student_id === session.id) : null;
-  if (existQ) existQ.status === 'answered' ? showQaAnswer(existQ) : showQaPending();
+  if (existQ) {
+    existQ.status === 'answered' ? showQaAnswer(existQ) : showQaPending();
+  }
 
   document.getElementById('modal-qa').classList.add('show');
 }
@@ -1878,35 +1885,83 @@ function openQaModalFromHistory(qid) {
   const week = qaDb.weeks.find(w => w.id === q.week_id);
   document.getElementById('qa-modal-num').textContent = q.prob_num + '번 문제';
   document.getElementById('qa-modal-context').textContent = [school?.name, week?.name].filter(Boolean).join(' · ');
-  document.getElementById('qa-ask-area').style.display = 'block';
+  qaChatHistory = [];
+  document.getElementById('qa-chat-history').innerHTML = '';
   document.getElementById('qa-loading-area').style.display = 'none';
-  document.getElementById('qa-answer-area').style.display = 'none';
+  document.getElementById('qa-pending-area').style.display = 'none';
+  document.getElementById('qa-img-preview').style.display = 'none';
   q.status === 'answered' ? showQaAnswer(q) : showQaPending();
   document.getElementById('modal-qa').classList.add('show');
 }
 
 function showQaAnswer(q) {
-  document.getElementById('qa-ask-area').style.display = 'none';
-  document.getElementById('qa-answer-area').style.display = 'block';
-  const badge = document.getElementById('qa-ans-badge');
-  badge.textContent = q.badge === 'teacher' ? '선생님 답변' : 'AI 답변';
-  badge.className = 'badge ' + (q.badge === 'teacher' ? 'review' : 'done');
-  document.getElementById('qa-ans-body').textContent = q.ai_answer;
-  const note = document.getElementById('qa-teacher-note');
-  if (q.teacher_note) { note.style.display='block'; document.getElementById('qa-teacher-note-text').textContent = q.teacher_note; }
-  else note.style.display = 'none';
+// ── 대화 히스토리 (문제당 메모리) ─────────────────
+let qaChatHistory = []; // {role:'user'|'assistant', content:'...'}
+
+function addChatBubble(role, text, badge) {
+  const hist = document.getElementById('qa-chat-history');
+  const isUser = role === 'user';
+  const div = document.createElement('div');
+  div.style.cssText = `display:flex;flex-direction:column;align-items:${isUser ? 'flex-end' : 'flex-start'};gap:4px`;
+  if (!isUser && badge) {
+    const b = document.createElement('span');
+    b.className = 'badge ' + (badge === 'teacher' ? 'review' : 'done');
+    b.textContent = badge === 'teacher' ? '선생님 답변' : 'AI 답변';
+    b.style.marginLeft = '4px';
+    div.appendChild(b);
+  }
+  const bubble = document.createElement('div');
+  bubble.style.cssText = `max-width:85%;padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.75;white-space:pre-wrap;word-break:break-word;` +
+    (isUser
+      ? 'background:var(--accent);color:#fff;border-bottom-right-radius:4px'
+      : 'background:var(--bg3);color:var(--text);border-bottom-left-radius:4px');
+  bubble.textContent = text;
+  div.appendChild(bubble);
+  hist.appendChild(div);
+  hist.scrollTop = hist.scrollHeight;
+}
+
+function addTeacherNoteBubble(note) {
+  const hist = document.getElementById('qa-chat-history');
+  const div = document.createElement('div');
+  div.style.cssText = 'display:flex;flex-direction:column;align-items:flex-start;gap:4px';
+  const label = document.createElement('span');
+  label.style.cssText = 'font-size:11px;color:var(--teal);font-weight:600;margin-left:4px';
+  label.textContent = '선생님 보충';
+  const bubble = document.createElement('div');
+  bubble.style.cssText = 'max-width:85%;padding:10px 14px;border-radius:12px;border-bottom-left-radius:4px;font-size:13px;line-height:1.75;background:rgba(20,184,166,0.1);color:var(--teal);border:1px solid rgba(20,184,166,0.25)';
+  bubble.textContent = note;
+  div.appendChild(label); div.appendChild(bubble);
+  hist.appendChild(div);
+  hist.scrollTop = hist.scrollHeight;
+}
+
+function showQaAnswer(q) {
+  document.getElementById('qa-chat-history').innerHTML = '';
+  qaChatHistory = [];
+  addChatBubble('user', q.question);
+  addChatBubble('assistant', q.ai_answer, q.badge || 'ai');
+  if (q.teacher_note) addTeacherNoteBubble(q.teacher_note);
+  qaChatHistory.push({ role: 'user', content: q.question });
+  qaChatHistory.push({ role: 'assistant', content: q.ai_answer });
+  document.getElementById('qa-input-area').style.display = 'block';
+  document.getElementById('qa-pending-area').style.display = 'none';
+  document.getElementById('qa-q-text').value = '';
+  document.getElementById('qa-q-text').placeholder = '추가로 궁금한 점을 입력하세요...';
 }
 
 function showQaPending() {
-  document.getElementById('qa-ask-area').style.display = 'none';
-  document.getElementById('qa-answer-area').style.display = 'block';
-  document.getElementById('qa-ans-badge').textContent = '검토 중';
-  document.getElementById('qa-ans-badge').className = 'badge partial';
-  document.getElementById('qa-ans-body').textContent = '질문이 접수됐어요. 선생님이 검토 후 답변드릴게요.';
-  document.getElementById('qa-teacher-note').style.display = 'none';
+  document.getElementById('qa-input-area').style.display = 'none';
+  document.getElementById('qa-pending-area').style.display = 'block';
 }
 
-function closeQaModal() { document.getElementById('modal-qa').classList.remove('show'); }
+function closeQaModal() {
+  document.getElementById('modal-qa').classList.remove('show');
+  qaChatHistory = [];
+  document.getElementById('qa-chat-history').innerHTML = '';
+  document.getElementById('qa-img-preview').style.display = 'none';
+  document.getElementById('qa-img-input').value = '';
+}
 
 function qaPreviewImg(e) {
   const file = e.target.files[0]; if (!file) return;
@@ -1920,30 +1975,44 @@ async function submitQaQuestion() {
   if (!text) { notify('질문 내용을 입력하세요.', 'error'); return; }
   if (!qaState.week || !session) { notify('오류: 주차 또는 로그인 상태를 확인하세요.', 'error'); return; }
   const week = qaDb.weeks.find(w => w.id === qaState.week);
-
-  document.getElementById('qa-ask-area').style.display = 'none';
-  document.getElementById('qa-loading-area').style.display = 'block';
-
+  const school = qaDb.schools.find(s => s.id === qaState.school);
   const hasSol = !!(week && week.sol_text);
-  document.getElementById('qa-loading-msg').textContent = hasSol
-    ? 'AI가 해설지를 읽고 답변을 생성하고 있어요...'
-    : 'AI가 답변을 생성하고 있어요...';
+  const isFollowUp = qaChatHistory.length > 0;
+
+  // 사용자 말풍선 추가
+  addChatBubble('user', text);
+  document.getElementById('qa-q-text').value = '';
+  document.getElementById('qa-img-preview').style.display = 'none';
+
+  document.getElementById('qa-loading-area').style.display = 'block';
+  document.getElementById('qa-loading-msg').textContent = hasSol ? 'AI가 해설지를 읽고 답변을 생성하고 있어요...' : 'AI가 답변을 생성하고 있어요...';
 
   let aiAnswer = '';
   try {
-    const school = qaDb.schools.find(s => s.id === qaState.school);
-
-    // ── API 키가 없으면 데모 답변 ──
     if (!CLAUDE_API_KEY) {
-      await new Promise(r => setTimeout(r, 1500));
-      aiAnswer = `[데모 모드] ${qaState.prob}번 문제 답변입니다.\n\n` +
-        (hasSol
-          ? `해설지를 기반으로 답변드립니다. 이 문제의 핵심은 지문의 중심 논지를 파악하는 것입니다. 선지를 지문의 근거 문장과 직접 비교하며 오답을 소거하는 방법을 추천드립니다.\n\n실제 서비스에서는 Claude API 키를 설정하면 해설지 전체를 읽고 정확한 답변이 제공됩니다.`
-          : `해설지가 등록되지 않아 일반 국어 지식으로 답변드립니다. 선생님이 검토 후 보충 설명을 추가해드릴 예정입니다.\n\nAPI 키를 설정하면 실제 AI 답변이 제공됩니다.`
-        );
+      await new Promise(r => setTimeout(r, 1200));
+      aiAnswer = isFollowUp
+        ? `추가 질문에 답변드릴게요.\n\n${text}에 대해 더 자세히 설명드리면, 이 부분은 지문의 핵심 논거와 연결됩니다. API 키를 설정하면 실제 AI 답변이 제공됩니다.`
+        : `[데모 모드] ${qaState.prob}번 문제 답변입니다.\n\n해설지를 기반으로 답변드립니다. API 키를 설정하면 실제 답변이 제공됩니다.`;
     } else {
-      const systemPrompt = `당신은 국어 전문 선생님 보조 AI입니다. 학생의 질문에 친절하고 명확하게 답변해주세요.
-${hasSol ? `\n[해설지 전문]\n${week.sol_text}\n\n위 해설지를 기반으로 ${qaState.prob}번 문제를 중심으로 답변하세요.` : '해설지가 없으니 국어 일반 지식으로 답변하세요.'}`;
+      // 꼼꼼한 수능 국어 전문 강사 프롬프트
+      const systemPrompt = `당신은 수능 국어를 20년 이상 가르친 베테랑 강사입니다. 학생의 질문에 다음 원칙을 반드시 따라 답변하세요.
+
+[답변 원칙]
+1. 학생이 헷갈리는 핵심 포인트를 정확히 짚어주세요
+2. 왜 정답이 정답인지 지문 근거를 들어 설명하세요
+3. 오답 선지가 왜 틀렸는지도 하나씩 짚어주세요
+4. 어려운 개념은 쉬운 말로 풀어서 설명하세요
+5. 마지막에 "핵심 정리"를 한두 줄로 마무리하세요
+6. 친근하고 따뜻한 선생님 말투로 설명하세요
+7. 추가 질문이 있으면 언제든 물어보라고 격려해주세요
+
+${hasSol ? `[해설지 전문]\n${week.sol_text}\n\n위 해설지를 반드시 참고하여 ${qaState.prob}번 문제 위주로 답변하세요.` : '해설지가 없으니 수능 국어 전문 지식으로 성실히 답변하세요.'}`;
+
+      // 이전 대화 히스토리 포함
+      const messages = isFollowUp
+        ? [...qaChatHistory, { role: 'user', content: text }]
+        : [{ role: 'user', content: `[학교: ${school?.name}] [${week?.name}] [${qaState.prob}번 문제]\n\n${text}` }];
 
       const res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
@@ -1955,9 +2024,9 @@ ${hasSol ? `\n[해설지 전문]\n${week.sol_text}\n\n위 해설지를 기반으
         },
         body: JSON.stringify({
           model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
+          max_tokens: 1500,
           system: systemPrompt,
-          messages: [{ role: 'user', content: `[학교: ${school?.name}] [${week?.name}] [${qaState.prob}번 문제]\n\n${text}` }]
+          messages
         })
       });
       const data = await res.json();
@@ -1967,31 +2036,33 @@ ${hasSol ? `\n[해설지 전문]\n${week.sol_text}\n\n위 해설지를 기반으
     aiAnswer = '답변 생성 중 오류가 발생했습니다. 선생님이 직접 확인해드릴게요.';
   }
 
-  const newQ = {
-    id: 'q_' + Date.now(),
-    school_id: qaState.school, week_id: qaState.week,
-    prob_num: qaState.prob, student_id: session.id,
-    question: text, ai_answer: aiAnswer, teacher_note: '',
-    status: hasSol ? 'answered' : 'pending',
-    badge: hasSol ? 'ai' : 'pending',
-    created_at: new Date().toISOString()
-  };
-
-  // 기존 질문 교체
-  qaDb.questions = qaDb.questions.filter(q => !(q.week_id === qaState.week && q.prob_num === qaState.prob && q.student_id === session.id));
-  qaDb.questions.unshift(newQ);
-
-  await sb.from('qa_questions').upsert(newQ, { onConflict: 'week_id,prob_num,student_id' });
+  // 대화 히스토리 업데이트
+  qaChatHistory.push({ role: 'user', content: text });
+  qaChatHistory.push({ role: 'assistant', content: aiAnswer });
 
   document.getElementById('qa-loading-area').style.display = 'none';
-  if (newQ.status === 'answered') {
-    showQaAnswer(newQ);
-    notify('답변이 생성됐어요!', 'success');
-  } else {
-    showQaPending();
-    notify('질문이 제출됐어요.', 'info');
+  addChatBubble('assistant', aiAnswer, 'ai');
+
+  // DB 저장 (첫 질문만 저장, 추가 질문은 히스토리로만)
+  if (!isFollowUp) {
+    const newQ = {
+      id: 'q_' + Date.now(),
+      school_id: qaState.school, week_id: qaState.week,
+      prob_num: qaState.prob, student_id: session.id,
+      question: text, ai_answer: aiAnswer, teacher_note: '',
+      status: hasSol ? 'answered' : 'pending',
+      badge: hasSol ? 'ai' : 'pending',
+      created_at: new Date().toISOString()
+    };
+    qaDb.questions = qaDb.questions.filter(q => !(q.week_id === qaState.week && q.prob_num === qaState.prob && q.student_id === session.id));
+    qaDb.questions.unshift(newQ);
+    await sb.from('qa_questions').upsert(newQ, { onConflict: 'week_id,prob_num,student_id' });
+    if (!hasSol) { showQaPending(); return; }
+    renderSQaProbGrid(); renderSQaMyList();
   }
-  renderSQaProbGrid(); renderSQaMyList();
+  document.getElementById('qa-input-area').style.display = 'block';
+  document.getElementById('qa-q-text').placeholder = '추가로 궁금한 점을 입력하세요...';
+  document.getElementById('qa-q-text').focus();
 }
 
 // ── tNav / sNav Q&A 훅 ────────────────────────────
