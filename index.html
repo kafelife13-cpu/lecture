@@ -15,7 +15,209 @@
   first.parentNode.insertBefore(tag,first);
 })();
 </script>
-<style>:root{ --bg:#0f1117;--bg2:#181c27;--bg3:#1e2333;--card:#242938; --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14); --text:#e8eaf0;--text2:#8b90a0;--text3:#555c70; --accent:#4f7cff;--accent2:#3d63e0; --green:#22c55e;--green-bg:rgba(34,197,94,0.1); --amber:#f59e0b;--amber-bg:rgba(245,158,11,0.1); --red:#ef4444;--red-bg:rgba(239,68,68,0.1); --purple:#a78bfa;--purple-bg:rgba(167,139,250,0.1); --teal:#14b8a6;--teal-bg:rgba(20,184,166,0.1); --radius:12px;--radius-sm:8px; --font:'Noto Sans KR',sans-serif;--mono:'DM Mono',monospace; } *{box-sizing:border-box;margin:0;padding:0} body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.6} input,button{font-family:var(--font)} ::-webkit-scrollbar{width:4px;height:4px} ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px} #loading-screen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:16px;transition:opacity 0.3s} #loading-screen.hide{opacity:0;pointer-events:none} .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite} @keyframes spin{to{transform:rotate(360deg)}} .loading-text{font-size:13px;color:var(--text2)} .page{display:none;min-height:100vh;flex-direction:column} .page.active{display:flex} #page-login{align-items:center;justify-content:center;background:var(--bg)} .login-wrap{width:100%;max-width:400px;padding:2rem} .login-logo{text-align:center;margin-bottom:2rem} .login-logo-icon{width:52px;height:52px;background:var(--accent);border-radius:14px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:.75rem} .login-logo-icon svg{width:26px;height:26px;fill:white} .login-logo h1{font-size:19px;font-weight:700;letter-spacing:-.5px} .login-logo p{font-size:13px;color:var(--text2);margin-top:3px} .login-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.75rem} .form-group{margin-bottom:.875rem} .form-group label{display:block;font-size:11px;font-weight:500;color:var(--text2);margin-bottom:5px;letter-spacing:.5px;text-transform:uppercase} .form-input{width:100%;padding:9px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:14px;transition:border-color .2s} .form-input:focus{outline:none;border-color:var(--accent)} .form-input::placeholder{color:var(--text3)} .form-select{width:100%;padding:9px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:14px;cursor:pointer} .form-select:focus{outline:none;border-color:var(--accent)} .role-tabs{display:flex;gap:8px;margin-bottom:1.25rem} .role-tab{flex:1;padding:8px;border:1px solid var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--text2);font-size:13px;cursor:pointer;transition:all .2s} .role-tab.active{background:var(--accent);border-color:var(--accent);color:white;font-weight:500} .btn-primary{width:100%;padding:10px;background:var(--accent);border:none;border-radius:var(--radius-sm);color:white;font-size:14px;font-weight:500;cursor:pointer;transition:background .2s} .btn-primary:hover{background:var(--accent2)} .btn-primary:disabled{opacity:.5;cursor:not-allowed} .err-msg{font-size:12px;color:var(--red);margin-top:8px;text-align:center;min-height:16px} .login-switch{text-align:center;margin-top:1rem;font-size:13px;color:var(--text2)} .login-switch a{color:var(--accent);cursor:pointer;font-weight:500} .app-layout{display:flex;flex:1;min-height:0} .sidebar{width:220px;min-height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0} .sidebar-logo{padding:1.25rem 1.25rem 1rem;border-bottom:1px solid var(--border)} .sidebar-logo h2{font-size:14px;font-weight:700;letter-spacing:-.3px} .sidebar-logo span{font-size:11px;color:var(--text2)} .sidebar-user{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px} .avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0} .avatar.teacher{background:var(--purple-bg);color:var(--purple)} .avatar.student{background:rgba(79,124,255,.15);color:var(--accent)} .sidebar-user-info p{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .sidebar-nav{flex:1;padding:.75rem 0} .nav-item{display:flex;align-items:center;gap:10px;padding:9px 1.25rem;cursor:pointer;transition:all .15s;color:var(--text2);font-size:13px;user-select:none} .nav-item svg{width:16px;height:16px;flex-shrink:0;fill:currentColor} .nav-item:hover{background:rgba(255,255,255,.04);color:var(--text)} .nav-item.active{background:rgba(79,124,255,.1);color:var(--accent)} .nav-item.active svg{fill:var(--accent)} .sidebar-footer{padding:1rem 1.25rem;border-top:1px solid var(--border)} .btn-logout{width:100%;padding:8px;background:transparent;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:12px;cursor:pointer;transition:all .2s} .btn-logout:hover{border-color:var(--red);color:var(--red)} .main{flex:1;overflow-y:auto} .main-inner{padding:2rem;max-width:1000px} .page-header{margin-bottom:1.75rem} .page-header h1{font-size:20px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px} .page-header p{font-size:13px;color:var(--text2)} .panel{display:none} .panel.active{display:block} .stats-row{display:grid;gap:12px;margin-bottom:1.5rem} .stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem} .stat-label{font-size:11px;color:var(--text2);font-weight:500;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px} .stat-val{font-size:24px;font-weight:700;letter-spacing:-1px} .stat-val.green{color:var(--green)} .stat-val.amber{color:var(--amber)} .stat-val.blue{color:var(--accent)} .stat-val.purple{color:var(--purple)} .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:1rem} .card-head{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between} .card-head h3{font-size:13px;font-weight:600} .card-body{padding:1.25rem} .tbl{width:100%;border-collapse:collapse;font-size:13px} .tbl th{text-align:left;padding:8px 12px;color:var(--text2);font-weight:400;font-size:12px;border-bottom:1px solid var(--border);background:var(--bg2)} .tbl td{padding:10px 12px;border-bottom:1px solid var(--border)} .tbl tr:last-child td{border-bottom:none} .tbl tr:hover td{background:rgba(255,255,255,.02)} .badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:500} .badge.done{background:var(--green-bg);color:var(--green)} .badge.partial{background:var(--amber-bg);color:var(--amber)} .badge.none{background:rgba(255,255,255,.05);color:var(--text3)} .badge.teacher-role{background:var(--purple-bg);color:var(--purple)} .badge.student-role{background:rgba(79,124,255,.12);color:var(--accent)} .badge.review{background:var(--teal-bg);color:var(--teal)} .badge.normal{background:rgba(79,124,255,.12);color:var(--accent)} .pbar{width:100%;height:5px;background:var(--bg2);border-radius:3px;overflow:hidden} .pbar-fill{height:100%;border-radius:3px;transition:width .4s} .btn{padding:6px 13px;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;color:var(--text);font-size:12px;cursor:pointer;transition:all .15s;font-weight:500} .btn:hover{background:rgba(255,255,255,.06);border-color:var(--border2)} .btn:disabled{opacity:.4;cursor:not-allowed} .btn.blue{background:var(--accent);border-color:var(--accent);color:white} .btn.blue:hover{background:var(--accent2)} .btn.red{color:var(--red);border-color:rgba(239,68,68,.3)} .btn.red:hover{background:var(--red-bg);border-color:var(--red)} .btn.green{background:var(--green);border-color:var(--green);color:#071a0e} .btn.teal{background:var(--teal);border-color:var(--teal);color:#071a1a} .btn.amber{background:var(--amber);border-color:var(--amber);color:#1a0e00} .btn-sm{padding:3px 9px;font-size:11px} .video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px} .video-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .2s} .video-card:hover{border-color:var(--border2)} .video-card.review-card{border-color:rgba(20,184,166,.3)} .video-thumb{width:100%;aspect-ratio:16/9;background:var(--bg3);position:relative;overflow:hidden} .video-thumb img{width:100%;height:100%;object-fit:cover;display:block} .thumb-fb{position:absolute;inset:0;display:flex;align-items:center;justify-content:center} .yt-icon{width:42px;height:42px;background:#ff0000;border-radius:50%;display:flex;align-items:center;justify-content:center} .yt-icon svg{width:18px;height:18px;fill:white;margin-left:2px} .lecture-item{display:flex;align-items:center;gap:14px;padding:14px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;transition:border-color .2s} .lecture-item:hover{border-color:var(--border2)} .lecture-item.review-item{border-color:rgba(20,184,166,.25);background:rgba(20,184,166,.03)} .lecture-item.locked{opacity:.6} .lecture-thumb{width:88px;height:50px;border-radius:6px;background:var(--bg3);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden} .lecture-thumb img{width:100%;height:100%;object-fit:cover} .lecture-body{flex:1;min-width:0} .lecture-body h4{font-size:13px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .lmeta{font-size:11px;color:var(--text2);margin-bottom:6px} .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:1000;align-items:center;justify-content:center;padding:1rem} .modal-bg.show{display:flex} .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto} .modal-head{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between} .modal-head h3{font-size:15px;font-weight:700} .modal-close{background:transparent;border:none;color:var(--text2);cursor:pointer;font-size:20px;line-height:1;padding:2px 6px;border-radius:4px} .modal-close:hover{color:var(--text);background:rgba(255,255,255,.08)} .modal-body{padding:1.5rem} .modal-footer{padding:1rem 1.5rem;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end} .player-modal{max-width:700px} .player-wrap{width:100%;aspect-ratio:16/9;background:#000;border-radius:var(--radius-sm);overflow:hidden;margin-bottom:1rem} .player-wrap>div{width:100%;height:100%} .tracking-bar{background:var(--bg3);border-radius:var(--radius-sm);padding:1rem} .track-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px} .track-title{font-size:12px;font-weight:600;color:var(--text2);display:flex;align-items:center;gap:6px} .live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);transition:opacity .3s} @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}} .live-dot.active{animation:pulse 1.2s infinite} .track-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px} .track-stat{background:var(--bg2);border-radius:var(--radius-sm);padding:8px;text-align:center} .track-stat-val{font-size:15px;font-weight:700} .track-stat-val.green{color:var(--green)} .track-stat-lbl{font-size:10px;color:var(--text2);margin-top:1px} .prog-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);flex-wrap:wrap} .prog-row:last-child{border-bottom:none} .prog-name{font-size:13px;font-weight:500;min-width:80px} .prog-bar-wrap{flex:1;min-width:80px} .prog-pct{font-size:12px;font-weight:600;min-width:34px;text-align:right} .prog-pct.green{color:var(--green)} .prog-pct.amber{color:var(--amber)} .prog-pct.muted{color:var(--text3)} .dot-grid{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px} .dot{width:18px;height:18px;border-radius:4px;cursor:pointer;transition:transform .1s;display:inline-block} .dot:hover{transform:scale(1.25)} .dot.done{background:var(--green)} .dot.partial{background:var(--amber)} .dot.none{background:var(--bg3);border:1px solid var(--border)} .empty{text-align:center;padding:3rem 1rem;color:var(--text2)} .empty svg{width:36px;height:36px;fill:var(--text3);margin:0 auto 1rem;display:block} .notif{position:fixed;top:1.25rem;right:1.25rem;z-index:9999;background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;box-shadow:0 8px 32px rgba(0,0,0,.4);transform:translateY(-10px);opacity:0;transition:all .3s;pointer-events:none;max-width:300px} .notif.show{transform:translateY(0);opacity:1} .notif.success{border-left:3px solid var(--green)} .notif.error{border-left:3px solid var(--red)} .notif.info{border-left:3px solid var(--accent)} .tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;background:rgba(79,124,255,.1);color:var(--accent);font-weight:500} .tag.green{background:var(--green-bg);color:var(--green)} .tag.teal{background:var(--teal-bg);color:var(--teal)} .time-badge{display:inline-flex;align-items:center;padding:2px 6px;border-radius:4px;font-size:11px;background:rgba(34,197,94,.08);color:var(--green);font-family:var(--mono)} .frow{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap} .flabel{font-size:11px;color:var(--text2);font-weight:500;letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px;display:block}  .access-row{display:flex;align-items:center;gap:10px;padding:10px 1.25rem;border-bottom:1px solid var(--border)} .access-row:last-child{border-bottom:none}  .section-divider{display:flex;align-items:center;gap:12px;margin:1.5rem 0 1rem} .section-divider-line{flex:1;height:1px;background:var(--border)} .section-divider-label{font-size:12px;font-weight:600;color:var(--text2);white-space:nowrap;display:flex;align-items:center;gap:6px}  @media(max-width:700px){ .sidebar{display:none} .stats-row{grid-template-columns:repeat(2,1fr)!important} .video-grid{grid-template-columns:1fr} .main-inner{padding:1rem 1rem 80px} .mobile-tabbar{display:flex!important} } .mobile-tabbar{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);z-index:500;height:60px;overflow-x:auto} .mobile-tab{flex-shrink:0;min-width:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--text2);font-size:10px;font-weight:500;transition:color .15s;padding:8px 4px;border:none;background:transparent;font-family:var(--font)} .mobile-tab svg{width:20px;height:20px;fill:currentColor} .mobile-tab.active{color:var(--accent)} .mobile-tab.active svg{fill:var(--accent)}</style>
+<style>
+:root{
+  --bg:#0f1117;--bg2:#181c27;--bg3:#1e2333;--card:#242938;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --text:#e8eaf0;--text2:#8b90a0;--text3:#555c70;
+  --accent:#4f7cff;--accent2:#3d63e0;
+  --green:#22c55e;--green-bg:rgba(34,197,94,0.1);
+  --amber:#f59e0b;--amber-bg:rgba(245,158,11,0.1);
+  --red:#ef4444;--red-bg:rgba(239,68,68,0.1);
+  --purple:#a78bfa;--purple-bg:rgba(167,139,250,0.1);
+  --teal:#14b8a6;--teal-bg:rgba(20,184,166,0.1);
+  --radius:12px;--radius-sm:8px;
+  --font:'Noto Sans KR',sans-serif;--mono:'DM Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.6}
+input,button{font-family:var(--font)}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+#loading-screen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:16px;transition:opacity 0.3s}
+#loading-screen.hide{opacity:0;pointer-events:none}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:13px;color:var(--text2)}
+.page{display:none;min-height:100vh;flex-direction:column}
+.page.active{display:flex}
+#page-login{align-items:center;justify-content:center;background:var(--bg)}
+.login-wrap{width:100%;max-width:400px;padding:2rem}
+.login-logo{text-align:center;margin-bottom:2rem}
+.login-logo-icon{width:52px;height:52px;background:var(--accent);border-radius:14px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:.75rem}
+.login-logo-icon svg{width:26px;height:26px;fill:white}
+.login-logo h1{font-size:19px;font-weight:700;letter-spacing:-.5px}
+.login-logo p{font-size:13px;color:var(--text2);margin-top:3px}
+.login-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.75rem}
+.form-group{margin-bottom:.875rem}
+.form-group label{display:block;font-size:11px;font-weight:500;color:var(--text2);margin-bottom:5px;letter-spacing:.5px;text-transform:uppercase}
+.form-input{width:100%;padding:9px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:14px;transition:border-color .2s}
+.form-input:focus{outline:none;border-color:var(--accent)}
+.form-input::placeholder{color:var(--text3)}
+.form-select{width:100%;padding:9px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:14px;cursor:pointer}
+.form-select:focus{outline:none;border-color:var(--accent)}
+.role-tabs{display:flex;gap:8px;margin-bottom:1.25rem}
+.role-tab{flex:1;padding:8px;border:1px solid var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--text2);font-size:13px;cursor:pointer;transition:all .2s}
+.role-tab.active{background:var(--accent);border-color:var(--accent);color:white;font-weight:500}
+.btn-primary{width:100%;padding:10px;background:var(--accent);border:none;border-radius:var(--radius-sm);color:white;font-size:14px;font-weight:500;cursor:pointer;transition:background .2s}
+.btn-primary:hover{background:var(--accent2)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+.err-msg{font-size:12px;color:var(--red);margin-top:8px;text-align:center;min-height:16px}
+.login-switch{text-align:center;margin-top:1rem;font-size:13px;color:var(--text2)}
+.login-switch a{color:var(--accent);cursor:pointer;font-weight:500}
+.app-layout{display:flex;flex:1;min-height:0}
+.sidebar{width:220px;min-height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-logo{padding:1.25rem 1.25rem 1rem;border-bottom:1px solid var(--border)}
+.sidebar-logo h2{font-size:14px;font-weight:700;letter-spacing:-.3px}
+.sidebar-logo span{font-size:11px;color:var(--text2)}
+.sidebar-user{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.avatar.teacher{background:var(--purple-bg);color:var(--purple)}
+.avatar.student{background:rgba(79,124,255,.15);color:var(--accent)}
+.sidebar-user-info p{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-nav{flex:1;padding:.75rem 0}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 1.25rem;cursor:pointer;transition:all .15s;color:var(--text2);font-size:13px;user-select:none}
+.nav-item svg{width:16px;height:16px;flex-shrink:0;fill:currentColor}
+.nav-item:hover{background:rgba(255,255,255,.04);color:var(--text)}
+.nav-item.active{background:rgba(79,124,255,.1);color:var(--accent)}
+.nav-item.active svg{fill:var(--accent)}
+.sidebar-footer{padding:1rem 1.25rem;border-top:1px solid var(--border)}
+.btn-logout{width:100%;padding:8px;background:transparent;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:12px;cursor:pointer;transition:all .2s}
+.btn-logout:hover{border-color:var(--red);color:var(--red)}
+.main{flex:1;overflow-y:auto}
+.main-inner{padding:2rem;max-width:1000px}
+.page-header{margin-bottom:1.75rem}
+.page-header h1{font-size:20px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px}
+.page-header p{font-size:13px;color:var(--text2)}
+.panel{display:none}
+.panel.active{display:block}
+.stats-row{display:grid;gap:12px;margin-bottom:1.5rem}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem}
+.stat-label{font-size:11px;color:var(--text2);font-weight:500;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
+.stat-val{font-size:24px;font-weight:700;letter-spacing:-1px}
+.stat-val.green{color:var(--green)}
+.stat-val.amber{color:var(--amber)}
+.stat-val.blue{color:var(--accent)}
+.stat-val.purple{color:var(--purple)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:1rem}
+.card-head{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-head h3{font-size:13px;font-weight:600}
+.card-body{padding:1.25rem}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;padding:8px 12px;color:var(--text2);font-weight:400;font-size:12px;border-bottom:1px solid var(--border);background:var(--bg2)}
+.tbl td{padding:10px 12px;border-bottom:1px solid var(--border)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.02)}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:500}
+.badge.done{background:var(--green-bg);color:var(--green)}
+.badge.partial{background:var(--amber-bg);color:var(--amber)}
+.badge.none{background:rgba(255,255,255,.05);color:var(--text3)}
+.badge.teacher-role{background:var(--purple-bg);color:var(--purple)}
+.badge.student-role{background:rgba(79,124,255,.12);color:var(--accent)}
+.badge.review{background:var(--teal-bg);color:var(--teal)}
+.badge.normal{background:rgba(79,124,255,.12);color:var(--accent)}
+.pbar{width:100%;height:5px;background:var(--bg2);border-radius:3px;overflow:hidden}
+.pbar-fill{height:100%;border-radius:3px;transition:width .4s}
+.btn{padding:6px 13px;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;color:var(--text);font-size:12px;cursor:pointer;transition:all .15s;font-weight:500}
+.btn:hover{background:rgba(255,255,255,.06);border-color:var(--border2)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.blue{background:var(--accent);border-color:var(--accent);color:white}
+.btn.blue:hover{background:var(--accent2)}
+.btn.red{color:var(--red);border-color:rgba(239,68,68,.3)}
+.btn.red:hover{background:var(--red-bg);border-color:var(--red)}
+.btn.green{background:var(--green);border-color:var(--green);color:#071a0e}
+.btn.teal{background:var(--teal);border-color:var(--teal);color:#071a1a}
+.btn.amber{background:var(--amber);border-color:var(--amber);color:#1a0e00}
+.btn-sm{padding:3px 9px;font-size:11px}
+.video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.video-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .2s}
+.video-card:hover{border-color:var(--border2)}
+.video-card.review-card{border-color:rgba(20,184,166,.3)}
+.video-thumb{width:100%;aspect-ratio:16/9;background:var(--bg3);position:relative;overflow:hidden}
+.video-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb-fb{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.yt-icon{width:42px;height:42px;background:#ff0000;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.yt-icon svg{width:18px;height:18px;fill:white;margin-left:2px}
+.lecture-item{display:flex;align-items:center;gap:14px;padding:14px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;transition:border-color .2s}
+.lecture-item:hover{border-color:var(--border2)}
+.lecture-item.review-item{border-color:rgba(20,184,166,.25);background:rgba(20,184,166,.03)}
+.lecture-item.locked{opacity:.6}
+.lecture-thumb{width:88px;height:50px;border-radius:6px;background:var(--bg3);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.lecture-thumb img{width:100%;height:100%;object-fit:cover}
+.lecture-body{flex:1;min-width:0}
+.lecture-body h4{font-size:13px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lmeta{font-size:11px;color:var(--text2);margin-bottom:6px}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:1000;align-items:center;justify-content:center;padding:1rem}
+.modal-bg.show{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto}
+.modal-head{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-head h3{font-size:15px;font-weight:700}
+.modal-close{background:transparent;border:none;color:var(--text2);cursor:pointer;font-size:20px;line-height:1;padding:2px 6px;border-radius:4px}
+.modal-close:hover{color:var(--text);background:rgba(255,255,255,.08)}
+.modal-body{padding:1.5rem}
+.modal-footer{padding:1rem 1.5rem;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
+.player-modal{max-width:700px}
+.player-wrap{width:100%;aspect-ratio:16/9;background:#000;border-radius:var(--radius-sm);overflow:hidden;margin-bottom:1rem}
+.player-wrap>div{width:100%;height:100%}
+.tracking-bar{background:var(--bg3);border-radius:var(--radius-sm);padding:1rem}
+.track-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.track-title{font-size:12px;font-weight:600;color:var(--text2);display:flex;align-items:center;gap:6px}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);transition:opacity .3s}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.live-dot.active{animation:pulse 1.2s infinite}
+.track-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.track-stat{background:var(--bg2);border-radius:var(--radius-sm);padding:8px;text-align:center}
+.track-stat-val{font-size:15px;font-weight:700}
+.track-stat-val.green{color:var(--green)}
+.track-stat-lbl{font-size:10px;color:var(--text2);margin-top:1px}
+.prog-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.prog-row:last-child{border-bottom:none}
+.prog-name{font-size:13px;font-weight:500;min-width:80px}
+.prog-bar-wrap{flex:1;min-width:80px}
+.prog-pct{font-size:12px;font-weight:600;min-width:34px;text-align:right}
+.prog-pct.green{color:var(--green)}
+.prog-pct.amber{color:var(--amber)}
+.prog-pct.muted{color:var(--text3)}
+.dot-grid{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.dot{width:18px;height:18px;border-radius:4px;cursor:pointer;transition:transform .1s;display:inline-block}
+.dot:hover{transform:scale(1.25)}
+.dot.done{background:var(--green)}
+.dot.partial{background:var(--amber)}
+.dot.none{background:var(--bg3);border:1px solid var(--border)}
+.empty{text-align:center;padding:3rem 1rem;color:var(--text2)}
+.empty svg{width:36px;height:36px;fill:var(--text3);margin:0 auto 1rem;display:block}
+.notif{position:fixed;top:1.25rem;right:1.25rem;z-index:9999;background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;box-shadow:0 8px 32px rgba(0,0,0,.4);transform:translateY(-10px);opacity:0;transition:all .3s;pointer-events:none;max-width:300px}
+.notif.show{transform:translateY(0);opacity:1}
+.notif.success{border-left:3px solid var(--green)}
+.notif.error{border-left:3px solid var(--red)}
+.notif.info{border-left:3px solid var(--accent)}
+.tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;background:rgba(79,124,255,.1);color:var(--accent);font-weight:500}
+.tag.green{background:var(--green-bg);color:var(--green)}
+.tag.teal{background:var(--teal-bg);color:var(--teal)}
+.time-badge{display:inline-flex;align-items:center;padding:2px 6px;border-radius:4px;font-size:11px;background:rgba(34,197,94,.08);color:var(--green);font-family:var(--mono)}
+.frow{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.flabel{font-size:11px;color:var(--text2);font-weight:500;letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px;display:block}
+/* 복습 신청 카드 */
+.access-row{display:flex;align-items:center;gap:10px;padding:10px 1.25rem;border-bottom:1px solid var(--border)}
+.access-row:last-child{border-bottom:none}
+/* 섹션 구분자 */
+.section-divider{display:flex;align-items:center;gap:12px;margin:1.5rem 0 1rem}
+.section-divider-line{flex:1;height:1px;background:var(--border)}
+.section-divider-label{font-size:12px;font-weight:600;color:var(--text2);white-space:nowrap;display:flex;align-items:center;gap:6px}
+/* 모바일 */
+@media(max-width:700px){
+  .sidebar{display:none}
+  .stats-row{grid-template-columns:repeat(2,1fr)!important}
+  .video-grid{grid-template-columns:1fr}
+  .main-inner{padding:1rem 1rem 80px}
+  .mobile-tabbar{display:flex!important}
+}
+.mobile-tabbar{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);z-index:500;height:60px;overflow-x:auto}
+.mobile-tab{flex-shrink:0;min-width:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--text2);font-size:10px;font-weight:500;transition:color .15s;padding:8px 4px;border:none;background:transparent;font-family:var(--font)}
+.mobile-tab svg{width:20px;height:20px;fill:currentColor}
+.mobile-tab.active{color:var(--accent)}
+.mobile-tab.active svg{fill:var(--accent)}
+</style>
 </head>
 <body>
 <div id="loading-screen"><div class="spinner"></div><div class="loading-text">서버에 연결 중...</div></div>
@@ -414,7 +616,47 @@
           <button class="btn blue" style="padding:8px 14px;font-size:13px;white-space:nowrap" onclick="submitQaQuestion()">전송</button>
         </div>
       </div>
-      <input type="file" id="qa-img-input" accept="image
+      <input type="file" id="qa-img-input" accept="image/*" style="display:none" onchange="qaPreviewImg(event)">
+      <img id="qa-img-preview" style="width:100%;border-radius:var(--radius-sm);margin-top:8px;display:none" alt="">
+    </div>
+    <!-- 검토 대기 상태 -->
+    <div id="qa-pending-area" style="display:none;flex-shrink:0;padding:1rem 1.5rem;border-top:1px solid var(--border)">
+      <div style="background:var(--amber-bg);border:1px solid rgba(245,158,11,.3);border-radius:var(--radius-sm);padding:12px;font-size:13px;color:var(--amber);text-align:center">
+        선생님이 검토 후 답변드릴게요
+      </div>
+      <button class="btn" style="width:100%;margin-top:8px" onclick="closeQaModal()">닫기</button>
+    </div>
+  </div>
+</div>
+
+<div class="notif" id="notif"></div>
+
+<script>
+const SB_URL='https://zniwzwanlvvmzkkcmikh.supabase.co';
+const SB_KEY='sb_publishable_IbfVcXs5TmXfumrnK4Somg_7MzygCdh';
+
+// ── Claude API 키 설정 ──────────────────────────────
+// 강사 로그인 시 입력하면 브라우저에 저장됩니다
+// GitHub에 올려도 키가 노출되지 않아요
+let CLAUDE_API_KEY = localStorage.getItem('claude_api_key') || '';
+// ────────────────────────────────────────────────────
+/* ── Supabase 테이블 세팅 (최초 1회 SQL Editor에서 실행) ──
+create table qa_schools (id text primary key, name text, created_at timestamptz default now());
+create table qa_weeks (
+  id text primary key, school_id text, name text, prob_count int default 100,
+  prob_pdf_url text, sol_pdf_url text, sol_text text,
+  created_at timestamptz default now()
+);
+create table qa_questions (
+  id text primary key, school_id text, week_id text, prob_num int,
+  student_id text, question text, ai_answer text, teacher_note text,
+  status text default 'pending', badge text,
+  created_at timestamptz default now(),
+  unique(week_id, prob_num, student_id)
+);
+-- Storage: qa-files 버킷을 Public으로 생성
+insert into storage.buckets (id, name, public) values ('qa-files', 'qa-files', true);
+─────────────────────────────────────────────────── */
 const sb=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:false,autoRefreshToken:false}});
 
 let session=null,currentRole='teacher',progressView='video';
@@ -424,6 +666,7 @@ let watchedSet=new Set(),trackTimer=null,saveTimer=null,lastPos=-1,totalDur=0;
 
 window.onYouTubeIframeAPIReady=function(){ytApiReady=true;};
 
+/* ===== UTILS ===== */
 function ytId(url){if(!url)return null;const m=url.match(/(?:youtu\.be\/|v=|embed\/)([A-Za-z0-9_\-]{11})/);return m?m[1]:null;}
 function thumb(url){const id=ytId(url);return id?`https://img.youtube.com/vi/${id}/mqdefault.jpg`:null;}
 function getPct(sid,vid){const r=db.progress.find(p=>p.student_id===sid&&p.video_id===vid);return r?(r.percent||0):0;}
@@ -444,6 +687,7 @@ function notify(msg,type='info'){const n=document.getElementById('notif');n.text
 function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');}
 function hideLoading(){document.getElementById('loading-screen').classList.add('hide');}
 
+/* ===== DB ===== */
 async function loadAll(attempt=0){
   try{
     const [u,v,p,a,r]=await Promise.all([
@@ -474,13 +718,14 @@ async function upsertProgress(sid,vid,pct,watchSec,lastPosition){
   if(ex)Object.assign(ex,payload);else db.progress.push(payload);
 }
 
+/* ===== AUTH ===== */
 function selectRole(r){
   currentRole=r;
   document.querySelectorAll('.role-tab').forEach((b,i)=>b.classList.toggle('active',(i===0&&r==='teacher')||(i===1&&r==='student')));
   const apiGroup = document.getElementById('api-key-group');
   if(r==='teacher'){
     apiGroup.style.display='block';
-    
+    // 저장된 키가 있으면 placeholder로 알려주기
     const saved = localStorage.getItem('claude_api_key');
     document.getElementById('login-apikey').placeholder = saved ? '저장된 키 있음 (변경 시에만 입력)' : 'sk-ant-api03-...';
     document.getElementById('login-apikey').value = '';
@@ -496,6 +741,7 @@ async function doLogin(){
   err.textContent='';
   if(!id||!pw){err.textContent='아이디와 비밀번호를 입력하세요.';return;}
 
+  // 강사인 경우 API 키 처리
   if(currentRole==='teacher'){
     const inputKey = document.getElementById('login-apikey').value.trim();
     if(inputKey) {
@@ -565,6 +811,7 @@ function launchStudent(){
   sNav('lectures');
 }
 
+/* ===== TEACHER NAV ===== */
 function tNav(panel){
   document.querySelectorAll('#page-teacher .nav-item').forEach(n=>n.classList.toggle('active',n.dataset.p===panel));
   document.querySelectorAll('#page-teacher .panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+panel));
@@ -577,6 +824,7 @@ function tNav(panel){
   if(panel==='qa'){renderTQaSchoolTabs();renderTQaWeekList();renderQaWeekFilter();renderQaReview();}
 }
 
+/* ===== DASHBOARD ===== */
 function renderDashboard(){
   const sts=activeStudents(),vids=db.videos;
   const normal=normalVideos();
@@ -587,11 +835,12 @@ function renderDashboard(){
   const pending=pendingStudents();
   const accessPending=db.requests.filter(r=>r.status==='pending');
 
+  // 사이드바 뱃지
   const navSt=document.getElementById('nav-students');
   navSt.innerHTML=`<svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>학생 관리${pending.length>0?` <span style="background:var(--amber);color:#000;border-radius:100px;font-size:10px;padding:0 5px;font-weight:700">${pending.length}</span>`:''}`;
   const navAc=document.getElementById('nav-access');
   navAc.innerHTML=`<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습 신청 관리${accessPending.length>0?` <span style="background:var(--teal);color:#000;border-radius:100px;font-size:10px;padding:0 5px;font-weight:700">${accessPending.length}</span>`:''}`;
-  
+  // 모바일 뱃지
   const mtAc=document.getElementById('mt-access');
   if(mtAc)mtAc.innerHTML=`<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>${accessPending.length>0?`<span style="background:var(--teal);color:#000;border-radius:100px;font-size:9px;padding:0 4px;font-weight:700;position:absolute;top:4px;right:4px">${accessPending.length}</span>`:''}복습관리`;
 
@@ -630,6 +879,7 @@ function renderDashboard(){
     }).join('')+'</tbody>';
 }
 
+/* ===== VIDEOS ===== */
 async function addVideo(){
   const title=document.getElementById('v-title').value.trim();
   const url=document.getElementById('v-url').value.trim();
@@ -695,6 +945,7 @@ function renderVideos(){
   renderVideoGrid(reviewVideos(),'video-list-review');
 }
 
+/* ===== STUDENTS ===== */
 async function addStudent(){
   const name=document.getElementById('s-name').value.trim();
   const id=document.getElementById('s-id').value.trim();
@@ -765,6 +1016,7 @@ function renderStudents(){
     }).join('')+'</tbody>';
 }
 
+/* ===== 복습 신청 관리 (강사) ===== */
 async function approveAccess(reqId, sid, vid){
   const s=db.users.find(u=>u.id===sid);
   const v=db.videos.find(x=>x.id===vid);
@@ -821,7 +1073,7 @@ function renderAccessPanel(){
       </div>`;
     }).join('');
   }
-  
+  // 현재 권한 목록
   const gl=document.getElementById('access-granted-list');
   if(!db.access.length){gl.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text2);font-size:13px">현재 시청 권한을 가진 학생이 없습니다.</div>';return;}
   gl.innerHTML=db.access.map(a=>{
@@ -845,6 +1097,7 @@ function renderAccessPanel(){
   }).join('');
 }
 
+/* ===== PROGRESS ===== */
 function setView(v){
   progressView=v;
   document.getElementById('btn-byvideo').classList.toggle('blue',v==='video');
@@ -897,6 +1150,7 @@ function renderProgress(){
   }
 }
 
+/* ===== DETAIL ===== */
 function openDetail2(vid){
   const v=db.videos.find(x=>x.id===vid);
   const sts=activeStudents();
@@ -925,6 +1179,7 @@ function openDetail(sid,vid){
 }
 function closeDetail(){document.getElementById('modal-detail').classList.remove('show');}
 
+/* ===== STUDENT NAV ===== */
 function sNav(panel){
   document.querySelectorAll('#page-student .nav-item').forEach(n=>n.classList.toggle('active',n.dataset.p===panel));
   document.querySelectorAll('#page-student .panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+panel));
@@ -935,6 +1190,7 @@ function sNav(panel){
   if(panel==='qa'){renderSQaSchoolList();renderSQaMyList();}
 }
 
+/* ===== 학생: 일반 강의 ===== */
 function renderLectures(){
   const el=document.getElementById('student-lectures');
   const vids=normalVideos();
@@ -959,6 +1215,7 @@ function renderLectures(){
   }).join('');
 }
 
+/* ===== 학생: 복습 신청 ===== */
 async function requestReview(vid){
   const v=db.videos.find(x=>x.id===vid);
   if(hasRequested(session.id,vid)){notify('이미 신청한 영상입니다.','info');return;}
@@ -1002,6 +1259,7 @@ function renderStudentReview(){
   }).join('');
 }
 
+/* ===== 학생: 내 진도 ===== */
 function renderMyPage(){
   const allVids=[...normalVideos(),...reviewVideos().filter(v=>hasAccess(session.id,v.id))];
   const progs=allVids.map(v=>getPct(session.id,v.id));
@@ -1035,6 +1293,7 @@ function renderMyPage(){
   }).join('')||'<div class="empty"><p>강의가 없습니다.</p></div>';
 }
 
+/* ===== YOUTUBE PLAYER ===== */
 let resumeVid=null;
 function showResumeModal(vid, title, lp){
   resumeVid=vid;
@@ -1058,7 +1317,7 @@ function openPlay(vid, forceStart){
   if(v.category==='review'&&!hasAccess(session.id,vid)){notify('시청 권한이 없습니다.','error');return;}
   const lp=getLastPos(session.id,vid);
   const pct=getPct(session.id,vid);
-  
+  // 이전 기록이 있고 완료되지 않았으면 선택 모달 표시
   if(lp>0 && pct<100 && forceStart===undefined){
     showResumeModal(vid, v.title, lp);
     return;
@@ -1093,7 +1352,7 @@ function onYTReady(e){
       if(!currentVid||!session)return;
       const pct=getPct(session.id,currentVid);
       if(pct>0){const ws=Math.floor((pct/100)*totalDur);for(let i=0;i<ws;i++)watchedSet.add(i);updateTrackUI(pct);}
-      
+      // currentStartPos 기반으로 이동
       if(currentStartPos>0){
         setTimeout(()=>{
           try{e.target.seekTo(currentStartPos,true);}catch(err){}
@@ -1162,6 +1421,14 @@ async function closePlay(){
   if(session&&session.role==='student'){renderLectures();renderStudentReview();}
 }
 
+
+
+/* ===== Q&A ===== */
+// DB 구조:
+// qa_schools: [{id, name, created_at}]
+// qa_weeks:   [{id, school_id, name, prob_count, prob_pdf_url, sol_pdf_url, sol_text, created_at}]
+// qa_questions:[{id, school_id, week_id, prob_num, student_id, question, ai_answer, teacher_note, status, badge, created_at}]
+
 let qaDb = { schools: [], weeks: [], questions: [] };
 let qaState = { school: null, week: null, prob: null };
 let qwProbFile = null, qwSolFile = null, qwSolText = '';
@@ -1208,7 +1475,7 @@ async function loadQaData() {
     qaDb.schools = s.data || [];
     qaDb.weeks   = w.data || [];
     qaDb.questions = q.data || [];
-    
+    // 기본 학교가 없으면 한백고/치동고 세팅
     if (!qaDb.schools.length) {
       const defaults = [{ id: 'sc_hanbaek', name: '한백고' }, { id: 'sc_chidong', name: '치동고' }];
       for (const item of defaults) {
@@ -1507,7 +1774,7 @@ function selectSQaWeek(wid) {
   document.getElementById('s-qa-week-view').style.display = 'none';
   document.getElementById('s-qa-prob-view').style.display = 'block';
   document.getElementById('s-qa-prob-title').textContent = (school ? school.name + ' · ' : '') + (week ? week.name : '') + ' · 문제 선택';
-  
+  // 파일 상태
   const fs = document.getElementById('s-qa-file-status');
   if (week && fs) fs.textContent = week.sol_text ? `📋 해설지 등록됨 (${week.sol_text.length.toLocaleString()}자) — AI가 해설지를 기반으로 답변합니다` : '⚠️ 해설지 미등록 — AI가 일반 추론으로 답변합니다';
   renderSQaProbGrid();
@@ -1590,6 +1857,7 @@ function openQaModal(probNum) {
   document.getElementById('qa-modal-num').textContent = probNum + '번 문제';
   document.getElementById('qa-modal-context').textContent = [school?.name, week?.name].filter(Boolean).join(' · ');
 
+  // 초기화
   qaChatHistory = [];
   document.getElementById('qa-chat-history').innerHTML = '';
   document.getElementById('qa-loading-area').style.display = 'none';
@@ -1600,6 +1868,7 @@ function openQaModal(probNum) {
   document.getElementById('qa-img-preview').style.display = 'none';
   document.getElementById('qa-img-input').value = '';
 
+  // 기존 답변 있으면 채팅으로 표시
   const existQ = session ? qaDb.questions.find(q => q.week_id === qaState.week && q.prob_num === probNum && q.student_id === session.id) : null;
   if (existQ) {
     existQ.status === 'answered' ? showQaAnswer(existQ) : showQaPending();
@@ -1627,7 +1896,7 @@ function openQaModalFromHistory(qid) {
 
 function showQaAnswer(q) {
 // ── 대화 히스토리 (문제당 메모리) ─────────────────
-let qaChatHistory = []; 
+let qaChatHistory = []; // {role:'user'|'assistant', content:'...'}
 
 function addChatBubble(role, text, badge) {
   const hist = document.getElementById('qa-chat-history');
@@ -1710,6 +1979,7 @@ async function submitQaQuestion() {
   const hasSol = !!(week && week.sol_text);
   const isFollowUp = qaChatHistory.length > 0;
 
+  // 사용자 말풍선 추가
   addChatBubble('user', text);
   document.getElementById('qa-q-text').value = '';
   document.getElementById('qa-img-preview').style.display = 'none';
@@ -1725,7 +1995,7 @@ async function submitQaQuestion() {
         ? `추가 질문에 답변드릴게요.\n\n${text}에 대해 더 자세히 설명드리면, 이 부분은 지문의 핵심 논거와 연결됩니다. API 키를 설정하면 실제 AI 답변이 제공됩니다.`
         : `[데모 모드] ${qaState.prob}번 문제 답변입니다.\n\n해설지를 기반으로 답변드립니다. API 키를 설정하면 실제 답변이 제공됩니다.`;
     } else {
-      
+      // 꼼꼼한 수능 국어 전문 강사 프롬프트
       const systemPrompt = `당신은 수능 국어를 20년 이상 가르친 베테랑 강사입니다. 학생의 질문에 다음 원칙을 반드시 따라 답변하세요.
 
 [답변 원칙]
@@ -1739,6 +2009,7 @@ async function submitQaQuestion() {
 
 ${hasSol ? `[해설지 전문]\n${week.sol_text}\n\n위 해설지를 반드시 참고하여 ${qaState.prob}번 문제 위주로 답변하세요.` : '해설지가 없으니 수능 국어 전문 지식으로 성실히 답변하세요.'}`;
 
+      // 이전 대화 히스토리 포함
       const messages = isFollowUp
         ? [...qaChatHistory, { role: 'user', content: text }]
         : [{ role: 'user', content: `[학교: ${school?.name}] [${week?.name}] [${qaState.prob}번 문제]\n\n${text}` }];
@@ -1765,12 +2036,14 @@ ${hasSol ? `[해설지 전문]\n${week.sol_text}\n\n위 해설지를 반드시 �
     aiAnswer = '답변 생성 중 오류가 발생했습니다. 선생님이 직접 확인해드릴게요.';
   }
 
+  // 대화 히스토리 업데이트
   qaChatHistory.push({ role: 'user', content: text });
   qaChatHistory.push({ role: 'assistant', content: aiAnswer });
 
   document.getElementById('qa-loading-area').style.display = 'none';
   addChatBubble('assistant', aiAnswer, 'ai');
 
+  // DB 저장 (첫 질문만 저장, 추가 질문은 히스토리로만)
   if (!isFollowUp) {
     const newQ = {
       id: 'q_' + Date.now(),
@@ -1801,35 +2074,18 @@ document.getElementById('modal-play').addEventListener('click',e=>{if(e.target==
 document.getElementById('modal-detail').addEventListener('click',e=>{if(e.target===e.currentTarget)closeDetail();});
 document.getElementById('modal-resume').addEventListener('click',e=>{if(e.target===e.currentTarget)closeResume();});
 
+/* ===== INIT ===== */
 (async()=>{
   if(!navigator.onLine){
     document.querySelector('.loading-text').textContent='인터넷 연결을 확인해주세요.';
     setTimeout(()=>{hideLoading();showPage('page-login');},2000);
     return;
   }
-
-  // Supabase 슬립 모드 자동 깨우기 (최대 10회 재시도)
-  const wakeUp = async (attempt=1) => {
-    const maxAttempts = 10;
-    const msgs = ['서버에 연결 중...','서버를 깨우는 중... (잠시만요)','거의 다 됐어요...','조금만 더...'];
-    document.querySelector('.loading-text').textContent = msgs[Math.min(attempt-1, msgs.length-1)];
-    try {
-      await sb.from('users').select('id').limit(1);
-      return true;
-    } catch(e) {
-      if(attempt >= maxAttempts) return false;
-      await new Promise(r => setTimeout(r, 3000));
-      return wakeUp(attempt + 1);
-    }
-  };
-
-  try {
-    const awake = await wakeUp();
-    if(!awake) {
-      document.querySelector('.loading-text').textContent='서버 연결 실패. 새로고침해주세요.';
-      setTimeout(()=>{hideLoading();showPage('page-login');},2500);
-      return;
-    }
+  try{
+    // Supabase 슬립 모드 깨우기 (가벼운 요청 먼저)
+    document.querySelector('.loading-text').textContent='서버에 연결 중...';
+    await sb.from('users').select('id').limit(1);
+    // 전체 데이터 로드
     document.querySelector('.loading-text').textContent='데이터 불러오는 중...';
     await loadAll();
     await loadQaData();
