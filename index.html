@@ -6,6 +6,7 @@
 <title>국어왕 김까까 온라인 학습</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 (function(){
   var tag=document.createElement('script');
@@ -236,6 +237,11 @@ input,button{font-family:var(--font)}
       </div>
       <div class="form-group"><label>아이디</label><input id="login-id" class="form-input" type="text" placeholder="아이디 입력" onkeydown="if(event.key==='Enter')doLogin()"/></div>
       <div class="form-group"><label>비밀번호</label><input id="login-pw" class="form-input" type="password" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+      <div class="form-group" id="api-key-group" style="display:none">
+        <label>Claude API 키 <span style="color:var(--text3);text-transform:none;font-weight:400">(브라우저에 저장됩니다)</span></label>
+        <input id="login-apikey" class="form-input" type="password" placeholder="sk-ant-api03-..."/>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px" id="api-key-hint"></div>
+      </div>
       <button class="btn-primary" id="login-btn" onclick="doLogin()">로그인</button>
       <div id="login-err" class="err-msg"></div>
       <div class="login-switch">계정이 없으신가요? <a onclick="showSignup()">학생 회원가입</a></div>
@@ -268,6 +274,7 @@ input,button{font-family:var(--font)}
         <div class="nav-item" onclick="tNav('students')" data-p="students" id="nav-students"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>학생 관리</div>
         <div class="nav-item" onclick="tNav('access')" data-p="access" id="nav-access"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습 신청 관리</div>
         <div class="nav-item" onclick="tNav('progress')" data-p="progress"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>진도 현황</div>
+        <div class="nav-item" onclick="tNav('qa')" data-p="qa" id="nav-qa"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A 관리</div>
       </nav>
       <div class="sidebar-footer"><button class="btn-logout" onclick="doLogout()">로그아웃</button></div>
     </div>
@@ -356,14 +363,41 @@ input,button{font-family:var(--font)}
         <div id="progress-content"></div>
       </div>
 
+      <!-- Q&A 관리 -->
+      <div class="panel" id="panel-qa">
+        <div class="page-header"><h1>Q&A 관리</h1><p>학교·주차별 문제 세트를 관리하고 학생 질문을 검토하세요</p></div>
+        <div style="display:flex;gap:8px;margin-bottom:1rem;align-items:center;flex-wrap:wrap">
+          <div id="t-qa-school-tabs" style="display:flex;gap:6px;flex-wrap:wrap;flex:1"></div>
+          <button class="btn blue btn-sm" onclick="openQaSchoolModal()">+ 학교 추가</button>
+        </div>
+        <div class="card" style="margin-bottom:1rem">
+          <div class="card-head">
+            <h3 id="t-qa-school-title">학교를 선택하세요</h3>
+            <button class="btn blue btn-sm" id="t-qa-add-week-btn" style="display:none" onclick="openQaWeekModal()">+ 주차 추가</button>
+          </div>
+          <div id="t-qa-week-list" style="padding:0 1.25rem 0.5rem"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <h3>검토 대기 <span id="qa-pending-badge" style="background:var(--amber-bg);color:var(--amber);font-size:11px;padding:2px 8px;border-radius:100px;margin-left:6px;display:none"></span></h3>
+            <div style="display:flex;gap:6px">
+              <select id="qa-filter-school" class="form-select" style="width:90px;padding:4px 8px;font-size:12px" onchange="renderQaReview()"><option value="">전체 학교</option></select>
+              <select id="qa-filter-week" class="form-select" style="width:90px;padding:4px 8px;font-size:12px" onchange="renderQaReview()"><option value="">전체 주차</option></select>
+            </div>
+          </div>
+          <div id="qa-review-list"></div>
+        </div>
+      </div>
+
     </div></div>
   </div>
-  <div class="mobile-tabbar" id="t-tabbar">
-    <button class="mobile-tab active" onclick="tNav('dashboard')" data-mt="dashboard"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>대시보드</button>
-    <button class="mobile-tab" onclick="tNav('videos')" data-mt="videos"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의</button>
-    <button class="mobile-tab" onclick="tNav('access')" data-mt="access" id="mt-access"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습관리</button>
-    <button class="mobile-tab" onclick="tNav('students')" data-mt="students"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>학생</button>
-    <button class="mobile-tab" onclick="tNav('progress')" data-mt="progress"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>진도</button>
+  <div class="mobile-tabbar" id="t-tabbar" style="overflow-x:auto">
+    <button class="mobile-tab active" onclick="tNav('dashboard')" data-mt="dashboard" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>대시보드</button>
+    <button class="mobile-tab" onclick="tNav('videos')" data-mt="videos" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의</button>
+    <button class="mobile-tab" onclick="tNav('access')" data-mt="access" id="mt-access" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습관리</button>
+    <button class="mobile-tab" onclick="tNav('students')" data-mt="students" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>학생</button>
+    <button class="mobile-tab" onclick="tNav('progress')" data-mt="progress" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>진도</button>
+    <button class="mobile-tab" onclick="tNav('qa')" data-mt="qa" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A</button>
   </div>
 </div>
 
@@ -380,6 +414,7 @@ input,button{font-family:var(--font)}
         <div class="nav-item active" onclick="sNav('lectures')" data-p="lectures"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의 목록</div>
         <div class="nav-item" onclick="sNav('review')" data-p="review"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습 신청</div>
         <div class="nav-item" onclick="sNav('mypage')" data-p="mypage"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>내 진도</div>
+        <div class="nav-item" onclick="sNav('qa')" data-p="qa"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A</div>
       </nav>
       <div class="sidebar-footer"><button class="btn-logout" onclick="doLogout()">로그아웃</button></div>
     </div>
@@ -397,13 +432,41 @@ input,button{font-family:var(--font)}
         <div class="stats-row" style="grid-template-columns:repeat(3,1fr)" id="s-stats"></div>
         <div class="card"><div class="card-head"><h3>강의별 진도</h3></div><div id="mypage-list" style="padding:4px 0"></div></div>
       </div>
+      <div class="panel" id="panel-qa">
+        <div class="page-header"><h1>Q&A</h1><p>학교 · 주차 · 문제 번호를 선택해 질문하세요</p></div>
+        <div id="s-qa-breadcrumb" style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);margin-bottom:14px;flex-wrap:wrap"></div>
+        <div id="s-qa-school-view">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" id="s-qa-school-list"></div>
+        </div>
+        <div id="s-qa-week-view" style="display:none">
+          <div style="display:flex;flex-direction:column;gap:8px" id="s-qa-week-list"></div>
+        </div>
+        <div id="s-qa-prob-view" style="display:none">
+          <div class="card">
+            <div class="card-head">
+              <h3 id="s-qa-prob-title">문제 선택</h3>
+              <div style="display:flex;gap:8px;font-size:11px;color:var(--text2);align-items:center">
+                <span style="color:var(--green)">●</span>답변완료 <span style="color:var(--amber)">●</span>검토중
+              </div>
+            </div>
+            <div style="padding:1rem 1.25rem">
+              <div id="s-qa-prob-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:1rem">
+          <div class="card-head"><h3>내 질문 내역</h3></div>
+          <div id="s-qa-my-list" style="padding:4px 0"></div>
+        </div>
+      </div>
     </div></div>
   </div>
-  <div class="mobile-tabbar" id="s-tabbar">
-    <button class="mobile-tab active" onclick="sNav('lectures')" data-ms="lectures"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의</button>
-    <button class="mobile-tab" onclick="sNav('review')" data-ms="review"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습신청</button>
-    <button class="mobile-tab" onclick="sNav('mypage')" data-ms="mypage"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>내 진도</button>
-    <button class="mobile-tab" onclick="doLogout()"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>로그아웃</button>
+  <div class="mobile-tabbar" id="s-tabbar" style="overflow-x:auto">
+    <button class="mobile-tab active" onclick="sNav('lectures')" data-ms="lectures" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의</button>
+    <button class="mobile-tab" onclick="sNav('review')" data-ms="review" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습신청</button>
+    <button class="mobile-tab" onclick="sNav('mypage')" data-ms="mypage" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>내 진도</button>
+    <button class="mobile-tab" onclick="sNav('qa')" data-ms="qa" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A</button>
+    <button class="mobile-tab" onclick="doLogout()" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>로그아웃</button>
   </div>
 </div>
 
@@ -457,6 +520,72 @@ input,button{font-family:var(--font)}
     <div class="modal-head"><h3 id="detail-title">시청 상세</h3><button class="modal-close" onclick="closeDetail()">×</button></div>
     <div class="modal-body" id="detail-body"></div>
     <div class="modal-footer"><button class="btn" onclick="closeDetail()">닫기</button></div>
+  </div>
+</div>
+
+<!-- Q&A 학교 추가 모달 -->
+<div class="modal-bg" id="modal-qa-school">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-head"><h3>학교 추가</h3><button class="modal-close" onclick="document.getElementById('modal-qa-school').classList.remove('show')">×</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>학교 이름</label><input id="qs-name" class="form-input" placeholder="예: 한백고"/></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="document.getElementById('modal-qa-school').classList.remove('show')">취소</button>
+      <button class="btn blue" onclick="addQaSchool()">추가</button>
+    </div>
+  </div>
+</div>
+
+<!-- Q&A 주차 추가 모달 -->
+<div class="modal-bg" id="modal-qa-week">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-head"><h3>주차 추가</h3><button class="modal-close" onclick="closeQaWeekModal()">×</button></div>
+    <div class="modal-body">
+      <div class="frow" style="gap:10px">
+        <div style="flex:1"><label class="flabel">주차 이름</label><input id="qw-name" class="form-input" placeholder="예: 1주차"/></div>
+        <div style="width:80px"><label class="flabel">문제 수</label><input id="qw-count" class="form-input" type="number" value="100" min="1" max="200"/></div>
+      </div>
+      <div style="margin-bottom:10px">
+        <label class="flabel">해설지 PDF <span style="color:var(--text3);text-transform:none;font-weight:400">(AI가 읽고 답변합니다)</span></label>
+        <div id="qw-sol-upload" onclick="document.getElementById('qw-sol-file').click()" style="border:1px dashed var(--border2);border-radius:var(--radius-sm);padding:14px;text-align:center;cursor:pointer;color:var(--text3);font-size:13px">📋 해설지 PDF 업로드</div>
+        <input type="file" id="qw-sol-file" accept=".pdf" style="display:none" onchange="qaHandleFile(event)">
+        <div id="qw-sol-name" style="font-size:12px;color:var(--green);margin-top:4px"></div>
+      </div>
+      <div id="qw-extract-status" style="font-size:12px;color:var(--text2);min-height:18px"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeQaWeekModal()">취소</button>
+      <button class="btn blue" id="qw-add-btn" onclick="addQaWeek()">추가</button>
+    </div>
+  </div>
+</div>
+
+<!-- Q&A 질문 모달 -->
+<div class="modal-bg" id="modal-qa">
+  <div class="modal" style="max-width:500px;display:flex;flex-direction:column;max-height:90vh">
+    <div class="modal-head" style="flex-shrink:0">
+      <div>
+        <h3 id="qa-modal-num">문제 질문</h3>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px" id="qa-modal-ctx"></div>
+      </div>
+      <button class="modal-close" onclick="closeQaModal()">×</button>
+    </div>
+    <div id="qa-chat-history" style="flex:1;overflow-y:auto;padding:1rem 1.5rem;display:flex;flex-direction:column;gap:12px;min-height:100px"></div>
+    <div id="qa-loading-area" style="display:none;text-align:center;padding:1rem 1.5rem;flex-shrink:0">
+      <div class="spinner" style="width:20px;height:20px;border-width:2px;margin:0 auto 8px"></div>
+      <div style="font-size:13px;color:var(--text2)" id="qa-loading-msg">AI가 답변을 생성하고 있어요...</div>
+    </div>
+    <div id="qa-input-area" style="flex-shrink:0;padding:1rem 1.5rem;border-top:1px solid var(--border)">
+      <div style="display:flex;gap:8px;align-items:flex-end">
+        <textarea id="qa-q-text" class="form-input" style="flex:1;height:70px;resize:none;font-size:13px" placeholder="질문을 입력하세요..."></textarea>
+        <button class="btn blue" style="padding:8px 14px;font-size:13px" onclick="submitQaQuestion()">전송</button>
+      </div>
+    </div>
+    <div id="qa-pending-area" style="display:none;flex-shrink:0;padding:1rem 1.5rem;border-top:1px solid var(--border)">
+      <div style="background:var(--amber-bg);border:1px solid rgba(245,158,11,.3);border-radius:var(--radius-sm);padding:12px;font-size:13px;color:var(--amber);text-align:center">선생님이 검토 후 답변드릴게요</div>
+      <button class="btn" style="width:100%;margin-top:8px" onclick="closeQaModal()">닫기</button>
+    </div>
   </div>
 </div>
 
@@ -527,7 +656,21 @@ async function upsertProgress(sid,vid,pct,watchSec,lastPosition){
 }
 
 /* ===== AUTH ===== */
-function selectRole(r){currentRole=r;document.querySelectorAll('.role-tab').forEach((b,i)=>b.classList.toggle('active',(i===0&&r==='teacher')||(i===1&&r==='student')));}
+function selectRole(r){
+  currentRole=r;
+  document.querySelectorAll('.role-tab').forEach((b,i)=>b.classList.toggle('active',(i===0&&r==='teacher')||(i===1&&r==='student')));
+  var apiGroup=document.getElementById('api-key-group');
+  var hint=document.getElementById('api-key-hint');
+  if(r==='teacher'){
+    apiGroup.style.display='block';
+    var saved=localStorage.getItem('claude_api_key');
+    document.getElementById('login-apikey').placeholder=saved?'저장된 키 있음 (변경 시에만 입력)':'sk-ant-api03-...';
+    if(hint)hint.textContent=saved?'API 키가 저장되어 있어요. 변경하려면 새 키를 입력하세요.':'';
+    document.getElementById('login-apikey').value='';
+  }else{
+    apiGroup.style.display='none';
+  }
+}
 async function doLogin(){
   const id=document.getElementById('login-id').value.trim();
   const pw=document.getElementById('login-pw').value;
@@ -535,6 +678,11 @@ async function doLogin(){
   const btn=document.getElementById('login-btn');
   err.textContent='';
   if(!id||!pw){err.textContent='아이디와 비밀번호를 입력하세요.';return;}
+  if(currentRole==='teacher'){
+    const inputKey=document.getElementById('login-apikey').value.trim();
+    if(inputKey){localStorage.setItem('claude_api_key',inputKey);CLAUDE_API_KEY=inputKey;}
+    else{const saved=localStorage.getItem('claude_api_key');if(saved)CLAUDE_API_KEY=saved;}
+  }
   btn.disabled=true;btn.textContent='로그인 중...';
   try{
     await loadAll();
@@ -603,6 +751,7 @@ function tNav(panel){
   if(panel==='students')renderStudents();
   if(panel==='access')renderAccessPanel();
   if(panel==='progress')renderProgress();
+  if(panel==='qa'){renderTQaSchoolTabs();renderTQaWeekList();renderQaWeekFilter();renderQaReview();}
 }
 
 /* ===== DASHBOARD ===== */
@@ -968,6 +1117,7 @@ function sNav(panel){
   if(panel==='lectures')renderLectures();
   if(panel==='review')renderStudentReview();
   if(panel==='mypage')renderMyPage();
+  if(panel==='qa'){renderSQaSchoolList();renderSQaMyList();}
 }
 
 /* ===== 학생: 일반 강의 ===== */
@@ -1206,33 +1356,520 @@ document.getElementById('modal-play').addEventListener('click',e=>{if(e.target==
 document.getElementById('modal-detail').addEventListener('click',e=>{if(e.target===e.currentTarget)closeDetail();});
 document.getElementById('modal-resume').addEventListener('click',e=>{if(e.target===e.currentTarget)closeResume();});
 
+
+/* ===== Q&A ===== */
+var qaDb={schools:[],weeks:[],questions:[]};
+var qaState={school:null,week:null,prob:null};
+var qaChatHistory=[];
+var qwSolText='';
+var qwSolFile=null;
+var CLAUDE_API_KEY=localStorage.getItem('claude_api_key')||'';
+
+async function loadQaData(){
+  try{
+    var s=await sb.from('qa_schools').select('*').order('created_at');
+    var w=await sb.from('qa_weeks').select('*').order('created_at');
+    var q=await sb.from('qa_questions').select('*').order('created_at',{ascending:false});
+    qaDb.schools=s.data||[];
+    qaDb.weeks=w.data||[];
+    qaDb.questions=q.data||[];
+    if(!qaDb.schools.length){
+      var defaults=[{id:'sc_hanbaek',name:'한백고'},{id:'sc_chidong',name:'치동고'}];
+      for(var i=0;i<defaults.length;i++){
+        var item=Object.assign({},defaults[i],{created_at:new Date().toISOString()});
+        qaDb.schools.push(item);
+        await sb.from('qa_schools').upsert(item);
+      }
+    }
+  }catch(e){console.error('QA load error',e);}
+}
+
+async function extractPdfText(file){
+  return new Promise(function(resolve){
+    var reader=new FileReader();
+    reader.onload=async function(e){
+      try{
+        var pdfjsLib=window['pdfjs-dist/build/pdf'];
+        if(!pdfjsLib){resolve('');return;}
+        pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        var pdf=await pdfjsLib.getDocument({data:e.target.result}).promise;
+        var text='';
+        for(var i=1;i<=pdf.numPages;i++){
+          var page=await pdf.getPage(i);
+          var content=await page.getTextContent();
+          text+=content.items.map(function(s){return s.str;}).join(' ')+'\n';
+        }
+        resolve(text.trim());
+      }catch(err){resolve('');}
+    };
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+function openQaSchoolModal(){
+  document.getElementById('qs-name').value='';
+  document.getElementById('modal-qa-school').classList.add('show');
+}
+
+async function addQaSchool(){
+  var name=document.getElementById('qs-name').value.trim();
+  if(!name){notify('학교 이름을 입력하세요.','error');return;}
+  var id='sc_'+Date.now();
+  var item={id:id,name:name,created_at:new Date().toISOString()};
+  var res=await sb.from('qa_schools').insert(item);
+  if(res.error){notify('등록 실패: '+res.error.message,'error');return;}
+  qaDb.schools.push(item);
+  document.getElementById('modal-qa-school').classList.remove('show');
+  notify(name+' 추가됐습니다.','success');
+  renderTQaSchoolTabs();renderSQaSchoolList();
+}
+
+function openQaWeekModal(){
+  document.getElementById('qw-name').value='';
+  document.getElementById('qw-count').value='100';
+  document.getElementById('qw-sol-name').textContent='';
+  document.getElementById('qw-extract-status').textContent='';
+  document.getElementById('qw-sol-upload').style.borderColor='';
+  qwSolFile=null;qwSolText='';
+  document.getElementById('modal-qa-week').classList.add('show');
+}
+function closeQaWeekModal(){document.getElementById('modal-qa-week').classList.remove('show');}
+
+async function qaHandleFile(event){
+  var file=event.target.files[0];
+  if(!file)return;
+  qwSolFile=file;
+  document.getElementById('qw-sol-name').textContent='텍스트 추출 중...';
+  document.getElementById('qw-extract-status').textContent='📖 해설지를 읽고 있어요...';
+  qwSolText=await extractPdfText(file);
+  document.getElementById('qw-sol-name').textContent='✓ '+file.name;
+  document.getElementById('qw-sol-upload').style.borderColor='var(--green)';
+  document.getElementById('qw-extract-status').textContent=qwSolText?'✅ 추출 완료 ('+qwSolText.length.toLocaleString()+'자)':'⚠️ 텍스트 추출 실패. 스캔 PDF일 수 있어요.';
+}
+
+async function addQaWeek(){
+  var name=document.getElementById('qw-name').value.trim();
+  var count=parseInt(document.getElementById('qw-count').value)||100;
+  if(!name){notify('주차 이름을 입력하세요.','error');return;}
+  if(!qaState.school){notify('학교를 먼저 선택하세요.','error');return;}
+  var btn=document.getElementById('qw-add-btn');
+  btn.disabled=true;btn.textContent='추가 중...';
+  try{
+    var id='w_'+Date.now();
+    var item={id:id,school_id:qaState.school,name:name,prob_count:count,sol_text:qwSolText,created_at:new Date().toISOString()};
+    var res=await sb.from('qa_weeks').insert(item);
+    if(res.error){notify('등록 실패: '+res.error.message,'error');return;}
+    qaDb.weeks.push(item);
+    closeQaWeekModal();
+    notify(name+' 추가됐습니다.','success');
+    renderTQaWeekList();renderSQaWeekList();
+  }catch(e){notify('오류: '+e.message,'error');}
+  finally{btn.disabled=false;btn.textContent='추가';}
+}
+
+async function deleteQaWeek(id){
+  if(!confirm('이 주차와 모든 질문을 삭제하시겠습니까?'))return;
+  await sb.from('qa_questions').delete().eq('week_id',id);
+  await sb.from('qa_weeks').delete().eq('id',id);
+  qaDb.weeks=qaDb.weeks.filter(function(w){return w.id!==id;});
+  qaDb.questions=qaDb.questions.filter(function(q){return q.week_id!==id;});
+  notify('삭제됐습니다.','info');
+  renderTQaWeekList();renderQaReview();
+}
+
+function renderTQaSchoolTabs(){
+  var el=document.getElementById('t-qa-school-tabs');
+  if(!el)return;
+  el.innerHTML=qaDb.schools.map(function(s){
+    return '<button class="btn'+(qaState.school===s.id?' blue':'')+' btn-sm" onclick="selectTQaSchool(\''+s.id+'\')">'+s.name+'</button>';
+  }).join('');
+}
+
+function selectTQaSchool(sid){
+  qaState.school=sid;
+  var school=qaDb.schools.find(function(s){return s.id===sid;});
+  document.getElementById('t-qa-school-title').textContent=school?school.name+' 주차 관리':'';
+  document.getElementById('t-qa-add-week-btn').style.display='';
+  renderTQaSchoolTabs();renderTQaWeekList();renderQaWeekFilter();
+}
+
+function renderTQaWeekList(){
+  var el=document.getElementById('t-qa-week-list');
+  if(!el)return;
+  var weeks=qaDb.weeks.filter(function(w){return w.school_id===qaState.school;});
+  if(!weeks.length){el.innerHTML='<div style="padding:1rem 0;font-size:13px;color:var(--text3)">등록된 주차가 없습니다.</div>';return;}
+  el.innerHTML=weeks.map(function(w){
+    var qCount=qaDb.questions.filter(function(q){return q.week_id===w.id;}).length;
+    var pCount=qaDb.questions.filter(function(q){return q.week_id===w.id&&q.status==='pending';}).length;
+    return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">'+
+      '<div style="flex:1"><div style="font-size:13px;font-weight:600">'+w.name+' <span style="font-size:11px;color:var(--text3);font-weight:400">· '+w.prob_count+'문제</span></div>'+
+      '<div style="font-size:11px;color:var(--text2);margin-top:3px">'+
+      (w.sol_text?'<span class="tag green">해설지 ✓</span>':'<span style="color:var(--amber)">해설지 없음</span>')+
+      (qCount?' · 질문 '+qCount+'건':'')+
+      (pCount?' · <span style="color:var(--amber)">대기 '+pCount+'</span>':'')+
+      '</div></div>'+
+      '<button class="btn red btn-sm" onclick="deleteQaWeek(\''+w.id+'\')">삭제</button></div>';
+  }).join('');
+}
+
+function renderQaWeekFilter(){
+  var ss=document.getElementById('qa-filter-school');
+  var sw=document.getElementById('qa-filter-week');
+  if(!ss||!sw)return;
+  var curS=ss.value,curW=sw.value;
+  ss.innerHTML='<option value="">전체 학교</option>'+qaDb.schools.map(function(s){return '<option value="'+s.id+'">'+s.name+'</option>';}).join('');
+  ss.value=curS;
+  sw.innerHTML='<option value="">전체 주차</option>'+qaDb.weeks.map(function(w){
+    var sc=qaDb.schools.find(function(s){return s.id===w.school_id;});
+    return '<option value="'+w.id+'">'+(sc?sc.name+' ':'')+w.name+'</option>';
+  }).join('');
+  sw.value=curW;
+}
+
+function renderQaReview(){
+  var fs=document.getElementById('qa-filter-school')?document.getElementById('qa-filter-school').value:'';
+  var fw=document.getElementById('qa-filter-week')?document.getElementById('qa-filter-week').value:'';
+  var pending=qaDb.questions.filter(function(q){return q.status==='pending';});
+  if(fs)pending=pending.filter(function(q){return q.school_id===fs;});
+  if(fw)pending=pending.filter(function(q){return q.week_id===fw;});
+  var badge=document.getElementById('qa-pending-badge');
+  if(badge){badge.textContent=pending.length?pending.length+'건':'';badge.style.display=pending.length?'':'none';}
+  var el=document.getElementById('qa-review-list');
+  if(!el)return;
+  if(!pending.length){el.innerHTML='<div style="padding:2rem;text-align:center;color:var(--text3);font-size:13px">검토할 질문이 없습니다 🎉</div>';return;}
+  el.innerHTML=pending.map(function(q){
+    var school=qaDb.schools.find(function(s){return s.id===q.school_id;});
+    var week=qaDb.weeks.find(function(w){return w.id===q.week_id;});
+    var student=db.users.find(function(u){return u.id===q.student_id;});
+    return '<div style="padding:14px 1.25rem;border-bottom:1px solid var(--border)" id="qr-'+q.id+'">'+
+      '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:4px">'+
+      '<span style="font-weight:700;font-size:15px">'+q.prob_num+'번</span>'+
+      '<span class="tag">'+(school?school.name:'')+'</span>'+
+      '<span class="tag teal">'+(week?week.name:'')+'</span>'+
+      '<span class="badge partial">'+(student?student.name:q.student_id)+'</span></div>'+
+      '<div style="font-size:13px;color:var(--text2);margin-bottom:8px">'+q.question+'</div>'+
+      '<div style="background:var(--bg2);border-radius:var(--radius-sm);padding:10px;font-size:12px;color:var(--text2);line-height:1.6;max-height:72px;overflow:hidden">'+q.ai_answer+'</div>'+
+      '<div id="supp-area-'+q.id+'" style="margin:8px 0;display:none">'+
+      '<textarea id="supp-txt-'+q.id+'" class="form-input" style="height:68px;resize:none;font-size:13px" placeholder="선생님 보충 설명 입력..."></textarea></div>'+
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">'+
+      '<button class="btn green btn-sm" onclick="approveQa(\''+q.id+'\')">승인</button>'+
+      '<button class="btn btn-sm" onclick="document.getElementById(\'supp-area-'+q.id+'\').style.display=document.getElementById(\'supp-area-'+q.id+'\').style.display===\'none\'?\'block\':\'none\'">보충 입력</button>'+
+      '<button class="btn teal btn-sm" onclick="approveQaWithNote(\''+q.id+'\')">보충 포함 승인</button></div></div>';
+  }).join('');
+}
+
+async function approveQa(id){
+  var q=qaDb.questions.find(function(q){return q.id===id;});
+  if(!q)return;
+  q.status='answered';q.badge='ai';
+  await sb.from('qa_questions').update({status:'answered',badge:'ai'}).eq('id',id);
+  notify('승인됐습니다.','success');
+  renderQaReview();renderSQaProbGrid();renderSQaMyList();
+}
+
+async function approveQaWithNote(id){
+  var note=document.getElementById('supp-txt-'+id)?document.getElementById('supp-txt-'+id).value.trim():'';
+  var q=qaDb.questions.find(function(q){return q.id===id;});
+  if(!q)return;
+  q.status='answered';q.teacher_note=note;q.badge='teacher';
+  await sb.from('qa_questions').update({status:'answered',teacher_note:note,badge:'teacher'}).eq('id',id);
+  notify('보충 포함 승인됐습니다.','success');
+  renderQaReview();renderSQaProbGrid();renderSQaMyList();
+}
+
+function renderSQaSchoolList(){
+  var el=document.getElementById('s-qa-school-list');
+  if(!el||!session)return;
+  if(!qaDb.schools.length){el.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text3);font-size:13px;padding:2rem">등록된 학교가 없습니다.</div>';return;}
+  el.innerHTML=qaDb.schools.map(function(s){
+    return '<div onclick="selectSQaSchool(\''+s.id+'\')" style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;cursor:pointer;text-align:center">'+
+      '<div style="font-size:28px;margin-bottom:8px">🏫</div>'+
+      '<div style="font-size:15px;font-weight:700">'+s.name+'</div>'+
+      '<div style="font-size:12px;color:var(--text2);margin-top:4px">'+qaDb.weeks.filter(function(w){return w.school_id===s.id;}).length+'주차</div></div>';
+  }).join('');
+}
+
+function selectSQaSchool(sid){
+  qaState.school=sid;qaState.week=null;
+  var school=qaDb.schools.find(function(s){return s.id===sid;});
+  updateSQaBreadcrumb(school?school.name:'','');
+  document.getElementById('s-qa-school-view').style.display='none';
+  document.getElementById('s-qa-week-view').style.display='block';
+  document.getElementById('s-qa-prob-view').style.display='none';
+  renderSQaWeekList();
+}
+
+function renderSQaWeekList(){
+  var el=document.getElementById('s-qa-week-list');
+  if(!el)return;
+  var weeks=qaDb.weeks.filter(function(w){return w.school_id===qaState.school;});
+  if(!weeks.length){el.innerHTML='<div style="text-align:center;color:var(--text3);font-size:13px;padding:2rem">등록된 주차가 없습니다.</div>';return;}
+  el.innerHTML=weeks.map(function(w){
+    var myQs=session?qaDb.questions.filter(function(q){return q.week_id===w.id&&q.student_id===session.id;}).length:0;
+    return '<div onclick="selectSQaWeek(\''+w.id+'\')" style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;cursor:pointer;display:flex;align-items:center;gap:14px">'+
+      '<div style="width:42px;height:42px;border-radius:var(--radius-sm);background:rgba(79,124,255,.15);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0">'+
+      (w.name.replace(/[^0-9]/g,'')||'?')+'주</div>'+
+      '<div style="flex:1"><div style="font-size:14px;font-weight:600;margin-bottom:3px">'+w.name+'</div>'+
+      '<div style="font-size:11px;color:var(--text2)">문제 '+w.prob_count+'개'+(myQs?' · 내 질문 '+myQs+'건':'')+(w.sol_text?' · <span style="color:var(--green)">해설지 있음</span>':'')+'</div></div>'+
+      '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:var(--text3)"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>';
+  }).join('');
+}
+
+function selectSQaWeek(wid){
+  qaState.week=wid;
+  var school=qaDb.schools.find(function(s){return s.id===qaState.school;});
+  var week=qaDb.weeks.find(function(w){return w.id===wid;});
+  updateSQaBreadcrumb(school?school.name:'',week?week.name:'');
+  document.getElementById('s-qa-school-view').style.display='none';
+  document.getElementById('s-qa-week-view').style.display='none';
+  document.getElementById('s-qa-prob-view').style.display='block';
+  document.getElementById('s-qa-prob-title').textContent=(school?school.name+' · ':'')+(week?week.name:'') +' · 문제 선택';
+  renderSQaProbGrid();
+}
+
+function renderSQaProbGrid(){
+  if(!qaState.week||!session)return;
+  var week=qaDb.weeks.find(function(w){return w.id===qaState.week;});
+  if(!week)return;
+  var grid=document.getElementById('s-qa-prob-grid');
+  if(!grid)return;
+  grid.innerHTML='';
+  for(var i=1;i<=week.prob_count;i++){
+    var q=qaDb.questions.find(function(q){return q.week_id===qaState.week&&q.prob_num===i&&q.student_id===session.id;});
+    var btn=document.createElement('button');
+    btn.style.cssText='aspect-ratio:1;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg2);font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--mono);transition:all .15s;color:var(--text2)';
+    btn.textContent=i;
+    if(q){
+      if(q.status==='answered'){btn.style.background='var(--green-bg)';btn.style.borderColor='rgba(34,197,94,.4)';btn.style.color='var(--green)';}
+      else{btn.style.background='var(--amber-bg)';btn.style.borderColor='rgba(245,158,11,.4)';btn.style.color='var(--amber)';}
+    }
+    (function(num){btn.onclick=function(){openQaModal(num);};})(i);
+    grid.appendChild(btn);
+  }
+}
+
+function updateSQaBreadcrumb(schoolName,weekName){
+  var el=document.getElementById('s-qa-breadcrumb');
+  if(!el)return;
+  var crumbs=['<span onclick="resetSQaToSchool()" style="cursor:pointer;color:var(--accent)">학교 선택</span>'];
+  if(schoolName)crumbs.push('<span style="color:var(--text3)">›</span> <span onclick="resetSQaToWeek()" style="cursor:pointer;color:'+(weekName?'var(--accent)':'var(--text)')+'">'+schoolName+'</span>');
+  if(weekName)crumbs.push('<span style="color:var(--text3)">›</span> <span style="color:var(--text)">'+weekName+'</span>');
+  el.innerHTML=crumbs.join(' ');
+}
+
+function resetSQaToSchool(){
+  qaState.school=null;qaState.week=null;
+  updateSQaBreadcrumb('','');
+  document.getElementById('s-qa-school-view').style.display='block';
+  document.getElementById('s-qa-week-view').style.display='none';
+  document.getElementById('s-qa-prob-view').style.display='none';
+}
+
+function resetSQaToWeek(){
+  qaState.week=null;
+  var school=qaDb.schools.find(function(s){return s.id===qaState.school;});
+  updateSQaBreadcrumb(school?school.name:'','');
+  document.getElementById('s-qa-school-view').style.display='none';
+  document.getElementById('s-qa-week-view').style.display='block';
+  document.getElementById('s-qa-prob-view').style.display='none';
+}
+
+function renderSQaMyList(){
+  var el=document.getElementById('s-qa-my-list');
+  if(!el||!session)return;
+  var myQs=qaDb.questions.filter(function(q){return q.student_id===session.id;}).sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at);});
+  if(!myQs.length){el.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px">아직 질문이 없어요</div>';return;}
+  el.innerHTML=myQs.map(function(q){
+    var school=qaDb.schools.find(function(s){return s.id===q.school_id;});
+    var week=qaDb.weeks.find(function(w){return w.id===q.week_id;});
+    return '<div style="display:flex;align-items:center;gap:10px;padding:11px 1.25rem;border-bottom:1px solid var(--border);cursor:pointer" onclick="openQaModalFromHistory(\''+q.id+'\')">'+
+      '<div style="flex:1;min-width:0">'+
+      '<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;flex-wrap:wrap">'+
+      '<span style="font-weight:700;font-family:var(--mono)">'+q.prob_num+'번</span>'+
+      '<span class="tag" style="font-size:10px">'+(school?school.name:'')+'</span>'+
+      '<span class="tag teal" style="font-size:10px">'+(week?week.name:'')+'</span>'+
+      '<span class="badge '+(q.status==='answered'?'done':'partial')+'" style="font-size:10px">'+(q.status==='answered'?'답변완료':'검토중')+'</span></div>'+
+      '<div style="font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+q.question+'</div></div></div>';
+  }).join('');
+}
+
+function addChatBubble(role,text,badge){
+  var hist=document.getElementById('qa-chat-history');
+  var isUser=role==='user';
+  var div=document.createElement('div');
+  div.style.cssText='display:flex;flex-direction:column;align-items:'+(isUser?'flex-end':'flex-start')+';gap:4px';
+  if(!isUser&&badge){
+    var b=document.createElement('span');
+    b.className='badge '+(badge==='teacher'?'review':'done');
+    b.textContent=badge==='teacher'?'선생님 답변':'AI 답변';
+    b.style.marginLeft='4px';
+    div.appendChild(b);
+  }
+  var bubble=document.createElement('div');
+  bubble.style.cssText='max-width:85%;padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.75;white-space:pre-wrap;word-break:break-word;'+(isUser?'background:var(--accent);color:#fff;border-bottom-right-radius:4px':'background:var(--bg3);color:var(--text);border-bottom-left-radius:4px');
+  bubble.textContent=text;
+  div.appendChild(bubble);
+  hist.appendChild(div);
+  hist.scrollTop=hist.scrollHeight;
+}
+
+function openQaModal(probNum){
+  qaState.prob=probNum;
+  var school=qaDb.schools.find(function(s){return s.id===qaState.school;});
+  var week=qaDb.weeks.find(function(w){return w.id===qaState.week;});
+  document.getElementById('qa-modal-num').textContent=probNum+'번 문제';
+  document.getElementById('qa-modal-ctx').textContent=(school?school.name:'')+(week?' · '+week.name:'');
+  qaChatHistory=[];
+  document.getElementById('qa-chat-history').innerHTML='';
+  document.getElementById('qa-loading-area').style.display='none';
+  document.getElementById('qa-input-area').style.display='block';
+  document.getElementById('qa-pending-area').style.display='none';
+  document.getElementById('qa-q-text').value='';
+  document.getElementById('qa-q-text').placeholder='예: 왜 2번 선지가 틀린지 이해가 안 돼요';
+  var existQ=session?qaDb.questions.find(function(q){return q.week_id===qaState.week&&q.prob_num===probNum&&q.student_id===session.id;}):null;
+  if(existQ){existQ.status==='answered'?showQaAnswer(existQ):showQaPending();}
+  document.getElementById('modal-qa').classList.add('show');
+}
+
+function openQaModalFromHistory(qid){
+  var q=qaDb.questions.find(function(q){return q.id===qid;});
+  if(!q)return;
+  qaState.school=q.school_id;qaState.week=q.week_id;qaState.prob=q.prob_num;
+  var school=qaDb.schools.find(function(s){return s.id===q.school_id;});
+  var week=qaDb.weeks.find(function(w){return w.id===q.week_id;});
+  document.getElementById('qa-modal-num').textContent=q.prob_num+'번 문제';
+  document.getElementById('qa-modal-ctx').textContent=(school?school.name:'')+(week?' · '+week.name:'');
+  qaChatHistory=[];
+  document.getElementById('qa-chat-history').innerHTML='';
+  document.getElementById('qa-loading-area').style.display='none';
+  document.getElementById('qa-pending-area').style.display='none';
+  q.status==='answered'?showQaAnswer(q):showQaPending();
+  document.getElementById('modal-qa').classList.add('show');
+}
+
+function showQaAnswer(q){
+  qaChatHistory=[];
+  document.getElementById('qa-chat-history').innerHTML='';
+  addChatBubble('user',q.question);
+  addChatBubble('assistant',q.ai_answer,q.badge||'ai');
+  if(q.teacher_note){
+    var hist=document.getElementById('qa-chat-history');
+    var div=document.createElement('div');
+    div.style.cssText='display:flex;flex-direction:column;align-items:flex-start;gap:4px';
+    div.innerHTML='<span style="font-size:11px;color:var(--teal);font-weight:600;margin-left:4px">선생님 보충</span>'+
+      '<div style="max-width:85%;padding:10px 14px;border-radius:12px;border-bottom-left-radius:4px;font-size:13px;line-height:1.75;background:rgba(20,184,166,0.1);color:var(--teal);border:1px solid rgba(20,184,166,0.25)">'+q.teacher_note+'</div>';
+    hist.appendChild(div);
+  }
+  qaChatHistory.push({role:'user',content:q.question});
+  qaChatHistory.push({role:'assistant',content:q.ai_answer});
+  document.getElementById('qa-input-area').style.display='block';
+  document.getElementById('qa-pending-area').style.display='none';
+  document.getElementById('qa-q-text').value='';
+  document.getElementById('qa-q-text').placeholder='추가로 궁금한 점을 입력하세요...';
+}
+
+function showQaPending(){
+  document.getElementById('qa-input-area').style.display='none';
+  document.getElementById('qa-pending-area').style.display='block';
+}
+
+function closeQaModal(){
+  document.getElementById('modal-qa').classList.remove('show');
+  qaChatHistory=[];
+  document.getElementById('qa-chat-history').innerHTML='';
+}
+
+async function submitQaQuestion(){
+  var text=document.getElementById('qa-q-text').value.trim();
+  if(!text){notify('질문 내용을 입력하세요.','error');return;}
+  if(!qaState.week||!session){notify('오류: 주차 또는 로그인 상태를 확인하세요.','error');return;}
+  var week=qaDb.weeks.find(function(w){return w.id===qaState.week;});
+  var school=qaDb.schools.find(function(s){return s.id===qaState.school;});
+  var hasSol=!!(week&&week.sol_text);
+  var isFollowUp=qaChatHistory.length>0;
+  addChatBubble('user',text);
+  document.getElementById('qa-q-text').value='';
+  document.getElementById('qa-loading-area').style.display='block';
+  document.getElementById('qa-loading-msg').textContent=hasSol?'AI가 해설지를 읽고 답변을 생성하고 있어요...':'AI가 답변을 생성하고 있어요...';
+  var aiAnswer='';
+  try{
+    if(!CLAUDE_API_KEY){
+      await new Promise(function(r){setTimeout(r,1200);});
+      aiAnswer=isFollowUp?'추가 질문 답변입니다.\n\n'+text+'에 대해 더 설명드리면, 이 부분은 지문의 핵심 논거와 연결됩니다. API 키를 설정하면 실제 AI 답변이 제공됩니다.':'[데모 모드] '+qaState.prob+'번 문제 답변입니다.\n\n'+hasSol?'해설지를 기반으로 설명드립니다. 실제 서비스에서는 API 키를 설정하면 해설지 전체를 읽고 정확한 답변이 제공됩니다.':'해설지가 없어 일반 국어 지식으로 답변드립니다.';
+    }else{
+      var systemPrompt='당신은 수능 국어를 20년 이상 가르친 베테랑 강사입니다. 학생의 질문에 다음 원칙을 반드시 따라 답변하세요.\n\n[답변 원칙]\n1. 학생이 헷갈리는 핵심 포인트를 정확히 짚어주세요\n2. 왜 정답이 정답인지 지문 근거를 들어 설명하세요\n3. 오답 선지가 왜 틀렸는지도 하나씩 짚어주세요\n4. 어려운 개념은 쉬운 말로 풀어서 설명하세요\n5. 마지막에 "핵심 정리"를 한두 줄로 마무리하세요\n6. 친근하고 따뜻한 선생님 말투로 설명하세요\n\n'+(hasSol?'[해설지 전문]\n'+week.sol_text+'\n\n위 해설지를 반드시 참고하여 '+qaState.prob+'번 문제 위주로 답변하세요.':'해설지가 없으니 수능 국어 전문 지식으로 성실히 답변하세요.');
+      var messages=isFollowUp?qaChatHistory.concat([{role:'user',content:text}]):[{role:'user',content:'[학교: '+(school?school.name:'')+'] ['+(week?week.name:'')+'] ['+qaState.prob+'번 문제]\n\n'+text}];
+      var res=await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+        body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:systemPrompt,messages:messages})
+      });
+      var data=await res.json();
+      aiAnswer=data.content&&data.content[0]?data.content[0].text:'답변 생성에 실패했습니다. 선생님께 직접 문의해주세요.';
+    }
+  }catch(e){aiAnswer='답변 생성 중 오류가 발생했습니다. 선생님이 직접 확인해드릴게요.';}
+  qaChatHistory.push({role:'user',content:text});
+  qaChatHistory.push({role:'assistant',content:aiAnswer});
+  document.getElementById('qa-loading-area').style.display='none';
+  addChatBubble('assistant',aiAnswer,'ai');
+  if(!isFollowUp){
+    var newQ={id:'q_'+Date.now(),school_id:qaState.school,week_id:qaState.week,prob_num:qaState.prob,student_id:session.id,question:text,ai_answer:aiAnswer,teacher_note:'',status:hasSol?'answered':'pending',badge:hasSol?'ai':'pending',created_at:new Date().toISOString()};
+    qaDb.questions=qaDb.questions.filter(function(q){return !(q.week_id===qaState.week&&q.prob_num===qaState.prob&&q.student_id===session.id);});
+    qaDb.questions.unshift(newQ);
+    await sb.from('qa_questions').upsert(newQ,{onConflict:'week_id,prob_num,student_id'});
+    if(!hasSol){showQaPending();return;}
+    renderSQaProbGrid();renderSQaMyList();
+  }
+  document.getElementById('qa-input-area').style.display='block';
+  document.getElementById('qa-q-text').placeholder='추가로 궁금한 점을 입력하세요...';
+  document.getElementById('qa-q-text').focus();
+}
+
+document.getElementById('modal-qa').addEventListener('click',function(e){if(e.target===e.currentTarget)closeQaModal();});
+document.getElementById('modal-qa-week').addEventListener('click',function(e){if(e.target===e.currentTarget)closeQaWeekModal();});
+document.getElementById('modal-qa-school').addEventListener('click',function(e){if(e.target===e.currentTarget)document.getElementById('modal-qa-school').classList.remove('show');});
+
 /* ===== INIT ===== */
-(async()=>{
+(async function(){
   if(!navigator.onLine){
     document.querySelector('.loading-text').textContent='인터넷 연결을 확인해주세요.';
-    setTimeout(()=>{hideLoading();showPage('page-login');},2000);
+    setTimeout(function(){hideLoading();showPage('page-login');},2000);
+    return;
+  }
+  var attempt=0,maxAttempts=10,connected=false;
+  var msgs=['서버에 연결 중...','서버를 깨우는 중... (잠시만요)','거의 다 됐어요...','조금만 더...'];
+  while(attempt<maxAttempts){
+    document.querySelector('.loading-text').textContent=msgs[Math.min(attempt,msgs.length-1)];
+    try{
+      await sb.from('users').select('id').limit(1);
+      connected=true;break;
+    }catch(e){
+      attempt++;
+      if(attempt<maxAttempts)await new Promise(function(r){setTimeout(r,3000);});
+    }
+  }
+  if(!connected){
+    document.querySelector('.loading-text').textContent='서버 연결 실패. 새로고침해주세요.';
+    setTimeout(function(){hideLoading();showPage('page-login');},2500);
     return;
   }
   try{
-    // Supabase 슬립 모드 깨우기 (가벼운 요청 먼저)
-    document.querySelector('.loading-text').textContent='서버에 연결 중...';
-    await sb.from('users').select('id').limit(1);
-    // 전체 데이터 로드
     document.querySelector('.loading-text').textContent='데이터 불러오는 중...';
     await loadAll();
-    const saved=localStorage.getItem('lms_sess');
+    await loadQaData();
+    var saved=localStorage.getItem('lms_sess');
     if(saved){
       try{
-        const{id,role}=JSON.parse(saved);
-        const user=db.users.find(u=>u.id===id&&u.role===role&&u.status!=='pending');
-        if(user){session=user;hideLoading();if(role==='teacher')launchTeacher();else launchStudent();return;}
+        var parsed=JSON.parse(saved);
+        var user=db.users.find(function(u){return u.id===parsed.id&&u.role===parsed.role&&u.status!=='pending';});
+        if(user){session=user;hideLoading();if(parsed.role==='teacher')launchTeacher();else launchStudent();return;}
       }catch(e){}
       localStorage.removeItem('lms_sess');
     }
   }catch(e){
     console.error(e);
     document.querySelector('.loading-text').textContent='서버 연결 실패. 새로고침해주세요.';
-    setTimeout(()=>{hideLoading();showPage('page-login');},2500);
+    setTimeout(function(){hideLoading();showPage('page-login');},2500);
     return;
   }
   hideLoading();showPage('page-login');
