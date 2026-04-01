@@ -640,7 +640,23 @@ const SB_KEY='sb_publishable_IbfVcXs5TmXfumrnK4Somg_7MzygCdh';
 // GitHub에 올려도 키가 노출되지 않아요
 let CLAUDE_API_KEY = localStorage.getItem('claude_api_key') || '';
 // ────────────────────────────────────────────────────
-
+/* ── Supabase 테이블 세팅 (최초 1회 SQL Editor에서 실행) ──
+create table qa_schools (id text primary key, name text, created_at timestamptz default now());
+create table qa_weeks (
+  id text primary key, school_id text, name text, prob_count int default 100,
+  prob_pdf_url text, sol_pdf_url text, sol_text text,
+  created_at timestamptz default now()
+);
+create table qa_questions (
+  id text primary key, school_id text, week_id text, prob_num int,
+  student_id text, question text, ai_answer text, teacher_note text,
+  status text default 'pending', badge text,
+  created_at timestamptz default now(),
+  unique(week_id, prob_num, student_id)
+);
+-- Storage: qa-files 버킷을 Public으로 생성
+insert into storage.buckets (id, name, public) values ('qa-files', 'qa-files', true);
+─────────────────────────────────────────────────── */
 const sb=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:false,autoRefreshToken:false}});
 
 let session=null,currentRole='teacher',progressView='video';
@@ -2059,49 +2075,33 @@ document.getElementById('modal-detail').addEventListener('click',e=>{if(e.target
 document.getElementById('modal-resume').addEventListener('click',e=>{if(e.target===e.currentTarget)closeResume();});
 
 /* ===== INIT ===== */
-(async function init(){
+(async()=>{
   if(!navigator.onLine){
     document.querySelector('.loading-text').textContent='인터넷 연결을 확인해주세요.';
-    setTimeout(function(){hideLoading();showPage('page-login');},2000);
-    return;
-  }
-  var attempt=0;
-  var maxAttempts=10;
-  var msgs=['서버에 연결 중...','서버를 깨우는 중... (잠시만요)','거의 다 됐어요...','조금만 더...'];
-  var connected=false;
-  while(attempt<maxAttempts){
-    document.querySelector('.loading-text').textContent=msgs[Math.min(attempt,msgs.length-1)];
-    try{
-      await sb.from('users').select('id').limit(1);
-      connected=true;
-      break;
-    }catch(e){
-      attempt++;
-      if(attempt<maxAttempts) await new Promise(function(r){setTimeout(r,3000);});
-    }
-  }
-  if(!connected){
-    document.querySelector('.loading-text').textContent='서버 연결 실패. 새로고침해주세요.';
-    setTimeout(function(){hideLoading();showPage('page-login');},2500);
+    setTimeout(()=>{hideLoading();showPage('page-login');},2000);
     return;
   }
   try{
+    // Supabase 슬립 모드 깨우기 (가벼운 요청 먼저)
+    document.querySelector('.loading-text').textContent='서버에 연결 중...';
+    await sb.from('users').select('id').limit(1);
+    // 전체 데이터 로드
     document.querySelector('.loading-text').textContent='데이터 불러오는 중...';
     await loadAll();
     await loadQaData();
-    var saved=localStorage.getItem('lms_sess');
+    const saved=localStorage.getItem('lms_sess');
     if(saved){
       try{
-        var parsed=JSON.parse(saved);
-        var user=db.users.find(function(u){return u.id===parsed.id&&u.role===parsed.role&&u.status!=='pending';});
-        if(user){session=user;hideLoading();if(parsed.role==='teacher')launchTeacher();else launchStudent();return;}
+        const{id,role}=JSON.parse(saved);
+        const user=db.users.find(u=>u.id===id&&u.role===role&&u.status!=='pending');
+        if(user){session=user;hideLoading();if(role==='teacher')launchTeacher();else launchStudent();return;}
       }catch(e){}
       localStorage.removeItem('lms_sess');
     }
   }catch(e){
     console.error(e);
     document.querySelector('.loading-text').textContent='서버 연결 실패. 새로고침해주세요.';
-    setTimeout(function(){hideLoading();showPage('page-login');},2500);
+    setTimeout(()=>{hideLoading();showPage('page-login');},2500);
     return;
   }
   hideLoading();showPage('page-login');
