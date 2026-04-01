@@ -1558,11 +1558,13 @@ async function addQaWeek() {
 
     if (qwProbFile) {
       document.getElementById('qw-extract-status').textContent = '📤 문제지 업로드 중...';
-      prob_pdf_url = await uploadQaPdf(qwProbFile, `${qaState.school}/${id}/problem.pdf`);
+      const safeName = id.replace(/[^a-zA-Z0-9_-]/g, '_');
+      prob_pdf_url = await uploadQaPdf(qwProbFile, `${safeName}/problem.pdf`);
     }
     if (qwSolFile) {
       document.getElementById('qw-extract-status').textContent = '📤 해설지 업로드 중...';
-      sol_pdf_url = await uploadQaPdf(qwSolFile, `${qaState.school}/${id}/solution.pdf`);
+      const safeName = id.replace(/[^a-zA-Z0-9_-]/g, '_');
+      sol_pdf_url = await uploadQaPdf(qwSolFile, `${safeName}/solution.pdf`);
     }
 
     const item = {
