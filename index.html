@@ -1478,10 +1478,10 @@ async function loadQaData() {
     qaDb.questions = q.data || [];
     // 기본 학교가 없으면 한백고/치동고 세팅
     if (!qaDb.schools.length) {
-      for (const name of ['한백고', '치동고']) {
-        const id = 'sc_' + name;
-        qaDb.schools.push({ id, name, created_at: new Date().toISOString() });
-        await sb.from('qa_schools').upsert({ id, name });
+      const defaults = [{ id: 'sc_hanbaek', name: '한백고' }, { id: 'sc_chidong', name: '치동고' }];
+      for (const item of defaults) {
+        qaDb.schools.push({ ...item, created_at: new Date().toISOString() });
+        await sb.from('qa_schools').upsert({ ...item });
       }
     }
   } catch(e) { console.error('QA load error', e); }
