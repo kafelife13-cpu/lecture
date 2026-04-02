@@ -370,6 +370,18 @@ input,button{font-family:var(--font)}
           <div id="t-qa-school-tabs" style="display:flex;gap:6px;flex-wrap:wrap;flex:1"></div>
           <button class="btn blue btn-sm" onclick="openQaSchoolModal()">+ 학교 추가</button>
         </div>
+        <!-- 학교별 자료 -->
+        <div class="card" style="margin-bottom:1rem;border-color:var(--teal)">
+          <div class="card-head" style="background:var(--teal-bg)">
+            <h3 style="color:var(--teal)">📚 학교별 자료 <span style="font-size:11px;font-weight:400;color:var(--teal)">(필기·프린트 PDF — 학교 선택 후 추가)</span></h3>
+            <button class="btn btn-sm" id="mat-add-btn" style="border-color:var(--teal);color:var(--teal);display:none" onclick="document.getElementById('mat-file-input').click()">+ 파일 추가</button>
+          </div>
+          <input type="file" id="mat-file-input" accept=".pdf" style="display:none" onchange="addQaMaterial(event)">
+          <div id="mat-upload-status" style="display:none;padding:10px 1.25rem;font-size:12px;color:var(--text2)"></div>
+          <div id="qa-materials-list" style="padding:0 1.25rem 0.5rem">
+            <div style="padding:1rem 0;font-size:13px;color:var(--text3)">왼쪽에서 학교를 선택하면 해당 학교 자료를 관리할 수 있어요.</div>
+          </div>
+        </div>
         <div class="card" style="margin-bottom:1rem">
           <div class="card-head">
             <h3 id="t-qa-school-title">학교를 선택하세요</h3>
@@ -398,6 +410,7 @@ input,button{font-family:var(--font)}
     <button class="mobile-tab" onclick="tNav('students')" data-mt="students" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>학생</button>
     <button class="mobile-tab" onclick="tNav('progress')" data-mt="progress" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>진도</button>
     <button class="mobile-tab" onclick="tNav('qa')" data-mt="qa" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A</button>
+    <button class="mobile-tab" onclick="doLogout()" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>로그아웃</button>
   </div>
 </div>
 
@@ -751,7 +764,7 @@ function tNav(panel){
   if(panel==='students')renderStudents();
   if(panel==='access')renderAccessPanel();
   if(panel==='progress')renderProgress();
-  if(panel==='qa'){renderTQaSchoolTabs();renderTQaWeekList();renderQaWeekFilter();renderQaReview();}
+  if(panel==='qa'){renderTQaSchoolTabs();renderTQaWeekList();renderQaWeekFilter();renderQaReview();renderQaMaterialsList();}
 }
 
 /* ===== DASHBOARD ===== */
@@ -1358,7 +1371,7 @@ document.getElementById('modal-resume').addEventListener('click',e=>{if(e.target
 
 
 /* ===== Q&A ===== */
-var qaDb={schools:[],weeks:[],questions:[]};
+var qaDb={schools:[],weeks:[],questions:[],materials:[]};
 var qaState={school:null,week:null,prob:null};
 var qaChatHistory=[];
 var qwSolText='';
@@ -1370,9 +1383,11 @@ async function loadQaData(){
     var s=await sb.from('qa_schools').select('*').order('created_at');
     var w=await sb.from('qa_weeks').select('*').order('created_at');
     var q=await sb.from('qa_questions').select('*').order('created_at',{ascending:false});
+    var m=await sb.from('qa_materials').select('*').order('created_at');
     qaDb.schools=s.data||[];
     qaDb.weeks=w.data||[];
     qaDb.questions=q.data||[];
+    qaDb.materials=m.data||[];
     if(!qaDb.schools.length){
       var defaults=[{id:'sc_hanbaek',name:'한백고'},{id:'sc_chidong',name:'치동고'}];
       for(var i=0;i<defaults.length;i++){
@@ -1477,6 +1492,58 @@ async function deleteQaWeek(id){
   renderTQaWeekList();renderQaReview();
 }
 
+async function addQaMaterial(event){
+  var file=event.target.files[0];
+  if(!file)return;
+  if(!qaState.school){notify('학교를 먼저 선택하세요.','error');return;}
+  document.getElementById('mat-file-input').value='';
+  var status=document.getElementById('mat-upload-status');
+  status.style.display='block';
+  status.textContent='📖 파일을 읽고 있어요... '+file.name;
+  var text=await extractPdfText(file);
+  status.textContent=text?'✅ 텍스트 추출 완료 · 저장 중...':'⚠️ 텍스트 추출 실패 (스캔 PDF일 수 있어요)';
+  var id='mat_'+Date.now();
+  var item={id:id,school_id:qaState.school,name:file.name,text:text,created_at:new Date().toISOString()};
+  var res=await sb.from('qa_materials').insert(item);
+  if(res.error){status.textContent='❌ 저장 실패: '+res.error.message;return;}
+  qaDb.materials.push(item);
+  status.textContent='';status.style.display='none';
+  notify(file.name+' 추가됐습니다.','success');
+  renderQaMaterialsList();
+}
+
+async function deleteQaMaterial(id){
+  if(!confirm('이 자료를 삭제하시겠습니까?'))return;
+  await sb.from('qa_materials').delete().eq('id',id);
+  qaDb.materials=qaDb.materials.filter(function(m){return m.id!==id;});
+  notify('삭제됐습니다.','info');
+  renderQaMaterialsList();
+}
+
+function renderQaMaterialsList(){
+  var el=document.getElementById('qa-materials-list');
+  if(!el)return;
+  if(!qaState.school){
+    el.innerHTML='<div style="padding:1rem 0;font-size:13px;color:var(--text3)">왼쪽에서 학교를 선택하면 해당 학교 자료를 관리할 수 있어요.</div>';
+    return;
+  }
+  var school=qaDb.schools.find(function(s){return s.id===qaState.school;});
+  var mats=qaDb.materials.filter(function(m){return m.school_id===qaState.school;});
+  if(!mats.length){
+    el.innerHTML='<div style="padding:1rem 0;font-size:13px;color:var(--text3)">'+(school?school.name:'')+'에 등록된 자료가 없어요. + 파일 추가 버튼으로 추가하세요.</div>';
+    return;
+  }
+  el.innerHTML=mats.map(function(m){
+    return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">'+
+      '<div style="flex:1">'+
+      '<div style="font-size:13px;font-weight:600">📄 '+m.name+'</div>'+
+      '<div style="font-size:11px;color:var(--text2);margin-top:2px">'+
+      (m.text?m.text.length.toLocaleString()+'자 추출됨':'텍스트 없음')+
+      ' · '+new Date(m.created_at).toLocaleDateString('ko-KR')+'</div></div>'+
+      '<button class="btn red btn-sm" onclick="deleteQaMaterial(\''+m.id+'\')">삭제</button></div>';
+  }).join('');
+}
+
 function renderTQaSchoolTabs(){
   var el=document.getElementById('t-qa-school-tabs');
   if(!el)return;
@@ -1490,7 +1557,9 @@ function selectTQaSchool(sid){
   var school=qaDb.schools.find(function(s){return s.id===sid;});
   document.getElementById('t-qa-school-title').textContent=school?school.name+' 주차 관리':'';
   document.getElementById('t-qa-add-week-btn').style.display='';
-  renderTQaSchoolTabs();renderTQaWeekList();renderQaWeekFilter();
+  var matBtn=document.getElementById('mat-add-btn');
+  if(matBtn)matBtn.style.display='';
+  renderTQaSchoolTabs();renderTQaWeekList();renderQaWeekFilter();renderQaMaterialsList();
 }
 
 function renderTQaWeekList(){
@@ -1701,7 +1770,7 @@ function addChatBubble(role,text,badge){
   if(!isUser&&badge){
     var b=document.createElement('span');
     b.className='badge '+(badge==='teacher'?'review':'done');
-    b.textContent=badge==='teacher'?'선생님 답변':'AI 답변';
+    b.textContent=badge==='teacher'?'선생님 답변':'학습도우미';
     b.style.marginLeft='4px';
     div.appendChild(b);
   }
@@ -1797,7 +1866,8 @@ async function submitQaQuestion(){
       await new Promise(function(r){setTimeout(r,1200);});
       aiAnswer=isFollowUp?'추가 질문 답변입니다.\n\n'+text+'에 대해 더 설명드리면, 이 부분은 지문의 핵심 논거와 연결됩니다. API 키를 설정하면 실제 AI 답변이 제공됩니다.':'[데모 모드] '+qaState.prob+'번 문제 답변입니다.\n\n'+hasSol?'해설지를 기반으로 설명드립니다. 실제 서비스에서는 API 키를 설정하면 해설지 전체를 읽고 정확한 답변이 제공됩니다.':'해설지가 없어 일반 국어 지식으로 답변드립니다.';
     }else{
-      var systemPrompt='당신은 수능 국어를 20년 이상 가르친 베테랑 강사입니다. 학생의 질문에 다음 원칙을 반드시 따라 답변하세요.\n\n[답변 원칙]\n1. 학생이 헷갈리는 핵심 포인트를 정확히 짚어주세요\n2. 왜 정답이 정답인지 지문 근거를 들어 설명하세요\n3. 오답 선지가 왜 틀렸는지도 하나씩 짚어주세요\n4. 어려운 개념은 쉬운 말로 풀어서 설명하세요\n5. 마지막에 "핵심 정리"를 한두 줄로 마무리하세요\n6. 친근하고 따뜻한 선생님 말투로 설명하세요\n\n'+(hasSol?'[해설지 전문]\n'+week.sol_text+'\n\n위 해설지를 반드시 참고하여 '+qaState.prob+'번 문제 위주로 답변하세요.':'해설지가 없으니 수능 국어 전문 지식으로 성실히 답변하세요.');
+      var matContext=qaDb.materials.filter(function(m){return m.school_id===qaState.school&&m.text;}).map(function(m){return '['+m.name+']\n'+m.text;}).join('\n\n');
+      var systemPrompt='당신은 "국어 학습도우미"예요. 수능 국어를 함께 공부하는 따뜻한 조교 선생님처럼 학생 곁에서 도와주세요.\n\n[반드시 지켜야 할 원칙]\n1. 해설지가 있으면 반드시 해설지 내용에만 근거해서 답변하세요. 해설지에 없는 내용을 임의로 추가하지 마세요.\n2. 해설지에 없는 내용은 반드시 "해설지에는 나와 있지 않지만, 수능 원칙상~" 이라고 먼저 밝히고 설명하세요.\n3. 추측이나 임의 해석은 절대 하지 마세요. 확실하지 않으면 선생님께 직접 여쭤보는 게 좋을 것 같아요! 라고 하세요.\n4. 오답 선지는 반드시 하나씩 왜 틀렸는지 지문 근거를 들어 빠짐없이 분석해주세요.\n5. 답변 마지막에는 반드시 💡 핵심 정리 로 1~2줄 핵심 요약을 해주세요.\n6. 어려운 개념은 중학생도 이해할 수 있게 쉬운 말로 풀어주세요.\n\n[말투 가이드]\n- ~해요, ~이에요 체를 사용해요\n- 답변 첫 줄은 공감으로 시작하세요. 예: 이 문제 정말 헷갈리죠~, 좋은 질문이에요!\n- 답변 마무리는 잘 이해됐나요? 더 궁금한 거 있으면 언제든 물어봐요 처럼 따뜻하게 해주세요\n- AI처럼 딱딱하게 말하지 말고, 옆에서 함께 공부하는 선배처럼 자연스럽게 대화하세요\n\n'+(matContext?'[학교 공통 자료]\n'+matContext+'\n\n':'')+(hasSol?'[해설지 전문]\n'+week.sol_text+'\n\n위 해설지를 반드시 참고하여 '+qaState.prob+'번 문제 위주로 답변하세요. 해설지에 없는 내용은 절대 임의로 추가하지 마세요.':'해설지가 아직 등록되지 않았어요. 수능 국어 일반 원칙에 근거해서 설명하되, 답변 끝에 해설지가 없어서 일반 원칙으로 설명했어요. 선생님께도 한번 확인해보세요! 라고 꼭 밝혀주세요.');
       var messages=isFollowUp?qaChatHistory.concat([{role:'user',content:text}]):[{role:'user',content:'[학교: '+(school?school.name:'')+'] ['+(week?week.name:'')+'] ['+qaState.prob+'번 문제]\n\n'+text}];
       var res=await fetch('https://api.anthropic.com/v1/messages',{
         method:'POST',
