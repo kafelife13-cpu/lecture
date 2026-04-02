@@ -587,7 +587,7 @@ input,button{font-family:var(--font)}
     <div id="qa-chat-history" style="flex:1;overflow-y:auto;padding:1rem 1.5rem;display:flex;flex-direction:column;gap:12px;min-height:100px"></div>
     <div id="qa-loading-area" style="display:none;text-align:center;padding:1rem 1.5rem;flex-shrink:0">
       <div class="spinner" style="width:20px;height:20px;border-width:2px;margin:0 auto 8px"></div>
-      <div style="font-size:13px;color:var(--text2)" id="qa-loading-msg">AI가 답변을 생성하고 있어요...</div>
+      <div style="font-size:13px;color:var(--text2)" id="qa-loading-msg">학습도우미가 답변을 작성하고 있어요 ✏️</div>
     </div>
     <div id="qa-input-area" style="flex-shrink:0;padding:1rem 1.5rem;border-top:1px solid var(--border)">
       <div style="display:flex;gap:8px;align-items:flex-end">
@@ -1770,7 +1770,7 @@ function addChatBubble(role,text,badge){
   if(!isUser&&badge){
     var b=document.createElement('span');
     b.className='badge '+(badge==='teacher'?'review':'done');
-    b.textContent=badge==='teacher'?'선생님 답변':'학습도우미';
+    b.textContent=badge==='teacher'?'선생님 직접 답변':'학습도우미 답변';
     b.style.marginLeft='4px';
     div.appendChild(b);
   }
@@ -1859,7 +1859,7 @@ async function submitQaQuestion(){
   addChatBubble('user',text);
   document.getElementById('qa-q-text').value='';
   document.getElementById('qa-loading-area').style.display='block';
-  document.getElementById('qa-loading-msg').textContent=hasSol?'AI가 해설지를 읽고 답변을 생성하고 있어요...':'AI가 답변을 생성하고 있어요...';
+  document.getElementById('qa-loading-msg').textContent=hasSol?'AI가 해설지를 읽고 답변을 생성하고 있어요...':'학습도우미가 답변을 작성하고 있어요 ✏️';
   var aiAnswer='';
   try{
     if(!CLAUDE_API_KEY){
@@ -1867,12 +1867,13 @@ async function submitQaQuestion(){
       aiAnswer=isFollowUp?'추가 질문 답변입니다.\n\n'+text+'에 대해 더 설명드리면, 이 부분은 지문의 핵심 논거와 연결됩니다. API 키를 설정하면 실제 AI 답변이 제공됩니다.':'[데모 모드] '+qaState.prob+'번 문제 답변입니다.\n\n'+hasSol?'해설지를 기반으로 설명드립니다. 실제 서비스에서는 API 키를 설정하면 해설지 전체를 읽고 정확한 답변이 제공됩니다.':'해설지가 없어 일반 국어 지식으로 답변드립니다.';
     }else{
       var matContext=qaDb.materials.filter(function(m){return m.school_id===qaState.school&&m.text;}).map(function(m){return '['+m.name+']\n'+m.text;}).join('\n\n');
-      var systemPrompt='당신은 "국어 학습도우미"예요. 수능 국어를 함께 공부하는 따뜻한 조교 선생님처럼 학생 곁에서 도와주세요.\n\n[반드시 지켜야 할 원칙]\n1. 해설지가 있으면 반드시 해설지 내용에만 근거해서 답변하세요. 해설지에 없는 내용을 임의로 추가하지 마세요.\n2. 해설지에 없는 내용은 반드시 "해설지에는 나와 있지 않지만, 수능 원칙상~" 이라고 먼저 밝히고 설명하세요.\n3. 추측이나 임의 해석은 절대 하지 마세요. 확실하지 않으면 선생님께 직접 여쭤보는 게 좋을 것 같아요! 라고 하세요.\n4. 오답 선지는 반드시 하나씩 왜 틀렸는지 지문 근거를 들어 빠짐없이 분석해주세요.\n5. 답변 마지막에는 반드시 💡 핵심 정리 로 1~2줄 핵심 요약을 해주세요.\n6. 어려운 개념은 중학생도 이해할 수 있게 쉬운 말로 풀어주세요.\n\n[말투 가이드]\n- ~해요, ~이에요 체를 사용해요\n- 답변 첫 줄은 공감으로 시작하세요. 예: 이 문제 정말 헷갈리죠~, 좋은 질문이에요!\n- 답변 마무리는 잘 이해됐나요? 더 궁금한 거 있으면 언제든 물어봐요 처럼 따뜻하게 해주세요\n- AI처럼 딱딱하게 말하지 말고, 옆에서 함께 공부하는 선배처럼 자연스럽게 대화하세요\n\n'+(matContext?'[학교 공통 자료]\n'+matContext+'\n\n':'')+(hasSol?'[해설지 전문]\n'+week.sol_text+'\n\n위 해설지를 반드시 참고하여 '+qaState.prob+'번 문제 위주로 답변하세요. 해설지에 없는 내용은 절대 임의로 추가하지 마세요.':'해설지가 아직 등록되지 않았어요. 수능 국어 일반 원칙에 근거해서 설명하되, 답변 끝에 해설지가 없어서 일반 원칙으로 설명했어요. 선생님께도 한번 확인해보세요! 라고 꼭 밝혀주세요.');
+      var matContext=qaDb.materials.filter(function(m){return m.school_id===qaState.school&&m.text;}).map(function(m){return '['+m.name+']\n'+m.text;}).join('\n\n');
+      var systemPrompt='당신은 수능 국어 전문 선생님의 학습도우미예요. 단순히 해설지를 읽어주는 게 아니라, 학생이 스스로 사고할 수 있도록 깊이 있게 설명해주세요.\n\n[답변 방식 — 반드시 이 순서로]\n1. 학생 질문에 공감하는 한 마디로 시작하세요. 예: 이 문제 정말 헷갈리죠~, 좋은 포인트를 짚었네요!\n2. 정답이 정답인 이유를 해설지 근거 + 지문 내용을 직접 인용하며 설명하세요.\n3. 출제자의 의도와 함정을 분석하세요. 왜 이 선지가 헷갈리도록 설계됐는지, 수험생이 어디서 실수하는지 짚어주세요.\n4. 오답 선지는 하나씩 왜 틀렸는지 지문 근거를 들어 설명하세요.\n5. 마지막은 잘 이해됐나요? 더 궁금한 거 있으면 언제든 물어봐요! 처럼 따뜻하게 마무리하세요.\n\n[절대 하지 말 것]\n- 해설지 내용을 그냥 요약만 하기\n- 정답만 알려주고 끝내기\n- 딱딱하고 교과서적인 말투\n- 추측이나 근거 없는 해석\n- 해설지에 없는 내용 마음대로 추가 (없으면 해설지에는 이 부분이 없지만~ 으로 구분)\n\n[말투]\n- ~해요, ~이에요 체로 친근하게\n- 옆에서 같이 공부하는 선배처럼 자연스럽게\n- 학생이 헷갈려 해도 절대 지적하지 말고 공감하기\n- 볼드(**텍스트**)는 꼭 필요한 핵심 단어에만 사용\n\n'+(matContext?'[학교 자료]\n'+matContext+'\n\n':'')+(hasSol?'[해설지 전문]\n'+week.sol_text+'\n\n위 해설지를 반드시 참고하여 '+qaState.prob+'번 문제 위주로 답변하세요. 해설지에 없는 내용은 절대 임의로 추가하지 마세요.':'해설지가 아직 등록되지 않았어요. 수능 국어 일반 원칙에 근거해서 설명하되, 답변 끝에 해설지가 없어서 일반 원칙으로 설명했어요. 선생님께도 한번 확인해보세요! 라고 꼭 밝혀주세요.');
       var messages=isFollowUp?qaChatHistory.concat([{role:'user',content:text}]):[{role:'user',content:'[학교: '+(school?school.name:'')+'] ['+(week?week.name:'')+'] ['+qaState.prob+'번 문제]\n\n'+text}];
       var res=await fetch('https://api.anthropic.com/v1/messages',{
         method:'POST',
         headers:{'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-        body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:systemPrompt,messages:messages})
+        body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2500,system:systemPrompt,messages:messages})
       });
       var data=await res.json();
       aiAnswer=data.content&&data.content[0]?data.content[0].text:'답변 생성에 실패했습니다. 선생님께 직접 문의해주세요.';
