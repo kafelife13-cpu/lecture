@@ -275,6 +275,7 @@ input,button{font-family:var(--font)}
         <div class="nav-item" onclick="tNav('access')" data-p="access" id="nav-access"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습 신청 관리</div>
         <div class="nav-item" onclick="tNav('progress')" data-p="progress"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>진도 현황</div>
         <div class="nav-item" onclick="tNav('qa')" data-p="qa" id="nav-qa"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A 관리</div>
+        <div class="nav-item" onclick="tNav('cert')" data-p="cert"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증 관리</div>
       </nav>
       <div class="sidebar-footer"><button class="btn-logout" onclick="doLogout()">로그아웃</button></div>
     </div>
@@ -401,6 +402,34 @@ input,button{font-family:var(--font)}
         </div>
       </div>
 
+      <!-- 인증 관리 -->
+      <div class="panel" id="panel-cert">
+        <div class="page-header"><h1>인증 관리</h1><p>주차별 필기·영상 인증 대상을 지정하고 제출 현황을 확인하세요</p></div>
+        <div style="display:flex;gap:8px;margin-bottom:1rem;align-items:center;flex-wrap:wrap">
+          <div id="t-cert-school-tabs" style="display:flex;gap:6px;flex-wrap:wrap;flex:1"></div>
+        </div>
+        <div class="card" style="margin-bottom:1rem">
+          <div class="card-head">
+            <h3 id="t-cert-week-title">학교를 선택하세요</h3>
+            <button class="btn blue btn-sm" id="t-cert-add-week-btn" style="display:none" onclick="openCertWeekModal()">+ 주차 추가</button>
+          </div>
+          <div id="t-cert-week-list" style="padding:0 1.25rem 0.5rem"></div>
+        </div>
+        <div class="card" id="t-cert-detail-card" style="display:none">
+          <div class="card-head">
+            <h3 id="t-cert-detail-title">인증 항목 및 대상</h3>
+            <button class="btn blue btn-sm" onclick="openCertItemModal()">+ 인증 항목 추가</button>
+          </div>
+          <div id="t-cert-item-list" style="padding:0 1.25rem 0.5rem"></div>
+        </div>
+        <div class="card" id="t-cert-submit-card" style="display:none">
+          <div class="card-head">
+            <h3>제출 현황 <span id="cert-pending-badge" style="background:var(--amber-bg);color:var(--amber);font-size:11px;padding:2px 8px;border-radius:100px;margin-left:6px;display:none"></span></h3>
+          </div>
+          <div id="t-cert-submit-list"></div>
+        </div>
+      </div>
+
     </div></div>
   </div>
   <div class="mobile-tabbar" id="t-tabbar" style="overflow-x:auto">
@@ -410,6 +439,7 @@ input,button{font-family:var(--font)}
     <button class="mobile-tab" onclick="tNav('students')" data-mt="students" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>학생</button>
     <button class="mobile-tab" onclick="tNav('progress')" data-mt="progress" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>진도</button>
     <button class="mobile-tab" onclick="tNav('qa')" data-mt="qa" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A</button>
+    <button class="mobile-tab" onclick="tNav('cert')" data-mt="cert" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증</button>
     <button class="mobile-tab" onclick="doLogout()" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>로그아웃</button>
   </div>
 </div>
@@ -428,6 +458,7 @@ input,button{font-family:var(--font)}
         <div class="nav-item" onclick="sNav('review')" data-p="review"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습 신청</div>
         <div class="nav-item" onclick="sNav('mypage')" data-p="mypage"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>내 진도</div>
         <div class="nav-item" onclick="sNav('qa')" data-p="qa"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A</div>
+        <div class="nav-item" onclick="sNav('cert')" data-p="cert"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증</div>
       </nav>
       <div class="sidebar-footer"><button class="btn-logout" onclick="doLogout()">로그아웃</button></div>
     </div>
@@ -472,6 +503,11 @@ input,button{font-family:var(--font)}
           <div id="s-qa-my-list" style="padding:4px 0"></div>
         </div>
       </div>
+      <!-- 인증 탭 -->
+      <div class="panel" id="panel-cert">
+        <div class="page-header"><h1>인증</h1><p>선생님이 지정한 인증 항목을 제출하세요</p></div>
+        <div id="s-cert-list"></div>
+      </div>
     </div></div>
   </div>
   <div class="mobile-tabbar" id="s-tabbar" style="overflow-x:auto">
@@ -479,6 +515,7 @@ input,button{font-family:var(--font)}
     <button class="mobile-tab" onclick="sNav('review')" data-ms="review" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습신청</button>
     <button class="mobile-tab" onclick="sNav('mypage')" data-ms="mypage" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>내 진도</button>
     <button class="mobile-tab" onclick="sNav('qa')" data-ms="qa" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A</button>
+    <button class="mobile-tab" onclick="sNav('cert')" data-ms="cert" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증</button>
     <button class="mobile-tab" onclick="doLogout()" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>로그아웃</button>
   </div>
 </div>
@@ -533,6 +570,60 @@ input,button{font-family:var(--font)}
     <div class="modal-head"><h3 id="detail-title">시청 상세</h3><button class="modal-close" onclick="closeDetail()">×</button></div>
     <div class="modal-body" id="detail-body"></div>
     <div class="modal-footer"><button class="btn" onclick="closeDetail()">닫기</button></div>
+  </div>
+</div>
+
+<!-- 인증 주차 추가 모달 -->
+<div class="modal-bg" id="modal-cert-week">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-head"><h3>인증 주차 추가</h3><button class="modal-close" onclick="closeCertWeekModal()">×</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>주차 이름</label><input id="cw-name" class="form-input" placeholder="예: 1주차 필기 인증"/></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeCertWeekModal()">취소</button>
+      <button class="btn blue" onclick="addCertWeek()">추가</button>
+    </div>
+  </div>
+</div>
+
+<!-- 인증 항목 추가 모달 -->
+<div class="modal-bg" id="modal-cert-item">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-head"><h3>인증 항목 추가</h3><button class="modal-close" onclick="closeCertItemModal()">×</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>항목 이름</label><input id="ci-title" class="form-input" placeholder="예: 복습 영상 필기 인증"/></div>
+      <div class="form-group">
+        <label>인증 방식</label>
+        <select id="ci-type" class="form-select">
+          <option value="photo">사진 업로드</option>
+          <option value="check">체크만</option>
+          <option value="both">둘 다 가능</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>대상 학생 <span style="color:var(--text3);font-size:11px;text-transform:none">(체크한 학생만 인증 필요)</span></label>
+        <div id="ci-student-list" style="max-height:180px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeCertItemModal()">취소</button>
+      <button class="btn blue" onclick="addCertItem()">추가</button>
+    </div>
+  </div>
+</div>
+
+<!-- 인증 사진 보기 모달 -->
+<div class="modal-bg" id="modal-cert-photo">
+  <div class="modal" style="max-width:500px">
+    <div class="modal-head"><h3 id="cert-photo-title">제출 사진</h3><button class="modal-close" onclick="document.getElementById('modal-cert-photo').classList.remove('show')">×</button></div>
+    <div class="modal-body" style="text-align:center">
+      <img id="cert-photo-img" src="" style="max-width:100%;border-radius:var(--radius-sm)" alt="인증 사진"/>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" id="cert-reject-btn">반려</button>
+      <button class="btn green" id="cert-approve-btn">승인</button>
+    </div>
   </div>
 </div>
 
@@ -765,6 +856,7 @@ function tNav(panel){
   if(panel==='access')renderAccessPanel();
   if(panel==='progress')renderProgress();
   if(panel==='qa'){renderTQaSchoolTabs();renderTQaWeekList();renderQaWeekFilter();renderQaReview();renderQaMaterialsList();}
+  if(panel==='cert'){renderTCertSchoolTabs();renderTCertWeekList();}
 }
 
 /* ===== DASHBOARD ===== */
@@ -1131,6 +1223,7 @@ function sNav(panel){
   if(panel==='review')renderStudentReview();
   if(panel==='mypage')renderMyPage();
   if(panel==='qa'){renderSQaSchoolList();renderSQaMyList();}
+  if(panel==='cert')renderSCertList();
 }
 
 /* ===== 학생: 일반 강의 ===== */
@@ -1369,6 +1462,285 @@ document.getElementById('modal-play').addEventListener('click',e=>{if(e.target==
 document.getElementById('modal-detail').addEventListener('click',e=>{if(e.target===e.currentTarget)closeDetail();});
 document.getElementById('modal-resume').addEventListener('click',e=>{if(e.target===e.currentTarget)closeResume();});
 
+
+/* ===== 인증 ===== */
+var certDb={weeks:[],items:[],submissions:[],targets:{}};
+var certState={school:null,week:null};
+
+async function loadCertData(){
+  try{
+    var w=await sb.from('cert_weeks').select('*').order('created_at');
+    var it=await sb.from('cert_items').select('*').order('created_at');
+    var s=await sb.from('cert_submissions').select('*').order('submitted_at',{ascending:false});
+    certDb.weeks=w.data||[];
+    certDb.items=it.data||[];
+    certDb.submissions=s.data||[];
+    // targets: item_id -> [student_ids]
+    certDb.targets={};
+    certDb.items.forEach(function(item){
+      try{certDb.targets[item.id]=JSON.parse(item.targets||'[]');}catch(e){certDb.targets[item.id]=[];}
+    });
+  }catch(e){console.error('cert load error',e);}
+}
+
+function openCertWeekModal(){
+  document.getElementById('cw-name').value='';
+  document.getElementById('modal-cert-week').classList.add('show');
+}
+function closeCertWeekModal(){document.getElementById('modal-cert-week').classList.remove('show');}
+
+async function addCertWeek(){
+  var name=document.getElementById('cw-name').value.trim();
+  if(!name){notify('주차 이름을 입력하세요.','error');return;}
+  if(!certState.school){notify('학교를 먼저 선택하세요.','error');return;}
+  var id='cw_'+Date.now();
+  var item={id:id,school_id:certState.school,name:name,created_at:new Date().toISOString()};
+  var res=await sb.from('cert_weeks').insert(item);
+  if(res.error){notify('등록 실패: '+res.error.message,'error');return;}
+  certDb.weeks.push(item);
+  closeCertWeekModal();
+  notify(name+' 추가됐어요.','success');
+  renderTCertWeekList();
+}
+
+function openCertItemModal(){
+  if(!certState.week){notify('주차를 먼저 선택하세요.','error');return;}
+  document.getElementById('ci-title').value='';
+  document.getElementById('ci-type').value='photo';
+  var school=certState.school;
+  var students=db.users.filter(function(u){return u.role==='student'&&u.status==='active';});
+  var el=document.getElementById('ci-student-list');
+  if(!students.length){el.innerHTML='<div style="font-size:12px;color:var(--text3)">등록된 학생이 없어요.</div>';return;}
+  el.innerHTML=students.map(function(s){
+    return '<label style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;cursor:pointer">'+
+      '<input type="checkbox" value="'+s.id+'" style="width:16px;height:16px"> '+s.name+
+      '<span style="font-size:11px;color:var(--text2)">('+s.id+')</span></label>';
+  }).join('');
+  document.getElementById('modal-cert-item').classList.add('show');
+}
+function closeCertItemModal(){document.getElementById('modal-cert-item').classList.remove('show');}
+
+async function addCertItem(){
+  var title=document.getElementById('ci-title').value.trim();
+  var type=document.getElementById('ci-type').value;
+  if(!title){notify('항목 이름을 입력하세요.','error');return;}
+  var checked=Array.from(document.querySelectorAll('#ci-student-list input:checked')).map(function(el){return el.value;});
+  var id='ci_'+Date.now();
+  var item={id:id,week_id:certState.week,school_id:certState.school,title:title,type:type,targets:JSON.stringify(checked),created_at:new Date().toISOString()};
+  var res=await sb.from('cert_items').insert(item);
+  if(res.error){notify('등록 실패: '+res.error.message,'error');return;}
+  certDb.items.push(item);
+  certDb.targets[id]=checked;
+  closeCertItemModal();
+  notify(title+' 추가됐어요.','success');
+  renderTCertItemList();renderTCertSubmitList();
+}
+
+async function deleteCertItem(id){
+  if(!confirm('이 항목을 삭제할까요?'))return;
+  await sb.from('cert_submissions').delete().eq('item_id',id);
+  await sb.from('cert_items').delete().eq('id',id);
+  certDb.items=certDb.items.filter(function(i){return i.id!==id;});
+  certDb.submissions=certDb.submissions.filter(function(s){return s.item_id!==id;});
+  notify('삭제됐어요.','info');
+  renderTCertItemList();renderTCertSubmitList();
+}
+
+function renderTCertSchoolTabs(){
+  var el=document.getElementById('t-cert-school-tabs');
+  if(!el)return;
+  el.innerHTML=qaDb.schools.map(function(s){
+    return '<button class="btn'+(certState.school===s.id?' blue':'')+' btn-sm" onclick="selectTCertSchool(\''+s.id+'\')">'+s.name+'</button>';
+  }).join('');
+}
+
+function selectTCertSchool(sid){
+  certState.school=sid;certState.week=null;
+  var school=qaDb.schools.find(function(s){return s.id===sid;});
+  document.getElementById('t-cert-week-title').textContent=school?school.name+' 인증 주차':'';
+  document.getElementById('t-cert-add-week-btn').style.display='';
+  document.getElementById('t-cert-detail-card').style.display='none';
+  document.getElementById('t-cert-submit-card').style.display='none';
+  renderTCertSchoolTabs();renderTCertWeekList();
+}
+
+function renderTCertWeekList(){
+  var el=document.getElementById('t-cert-week-list');
+  if(!el)return;
+  var weeks=certDb.weeks.filter(function(w){return w.school_id===certState.school;});
+  if(!weeks.length){el.innerHTML='<div style="padding:1rem 0;font-size:13px;color:var(--text3)">등록된 주차가 없어요.</div>';return;}
+  el.innerHTML=weeks.map(function(w){
+    var items=certDb.items.filter(function(i){return i.week_id===w.id;});
+    var pending=certDb.submissions.filter(function(s){return items.some(function(i){return i.id===s.item_id;})&&s.status==='pending';}).length;
+    return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="selectTCertWeek(\''+w.id+'\')">'+
+      '<div style="flex:1"><div style="font-size:13px;font-weight:600">'+w.name+'</div>'+
+      '<div style="font-size:11px;color:var(--text2);margin-top:2px">항목 '+items.length+'개'+(pending?' · <span style="color:var(--amber)">대기 '+pending+'</span>':'')+'</div></div>'+
+      '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:var(--text3)"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>';
+  }).join('');
+}
+
+function selectTCertWeek(wid){
+  certState.week=wid;
+  var week=certDb.weeks.find(function(w){return w.id===wid;});
+  document.getElementById('t-cert-detail-title').textContent=week?week.name+' — 인증 항목':'';
+  document.getElementById('t-cert-detail-card').style.display='';
+  document.getElementById('t-cert-submit-card').style.display='';
+  renderTCertItemList();renderTCertSubmitList();
+}
+
+function renderTCertItemList(){
+  var el=document.getElementById('t-cert-item-list');
+  if(!el)return;
+  var items=certDb.items.filter(function(i){return i.week_id===certState.week;});
+  if(!items.length){el.innerHTML='<div style="padding:1rem 0;font-size:13px;color:var(--text3)">인증 항목이 없어요. + 인증 항목 추가 버튼으로 추가하세요.</div>';return;}
+  el.innerHTML=items.map(function(item){
+    var targets=certDb.targets[item.id]||[];
+    var targetNames=targets.map(function(tid){var u=db.users.find(function(u){return u.id===tid;});return u?u.name:tid;});
+    var typeLabel=item.type==='photo'?'사진':item.type==='check'?'체크':item.type==='both'?'사진+체크':'';
+    return '<div style="padding:10px 0;border-bottom:1px solid var(--border)">'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'+
+      '<span style="font-size:13px;font-weight:600">'+item.title+'</span>'+
+      '<span class="tag" style="font-size:10px">'+typeLabel+'</span></div>'+
+      '<div style="font-size:11px;color:var(--text2);margin-bottom:6px">대상: '+(targetNames.length?targetNames.join(', '):'없음')+'</div>'+
+      '<button class="btn red btn-sm" onclick="deleteCertItem(\''+item.id+'\')">삭제</button></div>';
+  }).join('');
+}
+
+function renderTCertSubmitList(){
+  var el=document.getElementById('t-cert-submit-list');
+  if(!el)return;
+  var items=certDb.items.filter(function(i){return i.week_id===certState.week;});
+  var subs=certDb.submissions.filter(function(s){return items.some(function(i){return i.id===s.item_id;});});
+  var pending=subs.filter(function(s){return s.status==='pending';});
+  var badge=document.getElementById('cert-pending-badge');
+  if(badge){badge.textContent=pending.length?pending.length+'건':'';badge.style.display=pending.length?'':'none';}
+  if(!subs.length){el.innerHTML='<div style="padding:2rem;text-align:center;color:var(--text3);font-size:13px">제출된 인증이 없어요.</div>';return;}
+  el.innerHTML=subs.map(function(sub){
+    var item=certDb.items.find(function(i){return i.id===sub.item_id;});
+    var student=db.users.find(function(u){return u.id===sub.student_id;});
+    var statusBadge=sub.status==='approved'?'<span class="badge done">승인</span>':sub.status==='rejected'?'<span class="badge" style="background:var(--red-bg);color:var(--red)">반려</span>':'<span class="badge partial">검토중</span>';
+    return '<div style="display:flex;align-items:center;gap:10px;padding:12px 1.25rem;border-bottom:1px solid var(--border)">'+
+      '<div style="flex:1"><div style="font-size:13px;font-weight:600;margin-bottom:2px">'+(student?student.name:sub.student_id)+'</div>'+
+      '<div style="font-size:12px;color:var(--text2)">'+(item?item.title:'')+' · '+new Date(sub.submitted_at).toLocaleDateString('ko-KR')+'</div></div>'+
+      statusBadge+
+      (sub.photo_url?'<button class="btn btn-sm" onclick="viewCertPhoto(\''+sub.id+'\',\''+sub.photo_url+'\')">사진보기</button>':'')+
+      (sub.status==='pending'?'<button class="btn green btn-sm" onclick="approveCert(\''+sub.id+'\')">승인</button><button class="btn red btn-sm" onclick="rejectCert(\''+sub.id+'\')">반려</button>':'')+'</div>';
+  }).join('');
+}
+
+var currentCertSubId=null;
+function viewCertPhoto(subId,url){
+  currentCertSubId=subId;
+  document.getElementById('cert-photo-img').src=url;
+  document.getElementById('cert-approve-btn').onclick=function(){approveCert(subId);document.getElementById('modal-cert-photo').classList.remove('show');};
+  document.getElementById('cert-reject-btn').onclick=function(){rejectCert(subId);document.getElementById('modal-cert-photo').classList.remove('show');};
+  document.getElementById('modal-cert-photo').classList.add('show');
+}
+
+async function approveCert(id){
+  var sub=certDb.submissions.find(function(s){return s.id===id;});
+  if(!sub)return;
+  sub.status='approved';
+  await sb.from('cert_submissions').update({status:'approved'}).eq('id',id);
+  notify('승인됐어요.','success');
+  renderTCertSubmitList();renderSCertList();
+}
+
+async function rejectCert(id){
+  var sub=certDb.submissions.find(function(s){return s.id===id;});
+  if(!sub)return;
+  sub.status='rejected';
+  await sb.from('cert_submissions').update({status:'rejected'}).eq('id',id);
+  notify('반려됐어요.','info');
+  renderTCertSubmitList();renderSCertList();
+}
+
+async function renderSCertList(){
+  var el=document.getElementById('s-cert-list');
+  if(!el||!session)return;
+  var mySchool=session.school_id||null;
+  var myItems=certDb.items.filter(function(item){
+    var targets=certDb.targets[item.id]||[];
+    return targets.indexOf(session.id)!==-1;
+  });
+  if(!myItems.length){
+    el.innerHTML='<div style="text-align:center;padding:3rem;color:var(--text3);font-size:13px">현재 인증할 항목이 없어요 😊</div>';
+    return;
+  }
+  var weekIds=[...new Set(myItems.map(function(i){return i.week_id;}))];
+  el.innerHTML=weekIds.map(function(wid){
+    var week=certDb.weeks.find(function(w){return w.id===wid;});
+    var items=myItems.filter(function(i){return i.week_id===wid;});
+    return '<div class="card" style="margin-bottom:1rem">'+
+      '<div class="card-head"><h3>'+(week?week.name:'')+'</h3></div>'+
+      '<div style="padding:0 1.25rem 0.5rem">'+
+      items.map(function(item){
+        var sub=certDb.submissions.find(function(s){return s.item_id===item.id&&s.student_id===session.id;});
+        var status=sub?sub.status:'none';
+        var statusHtml=status==='approved'?'<span class="badge done">✓ 승인완료</span>':status==='rejected'?'<span class="badge" style="background:var(--red-bg);color:var(--red)">반려됨 — 다시 제출해주세요</span>':status==='pending'?'<span class="badge partial">검토중</span>':'';
+        var canSubmit=status==='none'||status==='rejected';
+        return '<div style="padding:12px 0;border-bottom:1px solid var(--border)">'+
+          '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
+          '<span style="font-size:13px;font-weight:600">'+item.title+'</span>'+statusHtml+'</div>'+
+          (canSubmit?renderCertSubmitUI(item):'')+'</div>';
+      }).join('')+'</div></div>';
+  }).join('');
+}
+
+function renderCertSubmitUI(item){
+  var canPhoto=item.type==='photo'||item.type==='both';
+  var canCheck=item.type==='check'||item.type==='both';
+  var html='';
+  if(canPhoto){
+    html+='<div style="margin-bottom:8px">'+
+      '<input type="file" id="cert-file-'+item.id+'" accept="image/*" style="display:none" onchange="submitCertPhoto(\''+item.id+'\',this)">'+
+      '<button class="btn blue btn-sm" onclick="document.getElementById(\'cert-file-'+item.id+'\').click()">📷 사진 업로드</button>'+
+      '<span id="cert-file-name-'+item.id+'" style="font-size:11px;color:var(--text2);margin-left:8px"></span></div>';
+  }
+  if(canCheck){
+    html+='<button class="btn green btn-sm" onclick="submitCertCheck(\''+item.id+'\')">✓ 인증 완료 체크</button>';
+  }
+  return html;
+}
+
+async function submitCertPhoto(itemId,input){
+  var file=input.files[0];
+  if(!file)return;
+  document.getElementById('cert-file-name-'+itemId).textContent='업로드 중...';
+  try{
+    var path='cert/'+session.id+'_'+itemId+'_'+Date.now()+'.'+file.name.split('.').pop();
+    var upload=await sb.storage.from('qa-files').upload(path,file,{upsert:true});
+    if(upload.error){notify('업로드 실패: '+upload.error.message,'error');return;}
+    var url=sb.storage.from('qa-files').getPublicUrl(path).data.publicUrl;
+    await saveCertSubmission(itemId,url);
+    document.getElementById('cert-file-name-'+itemId).textContent='✓ 제출됐어요!';
+  }catch(e){notify('오류: '+e.message,'error');}
+}
+
+async function submitCertCheck(itemId){
+  await saveCertSubmission(itemId,null);
+}
+
+async function saveCertSubmission(itemId,photoUrl){
+  var item=certDb.items.find(function(i){return i.id===itemId;});
+  if(!item)return;
+  var existing=certDb.submissions.find(function(s){return s.item_id===itemId&&s.student_id===session.id;});
+  var id=existing?existing.id:'cs_'+Date.now();
+  var sub={id:id,item_id:itemId,student_id:session.id,school_id:item.school_id,status:'pending',photo_url:photoUrl,submitted_at:new Date().toISOString()};
+  if(existing){
+    await sb.from('cert_submissions').update({status:'pending',photo_url:photoUrl,submitted_at:sub.submitted_at}).eq('id',id);
+    Object.assign(existing,sub);
+  }else{
+    await sb.from('cert_submissions').insert(sub);
+    certDb.submissions.unshift(sub);
+  }
+  notify('제출됐어요! 선생님이 확인 후 승인해드릴게요.','success');
+  renderSCertList();
+}
+
+document.getElementById('modal-cert-photo').addEventListener('click',function(e){if(e.target===e.currentTarget)document.getElementById('modal-cert-photo').classList.remove('show');});
+document.getElementById('modal-cert-week').addEventListener('click',function(e){if(e.target===e.currentTarget)closeCertWeekModal();});
+document.getElementById('modal-cert-item').addEventListener('click',function(e){if(e.target===e.currentTarget)closeCertItemModal();});
 
 /* ===== Q&A ===== */
 var qaDb={schools:[],weeks:[],questions:[],materials:[]};
@@ -1868,6 +2240,7 @@ async function submitQaQuestion(){
     }else{
       var matContext=qaDb.materials.filter(function(m){return m.school_id===qaState.school&&m.text;}).map(function(m){return '['+m.name+']\n'+m.text;}).join('\n\n');
       var matContext=qaDb.materials.filter(function(m){return m.school_id===qaState.school&&m.text;}).map(function(m){return '['+m.name+']\n'+m.text;}).join('\n\n');
+      var systemPrompt='당신은 수능 국어 전문 선생님의 학습도우미예요. 학생이 스스로 사고할 수 있도록 문제와 해설을 함께 분석하여 깊이 있게 설명해주세요.\n\n[중요 전제]\n- 해설지에는 문제 지문과 해설이 함께 포함되어 있을 수 있어요. 문제 지문도 반드시 함께 읽고 분석하세요.\n- 지문의 구체적인 표현, 구절, 단어를 직접 인용하며 설명하세요.\n- 해설지에 없는 내용은 절대 추가하지 마세요.\n\n[답변 방식 — 반드시 이 순서로]\n1. 학생 질문에 공감하는 한 마디로 시작하세요.\n2. 해당 문제의 핵심 포인트가 무엇인지 먼저 짚어주세요. (문제가 무엇을 묻고 있는지)\n3. 정답이 정답인 이유를 지문 구절을 직접 인용하며 설명하세요.\n4. 출제자의 의도와 함정을 분석하세요. 왜 헷갈리도록 설계됐는지, 수험생이 어디서 실수하는지 짚어주세요.\n5. 오답 선지는 하나씩 왜 틀렸는지 지문 근거를 들어 설명하세요.\n6. 잘 이해됐나요? 더 궁금한 거 있으면 언제든 물어봐요! 처럼 따뜻하게 마무리하세요.\n\n[절대 하지 말 것]\n- 해설지 내용을 그냥 요약만 하기\n- 지문을 보지 않고 해설만 읽고 답변하기\n- 정답만 알려주고 끝내기\n- 딱딱하고 교과서적인 말투\n- 추측이나 근거 없는 해석\n\n[말투]\n- ~해요, ~이에요 체로 친근하게\n- 옆에서 같이 공부하는 선배처럼 자연스럽게\n- 볼드(**텍스트**)는 꼭 필요한 핵심 단어에만 사용\n\n'+(matContext?'[학교 자료 — 필기/프린트]\n'+matContext+'\n\n':'')+(hasSol?'[해설지 + 문제 지문 전문]\n아래 내용에는 문제 지문과 해설이 포함되어 있어요. 지문과 해설을 모두 읽고 '+qaState.prob+'번 문제를 중심으로 답변하세요.\n\n'+week.sol_text:'해설지가 아직 등록되지 않았어요. 수능 국어 일반 원칙에 근거해서 설명하되, 마지막에 해설지가 없어서 일반 원칙으로 설명했어요. 선생님께도 한번 확인해보세요! 라고 꼭 밝혀주세요.');
       var systemPrompt='당신은 수능 국어 전문 선생님의 학습도우미예요. 단순히 해설지를 읽어주는 게 아니라, 학생이 스스로 사고할 수 있도록 깊이 있게 설명해주세요.\n\n[답변 방식 — 반드시 이 순서로]\n1. 학생 질문에 공감하는 한 마디로 시작하세요. 예: 이 문제 정말 헷갈리죠~, 좋은 포인트를 짚었네요!\n2. 정답이 정답인 이유를 해설지 근거 + 지문 내용을 직접 인용하며 설명하세요.\n3. 출제자의 의도와 함정을 분석하세요. 왜 이 선지가 헷갈리도록 설계됐는지, 수험생이 어디서 실수하는지 짚어주세요.\n4. 오답 선지는 하나씩 왜 틀렸는지 지문 근거를 들어 설명하세요.\n5. 마지막은 잘 이해됐나요? 더 궁금한 거 있으면 언제든 물어봐요! 처럼 따뜻하게 마무리하세요.\n\n[절대 하지 말 것]\n- 해설지 내용을 그냥 요약만 하기\n- 정답만 알려주고 끝내기\n- 딱딱하고 교과서적인 말투\n- 추측이나 근거 없는 해석\n- 해설지에 없는 내용 마음대로 추가 (없으면 해설지에는 이 부분이 없지만~ 으로 구분)\n\n[말투]\n- ~해요, ~이에요 체로 친근하게\n- 옆에서 같이 공부하는 선배처럼 자연스럽게\n- 학생이 헷갈려 해도 절대 지적하지 말고 공감하기\n- 볼드(**텍스트**)는 꼭 필요한 핵심 단어에만 사용\n\n'+(matContext?'[학교 자료]\n'+matContext+'\n\n':'')+(hasSol?'[해설지 전문]\n'+week.sol_text+'\n\n위 해설지를 반드시 참고하여 '+qaState.prob+'번 문제 위주로 답변하세요. 해설지에 없는 내용은 절대 임의로 추가하지 마세요.':'해설지가 아직 등록되지 않았어요. 수능 국어 일반 원칙에 근거해서 설명하되, 답변 끝에 해설지가 없어서 일반 원칙으로 설명했어요. 선생님께도 한번 확인해보세요! 라고 꼭 밝혀주세요.');
       var messages=isFollowUp?qaChatHistory.concat([{role:'user',content:text}]):[{role:'user',content:'[학교: '+(school?school.name:'')+'] ['+(week?week.name:'')+'] ['+qaState.prob+'번 문제]\n\n'+text}];
       var res=await fetch('https://api.anthropic.com/v1/messages',{
@@ -1928,6 +2301,7 @@ document.getElementById('modal-qa-school').addEventListener('click',function(e){
     document.querySelector('.loading-text').textContent='데이터 불러오는 중...';
     await loadAll();
     await loadQaData();
+    await loadCertData();
     var saved=localStorage.getItem('lms_sess');
     if(saved){
       try{
