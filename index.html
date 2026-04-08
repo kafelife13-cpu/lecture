@@ -276,6 +276,7 @@ input,button{font-family:var(--font)}
         <div class="nav-item" onclick="tNav('progress')" data-p="progress"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>진도 현황</div>
         <div class="nav-item" onclick="tNav('qa')" data-p="qa" id="nav-qa"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A 관리</div>
         <div class="nav-item" onclick="tNav('cert')" data-p="cert"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증 관리</div>
+        <div class="nav-item" onclick="tNav('clinic')" data-p="clinic"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉 관리</div>
       </nav>
       <div class="sidebar-footer"><button class="btn-logout" onclick="doLogout()">로그아웃</button></div>
     </div>
@@ -430,6 +431,23 @@ input,button{font-family:var(--font)}
         </div>
       </div>
 
+      <!-- 클리닉 관리 -->
+      <div class="panel" id="panel-clinic">
+        <div class="page-header"><h1>클리닉 관리</h1><p>학교별 클리닉 시간대와 정원을 설정하고 신청 현황을 확인하세요</p></div>
+        <div style="display:flex;gap:8px;margin-bottom:1rem;align-items:center;flex-wrap:wrap">
+          <div id="t-clinic-school-tabs" style="display:flex;gap:6px;flex-wrap:wrap;flex:1"></div>
+          <button class="btn blue btn-sm" id="t-clinic-add-btn" style="display:none" onclick="openClinicSlotModal()">+ 시간대 추가</button>
+        </div>
+        <div class="card" style="margin-bottom:1rem">
+          <div class="card-head"><h3 id="t-clinic-title">학교를 선택하세요</h3></div>
+          <div id="t-clinic-slot-list" style="padding:0 1.25rem 0.5rem"></div>
+        </div>
+        <div class="card" id="t-clinic-req-card" style="display:none">
+          <div class="card-head"><h3>신청 현황</h3></div>
+          <div id="t-clinic-req-list"></div>
+        </div>
+      </div>
+
     </div></div>
   </div>
   <div class="mobile-tabbar" id="t-tabbar" style="overflow-x:auto">
@@ -440,6 +458,7 @@ input,button{font-family:var(--font)}
     <button class="mobile-tab" onclick="tNav('progress')" data-mt="progress" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>진도</button>
     <button class="mobile-tab" onclick="tNav('qa')" data-mt="qa" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A</button>
     <button class="mobile-tab" onclick="tNav('cert')" data-mt="cert" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증</button>
+    <button class="mobile-tab" onclick="tNav('clinic')" data-mt="clinic" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉</button>
     <button class="mobile-tab" onclick="doLogout()" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>로그아웃</button>
   </div>
 </div>
@@ -459,6 +478,7 @@ input,button{font-family:var(--font)}
         <div class="nav-item" onclick="sNav('mypage')" data-p="mypage"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>내 진도</div>
         <div class="nav-item" onclick="sNav('qa')" data-p="qa"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A</div>
         <div class="nav-item" onclick="sNav('cert')" data-p="cert"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증</div>
+        <div class="nav-item" onclick="sNav('clinic')" data-p="clinic"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉 변동</div>
       </nav>
       <div class="sidebar-footer"><button class="btn-logout" onclick="doLogout()">로그아웃</button></div>
     </div>
@@ -508,6 +528,10 @@ input,button{font-family:var(--font)}
         <div class="page-header"><h1>인증</h1><p>선생님이 지정한 인증 항목을 제출하세요</p></div>
         <div id="s-cert-list"></div>
       </div>
+      <div class="panel" id="panel-clinic">
+        <div class="page-header"><h1>클리닉 변동 신청</h1><p>변경하고 싶은 클리닉 시간대를 선택하세요. 정원이 차면 자동으로 마감돼요.</p></div>
+        <div id="s-clinic-list"></div>
+      </div>
     </div></div>
   </div>
   <div class="mobile-tabbar" id="s-tabbar" style="overflow-x:auto">
@@ -516,6 +540,7 @@ input,button{font-family:var(--font)}
     <button class="mobile-tab" onclick="sNav('mypage')" data-ms="mypage" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>내 진도</button>
     <button class="mobile-tab" onclick="sNav('qa')" data-ms="qa" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A</button>
     <button class="mobile-tab" onclick="sNav('cert')" data-ms="cert" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증</button>
+    <button class="mobile-tab" onclick="sNav('clinic')" data-ms="clinic" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉</button>
     <button class="mobile-tab" onclick="doLogout()" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>로그아웃</button>
   </div>
 </div>
@@ -570,6 +595,48 @@ input,button{font-family:var(--font)}
     <div class="modal-head"><h3 id="detail-title">시청 상세</h3><button class="modal-close" onclick="closeDetail()">×</button></div>
     <div class="modal-body" id="detail-body"></div>
     <div class="modal-footer"><button class="btn" onclick="closeDetail()">닫기</button></div>
+  </div>
+</div>
+
+<!-- 클리닉 시간대 추가 모달 -->
+<div class="modal-bg" id="modal-clinic-slot">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-head"><h3>클리닉 시간대 추가</h3><button class="modal-close" onclick="closeClinicSlotModal()">×</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>시간대 이름</label><input id="cs-label" class="form-input" placeholder="예: 월요일 오후 3시 클리닉"/></div>
+      <div class="frow">
+        <div style="flex:1">
+          <label class="flabel">요일</label>
+          <select id="cs-day" class="form-select">
+            <option value="">선택 안함</option>
+            <option value="월">월요일</option>
+            <option value="화">화요일</option>
+            <option value="수">수요일</option>
+            <option value="목">목요일</option>
+            <option value="금">금요일</option>
+            <option value="토">토요일</option>
+          </select>
+        </div>
+        <div style="flex:1">
+          <label class="flabel">날짜</label>
+          <input id="cs-date" class="form-input" type="date"/>
+        </div>
+      </div>
+      <div class="frow">
+        <div style="flex:1">
+          <label class="flabel">시작 시간</label>
+          <input id="cs-time" class="form-input" type="time"/>
+        </div>
+        <div style="width:80px">
+          <label class="flabel">정원</label>
+          <input id="cs-cap" class="form-input" type="number" value="5" min="1"/>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeClinicSlotModal()">취소</button>
+      <button class="btn blue" onclick="addClinicSlot()">추가</button>
+    </div>
   </div>
 </div>
 
@@ -857,6 +924,7 @@ function tNav(panel){
   if(panel==='progress')renderProgress();
   if(panel==='qa'){renderTQaSchoolTabs();renderTQaWeekList();renderQaWeekFilter();renderQaReview();renderQaMaterialsList();}
   if(panel==='cert'){renderTCertSchoolTabs();renderTCertWeekList();}
+  if(panel==='clinic'){renderTClinicSchoolTabs();renderTClinicSlotList();renderTClinicReqList();}
 }
 
 /* ===== DASHBOARD ===== */
@@ -1224,6 +1292,7 @@ function sNav(panel){
   if(panel==='mypage')renderMyPage();
   if(panel==='qa'){renderSQaSchoolList();renderSQaMyList();}
   if(panel==='cert')renderSCertList();
+  if(panel==='clinic')renderSClinicList();
 }
 
 /* ===== 학생: 일반 강의 ===== */
@@ -1462,6 +1531,191 @@ document.getElementById('modal-play').addEventListener('click',e=>{if(e.target==
 document.getElementById('modal-detail').addEventListener('click',e=>{if(e.target===e.currentTarget)closeDetail();});
 document.getElementById('modal-resume').addEventListener('click',e=>{if(e.target===e.currentTarget)closeResume();});
 
+
+/* ===== 클리닉 ===== */
+var clinicDb={slots:[],requests:[]};
+var clinicSchool=null;
+
+async function loadClinicData(){
+  try{
+    var s=await sb.from('clinic_slots').select('*').order('created_at');
+    var r=await sb.from('clinic_requests').select('*').order('created_at',{ascending:false});
+    clinicDb.slots=s.data||[];
+    clinicDb.requests=r.data||[];
+  }catch(e){console.error('clinic load error',e);}
+}
+
+function openClinicSlotModal(){
+  document.getElementById('cs-label').value='';
+  document.getElementById('cs-day').value='';
+  document.getElementById('cs-date').value='';
+  document.getElementById('cs-time').value='';
+  document.getElementById('cs-cap').value='5';
+  document.getElementById('modal-clinic-slot').classList.add('show');
+}
+function closeClinicSlotModal(){document.getElementById('modal-clinic-slot').classList.remove('show');}
+
+async function addClinicSlot(){
+  var label=document.getElementById('cs-label').value.trim();
+  var day=document.getElementById('cs-day').value;
+  var date=document.getElementById('cs-date').value;
+  var time=document.getElementById('cs-time').value;
+  var cap=parseInt(document.getElementById('cs-cap').value)||5;
+  if(!label){notify('시간대 이름을 입력하세요.','error');return;}
+  if(!clinicSchool){notify('학교를 먼저 선택하세요.','error');return;}
+  var id='slot_'+Date.now();
+  var item={id:id,school_id:clinicSchool,label:label,day_of_week:day||null,slot_date:date||null,start_time:time||null,capacity:cap,created_at:new Date().toISOString()};
+  var res=await sb.from('clinic_slots').insert(item);
+  if(res.error){notify('등록 실패: '+res.error.message,'error');return;}
+  clinicDb.slots.push(item);
+  closeClinicSlotModal();
+  notify(label+' 추가됐어요.','success');
+  renderTClinicSlotList();renderTClinicReqList();
+}
+
+async function deleteClinicSlot(id){
+  if(!confirm('이 시간대를 삭제할까요?'))return;
+  await sb.from('clinic_requests').delete().eq('slot_id',id);
+  await sb.from('clinic_slots').delete().eq('id',id);
+  clinicDb.slots=clinicDb.slots.filter(function(s){return s.id!==id;});
+  clinicDb.requests=clinicDb.requests.filter(function(r){return r.slot_id!==id;});
+  notify('삭제됐어요.','info');
+  renderTClinicSlotList();renderTClinicReqList();
+}
+
+function renderTClinicSchoolTabs(){
+  var el=document.getElementById('t-clinic-school-tabs');
+  if(!el)return;
+  el.innerHTML=qaDb.schools.map(function(s){
+    return '<button class="btn'+(clinicSchool===s.id?' blue':'')+' btn-sm" onclick="selectTClinicSchool(\''+s.id+'\')">'+s.name+'</button>';
+  }).join('');
+}
+
+function selectTClinicSchool(sid){
+  clinicSchool=sid;
+  var school=qaDb.schools.find(function(s){return s.id===sid;});
+  document.getElementById('t-clinic-title').textContent=school?school.name+' 클리닉 시간대':'';
+  document.getElementById('t-clinic-add-btn').style.display='';
+  document.getElementById('t-clinic-req-card').style.display='';
+  renderTClinicSchoolTabs();renderTClinicSlotList();renderTClinicReqList();
+}
+
+function renderTClinicSlotList(){
+  var el=document.getElementById('t-clinic-slot-list');
+  if(!el)return;
+  var slots=clinicDb.slots.filter(function(s){return s.school_id===clinicSchool;});
+  if(!slots.length){el.innerHTML='<div style="padding:1rem 0;font-size:13px;color:var(--text3)">등록된 시간대가 없어요.</div>';return;}
+  el.innerHTML=slots.map(function(slot){
+    var reqs=clinicDb.requests.filter(function(r){return r.slot_id===slot.id;});
+    var pct=Math.round(reqs.length/slot.capacity*100);
+    var full=reqs.length>=slot.capacity;
+    var timeInfo=(slot.day_of_week?slot.day_of_week+'요일 ':'')+(slot.slot_date?slot.slot_date+' ':'')+(slot.start_time||'');
+    return '<div style="padding:12px 0;border-bottom:1px solid var(--border)">'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">'+
+      '<span style="font-size:13px;font-weight:600">'+slot.label+'</span>'+
+      (full?'<span class="badge" style="background:var(--red-bg);color:var(--red)">마감</span>':'<span class="badge done">신청 가능</span>')+'</div>'+
+      '<div style="font-size:11px;color:var(--text2);margin-bottom:6px">'+(timeInfo||'시간 미설정')+' · 정원 '+reqs.length+'/'+slot.capacity+'</div>'+
+      '<div class="pbar" style="margin-bottom:8px"><div class="pbar-fill" style="width:'+pct+'%;background:'+(full?'var(--red)':'var(--green)')+'"></div></div>'+
+      '<button class="btn red btn-sm" onclick="deleteClinicSlot(\''+slot.id+'\')">삭제</button></div>';
+  }).join('');
+}
+
+function renderTClinicReqList(){
+  var el=document.getElementById('t-clinic-req-list');
+  if(!el)return;
+  var slots=clinicDb.slots.filter(function(s){return s.school_id===clinicSchool;});
+  var reqs=clinicDb.requests.filter(function(r){return slots.some(function(s){return s.id===r.slot_id;});});
+  if(!reqs.length){el.innerHTML='<div style="padding:2rem;text-align:center;color:var(--text3);font-size:13px">신청 내역이 없어요.</div>';return;}
+  el.innerHTML=reqs.map(function(req){
+    var slot=clinicDb.slots.find(function(s){return s.id===req.slot_id;});
+    var student=db.users.find(function(u){return u.id===req.student_id;});
+    return '<div style="display:flex;align-items:center;gap:10px;padding:11px 1.25rem;border-bottom:1px solid var(--border)">'+
+      '<div style="flex:1"><div style="font-size:13px;font-weight:600">'+(student?student.name:req.student_id)+'</div>'+
+      '<div style="font-size:12px;color:var(--text2)">'+(slot?slot.label:'')+'</div></div>'+
+      '<span class="badge done">확정</span>'+
+      '<button class="btn red btn-sm" onclick="cancelClinicReq(\''+req.id+'\')">취소</button></div>';
+  }).join('');
+}
+
+async function cancelClinicReq(id){
+  if(!confirm('신청을 취소할까요?'))return;
+  await sb.from('clinic_requests').delete().eq('id',id);
+  clinicDb.requests=clinicDb.requests.filter(function(r){return r.id!==id;});
+  notify('취소됐어요.','info');
+  renderTClinicSlotList();renderTClinicReqList();renderSClinicList();
+}
+
+async function renderSClinicList(){
+  var el=document.getElementById('s-clinic-list');
+  if(!el||!session)return;
+  var myReq=clinicDb.requests.find(function(r){return r.student_id===session.id;});
+  var slots=clinicDb.slots.filter(function(s){
+    var school=qaDb.schools.find(function(sc){return sc.id===s.school_id;});
+    return true;
+  });
+  if(!slots.length){
+    el.innerHTML='<div style="text-align:center;padding:3rem;color:var(--text3);font-size:13px">등록된 클리닉 시간대가 없어요.</div>';
+    return;
+  }
+  if(myReq){
+    var mySlot=clinicDb.slots.find(function(s){return s.id===myReq.slot_id;});
+    var mySchool=mySlot?qaDb.schools.find(function(sc){return sc.id===mySlot.school_id;}):null;
+    var top='<div class="card" style="margin-bottom:1rem;border-color:var(--green)">'+
+      '<div class="card-head" style="background:var(--green-bg)"><h3 style="color:var(--green)">✓ 신청 완료</h3></div>'+
+      '<div style="padding:1rem 1.25rem">'+
+      '<div style="font-size:15px;font-weight:700;margin-bottom:4px">'+(mySlot?mySlot.label:'')+'</div>'+
+      '<div style="font-size:12px;color:var(--text2)">'+(mySchool?mySchool.name+' · ':'')+(mySlot&&mySlot.start_time?mySlot.start_time:'')+'</div>'+
+      '<button class="btn red btn-sm" style="margin-top:10px" onclick="cancelMyClinicReq(\''+myReq.id+'\')">신청 취소</button></div></div>';
+    el.innerHTML=top+'<div style="font-size:13px;color:var(--text2);margin-bottom:10px;padding:0 4px">다른 시간대로 변경하려면 먼저 신청을 취소하세요.</div>';
+    return;
+  }
+  var schoolGroups={};
+  slots.forEach(function(slot){
+    if(!schoolGroups[slot.school_id])schoolGroups[slot.school_id]=[];
+    schoolGroups[slot.school_id].push(slot);
+  });
+  el.innerHTML=Object.keys(schoolGroups).map(function(sid){
+    var school=qaDb.schools.find(function(s){return s.id===sid;});
+    var schoolSlots=schoolGroups[sid];
+    return '<div class="card" style="margin-bottom:1rem">'+
+      '<div class="card-head"><h3>'+(school?school.name:'')+' 클리닉</h3></div>'+
+      '<div style="padding:0 1.25rem 0.5rem">'+
+      schoolSlots.map(function(slot){
+        var reqs=clinicDb.requests.filter(function(r){return r.slot_id===slot.id;});
+        var full=reqs.length>=slot.capacity;
+        var remain=slot.capacity-reqs.length;
+        var timeInfo=(slot.day_of_week?slot.day_of_week+'요일 ':'')+(slot.slot_date?slot.slot_date+' ':'')+(slot.start_time||'');
+        return '<div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--border)">'+
+          '<div style="flex:1"><div style="font-size:13px;font-weight:600;margin-bottom:3px">'+slot.label+'</div>'+
+          '<div style="font-size:11px;color:var(--text2)">'+(timeInfo||'')+' · '+(full?'<span style="color:var(--red)">마감</span>':'잔여 '+remain+'자리')+'</div></div>'+
+          (full?'<button class="btn btn-sm" disabled>마감</button>':'<button class="btn blue btn-sm" onclick="applyClinicSlot(\''+slot.id+'\',\''+sid+'\')">신청</button>')+'</div>';
+      }).join('')+'</div></div>';
+  }).join('');
+}
+
+async function applyClinicSlot(slotId,schoolId){
+  var slot=clinicDb.slots.find(function(s){return s.id===slotId;});
+  if(!slot)return;
+  var reqs=clinicDb.requests.filter(function(r){return r.slot_id===slotId;});
+  if(reqs.length>=slot.capacity){notify('정원이 찼어요.','error');return;}
+  var id='cr_'+Date.now();
+  var req={id:id,slot_id:slotId,student_id:session.id,school_id:schoolId,status:'confirmed',created_at:new Date().toISOString()};
+  var res=await sb.from('clinic_requests').insert(req);
+  if(res.error){notify('신청 실패: '+res.error.message,'error');return;}
+  clinicDb.requests.push(req);
+  notify(slot.label+' 신청이 완료됐어요! ✓','success');
+  renderSClinicList();renderTClinicSlotList();renderTClinicReqList();
+}
+
+async function cancelMyClinicReq(id){
+  if(!confirm('신청을 취소할까요?'))return;
+  await sb.from('clinic_requests').delete().eq('id',id);
+  clinicDb.requests=clinicDb.requests.filter(function(r){return r.id!==id;});
+  notify('신청이 취소됐어요.','info');
+  renderSClinicList();renderTClinicSlotList();renderTClinicReqList();
+}
+
+document.getElementById('modal-clinic-slot').addEventListener('click',function(e){if(e.target===e.currentTarget)closeClinicSlotModal();});
 
 /* ===== 인증 ===== */
 var certDb={weeks:[],items:[],submissions:[],targets:{}};
@@ -2302,6 +2556,7 @@ document.getElementById('modal-qa-school').addEventListener('click',function(e){
     await loadAll();
     await loadQaData();
     await loadCertData();
+    await loadClinicData();
     var saved=localStorage.getItem('lms_sess');
     if(saved){
       try{
