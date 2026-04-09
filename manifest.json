@@ -1,0 +1,17 @@
+{
+  "name": "국어왕 김까까",
+  "short_name": "국어왕",
+  "description": "서로국어 김이내T 온라인 학습 시스템",
+  "start_url": "/lecture/index.html",
+  "display": "standalone",
+  "background_color": "#0f1117",
+  "theme_color": "#4f7cff",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
