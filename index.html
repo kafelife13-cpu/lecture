@@ -531,6 +531,27 @@ input,button{font-family:var(--font)}
             <button class="btn blue" style="width:100%;margin-top:12px" onclick="saveTExam()">저장하기</button>
           </div>
         </div>
+        <!-- 시험 수정 -->
+        <div id="t-exam-edit" style="display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
+            <div><div style="font-size:15px;font-weight:600">시험 수정</div><div style="font-size:12px;color:var(--text2);margin-top:2px">내용을 수정하고 저장하세요</div></div>
+            <button class="btn btn-sm" onclick="closeTExamEdit()">← 목록으로</button>
+          </div>
+          <div class="card" style="margin-bottom:1rem">
+            <div style="padding:1.25rem">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+                <div class="form-group"><label>시험 이름</label><input class="form-input" id="tedit-name"></div>
+                <div class="form-group"><label>다음 시험</label>
+                  <select class="form-select" id="tedit-next"><option value="">없음</option><option>1학기 기말고사</option><option>2학기 중간고사</option><option>2학기 기말고사</option><option>수능</option><option>모의고사</option></select>
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom:0"><label>다음 시험 범위</label><input class="form-input" id="tedit-range" placeholder="예: 소설, 비문학 독해"></div>
+            </div>
+          </div>
+          <div id="tedit-q-list" style="margin-bottom:12px"></div>
+          <button class="btn blue" style="width:100%" onclick="saveTExamEdit()">수정 저장하기</button>
+        </div>
+
         <!-- 결과 보기 -->
         <div id="t-exam-results" style="display:none">
           <button class="btn btn-sm" style="margin-bottom:1rem" onclick="closeTExamResults()">← 목록으로</button>
@@ -1044,7 +1065,7 @@ async function doLogin(){
   finally{btn.disabled=false;btn.textContent='로그인';}
 }
 function showSignup(){document.getElementById('form-login').style.display='none';document.getElementById('form-signup').style.display='block';}
-function showLogin(){document.getElementById('form-signup').style.display='none';document.getElementById('form-login').style.display='block';}
+function showLogin(){document.getElementById('form-signup').style.display='none';document.getElementById('form-login').style.display='block';selectRole(currentRole||'teacher');}
 async function doSignup(){
   const name=document.getElementById('su-name').value.trim();
   const id=document.getElementById('su-id').value.trim();
@@ -2750,7 +2771,7 @@ document.getElementById('modal-qa-school').addEventListener('click',function(e){
     setTimeout(function(){hideLoading();showPage('page-login');},2500);
     return;
   }
-  hideLoading();showPage('page-login');
+  hideLoading();showPage('page-login');selectRole(currentRole||'teacher');
 })();
 
 // ════════════════════════════════════════════
@@ -2771,11 +2792,14 @@ async function renderTExam(){
     <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px">
       <div>
         <div style="font-size:14px;font-weight:500">${e.name}</div>
-        <div style="font-size:11px;color:var(--text2);margin-top:2px">${e.total_q}문항 · 코드: <strong style="letter-spacing:0.08em;color:var(--accent)">${e.id.slice(0,8).toUpperCase()}</strong></div>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px">${e.total_q}문항 · 코드: <strong style="letter-spacing:0.08em;color:var(--accent)">${e.id.slice(0,8).toUpperCase()}</strong>
+          ${e.next_exam?` · 다음: ${e.next_exam}`:''}
+        </div>
       </div>
-      <div style="display:flex;gap:6px">
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
         <button class="btn btn-sm blue" onclick="viewTExamResults('${e.id}','${e.name}')">결과 보기</button>
         <button class="btn btn-sm" onclick="copyExamCode('${e.id}')">코드 복사</button>
+        <button class="btn btn-sm" onclick="openTExamEdit('${e.id}')">✏️ 수정</button>
         <button class="btn btn-sm" style="color:var(--red)" onclick="deleteTExam('${e.id}')">삭제</button>
       </div>
     </div>`).join('');
@@ -2792,15 +2816,97 @@ async function deleteTExam(id){
   renderTExam();
 }
 
+function showTExamView(v){
+  ['t-exam-main','t-exam-create','t-exam-edit','t-exam-results'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.style.display='none';
+  });
+  const target=document.getElementById(v);
+  if(target)target.style.display='block';
+}
+
 function openTExamCreate(){
-  document.getElementById('t-exam-main').style.display='none';
-  document.getElementById('t-exam-create').style.display='block';
-  document.getElementById('t-exam-results').style.display='none';
+  showTExamView('t-exam-create');
   texShowStep(1);
 }
+
+var editingExamId=null;
+var editingQuestions=[];
+
+async function openTExamEdit(examId){
+  showTExamView('t-exam-edit');
+  editingExamId=examId;
+  const {data,error}=await sb.from('exams').select('*').eq('id',examId).single();
+  if(error||!data){alert('시험 정보를 불러올 수 없어요.');return;}
+  editingQuestions=[...data.questions];
+  document.getElementById('tedit-name').value=data.name||'';
+  document.getElementById('tedit-next').value=data.next_exam||'';
+  document.getElementById('tedit-range').value=data.next_range||'';
+  renderTeditQList();
+}
+
+function renderTeditQList(){
+  const container=document.getElementById('tedit-q-list');
+  container.innerHTML=editingQuestions.map((q,i)=>`
+    <div style="border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;background:var(--bg)">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+        <span style="background:rgba(79,124,255,0.15);color:var(--accent);font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600">${q.num||i+1}번</span>
+        <select id="eqt-${i}" onchange="editingQuestions[${i}].type=this.value" style="font-size:12px;padding:4px 6px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text)">
+          ${EXAM_TYPES.map(t=>`<option${t===q.type?' selected':''}>${t}</option>`).join('')}
+        </select>
+        <div style="display:flex;gap:4px;align-items:center;margin-left:auto">
+          <span style="font-size:11px;color:var(--text2)">정답:</span>
+          ${[1,2,3,4,5].map(n=>`<div id="eqa-${i}-${n}" onclick="eSelectAnswer(${i},${n})"
+            style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;cursor:pointer;font-size:12px;font-weight:500;
+            border:1.5px solid ${String(n)===String(q.answer)?'var(--green)':'var(--border)'};
+            background:${String(n)===String(q.answer)?'var(--green)':''};
+            color:${String(n)===String(q.answer)?'white':'var(--text2)'};transition:all 0.12s">${n}</div>`).join('')}
+        </div>
+      </div>
+      <textarea id="eqtext-${i}" class="form-input" style="font-size:12px;min-height:70px;resize:vertical;margin-bottom:6px" onchange="editingQuestions[${i}].text=this.value">${q.text||''}</textarea>
+      <textarea id="eqexp-${i}" class="form-input" placeholder="해설" style="font-size:12px;min-height:50px;resize:vertical" onchange="editingQuestions[${i}].explanation=this.value">${q.explanation||''}</textarea>
+    </div>`).join('');
+}
+
+function eSelectAnswer(qIdx,num){
+  editingQuestions[qIdx].answer=String(num);
+  for(let n=1;n<=5;n++){
+    const el=document.getElementById(`eqa-${qIdx}-${n}`);
+    if(!el)continue;
+    el.style.background=n===num?'var(--green)':'';
+    el.style.borderColor=n===num?'var(--green)':'var(--border)';
+    el.style.color=n===num?'white':'var(--text2)';
+  }
+}
+
+async function saveTExamEdit(){
+  const name=document.getElementById('tedit-name').value.trim();
+  if(!name){alert('시험 이름을 입력해 주세요.');return;}
+  // sync textareas to array
+  editingQuestions.forEach((q,i)=>{
+    q.text=document.getElementById('eqtext-'+i)?.value||q.text||'';
+    q.explanation=document.getElementById('eqexp-'+i)?.value||q.explanation||'';
+    q.type=document.getElementById('eqt-'+i)?.value||q.type||'기타';
+  });
+  const {error}=await sb.from('exams').update({
+    name,
+    questions:editingQuestions,
+    total_q:editingQuestions.length,
+    next_exam:document.getElementById('tedit-next').value,
+    next_range:document.getElementById('tedit-range').value,
+  }).eq('id',editingExamId);
+  if(error){alert('저장 오류: '+error.message);return;}
+  alert('수정됐어요!');
+  closeTExamEdit();
+}
+
+function closeTExamEdit(){
+  editingExamId=null;editingQuestions=[];
+  showTExamView('t-exam-main');
+  renderTExam();
+}
 function closeTExamCreate(){
-  document.getElementById('t-exam-main').style.display='block';
-  document.getElementById('t-exam-create').style.display='none';
+  showTExamView('t-exam-main');
   renderTExam();
 }
 function texShowStep(n){
@@ -2825,7 +2931,7 @@ async function texParse(){
   let mi=0;
   const mt=setInterval(()=>{document.getElementById('tex-parse-msg').textContent=msgs[Math.min(mi++,msgs.length-1)];},4000);
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({
       model:'claude-sonnet-4-20250514',max_tokens:4000,
       messages:[{role:'user',content:`아래 시험지, 정답지, 해설지 텍스트를 분석해서 문항별로 분리해주세요.
 
@@ -2926,9 +3032,7 @@ async function saveTExam(){
 }
 
 async function viewTExamResults(examId,examName){
-  document.getElementById('t-exam-main').style.display='none';
-  document.getElementById('t-exam-create').style.display='none';
-  document.getElementById('t-exam-results').style.display='block';
+  showTExamView('t-exam-results');
   document.getElementById('t-res-title').textContent=examName+' — 결과';
   const {data:responses}=await sb.from('exam_responses').select('*').eq('exam_id',examId);
   const {data:exam}=await sb.from('exams').select('*').eq('id',examId).single();
@@ -2966,8 +3070,7 @@ async function viewTExamResults(examId,examName){
 }
 
 function closeTExamResults(){
-  document.getElementById('t-exam-main').style.display='block';
-  document.getElementById('t-exam-results').style.display='none';
+  showTExamView('t-exam-main');
   renderTExam();
 }
 
@@ -3138,7 +3241,7 @@ ${hasPhotos?'위 이미지는 학생이 틀린 문제 옆에 남긴 필기·마�
 "nextExam":{"strategy":"전략 3-4문장","focusAreas":["영역1","영역2","영역3"],"timeline":"주차별 계획","avoidMistakes":"반복 실수 패턴"}}`});
 
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1800,messages:[{role:'user',content:contentBlocks}]})});
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1800,messages:[{role:'user',content:contentBlocks}]})});
     const data=await resp.json();
     const raw=(data.content||[]).map(c=>c.text||'').join('');
     let result;
