@@ -2934,7 +2934,7 @@ async function texParse(){
   const mt=setInterval(()=>{document.getElementById('tex-parse-msg').textContent=msgs[Math.min(mi++,msgs.length-1)];},4000);
   try{
     const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',max_tokens:4000,
+      model:'claude-sonnet-4-20250514',max_tokens:16000,
       messages:[{role:'user',content:`아래 시험지, 정답지, 해설지 텍스트를 분석해서 문항별로 분리해주세요.
 
 [시험지]
@@ -2946,25 +2946,22 @@ ${aRaw}
 [해설지]
 ${eRaw||'없음'}
 
-각 문항을 분석해서 순수 JSON 배열만 반환하세요 (마크다운 없이):
-[
-  {
-    "num": 1,
-    "text": "문제 내용 전체 (선택지 포함)",
-    "answer": 3,
-    "type": "추론·함축",
-    "explanation": "해설 내용"
-  }
-]
+순수 JSON 배열만 반환 (마크다운 없이):
+[{"num":1,"text":"문제+선택지(지문 긴 경우 요약가능)","answer":3,"type":"추론·함축","explanation":"해설요약"}]
 
-type은 다음 중 하나: 사실 확인, 추론·함축, 어휘·어법, 표현 기법, 주제·요지, 논증 구조, 계산·풀이, 개념 적용, 자료 해석, 빈칸 추론, 순서 배열, 기타
-answer는 숫자(1~5)로만, 정답 번호가 ①②③④⑤ 형태면 1~5로 변환해주세요.
-해설이 없으면 빈 문자열로 두세요.`}]
+규칙: answer=숫자1~5(①→1), type=사실 확인/추론·함축/어휘·어법/표현 기법/주제·요지/논증 구조/계산·풀이/개념 적용/자료 해석/빈칸 추론/순서 배열/기타, explanation 없으면 ""
+text는 핵심만 간결하게 (선택지 번호와 핵심어 위주로 축약해도 됨)`}]
     })});
     clearInterval(mt);
     const data=await resp.json();
     const raw=(data.content||[]).map(c=>c.text||'').join('');
-    parsedQuestions=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    let cleaned=raw.replace(/```json|```/g,'').trim();
+    // 잘린 JSON 복구 시도
+    if(!cleaned.endsWith(']')){
+      const lastComplete=cleaned.lastIndexOf('}');
+      if(lastComplete>0)cleaned=cleaned.slice(0,lastComplete+1)+']';
+    }
+    parsedQuestions=JSON.parse(cleaned);
     renderTexStep3();
     texShowStep(3);
   }catch(e){
