@@ -554,14 +554,37 @@ input,button{font-family:var(--font)}
 
         <!-- 결과 보기 -->
         <div id="t-exam-results" style="display:none">
-          <button class="btn btn-sm" style="margin-bottom:1rem" onclick="closeTExamResults()">← 목록으로</button>
-          <div class="card" style="margin-bottom:1rem">
-            <div class="card-head"><h3 id="t-res-title">결과</h3></div>
-            <div id="t-res-stats" style="padding:0 1.25rem 0.5rem"></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
+            <button class="btn btn-sm" onclick="closeTExamResults()">← 목록으로</button>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-sm blue" onclick="tResExportAllPDF()">📄 전체 PDF</button>
+            </div>
           </div>
-          <div class="card">
-            <div class="card-head"><h3>학생별 오답 현황</h3></div>
-            <div id="t-res-students" style="padding:0 1.25rem 0.5rem"></div>
+          <!-- 탭 -->
+          <div style="display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:1rem;padding-bottom:2px">
+            <button class="btn btn-sm active" id="tres-tab-overview" onclick="tResTab('overview')" style="background:rgba(79,124,255,0.1);color:var(--accent)">전체 현황</button>
+            <button class="btn btn-sm" id="tres-tab-student" onclick="tResTab('student')">학생별 상세</button>
+          </div>
+          <!-- 전체 현황 -->
+          <div id="tres-overview">
+            <div class="card" style="margin-bottom:1rem">
+              <div class="card-head"><h3 id="t-res-title">결과</h3></div>
+              <div id="t-res-stats" style="padding:0 1.25rem 1rem"></div>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3>학생 목록</h3></div>
+              <div id="t-res-students" style="padding:0 1.25rem 0.5rem"></div>
+            </div>
+          </div>
+          <!-- 학생별 상세 -->
+          <div id="tres-student" style="display:none">
+            <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;align-items:center">
+              <select id="tres-student-select" class="form-select" style="max-width:200px" onchange="tResLoadStudent(this.value)">
+                <option value="">학생 선택</option>
+              </select>
+              <button class="btn btn-sm" onclick="tResExportStudentPDF()">📄 이 학생 PDF</button>
+            </div>
+            <div id="tres-student-detail"></div>
           </div>
         </div>
       </div>
@@ -3045,15 +3068,39 @@ async function saveTExam(){
   closeTExamCreate();
 }
 
+var tResCurrentExam=null;
+var tResCurrentResponses=[];
+
 async function viewTExamResults(examId,examName){
   showTExamView('t-exam-results');
   document.getElementById('t-res-title').textContent=examName+' — 결과';
-  const {data:responses}=await sb.from('exam_responses').select('*').eq('exam_id',examId);
-  const {data:exam}=await sb.from('exams').select('*').eq('id',examId).single();
+  const [{data:responses},{data:exam}]=await Promise.all([
+    sb.from('exam_responses').select('*').eq('exam_id',examId),
+    sb.from('exams').select('*').eq('id',examId).single()
+  ]);
+  tResCurrentExam=exam;
+  tResCurrentResponses=responses||[];
+  tResTab('overview');
+  renderTResOverview();
+  renderTResStudentSelect();
+}
+
+function tResTab(tab){
+  document.getElementById('tres-overview').style.display=tab==='overview'?'block':'none';
+  document.getElementById('tres-student').style.display=tab==='student'?'block':'none';
+  document.getElementById('tres-tab-overview').style.background=tab==='overview'?'rgba(79,124,255,0.1)':'';
+  document.getElementById('tres-tab-overview').style.color=tab==='overview'?'var(--accent)':'';
+  document.getElementById('tres-tab-student').style.background=tab==='student'?'rgba(79,124,255,0.1)':'';
+  document.getElementById('tres-tab-student').style.color=tab==='student'?'var(--accent)':'';
+}
+
+function renderTResOverview(){
+  const exam=tResCurrentExam;
+  const responses=tResCurrentResponses;
   const statsEl=document.getElementById('t-res-stats');
   const studentsEl=document.getElementById('t-res-students');
   if(!responses||responses.length===0){
-    statsEl.innerHTML='<p style="color:var(--text3);font-size:13px">아직 제출한 학생이 없어요</p>';
+    statsEl.innerHTML='<p style="color:var(--text3);font-size:13px;padding:0.5rem 0">아직 제출한 학생이 없어요</p>';
     studentsEl.innerHTML='';return;
   }
   // 오답 빈도
@@ -3065,27 +3112,179 @@ async function viewTExamResults(examId,examName){
       if(q&&my!==String(q.answer))freq[idx]=(freq[idx]||0)+1;
     });
   });
-  const top=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  const top=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const avgAcc=Math.round(responses.reduce((acc,r)=>{
+    const wc=r.answers?Object.entries(r.answers).filter(([idx,my])=>my!==String(exam.questions[idx]?.answer)).length:0;
+    return acc+((exam.total_q-wc)/exam.total_q*100);
+  },0)/responses.length);
   statsEl.innerHTML=`
-    <div style="text-align:center"><div style="font-size:22px;font-weight:600">${responses.length}</div><div style="font-size:11px;color:var(--text2);margin-top:2px">응답 학생</div></div>
-    <div style="text-align:center"><div style="font-size:22px;font-weight:600">${exam.total_q}</div><div style="font-size:11px;color:var(--text2);margin-top:2px">총 문항</div></div>
-    <div style="grid-column:span 2">
-      <div style="font-size:11px;color:var(--text2);margin-bottom:4px">오답 TOP 3</div>
-      ${top.map(([idx,cnt])=>`<span style="background:var(--red-bg);color:var(--red);font-size:11px;padding:2px 8px;border-radius:8px;margin-right:4px">${Number(idx)+1}번 (${cnt}명)</span>`).join('')||'<span style="color:var(--text3);font-size:12px">없음</span>'}
-    </div>`;
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px">
+      <div style="text-align:center;background:var(--bg2);border-radius:8px;padding:12px">
+        <div style="font-size:22px;font-weight:600">${responses.length}</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px">응답 학생</div>
+      </div>
+      <div style="text-align:center;background:var(--bg2);border-radius:8px;padding:12px">
+        <div style="font-size:22px;font-weight:600">${exam.total_q}</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px">총 문항</div>
+      </div>
+      <div style="text-align:center;background:var(--bg2);border-radius:8px;padding:12px">
+        <div style="font-size:22px;font-weight:600;color:${avgAcc>=80?'var(--green)':avgAcc>=60?'var(--amber)':'var(--red)'}">${avgAcc}%</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px">평균 정확도</div>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:8px;font-weight:500">오답 빈도 TOP 5</div>
+    ${top.map(([idx,cnt])=>{
+      const q=exam.questions[idx];
+      const pct=Math.round(cnt/responses.length*100);
+      return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <span style="background:var(--red-bg);color:var(--red);font-size:11px;padding:2px 8px;border-radius:8px;min-width:40px;text-align:center">${Number(idx)+1}번</span>
+        <div style="flex:1">
+          <div style="font-size:12px;color:var(--text2)">${q?.type||'기타'}</div>
+          <div style="height:6px;background:var(--border);border-radius:3px;margin-top:3px">
+            <div style="height:100%;background:var(--red);border-radius:3px;width:${pct}%"></div>
+          </div>
+        </div>
+        <span style="font-size:12px;color:var(--red);font-weight:600">${cnt}명 (${pct}%)</span>
+      </div>`;}).join('')||'<span style="color:var(--text3);font-size:12px">없음</span>'}`;
   studentsEl.innerHTML=responses.map(r=>{
     const wrongCnt=r.answers?Object.entries(r.answers).filter(([idx,my])=>my!==String(exam.questions[idx]?.answer)).length:0;
     const acc=Math.round(((exam.total_q-wrongCnt)/exam.total_q)*100);
-    return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
-      <div style="width:32px;height:32px;border-radius:50%;background:rgba(79,124,255,0.15);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--accent)">${(r.student_name||'?')[0]}</div>
-      <div style="flex:1"><div style="font-size:13px;font-weight:500">${r.student_name}</div><div style="font-size:11px;color:var(--text2)">오답 ${wrongCnt}문</div></div>
-      <div style="font-size:15px;font-weight:600;color:${acc>=80?'var(--green)':acc>=60?'var(--amber)':'var(--red)'}">${acc}%</div>
+    const hasThoughts=r.thoughts&&Object.keys(r.thoughts).length>0;
+    return `<div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer"
+      onclick="tResTab('student');document.getElementById('tres-student-select').value='${r.student_name}';tResLoadStudent('${r.student_name}')">
+      <div style="width:34px;height:34px;border-radius:50%;background:rgba(79,124,255,0.15);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--accent);flex-shrink:0">${(r.student_name||'?')[0]}</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:500">${r.student_name}</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px">오답 ${wrongCnt}문 ${hasThoughts?'· ✏️ 사고과정 있음':''}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:15px;font-weight:600;color:${acc>=80?'var(--green)':acc>=60?'var(--amber)':'var(--red)'}">${acc}%</div>
+        <div style="font-size:11px;color:var(--accent);margin-top:2px">상세 보기 →</div>
+      </div>
     </div>`;}).join('');
+}
+
+function renderTResStudentSelect(){
+  const sel=document.getElementById('tres-student-select');
+  sel.innerHTML='<option value="">학생 선택</option>'+tResCurrentResponses.map(r=>`<option value="${r.student_name}">${r.student_name}</option>`).join('');
+}
+
+function tResLoadStudent(name){
+  if(!name)return;
+  const exam=tResCurrentExam;
+  const r=tResCurrentResponses.find(r=>r.student_name===name);
+  if(!r){document.getElementById('tres-student-detail').innerHTML='<p style="color:var(--text3);font-size:13px">데이터 없음</p>';return;}
+  const wrongs=exam.questions.reduce((acc,q,i)=>{
+    const my=r.answers?.[i];
+    if(my&&my!==String(q.answer))acc.push({idx:i,q,my});
+    return acc;
+  },[]);
+  const wrongCnt=wrongs.length;
+  const acc=Math.round(((exam.total_q-wrongCnt)/exam.total_q)*100);
+  document.getElementById('tres-student-detail').innerHTML=`
+    <div class="card" style="margin-bottom:1rem">
+      <div style="display:flex;align-items:center;gap:12px;padding:0.5rem 0 1rem">
+        <div style="width:44px;height:44px;border-radius:50%;background:rgba(79,124,255,0.15);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--accent)">${name[0]}</div>
+        <div>
+          <div style="font-size:16px;font-weight:600">${name}</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">정확도 ${acc}% · 오답 ${wrongCnt}문 / 총 ${exam.total_q}문</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+        <div style="text-align:center;background:var(--bg2);border-radius:8px;padding:10px">
+          <div style="font-size:18px;font-weight:600">${exam.total_q}</div><div style="font-size:11px;color:var(--text2)">총 문항</div>
+        </div>
+        <div style="text-align:center;background:var(--bg2);border-radius:8px;padding:10px">
+          <div style="font-size:18px;font-weight:600;color:var(--red)">${wrongCnt}</div><div style="font-size:11px;color:var(--text2)">오답</div>
+        </div>
+        <div style="text-align:center;background:var(--bg2);border-radius:8px;padding:10px">
+          <div style="font-size:18px;font-weight:600;color:${acc>=80?'var(--green)':acc>=60?'var(--amber)':'var(--red)'}">${acc}%</div><div style="font-size:11px;color:var(--text2)">정확도</div>
+        </div>
+      </div>
+    </div>
+    ${wrongs.length===0?'<div class="card" style="text-align:center;padding:2rem;color:var(--text3)">오답이 없어요 🎉</div>':
+    wrongs.map(({idx,q,my})=>{
+      const thought=r.thoughts?.[idx]||'';
+      const photoUrl=r.photo_urls?.[idx]||'';
+      return `<div class="card" style="margin-bottom:10px;border-left:3px solid var(--red)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+          <span style="background:rgba(79,124,255,0.15);color:var(--accent);font-size:11px;padding:2px 8px;border-radius:8px;font-weight:600">${idx+1}번</span>
+          <span style="font-size:12px;color:var(--text2)">${q.type}</span>
+          <span style="background:var(--red-bg);color:var(--red);font-size:11px;padding:2px 8px;border-radius:8px">내 답 ${my}번 → 정답 ${q.answer}번</span>
+        </div>
+        ${q.text?`<div style="background:var(--bg2);border-radius:6px;padding:10px;font-size:12px;line-height:1.7;margin-bottom:10px;color:var(--text)">${q.text}</div>`:''}
+        ${thought?`<div style="background:rgba(79,124,255,0.06);border:1px solid rgba(79,124,255,0.2);border-radius:6px;padding:10px;margin-bottom:10px">
+          <div style="font-size:11px;color:var(--accent);font-weight:500;margin-bottom:4px">✏️ 학생 사고 과정</div>
+          <div style="font-size:12px;color:var(--text);line-height:1.7">${thought}</div>
+        </div>`:''}
+        ${photoUrl?`<div style="margin-bottom:10px">
+          <div style="font-size:11px;color:var(--text2);margin-bottom:4px">📷 필기 사진</div>
+          <img src="${photoUrl}" style="width:100%;border-radius:6px;max-height:200px;object-fit:cover">
+        </div>`:''}
+        ${q.explanation?`<div style="background:var(--green-bg);border:1px solid rgba(34,197,94,0.2);border-radius:6px;padding:10px;font-size:12px;color:var(--green);line-height:1.7"><strong>📖 해설:</strong> ${q.explanation}</div>`:''}
+      </div>`;
+    }).join('')}`;
 }
 
 function closeTExamResults(){
   showTExamView('t-exam-main');
   renderTExam();
+}
+
+// ── PDF 출력 ──
+function tResBuildPrintHTML(name,r,exam){
+  const wrongs=exam.questions.reduce((acc,q,i)=>{
+    const my=r.answers?.[i];
+    if(my&&my!==String(q.answer))acc.push({idx:i,q,my});
+    return acc;
+  },[]);
+  const acc=Math.round(((exam.total_q-wrongs.length)/exam.total_q)*100);
+  return `<div style="font-family:sans-serif;padding:20px;max-width:700px;margin:0 auto">
+    <h2 style="margin-bottom:4px">${exam.name} — ${name} 오답 분석</h2>
+    <p style="color:#666;font-size:13px;margin-bottom:16px">정확도 ${acc}% · 오답 ${wrongs.length}문 / 총 ${exam.total_q}문</p>
+    ${wrongs.map(({idx,q,my})=>{
+      const thought=r.thoughts?.[idx]||'';
+      return `<div style="border:1px solid #ddd;border-radius:8px;padding:14px;margin-bottom:12px;page-break-inside:avoid">
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap">
+          <span style="background:#e8eeff;color:#2d5fa6;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:600">${idx+1}번</span>
+          <span style="font-size:12px;color:#666">${q.type}</span>
+          <span style="background:#fee;color:#c0392b;padding:2px 8px;border-radius:6px;font-size:12px">내 답 ${my}번 → 정답 ${q.answer}번</span>
+        </div>
+        ${q.text?`<div style="background:#f8f8f8;border-radius:6px;padding:10px;font-size:12px;line-height:1.7;margin-bottom:8px">${q.text}</div>`:''}
+        ${thought?`<div style="background:#f0f4ff;border:1px solid #c5d8f0;border-radius:6px;padding:10px;margin-bottom:8px">
+          <div style="font-size:11px;color:#2d5fa6;font-weight:600;margin-bottom:3px">✏️ 학생 사고 과정</div>
+          <div style="font-size:12px;line-height:1.7">${thought}</div>
+        </div>`:''}
+        ${q.explanation?`<div style="background:#f0faf4;border:1px solid #b5dfc9;border-radius:6px;padding:10px;font-size:12px;color:#2a7a52;line-height:1.7"><strong>📖 해설:</strong> ${q.explanation}</div>`:''}
+      </div>`;}).join('')}
+  </div>`;
+}
+
+function tResPrintHTML(html,filename){
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${filename}</title>
+    <style>@media print{button{display:none}body{margin:0}}</style>
+    </head><body>${html}
+    <br><button onclick="window.print()" style="padding:10px 24px;background:#2d5fa6;color:white;border:none;border-radius:6px;font-size:14px;cursor:pointer;margin:10px">🖨️ PDF로 저장 (인쇄)</button>
+    </body></html>`);
+  w.document.close();
+}
+
+function tResExportStudentPDF(){
+  const name=document.getElementById('tres-student-select').value;
+  if(!name){alert('학생을 선택해 주세요.');return;}
+  const r=tResCurrentResponses.find(r=>r.student_name===name);
+  if(!r)return;
+  tResPrintHTML(tResBuildPrintHTML(name,r,tResCurrentExam),name+'_오답분석');
+}
+
+function tResExportAllPDF(){
+  const exam=tResCurrentExam;
+  const responses=tResCurrentResponses;
+  if(!responses||responses.length===0){alert('응답 데이터가 없어요.');return;}
+  const allHTML=responses.map(r=>tResBuildPrintHTML(r.student_name,r,exam)+
+    '<div style="page-break-after:always;border-top:2px dashed #ccc;margin:20px 0"></div>').join('');
+  tResPrintHTML(`<h1 style="font-family:sans-serif;padding:20px">${exam.name} — 전체 학생 오답 분석</h1>`+allHTML,'전체_오답분석');
 }
 
 // ── 학생: 시험 분석 ──
