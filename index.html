@@ -2859,14 +2859,17 @@ function openTQaModal(qId){
     pdfArea.innerHTML='<iframe src="'+week.pdf_url+'#toolbar=1&navpanes=0" style="width:100%;height:100%;border:none;min-height:500px" type="application/pdf"></iframe>';
   } else {
     // PDF 없으면 직접 업로드 버튼 제공
+    var wid=(week&&week.id)||'';
     pdfArea.innerHTML='<div style="padding:2rem;text-align:center;color:var(--text3)">'+
       '<div style="font-size:2rem;margin-bottom:10px">📄</div>'+
       '<div style="font-size:13px;margin-bottom:12px">이 주차에 시험지 PDF가 없어요</div>'+
       '<label style="cursor:pointer;background:var(--accent);color:white;padding:8px 16px;border-radius:6px;font-size:13px">'+
       '📎 PDF 업로드'+
-      '<input type="file" accept=".pdf" style="display:none" onchange="uploadWeekPdfFromModal(event,''+((week&&week.id)||'')+'')">'+
+      '<input type="file" accept=".pdf" style="display:none" id="pdf-upload-'+wid+'">'+
       '</label>'+
       '</div>';
+    var inp=document.getElementById('pdf-upload-'+wid);
+    if(inp)inp.onchange=function(e){uploadWeekPdfFromModal(e,wid);};
   }
   document.getElementById('modal-qa-teacher').classList.add('show');
 }
