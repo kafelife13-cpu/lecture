@@ -285,6 +285,7 @@ input,button{font-family:var(--font)}
         <div class="nav-item" onclick="tNav('qa')" data-p="qa" id="nav-qa"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A 관리</div>
         <div class="nav-item" onclick="tNav('cert')" data-p="cert"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증 관리</div>
         <div class="nav-item" onclick="tNav('clinic')" data-p="clinic"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉 관리</div>
+        <div class="nav-item" onclick="tNav('exam')" data-p="exam"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>시험 분석</div>
       </nav>
       <div class="sidebar-footer"><button class="btn-logout" onclick="doLogout()">로그아웃</button></div>
     </div>
@@ -456,17 +457,62 @@ input,button{font-family:var(--font)}
         </div>
       </div>
 
+      <!-- 시험 분석 (교사) -->
+      <div class="panel" id="panel-exam">
+        <div class="page-header"><h1>시험 분석</h1><p>시험을 등록하고 학생들의 오답 경향을 분석하세요</p></div>
+        <!-- 시험 목록 / 등록 -->
+        <div id="t-exam-main">
+          <div class="card" style="margin-bottom:1rem">
+            <div class="card-head"><h3>새 시험 등록</h3><button class="btn blue btn-sm" onclick="openTExamCreate()">+ 등록</button></div>
+            <div id="t-exam-list" style="padding:0 1.25rem 0.5rem"><p style="color:var(--text3);font-size:13px;padding:1rem 0">등록된 시험이 없습니다</p></div>
+          </div>
+        </div>
+        <!-- 시험 생성 폼 -->
+        <div id="t-exam-create" style="display:none">
+          <div class="card">
+            <div class="card-head"><h3>시험 등록</h3><button class="btn btn-sm" onclick="closeTExamCreate()">취소</button></div>
+            <div style="padding:0 1.25rem 1.25rem">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+                <div class="form-group"><label>시험 이름</label><input class="form-input" id="tex-name" placeholder="예: 1학기 중간고사 국어"></div>
+                <div class="form-group"><label>총 문항 수</label><input class="form-input" type="number" id="tex-total" placeholder="예: 24" min="1" max="50" oninput="renderTExamQInputs()"></div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+                <div class="form-group"><label>다음 시험</label>
+                  <select class="form-select" id="tex-next"><option value="">없음</option><option>1학기 기말고사</option><option>2학기 중간고사</option><option>2학기 기말고사</option><option>수능</option><option>모의고사</option></select>
+                </div>
+                <div class="form-group"><label>다음 시험 범위</label><input class="form-input" id="tex-range" placeholder="예: 소설, 비문학 독해"></div>
+              </div>
+              <div id="tex-q-list" style="margin-top:8px"></div>
+              <button class="btn blue" style="width:100%;margin-top:12px" onclick="saveTExam()">저장하기</button>
+            </div>
+          </div>
+        </div>
+        <!-- 결과 보기 -->
+        <div id="t-exam-results" style="display:none">
+          <button class="btn btn-sm" style="margin-bottom:1rem" onclick="closeTExamResults()">← 목록으로</button>
+          <div class="card" style="margin-bottom:1rem">
+            <div class="card-head"><h3 id="t-res-title">결과</h3></div>
+            <div id="t-res-stats" style="padding:0 1.25rem 0.5rem"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>학생별 오답 현황</h3></div>
+            <div id="t-res-students" style="padding:0 1.25rem 0.5rem"></div>
+          </div>
+        </div>
+      </div>
+
     </div></div>
   </div>
   <div class="mobile-tabbar" id="t-tabbar" style="overflow-x:auto">
     <button class="mobile-tab active" onclick="tNav('dashboard')" data-mt="dashboard" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>대시보드</button>
-    <button class="mobile-tab" onclick="tNav('videos')" data-mt="videos" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의</button>
+    <button class="mobile-tab" onclick="tNav('videos')" data-mt="videos" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-02-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의</button>
     <button class="mobile-tab" onclick="tNav('access')" data-mt="access" id="mt-access" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습관리</button>
     <button class="mobile-tab" onclick="tNav('students')" data-mt="students" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>학생</button>
     <button class="mobile-tab" onclick="tNav('progress')" data-mt="progress" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>진도</button>
     <button class="mobile-tab" onclick="tNav('qa')" data-mt="qa" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A</button>
     <button class="mobile-tab" onclick="tNav('cert')" data-mt="cert" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증</button>
     <button class="mobile-tab" onclick="tNav('clinic')" data-mt="clinic" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉</button>
+    <button class="mobile-tab" onclick="tNav('exam')" data-mt="exam" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>시험</button>
     <button class="mobile-tab" onclick="doLogout()" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>로그아웃</button>
   </div>
 </div>
@@ -487,6 +533,7 @@ input,button{font-family:var(--font)}
         <div class="nav-item" onclick="sNav('qa')" data-p="qa"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A</div>
         <div class="nav-item" onclick="sNav('cert')" data-p="cert"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증</div>
         <div class="nav-item" onclick="sNav('clinic')" data-p="clinic"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉 변동</div>
+        <div class="nav-item" onclick="sNav('exam')" data-p="exam"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>시험 분석</div>
       </nav>
       <div class="sidebar-footer"><button class="btn-logout" onclick="doLogout()">로그아웃</button></div>
     </div>
@@ -540,6 +587,83 @@ input,button{font-family:var(--font)}
         <div class="page-header"><h1>클리닉 변동 신청</h1><p>변경하고 싶은 클리닉 시간대를 선택하세요. 정원이 차면 자동으로 마감돼요.</p></div>
         <div id="s-clinic-list"></div>
       </div>
+
+      <!-- 시험 분석 (학생) -->
+      <div class="panel" id="panel-exam">
+        <div class="page-header"><h1>시험 분석</h1><p>시험 코드를 입력하고 오답을 체크하면 AI가 풀이 경향을 분석해드려요</p></div>
+        <!-- 코드 입력 -->
+        <div id="s-exam-entry">
+          <div class="card" style="margin-bottom:1rem">
+            <div class="card-head"><h3>시험 코드 입력</h3></div>
+            <div style="padding:0 1.25rem 1.25rem">
+              <p style="font-size:13px;color:var(--text2);margin-bottom:12px">선생님께 받은 시험 코드를 입력하세요</p>
+              <div style="display:flex;gap:8px">
+                <input class="form-input" id="s-exam-code" placeholder="코드 입력 (예: A1B2C3D4)" style="flex:1;letter-spacing:0.1em;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')sExamSearch()">
+                <button class="btn blue" onclick="sExamSearch()">찾기</button>
+              </div>
+              <div id="s-exam-code-err" class="err-msg"></div>
+            </div>
+          </div>
+          <div class="card-flat" style="font-size:13px;color:var(--text2);line-height:1.8">
+            💡 <strong style="color:var(--text)">사용 방법</strong><br>
+            1. 선생님께 시험 코드를 받으세요<br>
+            2. 코드 입력 후 "찾기" 클릭<br>
+            3. 틀린 문제 번호를 클릭하고 내가 고른 답 선택<br>
+            4. 문제 옆 필기 사진 첨부 (선택)<br>
+            5. AI 분석 시작!
+          </div>
+        </div>
+        <!-- 오답 체크 -->
+        <div id="s-exam-check" style="display:none">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-wrap:wrap">
+            <button class="btn btn-sm" onclick="sExamBack()">← 돌아가기</button>
+            <div>
+              <div id="s-exam-check-title" style="font-size:16px;font-weight:600"></div>
+              <div id="s-exam-check-sub" style="font-size:12px;color:var(--text2)"></div>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom:1rem">
+            <div class="card-head"><h3>문제 번호 선택</h3><span style="font-size:12px;color:var(--text2)">틀린 번호 클릭</span></div>
+            <div style="padding:0 1.25rem 1.25rem">
+              <div id="s-exam-q-grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:10px"></div>
+              <div style="display:flex;gap:12px;font-size:11px;color:var(--text3)">
+                <span>□ 미체크</span>
+                <span style="color:var(--green)">■ 정답</span>
+                <span style="color:var(--red)">■ 오답</span>
+              </div>
+            </div>
+          </div>
+          <div id="s-exam-q-detail" style="display:none;margin-bottom:1rem"></div>
+          <div id="s-exam-check-err" class="err-msg"></div>
+          <button class="btn blue" style="width:100%" onclick="sExamAnalyze()">AI 분석 시작</button>
+          <p style="font-size:12px;color:var(--text3);text-align:center;margin-top:8px">모든 문항을 체크하지 않아도 분석 가능해요</p>
+        </div>
+        <!-- 분석 로딩 -->
+        <div id="s-exam-loading" style="display:none;text-align:center;padding:3rem 1rem">
+          <div class="spinner" style="margin:0 auto 16px"></div>
+          <div id="s-exam-loading-msg" style="font-size:15px;font-weight:500">분석 중...</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:6px">AI가 오답 패턴을 분석하고 있어요 · 30초~1분 소요</div>
+        </div>
+        <!-- 분석 결과 -->
+        <div id="s-exam-result" style="display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
+            <div id="s-res-header"></div>
+            <button class="btn btn-sm" onclick="sExamBack()">새 분석</button>
+          </div>
+          <div class="card" style="margin-bottom:1rem">
+            <div id="s-res-stats" style="padding:0.75rem 1.25rem;display:grid;grid-template-columns:repeat(4,1fr);gap:10px"></div>
+          </div>
+          <div style="display:flex;gap:8px;margin-bottom:1rem;border-bottom:1px solid var(--border);padding-bottom:2px">
+            <button class="btn btn-sm active" id="rtab-tendency" onclick="sResTab('tendency')" style="background:rgba(79,124,255,0.1);color:var(--accent)">풀이 경향</button>
+            <button class="btn btn-sm" id="rtab-mistakes" onclick="sResTab('mistakes')">오답 분석</button>
+            <button class="btn btn-sm" id="rtab-next" onclick="sResTab('next')">다음 시험 전략</button>
+          </div>
+          <div class="card" id="s-res-tendency"></div>
+          <div class="card" id="s-res-mistakes" style="display:none"></div>
+          <div class="card" id="s-res-next" style="display:none"></div>
+        </div>
+      </div>
+
     </div></div>
   </div>
   <div class="mobile-tabbar" id="s-tabbar" style="overflow-x:auto">
@@ -549,6 +673,7 @@ input,button{font-family:var(--font)}
     <button class="mobile-tab" onclick="sNav('qa')" data-ms="qa" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A</button>
     <button class="mobile-tab" onclick="sNav('cert')" data-ms="cert" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증</button>
     <button class="mobile-tab" onclick="sNav('clinic')" data-ms="clinic" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉</button>
+    <button class="mobile-tab" onclick="sNav('exam')" data-ms="exam" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>시험</button>
     <button class="mobile-tab" onclick="doLogout()" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>로그아웃</button>
   </div>
 </div>
@@ -932,7 +1057,7 @@ function tNav(panel){
   if(panel==='progress')renderProgress();
   if(panel==='qa'){renderTQaSchoolTabs();renderTQaWeekList();renderQaWeekFilter();renderQaReview();renderQaMaterialsList();}
   if(panel==='cert'){renderTCertSchoolTabs();renderTCertWeekList();}
-  if(panel==='clinic'){renderTClinicSchoolTabs();renderTClinicSlotList();renderTClinicReqList();}
+  if(panel==='exam')renderTExam();
 }
 
 /* ===== DASHBOARD ===== */
@@ -1301,6 +1426,7 @@ function sNav(panel){
   if(panel==='qa'){renderSQaSchoolList();renderSQaMyList();}
   if(panel==='cert')renderSCertList();
   if(panel==='clinic')renderSClinicList();
+  if(panel==='exam')renderSExam();
 }
 
 /* ===== 학생: 일반 강의 ===== */
@@ -2582,6 +2708,430 @@ document.getElementById('modal-qa-school').addEventListener('click',function(e){
   }
   hideLoading();showPage('page-login');
 })();
+
+// ════════════════════════════════════════════
+// 시험 분석 모듈
+// ════════════════════════════════════════════
+const EXAM_TYPES=['사실 확인','추론·함축','어휘·어법','표현 기법','주제·요지','논증 구조','계산·풀이','개념 적용','자료 해석','빈칸 추론','순서 배열','기타'];
+
+// ── Supabase 테이블: exams, exam_responses ──
+// exams: id, name, total_q, questions(json), next_exam, next_range, teacher_id, created_at
+// exam_responses: id, exam_id, student_name, answers(json), photo_urls(json), created_at
+
+// ── 교사: 시험 목록 렌더 ──
+async function renderTExam(){
+  const {data,error}=await sb.from('exams').select('*').order('created_at',{ascending:false});
+  const el=document.getElementById('t-exam-list');
+  if(error||!data||data.length===0){el.innerHTML='<p style="color:var(--text3);font-size:13px;padding:1rem 0">등록된 시험이 없습니다</p>';return;}
+  el.innerHTML=data.map(e=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px">
+      <div>
+        <div style="font-size:14px;font-weight:500">${e.name}</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px">${e.total_q}문항 · 코드: <strong style="letter-spacing:0.08em;color:var(--accent)">${e.id.slice(0,8).toUpperCase()}</strong></div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-sm blue" onclick="viewTExamResults('${e.id}','${e.name}')">결과 보기</button>
+        <button class="btn btn-sm" onclick="copyExamCode('${e.id}')">코드 복사</button>
+        <button class="btn btn-sm" style="color:var(--red)" onclick="deleteTExam('${e.id}')">삭제</button>
+      </div>
+    </div>`).join('');
+}
+
+function copyExamCode(id){
+  navigator.clipboard.writeText(id.slice(0,8).toUpperCase());
+  alert('코드가 복사됐어요!\n학생에게 이 코드를 알려주세요: '+id.slice(0,8).toUpperCase());
+}
+
+async function deleteTExam(id){
+  if(!confirm('이 시험을 삭제할까요?'))return;
+  await sb.from('exams').delete().eq('id',id);
+  renderTExam();
+}
+
+function openTExamCreate(){
+  document.getElementById('t-exam-main').style.display='none';
+  document.getElementById('t-exam-create').style.display='block';
+  document.getElementById('t-exam-results').style.display='none';
+}
+function closeTExamCreate(){
+  document.getElementById('t-exam-main').style.display='block';
+  document.getElementById('t-exam-create').style.display='none';
+  renderTExam();
+}
+
+function renderTExamQInputs(){
+  const n=parseInt(document.getElementById('tex-total').value)||0;
+  const container=document.getElementById('tex-q-list');
+  if(n<1||n>50){container.innerHTML='';return;}
+  container.innerHTML=Array.from({length:n},(_,i)=>`
+    <div style="border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+        <span style="background:rgba(79,124,255,0.15);color:var(--accent);font-size:11px;padding:2px 8px;border-radius:10px;font-weight:500">${i+1}번</span>
+        <select id="qt-${i}" style="font-size:12px;padding:4px 6px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text);flex:1;min-width:100px">
+          ${EXAM_TYPES.map(t=>`<option>${t}</option>`).join('')}
+        </select>
+        <div style="display:flex;gap:4px;align-items:center">
+          <span style="font-size:11px;color:var(--text2)">정답:</span>
+          ${[1,2,3,4,5].map(n=>`<div id="qa-${i}-${n}" onclick="selectAnswer(${i},${n})"
+            style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;cursor:pointer;font-size:12px;font-weight:500;border:1.5px solid var(--border);color:var(--text2);transition:all 0.12s">${n}</div>`).join('')}
+        </div>
+      </div>
+      <input id="qtext-${i}" class="form-input" placeholder="${i+1}번 문제 내용 요약 (선택)" style="font-size:12px;margin-bottom:6px">
+      <textarea id="qexp-${i}" class="form-input" placeholder="해설 (선택)" style="font-size:12px;min-height:50px;resize:vertical"></textarea>
+    </div>`).join('');
+}
+
+var selectedAnswers={};
+function selectAnswer(qIdx,num){
+  selectedAnswers[qIdx]=String(num);
+  for(let n=1;n<=5;n++){
+    const el=document.getElementById(`qa-${qIdx}-${n}`);
+    if(!el)continue;
+    el.style.background=n===num?'var(--green)':'';
+    el.style.borderColor=n===num?'var(--green)':'var(--border)';
+    el.style.color=n===num?'white':'var(--text2)';
+  }
+}
+
+async function saveTExam(){
+  const name=document.getElementById('tex-name').value.trim();
+  const total=parseInt(document.getElementById('tex-total').value);
+  if(!name||!total){alert('시험 이름과 총 문항 수를 입력해 주세요.');return;}
+  const questions=[];
+  for(let i=0;i<total;i++){
+    questions.push({
+      num:i+1,
+      type:document.getElementById('qt-'+i)?.value||'기타',
+      answer:selectedAnswers[i]||'',
+      text:document.getElementById('qtext-'+i)?.value||'',
+      explanation:document.getElementById('qexp-'+i)?.value||''
+    });
+  }
+  if(!questions.some(q=>q.answer)){alert('최소 한 문항의 정답을 선택해 주세요.');return;}
+  const {error}=await sb.from('exams').insert({
+    name,total_q:total,questions,
+    next_exam:document.getElementById('tex-next').value,
+    next_range:document.getElementById('tex-range').value,
+    teacher_id:session.id
+  });
+  if(error){alert('저장 오류: '+error.message);return;}
+  selectedAnswers={};
+  alert('시험이 저장됐어요!');
+  closeTExamCreate();
+}
+
+async function viewTExamResults(examId,examName){
+  document.getElementById('t-exam-main').style.display='none';
+  document.getElementById('t-exam-create').style.display='none';
+  document.getElementById('t-exam-results').style.display='block';
+  document.getElementById('t-res-title').textContent=examName+' — 결과';
+  const {data:responses}=await sb.from('exam_responses').select('*').eq('exam_id',examId);
+  const {data:exam}=await sb.from('exams').select('*').eq('id',examId).single();
+  const statsEl=document.getElementById('t-res-stats');
+  const studentsEl=document.getElementById('t-res-students');
+  if(!responses||responses.length===0){
+    statsEl.innerHTML='<p style="color:var(--text3);font-size:13px">아직 제출한 학생이 없어요</p>';
+    studentsEl.innerHTML='';return;
+  }
+  // 오답 빈도
+  const freq={};
+  responses.forEach(r=>{
+    if(!r.answers)return;
+    Object.entries(r.answers).forEach(([idx,my])=>{
+      const q=exam.questions[idx];
+      if(q&&my!==String(q.answer))freq[idx]=(freq[idx]||0)+1;
+    });
+  });
+  const top=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  statsEl.innerHTML=`
+    <div style="text-align:center"><div style="font-size:22px;font-weight:600">${responses.length}</div><div style="font-size:11px;color:var(--text2);margin-top:2px">응답 학생</div></div>
+    <div style="text-align:center"><div style="font-size:22px;font-weight:600">${exam.total_q}</div><div style="font-size:11px;color:var(--text2);margin-top:2px">총 문항</div></div>
+    <div style="grid-column:span 2">
+      <div style="font-size:11px;color:var(--text2);margin-bottom:4px">오답 TOP 3</div>
+      ${top.map(([idx,cnt])=>`<span style="background:var(--red-bg);color:var(--red);font-size:11px;padding:2px 8px;border-radius:8px;margin-right:4px">${Number(idx)+1}번 (${cnt}명)</span>`).join('')||'<span style="color:var(--text3);font-size:12px">없음</span>'}
+    </div>`;
+  studentsEl.innerHTML=responses.map(r=>{
+    const wrongCnt=r.answers?Object.entries(r.answers).filter(([idx,my])=>my!==String(exam.questions[idx]?.answer)).length:0;
+    const acc=Math.round(((exam.total_q-wrongCnt)/exam.total_q)*100);
+    return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+      <div style="width:32px;height:32px;border-radius:50%;background:rgba(79,124,255,0.15);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--accent)">${(r.student_name||'?')[0]}</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:500">${r.student_name}</div><div style="font-size:11px;color:var(--text2)">오답 ${wrongCnt}문</div></div>
+      <div style="font-size:15px;font-weight:600;color:${acc>=80?'var(--green)':acc>=60?'var(--amber)':'var(--red)'}">${acc}%</div>
+    </div>`;}).join('');
+}
+
+function closeTExamResults(){
+  document.getElementById('t-exam-main').style.display='block';
+  document.getElementById('t-exam-results').style.display='none';
+  renderTExam();
+}
+
+// ── 학생: 시험 분석 ──
+var sExamData=null;
+var sExamAnswers={};
+var sExamPhotos={};
+var sExamSelectedQ=null;
+
+function renderSExam(){
+  sExamData=null;sExamAnswers={};sExamPhotos={};sExamSelectedQ=null;
+  showSExamView('entry');
+}
+
+function showSExamView(v){
+  ['entry','check','loading','result'].forEach(n=>document.getElementById('s-exam-'+n).style.display=n===v?'block':'none');
+}
+
+async function sExamSearch(){
+  const code=document.getElementById('s-exam-code').value.trim();
+  const errEl=document.getElementById('s-exam-code-err');
+  errEl.textContent='';
+  if(!code){errEl.textContent='코드를 입력해 주세요.';return;}
+  const {data,error}=await sb.from('exams').select('*');
+  const found=data&&data.find(e=>e.id.toUpperCase().startsWith(code.toUpperCase())||e.id.toUpperCase()===code.toUpperCase());
+  if(!found){errEl.textContent='해당 코드의 시험을 찾을 수 없어요.';return;}
+  sExamData=found;sExamAnswers={};sExamPhotos={};sExamSelectedQ=null;
+  document.getElementById('s-exam-check-title').textContent=found.name;
+  document.getElementById('s-exam-check-sub').textContent='총 '+found.total_q+'문항 · 틀린 문제를 클릭하세요';
+  renderSExamGrid();
+  showSExamView('check');
+}
+
+function renderSExamGrid(){
+  const grid=document.getElementById('s-exam-q-grid');
+  grid.innerHTML=Array.from({length:sExamData.total_q},(_,i)=>{
+    const my=sExamAnswers[i];
+    const q=sExamData.questions[i];
+    const isCorrect=my&&my===String(q?.answer);
+    const isWrong=my&&my!==String(q?.answer);
+    const isSel=sExamSelectedQ===i;
+    return `<div onclick="sExamSelectQ(${i})" style="
+      border:${isSel?'2px':'1px'} solid ${isSel?'var(--accent)':isCorrect?'var(--green)':isWrong?'var(--red)':'var(--border)'};
+      border-radius:8px;padding:8px 4px;text-align:center;cursor:pointer;font-size:13px;font-weight:500;
+      background:${isSel?'rgba(79,124,255,0.15)':isCorrect?'var(--green-bg)':isWrong?'var(--red-bg)':'var(--bg)'};
+      color:${isSel?'var(--accent)':isCorrect?'var(--green)':isWrong?'var(--red)':'var(--text2)'};
+      transition:all 0.1s;user-select:none">${i+1}번</div>`;
+  }).join('');
+}
+
+function sExamSelectQ(idx){
+  sExamSelectedQ=idx;
+  renderSExamGrid();
+  renderSExamQDetail(idx);
+  document.getElementById('s-exam-q-detail').style.display='block';
+}
+
+function renderSExamQDetail(idx){
+  const q=sExamData.questions[idx];
+  const my=sExamAnswers[idx];
+  const isWrong=my&&my!==String(q.answer);
+  const isCorrect=my&&my===String(q.answer);
+  const photo=sExamPhotos[idx];
+  const el=document.getElementById('s-exam-q-detail');
+  el.innerHTML=`<div class="card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      <span style="background:rgba(79,124,255,0.15);color:var(--accent);font-size:11px;padding:2px 8px;border-radius:10px;font-weight:500">${idx+1}번</span>
+      <span style="font-size:11px;color:var(--text2)">${q.type}</span>
+      ${isCorrect?'<span style="background:var(--green-bg);color:var(--green);font-size:11px;padding:2px 8px;border-radius:8px">✓ 정답</span>':''}
+      ${isWrong?`<span style="background:var(--red-bg);color:var(--red);font-size:11px;padding:2px 8px;border-radius:8px">✗ 오답 — 내 답: ${my}번 / 정답: ${q.answer}번</span>`:''}
+    </div>
+    ${q.text?`<div style="background:var(--bg2);border-radius:8px;padding:10px;margin-bottom:10px;font-size:13px;line-height:1.7">${q.text}</div>`:''}
+    <div style="font-size:12px;color:var(--text2);margin-bottom:6px">내가 선택한 답:</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:12px">
+      ${[1,2,3,4,5].map(n=>{
+        const isAns=String(n)===String(q.answer);
+        const isMy=String(n)===my;
+        return `<div onclick="sExamSelectChoice(${idx},${n})" style="
+          border:1.5px solid ${isMy&&isAns?'var(--green)':isMy?'var(--red)':my&&isAns?'var(--green)':'var(--border)'};
+          border-radius:8px;padding:10px 4px;text-align:center;cursor:pointer;font-size:13px;font-weight:${isMy||(my&&isAns)?'600':'400'};
+          background:${isMy&&isAns?'var(--green-bg)':isMy?'var(--red-bg)':my&&isAns?'var(--green-bg)':'var(--bg)'};
+          color:${isMy&&isAns?'var(--green)':isMy?'var(--red)':my&&isAns?'var(--green)':'var(--text2)'};
+          transition:all 0.1s;user-select:none">
+          ${n}번${isMy&&!isAns?' ✗':isMy?' ✓':my&&isAns?' ✓':''}
+        </div>`;}).join('')}
+    </div>
+    ${isWrong&&q.explanation?`<div style="background:var(--green-bg);border:1px solid rgba(34,197,94,0.3);border-radius:8px;padding:10px;margin-bottom:10px;font-size:12px;color:var(--green);line-height:1.7"><strong>📖 해설:</strong> ${q.explanation}</div>`:''}
+    ${isWrong?`<div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:6px">📷 필기·마킹 사진 첨부 (선택)</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:8px">문제 주변 필기 흔적을 찍으면 AI가 사고 과정을 분석합니다</div>
+      <div onclick="document.getElementById('sphoto-${idx}').click()" style="border:1.5px dashed var(--border2);border-radius:8px;padding:14px;text-align:center;cursor:pointer">
+        <div style="font-size:1.25rem;margin-bottom:4px">📷</div>
+        <div style="font-size:12px;color:var(--accent)">사진 첨부</div>
+        <input type="file" id="sphoto-${idx}" accept="image/*" capture="environment" style="display:none" onchange="sExamUploadPhoto(${idx},this)">
+      </div>
+      ${photo?`<img src="${photo.preview}" style="width:100%;border-radius:8px;margin-top:8px;max-height:180px;object-fit:cover">`:''}
+    </div>`:''}
+  </div>`;
+}
+
+function sExamSelectChoice(idx,n){
+  sExamAnswers[idx]=String(n);
+  renderSExamGrid();
+  renderSExamQDetail(idx);
+}
+
+function sExamUploadPhoto(idx,input){
+  const file=input.files[0];if(!file)return;
+  const preview=URL.createObjectURL(file);
+  sExamPhotos[idx]={file,preview};
+  renderSExamQDetail(idx);
+}
+
+function sExamBack(){
+  sExamData=null;sExamAnswers={};sExamPhotos={};sExamSelectedQ=null;
+  showSExamView('entry');
+  document.getElementById('s-exam-code').value='';
+}
+
+async function sExamAnalyze(){
+  if(!sExamData)return;
+  const wrongs=sExamData.questions.reduce((acc,q,i)=>{
+    const my=sExamAnswers[i];
+    if(my&&my!==String(q.answer))acc.push({idx:i,q,my});
+    return acc;
+  },[]);
+  const errEl=document.getElementById('s-exam-check-err');
+  errEl.textContent='';
+  if(wrongs.length===0){errEl.textContent='오답이 없거나 체크된 문항이 없어요. 틀린 문제를 선택해 주세요.';return;}
+
+  showSExamView('loading');
+  const msgs=['오답 패턴 분류 중...','사고 흔적 분석 중...','학습 전략 생성 중...'];
+  let mi=0;
+  const mt=setInterval(()=>{
+    document.getElementById('s-exam-loading-msg').textContent=msgs[Math.min(mi++,msgs.length-1)];
+  },6000);
+
+  const wrongCount=wrongs.length;
+  const accuracy=Math.round(((sExamData.total_q-wrongCount)/sExamData.total_q)*100);
+  const wrongText=wrongs.map(({idx,q,my})=>`- ${idx+1}번 (${q.type}): 내 답 ${my}번 → 정답 ${q.answer}번 | 해설: ${q.explanation||'없음'}`).join('\n');
+
+  const contentBlocks=[];
+  // 사진 첨부
+  for(const {idx} of wrongs){
+    if(sExamPhotos[idx]?.file){
+      const b64=await new Promise(res=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.readAsDataURL(sExamPhotos[idx].file);});
+      const mt2=sExamPhotos[idx].file.type||'image/jpeg';
+      contentBlocks.push({type:'image',source:{type:'base64',media_type:mt2,data:b64}});
+    }
+  }
+  const hasPhotos=contentBlocks.length>0;
+  contentBlocks.push({type:'text',text:`당신은 대한민국 최고의 학습 분석 전문가입니다.
+
+[시험 정보]
+시험명: ${sExamData.name} / 학생: ${session.name} / 총 문항: ${sExamData.total_q}
+오답: ${wrongCount}문 / 정확도: ${accuracy}%
+다음 시험: ${sExamData.next_exam||'없음'} / 범위: ${sExamData.next_range||'없음'}
+
+[오답 목록]
+${wrongText}
+
+${hasPhotos?'위 이미지는 학생이 틀린 문제 옆에 남긴 필기·마킹 사진입니다. 사진에서 사고 과정을 구체적으로 추론하세요.':''}
+
+순수 JSON만 반환하세요:
+{"summary":{"totalQ":${sExamData.total_q},"wrongQ":${wrongCount},"accuracy":${accuracy},"weakArea":"취약 유형 한 가지"},
+"tendency":{"title":"한 줄 요약","patterns":[{"type":"weak","label":"취약 경향","desc":"설명","tip":"개선법"},{"type":"medium","label":"주의 경향","desc":"설명","tip":"팁"},{"type":"strong","label":"강점","desc":"설명","tip":"유지법"}],"thinkingStyle":"2-3문장 사고 패턴 분석"},
+"mistakes":[{"qNum":번호숫자,"concept":"개념명","myChoice":"내 답","correctAnswer":"정답","thinking":"왜 이 오답을 골랐는지 추론","studyTip":"보완법","urgency":"high"}],
+"nextExam":{"strategy":"전략 3-4문장","focusAreas":["영역1","영역2","영역3"],"timeline":"주차별 계획","avoidMistakes":"반복 실수 패턴"}}`});
+
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1800,messages:[{role:'user',content:contentBlocks}]})});
+    const data=await resp.json();
+    const raw=(data.content||[]).map(c=>c.text||'').join('');
+    let result;
+    try{result=JSON.parse(raw.replace(/```json|```/g,'').trim());}
+    catch(e){result=sExamFallback(wrongs,sExamData.total_q,wrongCount,accuracy);}
+    clearInterval(mt);
+    sExamShowResult(result);
+  }catch(e){
+    clearInterval(mt);
+    sExamShowResult(sExamFallback(wrongs,sExamData.total_q,wrongCount,accuracy));
+  }
+
+  // Supabase에 응답 저장
+  await sb.from('exam_responses').upsert({
+    exam_id:sExamData.id,student_name:session.name,
+    answers:sExamAnswers,photo_urls:{}
+  },{onConflict:'exam_id,student_name'});
+}
+
+function sExamFallback(wrongs,total,wrongCount,accuracy){
+  const freq={};wrongs.forEach(({q})=>{freq[q.type]=(freq[q.type]||0)+1;});
+  const top=Object.entries(freq).sort((a,b)=>b[1]-a[1])[0]?.[0]||'추론 문제';
+  return{
+    summary:{totalQ:total,wrongQ:wrongCount,accuracy,weakArea:top},
+    tendency:{title:top+' 유형에서 오답 집중',
+      patterns:[{type:'weak',label:top+' 취약',desc:top+' 유형에서 반복 오답 발생',tip:'기출 집중 반복'},{type:'medium',label:'선택지 검토 부족',desc:'끝까지 검토하지 않는 패턴',tip:'지문 근거 확인 습관'},{type:'strong',label:'기본 개념',desc:'사실 확인 유형 비교적 안정',tip:'강점 유지'}],
+      thinkingStyle:top+' 유형에서 반복 실수가 발생합니다. 풀이 접근 방식을 체계화할 필요가 있습니다.'},
+    mistakes:wrongs.slice(0,4).map(({idx,q,my})=>({qNum:idx+1,concept:q.type,myChoice:my,correctAnswer:q.answer,thinking:'선택지 유사성으로 인한 혼동으로 추정',studyTip:'지문에서 직접 근거를 찾아 검증하는 습관',urgency:'high'})),
+    nextExam:{strategy:sExamData.next_exam?sExamData.next_exam+'을 위해 '+top+' 유형을 최우선 보완하세요.':'다음 시험을 위해 '+top+' 유형을 집중 보완하세요.',focusAreas:[top+' 집중','오답 노트 작성','시간 관리'],timeline:'3주 전: 취약 유형 / 2주 전: 기출 / 1주 전: 오답 반복',avoidMistakes:'근거 없이 직감으로 선택지를 고르는 패턴'}
+  };
+}
+
+var sResActiveTab='tendency';
+function sResTab(tab){
+  sResActiveTab=tab;
+  ['tendency','mistakes','next'].forEach(t=>{
+    document.getElementById('s-res-'+t).style.display=t===tab?'block':'none';
+    const btn=document.getElementById('rtab-'+t);
+    btn.style.background=t===tab?'rgba(79,124,255,0.1)':'';
+    btn.style.color=t===tab?'var(--accent)':'';
+  });
+}
+
+function sExamShowResult(r){
+  showSExamView('result');
+  document.getElementById('s-res-header').innerHTML=`<div style="font-size:16px;font-weight:600">${session.name} · ${sExamData.name}</div><div style="font-size:12px;color:var(--text2);margin-top:2px">정확도 ${r.summary.accuracy}% · 오답 ${r.summary.wrongQ}문 · 취약: ${r.summary.weakArea}</div>`;
+  document.getElementById('s-res-stats').innerHTML=`
+    <div style="text-align:center"><div style="font-size:20px;font-weight:600">${r.summary.totalQ}</div><div style="font-size:11px;color:var(--text2);margin-top:2px">총 문항</div></div>
+    <div style="text-align:center"><div style="font-size:20px;font-weight:600;color:var(--red)">${r.summary.wrongQ}</div><div style="font-size:11px;color:var(--text2);margin-top:2px">오답</div></div>
+    <div style="text-align:center"><div style="font-size:20px;font-weight:600">${r.summary.accuracy}%</div><div style="font-size:11px;color:var(--text2);margin-top:2px">정확도</div></div>
+    <div style="text-align:center"><div style="font-size:13px;font-weight:500;margin-top:4px">${r.summary.weakArea}</div><div style="font-size:11px;color:var(--text2);margin-top:2px">취약 유형</div></div>`;
+
+  const uc={high:'var(--red)',medium:'var(--amber)',low:'var(--green)'};
+  const ul={high:'긴급',medium:'보통',low:'안정'};
+
+  document.getElementById('s-res-tendency').innerHTML=`
+    <div style="font-size:14px;font-weight:500;margin-bottom:12px">${r.tendency.title}</div>
+    ${r.tendency.patterns.map(p=>`<div style="padding:10px 12px;background:var(--bg2);border-radius:8px;border-left:3px solid ${p.type==='strong'?'var(--green)':p.type==='weak'?'var(--red)':'var(--amber)'};margin-bottom:8px">
+      <div style="font-size:11px;font-weight:600;color:${p.type==='strong'?'var(--green)':p.type==='weak'?'var(--red)':'var(--amber)'};margin-bottom:3px">${p.label}</div>
+      <div style="font-size:13px;line-height:1.6">${p.desc}</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:3px">💡 ${p.tip}</div>
+    </div>`).join('')}
+    <hr style="border:none;border-top:1px solid var(--border);margin:1rem 0">
+    <div style="font-size:11px;font-weight:600;color:var(--text3);letter-spacing:0.06em;margin-bottom:8px">사고 패턴 분석</div>
+    <div style="font-size:13px;line-height:1.8">${r.tendency.thinkingStyle}</div>`;
+
+  document.getElementById('s-res-mistakes').innerHTML=`
+    <div style="font-size:11px;font-weight:600;color:var(--text3);letter-spacing:0.06em;margin-bottom:12px">문항별 오답 분석</div>
+    ${r.mistakes.map(m=>`<div style="padding:10px 12px;background:var(--bg2);border-radius:8px;border-left:3px solid ${uc[m.urgency]||'var(--red)'};margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:6px">
+        <span style="background:rgba(79,124,255,0.15);color:var(--accent);font-size:11px;padding:2px 8px;border-radius:8px">${m.qNum}번</span>
+        <span style="font-size:13px;font-weight:500">${m.concept}</span>
+        <span style="font-size:11px;color:var(--text2)">내 답 ${m.myChoice}번 → 정답 ${m.correctAnswer}번</span>
+        <span style="background:${uc[m.urgency]||'var(--red)'}20;color:${uc[m.urgency]||'var(--red)'};font-size:11px;padding:2px 8px;border-radius:8px;margin-left:auto">${ul[m.urgency]||'긴급'}</span>
+      </div>
+      <div style="font-size:13px;line-height:1.6;margin-bottom:8px">${m.thinking}</div>
+      <div style="background:var(--bg);border-radius:6px;padding:8px;font-size:12px"><span style="color:var(--text2)">학습 팁: </span>${m.studyTip}</div>
+    </div>`).join('')}`;
+
+  document.getElementById('s-res-next').innerHTML=`
+    <div style="font-size:11px;font-weight:600;color:var(--text3);letter-spacing:0.06em;margin-bottom:10px">${sExamData.next_exam||'다음 시험'} 대비 전략</div>
+    <div style="font-size:13px;line-height:1.8;margin-bottom:1rem">${r.nextExam.strategy}</div>
+    <hr style="border:none;border-top:1px solid var(--border);margin:1rem 0">
+    <div style="font-size:11px;font-weight:600;color:var(--text3);letter-spacing:0.06em;margin-bottom:8px">집중 학습 영역</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem">
+      ${r.nextExam.focusAreas.map((a,i)=>`<span style="background:${['rgba(79,124,255,0.15)','rgba(34,197,94,0.15)','rgba(245,158,11,0.15)'][i]||'var(--bg2)'};color:${['var(--accent)','var(--green)','var(--amber)'][i]||'var(--text)'};font-size:12px;padding:4px 12px;border-radius:10px">${a}</span>`).join('')}
+    </div>
+    <hr style="border:none;border-top:1px solid var(--border);margin:1rem 0">
+    <div style="font-size:11px;font-weight:600;color:var(--text3);letter-spacing:0.06em;margin-bottom:8px">주차별 학습 계획</div>
+    <div style="font-size:13px;line-height:1.8;margin-bottom:1rem">${r.nextExam.timeline}</div>
+    <hr style="border:none;border-top:1px solid var(--border);margin:1rem 0">
+    <div style="font-size:11px;font-weight:600;color:var(--text3);letter-spacing:0.06em;margin-bottom:8px">반드시 고쳐야 할 실수</div>
+    <div style="padding:10px 12px;background:var(--red-bg);border-radius:8px;border-left:3px solid var(--red);font-size:13px;line-height:1.6">${r.nextExam.avoidMistakes}</div>`;
+
+  sResTab('tendency');
+}
+// ════════════════════════════════════════════
+
 </script>
 </body>
 </html>
