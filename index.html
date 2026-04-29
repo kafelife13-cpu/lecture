@@ -469,22 +469,66 @@ input,button{font-family:var(--font)}
         </div>
         <!-- 시험 생성 폼 -->
         <div id="t-exam-create" style="display:none">
-          <div class="card">
-            <div class="card-head"><h3>시험 등록</h3><button class="btn btn-sm" onclick="closeTExamCreate()">취소</button></div>
-            <div style="padding:0 1.25rem 1.25rem">
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-                <div class="form-group"><label>시험 이름</label><input class="form-input" id="tex-name" placeholder="예: 1학기 중간고사 국어"></div>
-                <div class="form-group"><label>총 문항 수</label><input class="form-input" type="number" id="tex-total" placeholder="예: 24" min="1" max="50" oninput="renderTExamQInputs()"></div>
-              </div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-                <div class="form-group"><label>다음 시험</label>
-                  <select class="form-select" id="tex-next"><option value="">없음</option><option>1학기 기말고사</option><option>2학기 중간고사</option><option>2학기 기말고사</option><option>수능</option><option>모의고사</option></select>
+          <!-- STEP 1: 텍스트 입력 -->
+          <div id="tex-step1">
+            <div class="card" style="margin-bottom:1rem">
+              <div class="card-head"><h3>시험 등록</h3><button class="btn btn-sm" onclick="closeTExamCreate()">취소</button></div>
+              <div style="padding:0 1.25rem 1.25rem">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+                  <div class="form-group"><label>시험 이름</label><input class="form-input" id="tex-name" placeholder="예: 1학기 중간고사 국어"></div>
+                  <div class="form-group"><label>다음 시험</label>
+                    <select class="form-select" id="tex-next"><option value="">없음</option><option>1학기 기말고사</option><option>2학기 중간고사</option><option>2학기 기말고사</option><option>수능</option><option>모의고사</option></select>
+                  </div>
                 </div>
-                <div class="form-group"><label>다음 시험 범위</label><input class="form-input" id="tex-range" placeholder="예: 소설, 비문학 독해"></div>
+                <div class="form-group" style="margin-bottom:0"><label>다음 시험 범위 (선택)</label><input class="form-input" id="tex-range" placeholder="예: 소설, 비문학 독해"></div>
               </div>
-              <div id="tex-q-list" style="margin-top:8px"></div>
-              <button class="btn blue" style="width:100%;margin-top:12px" onclick="saveTExam()">저장하기</button>
             </div>
+            <div class="card" style="margin-bottom:1rem">
+              <div class="card-head"><h3>① 시험지 텍스트</h3><span style="font-size:11px;color:var(--text2)">한글에서 Ctrl+A → Ctrl+C 후 붙여넣기</span></div>
+              <div style="padding:0 1.25rem 1.25rem">
+                <textarea class="form-input" id="tex-questions-raw" placeholder="시험지 전체 텍스트를 붙여넣으세요&#10;&#10;예)&#10;1. 다음 글의 주제로 가장 적절한 것은?&#10;①...②...③...&#10;2. 밑줄 친 ㉠의 의미로 가장 적절한 것은?" style="min-height:180px;font-size:13px;line-height:1.7"></textarea>
+              </div>
+            </div>
+            <div class="card" style="margin-bottom:1rem">
+              <div class="card-head"><h3>② 정답지 텍스트</h3><span style="font-size:11px;color:var(--text2)">어떤 형식이든 OK</span></div>
+              <div style="padding:0 1.25rem 1.25rem">
+                <textarea class="form-input" id="tex-answers-raw" placeholder="예) 1-③ 2-① 3-⑤ 4-② 5-④&#10;또는&#10;1번: 3번  2번: 1번&#10;또는&#10;1③ 2① 3⑤ ..." style="min-height:100px;font-size:13px;line-height:1.7"></textarea>
+              </div>
+            </div>
+            <div class="card" style="margin-bottom:1rem">
+              <div class="card-head"><h3>③ 해설지 텍스트</h3><span style="font-size:11px;color:var(--text2)">선택사항</span></div>
+              <div style="padding:0 1.25rem 1.25rem">
+                <textarea class="form-input" id="tex-explanations-raw" placeholder="예)&#10;1번: 글의 전체 흐름을 볼 때 주제는...&#10;2번: ㉠은 문맥상...&#10;&#10;형식 상관없이 붙여넣으면 AI가 분리합니다" style="min-height:120px;font-size:13px;line-height:1.7"></textarea>
+              </div>
+            </div>
+            <div id="tex-parse-err" style="color:var(--red);font-size:13px;margin-bottom:8px;display:none"></div>
+            <button class="btn blue" style="width:100%" onclick="texParse()">AI로 자동 분석하기</button>
+            <p style="font-size:11px;color:var(--text3);text-align:center;margin-top:6px">시험지·정답지·해설지를 자동으로 문항별 분리합니다</p>
+          </div>
+
+          <!-- STEP 2: 파싱 중 -->
+          <div id="tex-step2" style="display:none">
+            <div class="card" style="text-align:center;padding:3rem 1.5rem">
+              <div class="spinner" style="margin:0 auto 16px"></div>
+              <div id="tex-parse-msg" style="font-size:15px;font-weight:500">시험지 분석 중...</div>
+              <div style="font-size:12px;color:var(--text2);margin-top:6px">AI가 문항을 분리하고 정답·해설을 매칭하고 있어요</div>
+            </div>
+          </div>
+
+          <!-- STEP 3: 확인 & 수정 -->
+          <div id="tex-step3" style="display:none">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
+              <div>
+                <div style="font-size:15px;font-weight:600">문항 확인 및 수정</div>
+                <div style="font-size:12px;color:var(--text2);margin-top:2px">AI가 파싱한 결과예요. 틀린 부분만 수정하고 저장하세요</div>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-sm" onclick="texBackToStep1()">← 다시 입력</button>
+                <button class="btn blue btn-sm" onclick="saveTExam()">저장하기</button>
+              </div>
+            </div>
+            <div id="tex-q-list"></div>
+            <button class="btn blue" style="width:100%;margin-top:12px" onclick="saveTExam()">저장하기</button>
           </div>
         </div>
         <!-- 결과 보기 -->
@@ -2752,40 +2796,104 @@ function openTExamCreate(){
   document.getElementById('t-exam-main').style.display='none';
   document.getElementById('t-exam-create').style.display='block';
   document.getElementById('t-exam-results').style.display='none';
+  texShowStep(1);
 }
 function closeTExamCreate(){
   document.getElementById('t-exam-main').style.display='block';
   document.getElementById('t-exam-create').style.display='none';
   renderTExam();
 }
+function texShowStep(n){
+  [1,2,3].forEach(i=>document.getElementById('tex-step'+i).style.display=i===n?'block':'none');
+}
+function texBackToStep1(){texShowStep(1);}
 
-function renderTExamQInputs(){
-  const n=parseInt(document.getElementById('tex-total').value)||0;
+var parsedQuestions=[];
+
+async function texParse(){
+  const name=document.getElementById('tex-name').value.trim();
+  const qRaw=document.getElementById('tex-questions-raw').value.trim();
+  const aRaw=document.getElementById('tex-answers-raw').value.trim();
+  const eRaw=document.getElementById('tex-explanations-raw').value.trim();
+  const errEl=document.getElementById('tex-parse-err');
+  errEl.style.display='none';
+  if(!name){errEl.textContent='시험 이름을 입력해 주세요.';errEl.style.display='block';return;}
+  if(!qRaw){errEl.textContent='시험지 텍스트를 붙여넣어 주세요.';errEl.style.display='block';return;}
+  if(!aRaw){errEl.textContent='정답지 텍스트를 붙여넣어 주세요.';errEl.style.display='block';return;}
+  texShowStep(2);
+  const msgs=['문항 분리 중...','정답 매칭 중...','해설 연결 중...'];
+  let mi=0;
+  const mt=setInterval(()=>{document.getElementById('tex-parse-msg').textContent=msgs[Math.min(mi++,msgs.length-1)];},4000);
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',max_tokens:4000,
+      messages:[{role:'user',content:`아래 시험지, 정답지, 해설지 텍스트를 분석해서 문항별로 분리해주세요.
+
+[시험지]
+${qRaw}
+
+[정답지]
+${aRaw}
+
+[해설지]
+${eRaw||'없음'}
+
+각 문항을 분석해서 순수 JSON 배열만 반환하세요 (마크다운 없이):
+[
+  {
+    "num": 1,
+    "text": "문제 내용 전체 (선택지 포함)",
+    "answer": 3,
+    "type": "추론·함축",
+    "explanation": "해설 내용"
+  }
+]
+
+type은 다음 중 하나: 사실 확인, 추론·함축, 어휘·어법, 표현 기법, 주제·요지, 논증 구조, 계산·풀이, 개념 적용, 자료 해석, 빈칸 추론, 순서 배열, 기타
+answer는 숫자(1~5)로만, 정답 번호가 ①②③④⑤ 형태면 1~5로 변환해주세요.
+해설이 없으면 빈 문자열로 두세요.`}]
+    })});
+    clearInterval(mt);
+    const data=await resp.json();
+    const raw=(data.content||[]).map(c=>c.text||'').join('');
+    parsedQuestions=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    renderTexStep3();
+    texShowStep(3);
+  }catch(e){
+    clearInterval(mt);
+    errEl.textContent='AI 분석 오류: '+e.message+' — 다시 시도해 주세요.';
+    errEl.style.display='block';
+    texShowStep(1);
+  }
+}
+
+function renderTexStep3(){
   const container=document.getElementById('tex-q-list');
-  if(n<1||n>50){container.innerHTML='';return;}
-  container.innerHTML=Array.from({length:n},(_,i)=>`
-    <div style="border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
-        <span style="background:rgba(79,124,255,0.15);color:var(--accent);font-size:11px;padding:2px 8px;border-radius:10px;font-weight:500">${i+1}번</span>
-        <select id="qt-${i}" style="font-size:12px;padding:4px 6px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text);flex:1;min-width:100px">
-          ${EXAM_TYPES.map(t=>`<option>${t}</option>`).join('')}
+  container.innerHTML=parsedQuestions.map((q,i)=>`
+    <div style="border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+        <span style="background:rgba(79,124,255,0.15);color:var(--accent);font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600">${q.num}번</span>
+        <select id="rqt-${i}" style="font-size:12px;padding:4px 6px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text)">
+          ${EXAM_TYPES.map(t=>`<option${t===q.type?' selected':''}>${t}</option>`).join('')}
         </select>
-        <div style="display:flex;gap:4px;align-items:center">
+        <div style="display:flex;gap:4px;align-items:center;margin-left:auto">
           <span style="font-size:11px;color:var(--text2)">정답:</span>
-          ${[1,2,3,4,5].map(n=>`<div id="qa-${i}-${n}" onclick="selectAnswer(${i},${n})"
-            style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;cursor:pointer;font-size:12px;font-weight:500;border:1.5px solid var(--border);color:var(--text2);transition:all 0.12s">${n}</div>`).join('')}
+          ${[1,2,3,4,5].map(n=>`<div id="rqa-${i}-${n}" onclick="rSelectAnswer(${i},${n})"
+            style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;cursor:pointer;font-size:12px;font-weight:500;
+            border:1.5px solid ${n===q.answer?'var(--green)':'var(--border)'};
+            background:${n===q.answer?'var(--green)':''};
+            color:${n===q.answer?'white':'var(--text2)'};transition:all 0.12s">${n}</div>`).join('')}
         </div>
       </div>
-      <input id="qtext-${i}" class="form-input" placeholder="${i+1}번 문제 내용 요약 (선택)" style="font-size:12px;margin-bottom:6px">
-      <textarea id="qexp-${i}" class="form-input" placeholder="해설 (선택)" style="font-size:12px;min-height:50px;resize:vertical"></textarea>
+      <textarea id="rqtext-${i}" class="form-input" style="font-size:12px;min-height:60px;resize:vertical;margin-bottom:6px">${q.text||''}</textarea>
+      <textarea id="rqexp-${i}" class="form-input" placeholder="해설" style="font-size:12px;min-height:48px;resize:vertical">${q.explanation||''}</textarea>
     </div>`).join('');
 }
 
-var selectedAnswers={};
-function selectAnswer(qIdx,num){
-  selectedAnswers[qIdx]=String(num);
+function rSelectAnswer(qIdx,num){
+  parsedQuestions[qIdx].answer=num;
   for(let n=1;n<=5;n++){
-    const el=document.getElementById(`qa-${qIdx}-${n}`);
+    const el=document.getElementById(`rqa-${qIdx}-${n}`);
     if(!el)continue;
     el.style.background=n===num?'var(--green)':'';
     el.style.borderColor=n===num?'var(--green)':'var(--border)';
@@ -2795,29 +2903,27 @@ function selectAnswer(qIdx,num){
 
 async function saveTExam(){
   const name=document.getElementById('tex-name').value.trim();
-  const total=parseInt(document.getElementById('tex-total').value);
-  if(!name||!total){alert('시험 이름과 총 문항 수를 입력해 주세요.');return;}
-  const questions=[];
-  for(let i=0;i<total;i++){
-    questions.push({
-      num:i+1,
-      type:document.getElementById('qt-'+i)?.value||'기타',
-      answer:selectedAnswers[i]||'',
-      text:document.getElementById('qtext-'+i)?.value||'',
-      explanation:document.getElementById('qexp-'+i)?.value||''
-    });
-  }
-  if(!questions.some(q=>q.answer)){alert('최소 한 문항의 정답을 선택해 주세요.');return;}
+  if(!name){alert('시험 이름을 입력해 주세요.');return;}
+  if(!parsedQuestions||parsedQuestions.length===0){alert('먼저 AI 분석을 실행해 주세요.');return;}
+  const questions=parsedQuestions.map((q,i)=>({
+    num:q.num,
+    type:document.getElementById('rqt-'+i)?.value||q.type||'기타',
+    answer:String(q.answer||''),
+    text:document.getElementById('rqtext-'+i)?.value||q.text||'',
+    explanation:document.getElementById('rqexp-'+i)?.value||q.explanation||''
+  }));
+  if(!questions.some(q=>q.answer)){alert('정답이 설정된 문항이 없어요. 정답을 확인해 주세요.');return;}
   const {error}=await sb.from('exams').insert({
-    name,total_q:total,questions,
+    name,total_q:questions.length,questions,
     next_exam:document.getElementById('tex-next').value,
     next_range:document.getElementById('tex-range').value,
     teacher_id:session.id
   });
   if(error){alert('저장 오류: '+error.message);return;}
-  selectedAnswers={};
-  alert('시험이 저장됐어요!');
+  parsedQuestions=[];
+  alert('시험이 저장됐어요!\n코드를 학생들에게 공유해 주세요.');
   closeTExamCreate();
+}
 }
 
 async function viewTExamResults(examId,examName){
