@@ -561,8 +561,9 @@ input,button{font-family:var(--font)}
             </div>
           </div>
           <!-- 탭 -->
-          <div style="display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:1rem;padding-bottom:2px">
+          <div style="display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:1rem;padding-bottom:2px;flex-wrap:wrap">
             <button class="btn btn-sm active" id="tres-tab-overview" onclick="tResTab('overview')" style="background:rgba(79,124,255,0.1);color:var(--accent)">전체 현황</button>
+            <button class="btn btn-sm" id="tres-tab-ranking" onclick="tResTab('ranking')">🏆 순위</button>
             <button class="btn btn-sm" id="tres-tab-student" onclick="tResTab('student')">학생별 상세</button>
           </div>
           <!-- 전체 현황 -->
@@ -574,6 +575,13 @@ input,button{font-family:var(--font)}
             <div class="card">
               <div class="card-head"><h3>학생 목록</h3></div>
               <div id="t-res-students" style="padding:0 1.25rem 0.5rem"></div>
+            </div>
+          </div>
+          <!-- 순위 -->
+          <div id="tres-ranking" style="display:none">
+            <div class="card">
+              <div class="card-head"><h3>🏆 점수 순위</h3><button class="btn btn-sm" onclick="tResExportRankingPDF()">📄 순위표 PDF</button></div>
+              <div id="tres-ranking-list" style="padding:0 1.25rem 0.5rem"></div>
             </div>
           </div>
           <!-- 학생별 상세 -->
@@ -678,7 +686,7 @@ input,button{font-family:var(--font)}
 
       <!-- 시험 분석 (학생) -->
       <div class="panel" id="panel-exam">
-        <div class="page-header"><h1>시험 분석</h1><p>시험 코드를 입력하고 오답을 체크하면 AI가 풀이 경향을 분석해드려요</p></div>
+        <div class="page-header"><h1>시험 채점</h1><p>시험 코드를 입력하고 답안을 제출하면 자동으로 채점됩니다</p></div>
         <!-- 코드 입력 -->
         <div id="s-exam-entry">
           <div class="card" style="margin-bottom:1rem">
@@ -692,16 +700,8 @@ input,button{font-family:var(--font)}
               <div id="s-exam-code-err" class="err-msg"></div>
             </div>
           </div>
-          <div class="card-flat" style="font-size:13px;color:var(--text2);line-height:1.8">
-            💡 <strong style="color:var(--text)">사용 방법</strong><br>
-            1. 선생님께 시험 코드를 받으세요<br>
-            2. 코드 입력 후 "찾기" 클릭<br>
-            3. 틀린 문제 번호를 클릭하고 내가 고른 답 선택<br>
-            4. 문제 옆 필기 사진 첨부 (선택)<br>
-            5. AI 분석 시작!
-          </div>
         </div>
-        <!-- 오답 체크 -->
+        <!-- 답안 입력 -->
         <div id="s-exam-check" style="display:none">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-wrap:wrap">
             <button class="btn btn-sm" onclick="sExamBack()">← 돌아가기</button>
@@ -710,46 +710,39 @@ input,button{font-family:var(--font)}
               <div id="s-exam-check-sub" style="font-size:12px;color:var(--text2)"></div>
             </div>
           </div>
+          <!-- 답안 일괄 입력 -->
           <div class="card" style="margin-bottom:1rem">
-            <div class="card-head"><h3>문제 번호 선택</h3><span style="font-size:12px;color:var(--text2)">틀린 번호 클릭</span></div>
+            <div class="card-head"><h3>📝 답안 입력</h3><span style="font-size:12px;color:var(--text2)">각 문제의 답 번호를 선택하세요</span></div>
             <div style="padding:0 1.25rem 1.25rem">
-              <div id="s-exam-q-grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:10px"></div>
-              <div style="display:flex;gap:12px;font-size:11px;color:var(--text3)">
-                <span>□ 미체크</span>
-                <span style="color:var(--green)">■ 정답</span>
-                <span style="color:var(--red)">■ 오답</span>
-              </div>
+              <div id="s-exam-answer-grid"></div>
             </div>
           </div>
-          <div id="s-exam-q-detail" style="display:none;margin-bottom:1rem"></div>
           <div id="s-exam-check-err" class="err-msg"></div>
-          <button class="btn blue" style="width:100%" onclick="sExamAnalyze()">AI 분석 시작</button>
-          <p style="font-size:12px;color:var(--text3);text-align:center;margin-top:8px">모든 문항을 체크하지 않아도 분석 가능해요</p>
+          <button class="btn blue" style="width:100%;margin-bottom:8px" onclick="sExamSubmitScore()">📊 채점하기</button>
+          <p style="font-size:12px;color:var(--text3);text-align:center">모든 답안을 입력하지 않아도 제출 가능해요</p>
         </div>
-        <!-- 분석 로딩 -->
-        <div id="s-exam-loading" style="display:none;text-align:center;padding:3rem 1rem">
-          <div class="spinner" style="margin:0 auto 16px"></div>
-          <div id="s-exam-loading-msg" style="font-size:15px;font-weight:500">분석 중...</div>
-          <div style="font-size:12px;color:var(--text2);margin-top:6px">AI가 오답 패턴을 분석하고 있어요 · 30초~1분 소요</div>
-        </div>
-        <!-- 분석 결과 -->
+        <!-- 채점 결과 -->
         <div id="s-exam-result" style="display:none">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
             <div id="s-res-header"></div>
-            <button class="btn btn-sm" onclick="sExamBack()">새 분석</button>
+            <button class="btn btn-sm" onclick="sExamBack()">다시 입력</button>
           </div>
           <div class="card" style="margin-bottom:1rem">
             <div id="s-res-stats" style="padding:0.75rem 1.25rem;display:grid;grid-template-columns:repeat(4,1fr);gap:10px"></div>
           </div>
-          <div style="display:flex;gap:8px;margin-bottom:1rem;border-bottom:1px solid var(--border);padding-bottom:2px">
-            <button class="btn btn-sm active" id="rtab-tendency" onclick="sResTab('tendency')" style="background:rgba(79,124,255,0.1);color:var(--accent)">풀이 경향</button>
-            <button class="btn btn-sm" id="rtab-mistakes" onclick="sResTab('mistakes')">오답 분석</button>
-            <button class="btn btn-sm" id="rtab-next" onclick="sResTab('next')">다음 시험 전략</button>
-          </div>
-          <div class="card" id="s-res-tendency"></div>
-          <div class="card" id="s-res-mistakes" style="display:none"></div>
-          <div class="card" id="s-res-next" style="display:none"></div>
+          <!-- 틀린 문제 목록 -->
+          <div class="card" id="s-res-wrong-list"></div>
         </div>
+        <!-- 기존 AI 분석 뷰 (숨김) -->
+        <div id="s-exam-loading" style="display:none;text-align:center;padding:3rem 1rem">
+          <div class="spinner" style="margin:0 auto 16px"></div>
+          <div id="s-exam-loading-msg" style="font-size:15px;font-weight:500">분석 중...</div>
+        </div>
+        <div id="s-exam-q-detail" style="display:none"></div>
+        <div id="s-exam-q-grid" style="display:none"></div>
+        <div id="s-res-tendency" style="display:none"></div>
+        <div id="s-res-mistakes" style="display:none"></div>
+        <div id="s-res-next" style="display:none"></div>
       </div>
 
     </div></div>
@@ -939,8 +932,8 @@ input,button{font-family:var(--font)}
         <div style="width:80px"><label class="flabel">문제 수</label><input id="qw-count" class="form-input" type="number" value="100" min="1" max="200"/></div>
       </div>
       <div style="margin-bottom:10px">
-        <label class="flabel">해설지 PDF <span style="color:var(--text3);text-transform:none;font-weight:400">(AI가 읽고 답변합니다)</span></label>
-        <div id="qw-sol-upload" onclick="document.getElementById('qw-sol-file').click()" style="border:1px dashed var(--border2);border-radius:var(--radius-sm);padding:14px;text-align:center;cursor:pointer;color:var(--text3);font-size:13px">📋 해설지 PDF 업로드</div>
+        <label class="flabel">시험지 PDF <span style="color:var(--text3);text-transform:none;font-weight:400">(학생 질문 시 교사 화면에 표시됩니다)</span></label>
+        <div id="qw-sol-upload" onclick="document.getElementById('qw-sol-file').click()" style="border:1px dashed var(--border2);border-radius:var(--radius-sm);padding:14px;text-align:center;cursor:pointer;color:var(--text3);font-size:13px">📋 시험지 PDF 업로드</div>
         <input type="file" id="qw-sol-file" accept=".pdf" style="display:none" onchange="qaHandleFile(event)">
         <div id="qw-sol-name" style="font-size:12px;color:var(--green);margin-top:4px"></div>
       </div>
@@ -964,19 +957,52 @@ input,button{font-family:var(--font)}
       <button class="modal-close" onclick="closeQaModal()">×</button>
     </div>
     <div id="qa-chat-history" style="flex:1;overflow-y:auto;padding:1rem 1.5rem;display:flex;flex-direction:column;gap:12px;min-height:100px"></div>
-    <div id="qa-loading-area" style="display:none;text-align:center;padding:1rem 1.5rem;flex-shrink:0">
-      <div class="spinner" style="width:20px;height:20px;border-width:2px;margin:0 auto 8px"></div>
-      <div style="font-size:13px;color:var(--text2)" id="qa-loading-msg">학습도우미가 답변을 작성하고 있어요 ✏️</div>
-    </div>
     <div id="qa-input-area" style="flex-shrink:0;padding:1rem 1.5rem;border-top:1px solid var(--border)">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:6px">선생님께 질문을 보내면 답변해드려요</div>
       <div style="display:flex;gap:8px;align-items:flex-end">
         <textarea id="qa-q-text" class="form-input" style="flex:1;height:70px;resize:none;font-size:13px" placeholder="질문을 입력하세요..."></textarea>
         <button class="btn blue" style="padding:8px 14px;font-size:13px" onclick="submitQaQuestion()">전송</button>
       </div>
     </div>
     <div id="qa-pending-area" style="display:none;flex-shrink:0;padding:1rem 1.5rem;border-top:1px solid var(--border)">
-      <div style="background:var(--amber-bg);border:1px solid rgba(245,158,11,.3);border-radius:var(--radius-sm);padding:12px;font-size:13px;color:var(--amber);text-align:center">선생님이 검토 후 답변드릴게요</div>
+      <div style="background:var(--amber-bg);border:1px solid rgba(245,158,11,.3);border-radius:var(--radius-sm);padding:12px;font-size:13px;color:var(--amber);text-align:center">✅ 질문이 전송됐어요! 선생님이 확인 후 답변드릴게요.</div>
       <button class="btn" style="width:100%;margin-top:8px" onclick="closeQaModal()">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- 교사 Q&A 상세 모달 (PDF + 질문 + 답변) -->
+<div class="modal-bg" id="modal-qa-teacher">
+  <div class="modal" style="max-width:860px;display:flex;flex-direction:column;max-height:92vh;width:95vw">
+    <div class="modal-head" style="flex-shrink:0">
+      <div>
+        <h3 id="tqa-modal-title">질문 검토</h3>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px" id="tqa-modal-ctx"></div>
+      </div>
+      <button class="modal-close" onclick="closeTQaModal()">×</button>
+    </div>
+    <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:0;overflow:hidden;min-height:0">
+      <!-- 왼쪽: PDF 뷰어 -->
+      <div style="border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden">
+        <div style="padding:10px 14px;border-bottom:1px solid var(--border);font-size:12px;font-weight:600;color:var(--text2);flex-shrink:0">📄 시험지 PDF</div>
+        <div id="tqa-pdf-area" style="flex:1;overflow:auto;background:var(--bg2);display:flex;align-items:center;justify-content:center">
+          <div style="color:var(--text3);font-size:13px;text-align:center;padding:2rem">PDF가 등록되지 않았어요</div>
+        </div>
+      </div>
+      <!-- 오른쪽: 질문+답변 -->
+      <div style="display:flex;flex-direction:column;overflow:hidden">
+        <div style="padding:14px;border-bottom:1px solid var(--border);flex-shrink:0">
+          <div id="tqa-question-box" style="background:var(--bg2);border-radius:var(--radius-sm);padding:12px;font-size:13px;line-height:1.6"></div>
+        </div>
+        <div id="tqa-answer-history" style="flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px"></div>
+        <div style="padding:14px;border-top:1px solid var(--border);flex-shrink:0">
+          <textarea id="tqa-reply-text" class="form-input" style="height:80px;resize:none;font-size:13px;margin-bottom:8px" placeholder="답변을 입력하세요..."></textarea>
+          <div style="display:flex;gap:8px">
+            <button class="btn green" style="flex:1" onclick="sendTQaReply()">답변 전송</button>
+            <button class="btn" onclick="closeTQaModal()">닫기</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -2319,7 +2345,18 @@ async function addQaWeek(){
   btn.disabled=true;btn.textContent='추가 중...';
   try{
     var id='w_'+Date.now();
-    var item={id:id,school_id:qaState.school,name:name,prob_count:count,sol_text:qwSolText,created_at:new Date().toISOString()};
+    var pdfUrl='';
+    // PDF를 Storage에 업로드
+    if(qwSolFile){
+      btn.textContent='PDF 업로드 중...';
+      var path='qa-pdfs/'+qaState.school+'/'+id+'.pdf';
+      var upRes=await sb.storage.from('exam-photos').upload(path,qwSolFile,{upsert:true,contentType:'application/pdf'});
+      if(!upRes.error){
+        var urlRes=sb.storage.from('exam-photos').getPublicUrl(path);
+        pdfUrl=urlRes.data?.publicUrl||'';
+      }
+    }
+    var item={id:id,school_id:qaState.school,name:name,prob_count:count,sol_text:qwSolText,pdf_url:pdfUrl,created_at:new Date().toISOString()};
     var res=await sb.from('qa_weeks').insert(item);
     if(res.error){notify('등록 실패: '+res.error.message,'error');return;}
     qaDb.weeks.push(item);
@@ -2453,27 +2490,32 @@ function renderQaReview(){
   if(badge){badge.textContent=pending.length?pending.length+'건':'';badge.style.display=pending.length?'':'none';}
   var el=document.getElementById('qa-review-list');
   if(!el)return;
-  if(!pending.length){el.innerHTML='<div style="padding:2rem;text-align:center;color:var(--text3);font-size:13px">검토할 질문이 없습니다 🎉</div>';return;}
-  el.innerHTML=pending.map(function(q){
+  // 전체 질문 표시 (미답변+답변완료)
+  var allQs=qaDb.questions.slice();
+  if(fs)allQs=allQs.filter(function(q){return q.school_id===fs;});
+  if(fw)allQs=allQs.filter(function(q){return q.week_id===fw;});
+  if(!allQs.length){el.innerHTML='<div style="padding:2rem;text-align:center;color:var(--text3);font-size:13px">질문이 없습니다 🎉</div>';return;}
+  el.innerHTML=allQs.map(function(q){
     var school=qaDb.schools.find(function(s){return s.id===q.school_id;});
     var week=qaDb.weeks.find(function(w){return w.id===q.week_id;});
     var student=db.users.find(function(u){return u.id===q.student_id;});
-    return '<div style="padding:14px 1.25rem;border-bottom:1px solid var(--border)" id="qr-'+q.id+'">'+
-      '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:4px">'+
+    var isPending=q.status==='pending';
+    return '<div style="padding:14px 1.25rem;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.1s" '+
+      'onclick="openTQaModal(''+q.id+'')" '+
+      'onmouseenter="this.style.background='var(--bg2)'" onmouseleave="this.style.background=''">'+
+      '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:6px">'+
       '<span style="font-weight:700;font-size:15px">'+q.prob_num+'번</span>'+
       '<span class="tag">'+(school?school.name:'')+'</span>'+
       '<span class="tag teal">'+(week?week.name:'')+'</span>'+
-      '<span class="badge partial">'+(student?student.name:q.student_id)+'</span></div>'+
-      '<div style="font-size:13px;color:var(--text2);margin-bottom:8px">'+q.question+'</div>'+
-      '<div style="background:var(--bg2);border-radius:var(--radius-sm);padding:10px;font-size:12px;color:var(--text2);line-height:1.6;max-height:72px;overflow:hidden">'+q.ai_answer+'</div>'+
-      '<div id="supp-area-'+q.id+'" style="margin:8px 0;display:none">'+
-      '<textarea id="supp-txt-'+q.id+'" class="form-input" style="height:68px;resize:none;font-size:13px" placeholder="선생님 보충 설명 입력..."></textarea></div>'+
-      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">'+
-      '<button class="btn green btn-sm" onclick="approveQa(\''+q.id+'\')">승인</button>'+
-      '<button class="btn btn-sm" onclick="document.getElementById(\'supp-area-'+q.id+'\').style.display=document.getElementById(\'supp-area-'+q.id+'\').style.display===\'none\'?\'block\':\'none\'">보충 입력</button>'+
-      '<button class="btn teal btn-sm" onclick="approveQaWithNote(\''+q.id+'\')">보충 포함 승인</button></div></div>';
+      '<span class="badge partial">'+(student?student.name:q.student_name||q.student_id)+'</span>'+
+      (isPending?'<span style="background:var(--amber-bg);color:var(--amber);font-size:11px;padding:2px 8px;border-radius:8px;margin-left:auto">미답변 ⬅</span>':
+      '<span style="background:var(--green-bg);color:var(--green);font-size:11px;padding:2px 8px;border-radius:8px;margin-left:auto">답변완료</span>')+'</div>'+
+      '<div style="font-size:13px;color:var(--text);line-height:1.5;margin-bottom:4px">'+q.question+'</div>'+
+      (q.teacher_reply?'<div style="font-size:12px;color:var(--accent)">💬 답변: '+q.teacher_reply.slice(0,60)+(q.teacher_reply.length>60?'...':'')+'</div>':'')+
+      '</div>';
   }).join('');
 }
+
 
 async function approveQa(id){
   var q=qaDb.questions.find(function(q){return q.id===id;});
@@ -2665,24 +2707,23 @@ function openQaModalFromHistory(qid){
 }
 
 function showQaAnswer(q){
-  qaChatHistory=[];
-  document.getElementById('qa-chat-history').innerHTML='';
-  addChatBubble('user',q.question);
-  addChatBubble('assistant',q.ai_answer,q.badge||'ai');
-  if(q.teacher_note){
-    var hist=document.getElementById('qa-chat-history');
-    var div=document.createElement('div');
-    div.style.cssText='display:flex;flex-direction:column;align-items:flex-start;gap:4px';
-    div.innerHTML='<span style="font-size:11px;color:var(--teal);font-weight:600;margin-left:4px">선생님 보충</span>'+
-      '<div style="max-width:85%;padding:10px 14px;border-radius:12px;border-bottom-left-radius:4px;font-size:13px;line-height:1.75;background:rgba(20,184,166,0.1);color:var(--teal);border:1px solid rgba(20,184,166,0.25)">'+q.teacher_note+'</div>';
-    hist.appendChild(div);
+  var hist=document.getElementById('qa-chat-history');
+  hist.innerHTML='';
+  // 학생 질문
+  var uDiv=document.createElement('div');
+  uDiv.style.cssText='display:flex;flex-direction:column;align-items:flex-end;gap:4px';
+  uDiv.innerHTML='<div style="max-width:85%;padding:10px 14px;border-radius:12px;border-bottom-right-radius:4px;font-size:13px;line-height:1.75;background:var(--accent);color:white;white-space:pre-wrap">'+q.question+'</div>';
+  hist.appendChild(uDiv);
+  // 선생님 답변
+  if(q.teacher_reply){
+    var tDiv=document.createElement('div');
+    tDiv.style.cssText='display:flex;flex-direction:column;align-items:flex-start;gap:4px';
+    tDiv.innerHTML='<span style="font-size:11px;color:var(--accent);font-weight:600;margin-left:4px">선생님 답변</span>'+
+      '<div style="max-width:85%;padding:10px 14px;border-radius:12px;border-bottom-left-radius:4px;font-size:13px;line-height:1.75;background:rgba(79,124,255,0.1);color:var(--text);border:1px solid rgba(79,124,255,0.2);white-space:pre-wrap">'+q.teacher_reply+'</div>';
+    hist.appendChild(tDiv);
   }
-  qaChatHistory.push({role:'user',content:q.question});
-  qaChatHistory.push({role:'assistant',content:q.ai_answer});
-  document.getElementById('qa-input-area').style.display='block';
+  document.getElementById('qa-input-area').style.display='none';
   document.getElementById('qa-pending-area').style.display='none';
-  document.getElementById('qa-q-text').value='';
-  document.getElementById('qa-q-text').placeholder='추가로 궁금한 점을 입력하세요...';
 }
 
 function showQaPending(){
@@ -2700,93 +2741,79 @@ async function submitQaQuestion(){
   var text=document.getElementById('qa-q-text').value.trim();
   if(!text){notify('질문 내용을 입력하세요.','error');return;}
   if(!qaState.week||!session){notify('오류: 주차 또는 로그인 상태를 확인하세요.','error');return;}
-  var week=qaDb.weeks.find(function(w){return w.id===qaState.week;});
-  var school=qaDb.schools.find(function(s){return s.id===qaState.school;});
-  var hasSol=!!(week&&week.sol_text);
-  var isFollowUp=qaChatHistory.length>0;
+  // 기존 질문이 있으면 업데이트, 없으면 새로 생성
+  var newQ={id:'q_'+Date.now(),school_id:qaState.school,week_id:qaState.week,prob_num:qaState.prob,
+    student_id:session.id,student_name:session.name||session.id,
+    question:text,teacher_reply:'',status:'pending',badge:'pending',
+    created_at:new Date().toISOString()};
+  qaDb.questions=qaDb.questions.filter(function(q){return !(q.week_id===qaState.week&&q.prob_num===qaState.prob&&q.student_id===session.id);});
+  qaDb.questions.unshift(newQ);
+  await sb.from('qa_questions').upsert(newQ,{onConflict:'week_id,prob_num,student_id'});
   addChatBubble('user',text);
   document.getElementById('qa-q-text').value='';
-  document.getElementById('qa-loading-area').style.display='block';
-  document.getElementById('qa-loading-msg').textContent=hasSol?'AI가 해설지를 읽고 답변을 생성하고 있어요...':'학습도우미가 답변을 작성하고 있어요 ✏️';
-  var aiAnswer='';
-  try{
-    if(!CLAUDE_API_KEY){
-      await new Promise(function(r){setTimeout(r,1200);});
-      aiAnswer=isFollowUp?'추가 질문 답변입니다.\n\n'+text+'에 대해 더 설명드리면, 이 부분은 지문의 핵심 논거와 연결됩니다. API 키를 설정하면 실제 AI 답변이 제공됩니다.':'[데모 모드] '+qaState.prob+'번 문제 답변입니다.\n\n'+hasSol?'해설지를 기반으로 설명드립니다. 실제 서비스에서는 API 키를 설정하면 해설지 전체를 읽고 정확한 답변이 제공됩니다.':'해설지가 없어 일반 국어 지식으로 답변드립니다.';
-    }else{
-      var matContext=qaDb.materials.filter(function(m){return m.school_id===qaState.school&&m.text;}).map(function(m){return '['+m.name+']\n'+m.text;}).join('\n\n');
-
-      // 해설지에서 정답 번호 자동 추출
-      var answerHint='';
-      if(hasSol&&week.sol_text){
-        var circleMap={'①':'1번','②':'2번','③':'3번','④':'4번','⑤':'5번'};
-        var patterns=[
-          new RegExp(qaState.prob+'번[^\n]{0,20}정답[^\n]{0,10}([①②③④⑤])'),
-          new RegExp('정답[^\n]{0,5}'+qaState.prob+'번[^\n]{0,10}([①②③④⑤])'),
-          new RegExp(qaState.prob+'\\s*[-–]\\s*([①②③④⑤])'),
-          new RegExp(qaState.prob+'번[^\n]{0,30}([①②③④⑤])')
-        ];
-        for(var pi=0;pi<patterns.length;pi++){
-          var pm=week.sol_text.match(patterns[pi]);
-          if(pm&&pm[1]){answerHint='\n\n⚠️ 정답 확인: '+qaState.prob+'번의 정답은 '+circleMap[pm[1]]+'('+pm[1]+')입니다. 반드시 이 번호를 정답으로 설명하세요.';break;}
-        }
-        if(!answerHint){
-          var np=week.sol_text.match(new RegExp(qaState.prob+'[번.\\s]{0,3}([1-5])번'));
-          if(np)answerHint='\n\n⚠️ 정답 확인: '+qaState.prob+'번의 정답은 '+np[1]+'번입니다. 반드시 이 번호를 정답으로 설명하세요.';
-        }
-      }
-
-      var GRAMMAR='\n\n[국어 문법 핵심 참고]\n'+
-        '음절끝소리규칙: 받침=ㄱㄴㄷㄹㅁㅂㅇ 7개만 발음(마찰음ㅅㅆㅎ→ㄷ으로 교체: 옷[옫])\n'+
-        '장애음: 파열음(ㅂㅍㅃㄷㅌㄸㄱㅋㄲ)+마찰음(ㅅㅆㅎ)+파찰음(ㅈㅊㅉ) / 공명음: 비음(ㄴㅁㅇ)+유음(ㄹ)\n'+
-        '비음화: ㄱ→ㅇ,ㄷ→ㄴ,ㅂ→ㅁ (비음 앞) / 유음화: ㄴ↔ㄹ→ㄹㄹ\n'+
-        '구개음화: ㄷ/ㅌ+형식형태소이→ㅈ/ㅊ (굳이[구지],같이[가치]) — 실질형태소 앞 X\n'+
-        '경음화: 장애음 뒤 평음→경음 / ㄼ 뒤 어미(국밥[국빱]) / 용언어간 비음 뒤 어미(신고[신꼬])\n'+
-        'ㅎ탈락: 모음사이(낳아[나아]) / ㅎ+평음→격음축약(놓고[노코],좋다[조:타])\n'+
-        '겹받침: ㄵ→ㄴ,ㄼ→ㄹ,ㄺ→ㄱ 단 밟다→[밥따] / 순행동화:앞→뒤, 역행동화:뒤→앞';
-
-      var systemPrompt='당신은 수능 국어 전문 선생님이에요. 아래 규칙을 절대 어기지 마세요.\n\n'+
-        '[절대 규칙]\n'+
-        '1. 정답 번호가 명시되면 그 번호만 정답으로 설명하세요. 절대 다른 번호 말하지 마세요.\n'+
-        '2. 학생이 답 번호를 물으면 해설지에서 찾은 번호를 정확히 답하세요.\n'+
-        '3. 해설지에 없는 내용 임의 생성 금지.\n'+
-        '4. 문법 문제는 아래 [국어 문법 핵심 참고]를 반드시 활용하세요.\n\n'+
-        '[답변 순서]\n1.공감한마디 → 2.정답번호 명확히 → 3.정답이유(해설+지문인용) → 4.출제자함정 → 5.오답분석 → 6.따뜻한마무리\n\n'+
-        '[말투] ~해요체, 친근하게, 볼드는 핵심만\n'+
-        (matContext?'\n[학교자료]\n'+matContext:'') +
-        answerHint + GRAMMAR +
-        (hasSol?'\n\n[해설지 전문 — 최우선 참고]\n'+week.sol_text+'\n\n위 해설지 기반으로 '+qaState.prob+'번 문제를 설명하세요. 해설지에 없는 내용 추가 금지.':
-        '\n\n해설지 없음. 문법참고자료+일반원칙으로 설명하고 마지막에 "해설지가 없어서 일반 원칙으로 설명했어요. 선생님께 확인해보세요!"를 꼭 붙이세요.');
-      var messages=isFollowUp?qaChatHistory.concat([{role:'user',content:text}]):[{role:'user',content:'[학교: '+(school?school.name:'')+'] ['+(week?week.name:'')+'] ['+qaState.prob+'번 문제]\n\n'+text}];
-      var res=await fetch('https://api.anthropic.com/v1/messages',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-        body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2500,system:systemPrompt,messages:messages})
-      });
-      var data=await res.json();
-      aiAnswer=data.content&&data.content[0]?data.content[0].text:'답변 생성에 실패했습니다. 선생님께 직접 문의해주세요.';
-    }
-  }catch(e){aiAnswer='답변 생성 중 오류가 발생했습니다. 선생님이 직접 확인해드릴게요.';}
-  qaChatHistory.push({role:'user',content:text});
-  qaChatHistory.push({role:'assistant',content:aiAnswer});
-  document.getElementById('qa-loading-area').style.display='none';
-  addChatBubble('assistant',aiAnswer,'ai');
-  if(!isFollowUp){
-    var newQ={id:'q_'+Date.now(),school_id:qaState.school,week_id:qaState.week,prob_num:qaState.prob,student_id:session.id,question:text,ai_answer:aiAnswer,teacher_note:'',status:hasSol?'answered':'pending',badge:hasSol?'ai':'pending',created_at:new Date().toISOString()};
-    qaDb.questions=qaDb.questions.filter(function(q){return !(q.week_id===qaState.week&&q.prob_num===qaState.prob&&q.student_id===session.id);});
-    qaDb.questions.unshift(newQ);
-    await sb.from('qa_questions').upsert(newQ,{onConflict:'week_id,prob_num,student_id'});
-    if(!hasSol){showQaPending();return;}
-    renderSQaProbGrid();renderSQaMyList();
-  }
-  document.getElementById('qa-input-area').style.display='block';
-  document.getElementById('qa-q-text').placeholder='추가로 궁금한 점을 입력하세요...';
-  document.getElementById('qa-q-text').focus();
+  showQaPending();
+  renderSQaProbGrid();renderSQaMyList();
+  renderQaReview();
 }
+
+// 교사 Q&A 상세 모달
+var tQaCurrentQ=null;
+function openTQaModal(qId){
+  var q=qaDb.questions.find(function(q){return q.id===qId;});
+  if(!q)return;
+  tQaCurrentQ=q;
+  var school=qaDb.schools.find(function(s){return s.id===q.school_id;});
+  var week=qaDb.weeks.find(function(w){return w.id===q.week_id;});
+  var student=db.users.find(function(u){return u.id===q.student_id;});
+  document.getElementById('tqa-modal-title').textContent=(q.prob_num)+'번 문제 질문';
+  document.getElementById('tqa-modal-ctx').textContent=(school?school.name+' ':'')+(week?week.name+' ':'')+(student?student.name:q.student_name||q.student_id)+'학생';
+  // 질문 표시
+  document.getElementById('tqa-question-box').innerHTML='<div style="font-size:11px;color:var(--text2);margin-bottom:4px">학생 질문</div><div style="font-size:13px;line-height:1.7">'+escHtml(q.question)+'</div>';
+  // 기존 답변 표시
+  var histEl=document.getElementById('tqa-answer-history');
+  histEl.innerHTML='';
+  if(q.teacher_reply){
+    histEl.innerHTML='<div style="background:rgba(79,124,255,0.08);border-radius:8px;padding:10px 12px"><div style="font-size:11px;color:var(--accent);font-weight:600;margin-bottom:4px">선생님 답변</div><div style="font-size:13px;line-height:1.7;white-space:pre-wrap">'+escHtml(q.teacher_reply)+'</div></div>';
+  }
+  document.getElementById('tqa-reply-text').value='';
+  // PDF 표시
+  var pdfArea=document.getElementById('tqa-pdf-area');
+  if(week&&week.pdf_url){
+    pdfArea.innerHTML='<iframe src="'+week.pdf_url+'" style="width:100%;height:100%;border:none;min-height:400px"></iframe>';
+  } else if(week&&week.sol_text){
+    pdfArea.innerHTML='<div style="padding:14px;font-size:12px;color:var(--text2);line-height:1.7;overflow:auto;height:100%;white-space:pre-wrap">'+escHtml(week.sol_text.slice(0,2000))+'</div>';
+  } else {
+    pdfArea.innerHTML='<div style="color:var(--text3);font-size:13px;text-align:center;padding:2rem">PDF가 등록되지 않았어요</div>';
+  }
+  document.getElementById('modal-qa-teacher').classList.add('show');
+}
+
+function closeTQaModal(){
+  document.getElementById('modal-qa-teacher').classList.remove('show');
+  tQaCurrentQ=null;
+}
+
+async function sendTQaReply(){
+  var reply=document.getElementById('tqa-reply-text').value.trim();
+  if(!reply){notify('답변을 입력하세요.','error');return;}
+  if(!tQaCurrentQ)return;
+  tQaCurrentQ.teacher_reply=reply;
+  tQaCurrentQ.status='answered';
+  tQaCurrentQ.badge='teacher';
+  await sb.from('qa_questions').update({teacher_reply:reply,status:'answered',badge:'teacher'}).eq('id',tQaCurrentQ.id);
+  notify('답변이 전송됐어요!','success');
+  document.getElementById('tqa-answer-history').innerHTML='<div style="background:rgba(79,124,255,0.08);border-radius:8px;padding:10px 12px"><div style="font-size:11px;color:var(--accent);font-weight:600;margin-bottom:4px">선생님 답변</div><div style="font-size:13px;line-height:1.7;white-space:pre-wrap">'+escHtml(reply)+'</div></div>';
+  document.getElementById('tqa-reply-text').value='';
+  renderQaReview();
+  renderSQaProbGrid();renderSQaMyList();
+}
+
+function escHtml(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
 document.getElementById('modal-qa').addEventListener('click',function(e){if(e.target===e.currentTarget)closeQaModal();});
 document.getElementById('modal-qa-week').addEventListener('click',function(e){if(e.target===e.currentTarget)closeQaWeekModal();});
 document.getElementById('modal-qa-school').addEventListener('click',function(e){if(e.target===e.currentTarget)document.getElementById('modal-qa-school').classList.remove('show');});
+document.getElementById('modal-qa-teacher').addEventListener('click',function(e){if(e.target===e.currentTarget)closeTQaModal();});
 
 /* ===== INIT ===== */
 (async function(){
@@ -3125,12 +3152,72 @@ async function viewTExamResults(examId,examName){
 }
 
 function tResTab(tab){
-  document.getElementById('tres-overview').style.display=tab==='overview'?'block':'none';
-  document.getElementById('tres-student').style.display=tab==='student'?'block':'none';
-  document.getElementById('tres-tab-overview').style.background=tab==='overview'?'rgba(79,124,255,0.1)':'';
-  document.getElementById('tres-tab-overview').style.color=tab==='overview'?'var(--accent)':'';
-  document.getElementById('tres-tab-student').style.background=tab==='student'?'rgba(79,124,255,0.1)':'';
-  document.getElementById('tres-tab-student').style.color=tab==='student'?'var(--accent)':'';
+  ['overview','ranking','student'].forEach(function(t){
+    var el=document.getElementById('tres-'+t);
+    if(el)el.style.display=t===tab?'block':'none';
+    var btn=document.getElementById('tres-tab-'+t);
+    if(btn){btn.style.background=t===tab?'rgba(79,124,255,0.1)':'';btn.style.color=t===tab?'var(--accent)':'';}
+  });
+  if(tab==='ranking')renderTResRanking();
+}
+
+function renderTResRanking(){
+  var exam=tResCurrentExam;
+  var responses=tResCurrentResponses;
+  var el=document.getElementById('tres-ranking-list');
+  if(!responses||!responses.length){el.innerHTML='<div style="padding:2rem;text-align:center;color:var(--text3);font-size:13px">제출한 학생이 없어요</div>';return;}
+  // 점수 계산 후 정렬
+  var ranked=responses.map(function(r){
+    var correct=0,total=exam.total_q;
+    if(r.answers){
+      exam.questions.forEach(function(q,i){
+        var my=r.answers[i];
+        if(my&&String(my)===String(q.answer))correct++;
+      });
+    }
+    var score=r.score!=null?r.score:Math.round(correct/total*100);
+    return {name:r.student_name,score:score,correct:correct,total:total,wrongCnt:total-correct};
+  }).sort(function(a,b){return b.score-a.score||a.wrongCnt-b.wrongCnt;});
+  // 동점 처리
+  var rank=1;
+  ranked.forEach(function(r,i){
+    if(i>0&&ranked[i-1].score===r.score)r.rank=ranked[i-1].rank;
+    else r.rank=rank;
+    rank=i+2;
+  });
+  el.innerHTML=ranked.map(function(r){
+    var medal=r.rank===1?'🥇':r.rank===2?'🥈':r.rank===3?'🥉':'';
+    var rankColor=r.rank===1?'var(--amber)':r.rank===2?'var(--text2)':r.rank===3?'#cd7f32':'var(--text3)';
+    return '<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)">'+
+      '<div style="min-width:36px;text-align:center;font-size:15px;font-weight:700;color:'+rankColor+'">'+medal+(medal?'':r.rank+'위')+'</div>'+
+      '<div style="width:36px;height:36px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--accent);flex-shrink:0">'+r.name[0]+'</div>'+
+      '<div style="flex:1"><div style="font-size:14px;font-weight:500">'+r.name+'</div>'+
+      '<div style="font-size:11px;color:var(--text3)">정답 '+r.correct+'/'+r.total+'문 · 오답 '+r.wrongCnt+'문</div></div>'+
+      '<div style="font-size:18px;font-weight:700;color:'+(r.score>=80?'var(--green)':r.score>=60?'var(--amber)':'var(--red)')+'">'+r.score+'점</div>'+
+      '</div>';
+  }).join('');
+}
+
+function tResExportRankingPDF(){
+  var exam=tResCurrentExam;
+  var responses=tResCurrentResponses;
+  if(!responses||!responses.length){alert('데이터가 없어요.');return;}
+  var ranked=responses.map(function(r){
+    var correct=0;
+    if(r.answers){exam.questions.forEach(function(q,i){var my=r.answers[i];if(my&&String(my)===String(q.answer))correct++;});}
+    var score=r.score!=null?r.score:Math.round(correct/exam.total_q*100);
+    return {name:r.student_name,score:score,correct:correct,wrongCnt:exam.total_q-correct};
+  }).sort(function(a,b){return b.score-a.score;});
+  var html='<div style="font-family:sans-serif;padding:20px;max-width:600px;margin:0 auto">'+
+    '<h2 style="margin-bottom:4px">'+exam.name+' — 점수 순위</h2>'+
+    '<p style="color:#666;font-size:13px;margin-bottom:16px">총 '+exam.total_q+'문항 · '+responses.length+'명 응시</p>'+
+    '<table style="width:100%;border-collapse:collapse">'+
+    '<tr style="background:#f0f0f0"><th style="padding:10px;text-align:left;border:1px solid #ddd">순위</th><th style="padding:10px;text-align:left;border:1px solid #ddd">이름</th><th style="padding:10px;text-align:center;border:1px solid #ddd">점수</th><th style="padding:10px;text-align:center;border:1px solid #ddd">정답</th><th style="padding:10px;text-align:center;border:1px solid #ddd">오답</th></tr>'+
+    ranked.map(function(r,i){return '<tr><td style="padding:8px 10px;border:1px solid #ddd;font-weight:600">'+(i+1)+'위</td><td style="padding:8px 10px;border:1px solid #ddd">'+r.name+'</td><td style="padding:8px 10px;border:1px solid #ddd;text-align:center;font-weight:600;color:'+(r.score>=80?'#2d6b4a':r.score>=60?'#b07d1a':'#c0392b')+'">'+r.score+'점</td><td style="padding:8px 10px;border:1px solid #ddd;text-align:center">'+r.correct+'</td><td style="padding:8px 10px;border:1px solid #ddd;text-align:center">'+r.wrongCnt+'</td></tr>';}).join('')+
+    '</table></div>';
+  var w=window.open('','_blank');
+  w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>순위표</title><style>@media print{button{display:none}}</style></head><body>'+html+'<br><button onclick="window.print()" style="padding:10px 24px;background:#1a1612;color:white;border:none;border-radius:6px;font-size:14px;cursor:pointer;margin:10px">🖨️ PDF로 저장</button></body></html>');
+  w.document.close();
 }
 
 function renderTResOverview(){
@@ -3350,11 +3437,96 @@ async function sExamSearch(){
   const {data,error}=await sb.from('exams').select('*');
   const found=data&&data.find(e=>e.id.toUpperCase().startsWith(code.toUpperCase())||e.id.toUpperCase()===code.toUpperCase());
   if(!found){errEl.textContent='해당 코드의 시험을 찾을 수 없어요.';return;}
-  sExamData=found;sExamAnswers={};sExamPhotos={};sExamSelectedQ=null;
+  sExamData=found;sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;
   document.getElementById('s-exam-check-title').textContent=found.name;
-  document.getElementById('s-exam-check-sub').textContent='총 '+found.total_q+'문항 · 틀린 문제를 클릭하세요';
-  renderSExamGrid();
+  document.getElementById('s-exam-check-sub').textContent='총 '+found.total_q+'문항 · 각 문제의 답 번호를 선택하세요';
+  renderSExamAnswerGrid();
   showSExamView('check');
+}
+
+function renderSExamAnswerGrid(){
+  var total=sExamData.total_q;
+  var el=document.getElementById('s-exam-answer-grid');
+  el.innerHTML=Array.from({length:total},function(_,i){
+    var my=sExamAnswers[i]||'';
+    return '<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);flex-wrap:wrap">'+
+      '<span style="font-size:13px;font-weight:600;min-width:40px;color:var(--text2)">'+(i+1)+'번</span>'+
+      [1,2,3,4,5].map(function(n){
+        var sel=String(n)===String(my);
+        return '<div onclick="sExamPickAnswer('+i+','+n+')" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;cursor:pointer;font-size:14px;font-weight:500;transition:all 0.1s;user-select:none;'+
+          'border:1.5px solid '+(sel?'var(--accent)':'var(--border)')+';'+
+          'background:'+(sel?'var(--accent)':'var(--card)')+';'+
+          'color:'+(sel?'white':'var(--text2)')+'">'+n+'</div>';
+      }).join('')+
+    '</div>';
+  }).join('');
+}
+
+function sExamPickAnswer(idx,num){
+  sExamAnswers[idx]=String(num);
+  // 해당 행만 리렌더
+  var el=document.getElementById('s-exam-answer-grid');
+  var rows=el.querySelectorAll('div[style*="border-bottom"]');
+  if(rows[idx]){
+    var circles=rows[idx].querySelectorAll('div[onclick]');
+    circles.forEach(function(c,ci){
+      var n=ci+1;
+      var sel=n===num;
+      c.style.borderColor=sel?'var(--accent)':'var(--border)';
+      c.style.background=sel?'var(--accent)':'var(--card)';
+      c.style.color=sel?'white':'var(--text2)';
+    });
+  }
+}
+
+async function sExamSubmitScore(){
+  if(!sExamData||!session){return;}
+  var total=sExamData.total_q;
+  var answered=Object.keys(sExamAnswers).length;
+  if(answered===0){document.getElementById('s-exam-check-err').textContent='최소 1문제 이상 답안을 입력해 주세요.';return;}
+  document.getElementById('s-exam-check-err').textContent='';
+  // 채점
+  var correct=0,wrong=[];
+  sExamData.questions.forEach(function(q,i){
+    var my=sExamAnswers[i];
+    if(my){
+      if(String(my)===String(q.answer))correct++;
+      else wrong.push({idx:i,q:q,my:my});
+    }
+  });
+  var score=Math.round(correct/total*100);
+  // Supabase 저장
+  await sb.from('exam_responses').upsert({
+    exam_id:sExamData.id,student_name:session.name||session.id,
+    answers:sExamAnswers,photo_urls:{},thoughts:{},
+    score:score,correct_count:correct,total_q:total,
+    submitted_at:new Date().toISOString()
+  },{onConflict:'exam_id,student_name'});
+  // 결과 표시
+  showSExamView('result');
+  document.getElementById('s-res-header').innerHTML=
+    '<div style="font-size:17px;font-weight:600">'+sExamData.name+'</div>'+
+    '<div style="font-size:12px;color:var(--text2);margin-top:2px">'+(session.name||'')+'</div>';
+  document.getElementById('s-res-stats').innerHTML=
+    '<div style="text-align:center;background:var(--bg2);border-radius:8px;padding:12px"><div style="font-size:24px;font-weight:700;color:'+(score>=80?'var(--green)':score>=60?'var(--amber)':'var(--red)')+'">'+score+'점</div><div style="font-size:11px;color:var(--text3);margin-top:2px">점수</div></div>'+
+    '<div style="text-align:center;background:var(--bg2);border-radius:8px;padding:12px"><div style="font-size:24px;font-weight:700;color:var(--green)">'+correct+'</div><div style="font-size:11px;color:var(--text3);margin-top:2px">정답</div></div>'+
+    '<div style="text-align:center;background:var(--bg2);border-radius:8px;padding:12px"><div style="font-size:24px;font-weight:700;color:var(--red)">'+wrong.length+'</div><div style="font-size:11px;color:var(--text3);margin-top:2px">오답</div></div>'+
+    '<div style="text-align:center;background:var(--bg2);border-radius:8px;padding:12px"><div style="font-size:24px;font-weight:700">'+total+'</div><div style="font-size:11px;color:var(--text3);margin-top:2px">총 문항</div></div>';
+  var wrongEl=document.getElementById('s-res-wrong-list');
+  if(wrong.length===0){
+    wrongEl.innerHTML='<div style="text-align:center;padding:2rem;color:var(--text3);font-size:15px">🎉 모두 맞았어요!</div>';
+  } else {
+    wrongEl.innerHTML='<div class="card-head"><h3>틀린 문제 ('+wrong.length+'개)</h3></div>'+
+      '<div style="padding:0 1.25rem 0.5rem">'+
+      wrong.map(function(w){
+        return '<div style="display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border)">'+
+          '<span style="background:var(--red-bg);color:var(--red);font-size:12px;font-weight:600;padding:2px 10px;border-radius:8px">'+(w.idx+1)+'번</span>'+
+          '<span style="font-size:13px;color:var(--text2)">내 답: <strong style="color:var(--red)">'+w.my+'번</strong></span>'+
+          '<span style="font-size:13px;color:var(--text2)">정답: <strong style="color:var(--green)">'+w.q.answer+'번</strong></span>'+
+          (w.q.explanation?'<span style="font-size:12px;color:var(--text3);margin-left:auto">📖 '+w.q.explanation.slice(0,40)+'...</span>':'')+
+          '</div>';
+      }).join('')+'</div>';
+  }
 }
 
 function renderSExamGrid(){
