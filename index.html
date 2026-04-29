@@ -603,9 +603,9 @@ input,button{font-family:var(--font)}
     <button class="mobile-tab active" onclick="tNav('dashboard')" data-mt="dashboard" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>대시보드</button>
     <button class="mobile-tab" onclick="tNav('videos')" data-mt="videos" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-02-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의</button>
     <button class="mobile-tab" onclick="tNav('access')" data-mt="access" id="mt-access" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습관리</button>
-    <button class="mobile-tab" onclick="tNav('students')" data-mt="students" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>학생</button>
+    <button class="mobile-tab" onclick="tNav('students')" data-mt="students" id="mt-students-t" style="position:relative" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>학생</button>
     <button class="mobile-tab" onclick="tNav('progress')" data-mt="progress" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>진도</button>
-    <button class="mobile-tab" onclick="tNav('qa')" data-mt="qa" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A</button>
+    <button class="mobile-tab" onclick="tNav('qa')" data-mt="qa" id="mt-qa-t" style="position:relative" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A</button>
     <button class="mobile-tab" onclick="tNav('cert')" data-mt="cert" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증</button>
     <button class="mobile-tab" onclick="tNav('clinic')" data-mt="clinic" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉</button>
     <button class="mobile-tab" onclick="tNav('exam')" data-mt="exam" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>시험</button>
@@ -626,7 +626,7 @@ input,button{font-family:var(--font)}
         <div class="nav-item active" onclick="sNav('lectures')" data-p="lectures"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의 목록</div>
         <div class="nav-item" onclick="sNav('review')" data-p="review"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습 신청</div>
         <div class="nav-item" onclick="sNav('mypage')" data-p="mypage"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>내 진도</div>
-        <div class="nav-item" onclick="sNav('qa')" data-p="qa"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A</div>
+        <div class="nav-item" onclick="sNav('qa')" data-p="qa" id="nav-qa-s" style="position:relative"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A</div>
         <div class="nav-item" onclick="sNav('cert')" data-p="cert"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증</div>
         <div class="nav-item" onclick="sNav('clinic')" data-p="clinic"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉 변동</div>
         <div class="nav-item" onclick="sNav('exam')" data-p="exam"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>시험 분석</div>
@@ -751,7 +751,7 @@ input,button{font-family:var(--font)}
     <button class="mobile-tab active" onclick="sNav('lectures')" data-ms="lectures" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의</button>
     <button class="mobile-tab" onclick="sNav('review')" data-ms="review" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습신청</button>
     <button class="mobile-tab" onclick="sNav('mypage')" data-ms="mypage" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>내 진도</button>
-    <button class="mobile-tab" onclick="sNav('qa')" data-ms="qa" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A</button>
+    <button class="mobile-tab" onclick="sNav('qa')" data-ms="qa" id="mt-qa-s" style="position:relative" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A</button>
     <button class="mobile-tab" onclick="sNav('cert')" data-ms="cert" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증</button>
     <button class="mobile-tab" onclick="sNav('clinic')" data-ms="clinic" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉</button>
     <button class="mobile-tab" onclick="sNav('exam')" data-ms="exam" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>시험</button>
@@ -1537,7 +1537,7 @@ function sNav(panel){
   if(panel==='lectures')renderLectures();
   if(panel==='review')renderStudentReview();
   if(panel==='mypage')renderMyPage();
-  if(panel==='qa'){renderSQaSchoolList();renderSQaMyList();}
+  if(panel==='qa'){renderSQaSchoolList();renderSQaMyList();clearQaBadge();}
   if(panel==='cert')renderSCertList();
   if(panel==='clinic')renderSClinicList();
   if(panel==='exam')renderSExam();
@@ -2246,6 +2246,78 @@ document.getElementById('modal-cert-item').addEventListener('click',function(e){
 
 /* ===== Q&A ===== */
 var qaDb={schools:[],weeks:[],questions:[],materials:[]};
+
+// ── 알림 뱃지 시스템 ──
+var _lastSeenQaCount=parseInt(localStorage.getItem('lastSeenQaCount')||'0');
+var _lastSeenRequestCount=parseInt(localStorage.getItem('lastSeenRequestCount')||'0');
+var _lastSeenReplyCount=parseInt(localStorage.getItem('lastSeenReplyCount')||'0');
+
+function updateAllBadges(){
+  if(session&&session.role==='teacher'){
+    updateTQaBadge();
+    updateTRequestBadge();
+  } else if(session&&session.role==='student'){
+    updateSQaBadge();
+  }
+}
+
+// 교사: Q&A 미답변 뱃지
+function updateTQaBadge(){
+  var pending=qaDb.questions.filter(function(q){return q.status==='pending';}).length;
+  setBadge('nav-qa',pending,'t');
+  setBadge('mt-qa-t',pending,'t');
+}
+function clearTQaBadge(){
+  var pending=qaDb.questions.filter(function(q){return q.status==='pending';}).length;
+  _lastSeenQaCount=pending;
+  localStorage.setItem('lastSeenQaCount',pending);
+  setBadge('nav-qa',0,'t');
+  setBadge('mt-qa-t',0,'t');
+}
+
+// 교사: 학생 신청 뱃지
+function updateTRequestBadge(){
+  var pending=db.requests?db.requests.filter(function(r){return r.status==='pending';}).length:0;
+  if(!pending&&db.users)pending=db.users.filter(function(u){return u.status==='pending';}).length;
+  setBadge('nav-students',pending,'t');
+  setBadge('mt-students-t',pending,'t');
+}
+
+// 학생: 답변 뱃지
+function updateSQaBadge(){
+  if(!session)return;
+  var answered=qaDb.questions.filter(function(q){return q.student_id===session.id&&q.status==='answered'&&(q.teacher_reply||q.teacher_note||q.ai_answer);}).length;
+  var newCount=Math.max(0,answered-_lastSeenReplyCount);
+  setBadge('nav-qa-s',newCount,'s');
+  setBadge('mt-qa-s',newCount,'s');
+}
+function clearQaBadge(){
+  if(!session)return;
+  var answered=qaDb.questions.filter(function(q){return q.student_id===session.id&&q.status==='answered';}).length;
+  _lastSeenReplyCount=answered;
+  localStorage.setItem('lastSeenReplyCount',answered);
+  setBadge('nav-qa-s',0,'s');
+  setBadge('mt-qa-s',0,'s');
+}
+
+function setBadge(elId,count,role){
+  var el=document.getElementById(elId);
+  if(!el)return;
+  var existing=el.querySelector('.nav-badge');
+  if(count>0){
+    if(!existing){
+      var badge=document.createElement('span');
+      badge.className='nav-badge';
+      badge.style.cssText='position:absolute;top:4px;right:4px;background:#ef4444;color:white;font-size:10px;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 4px;';
+      el.style.position='relative';
+      el.appendChild(badge);
+      existing=badge;
+    }
+    existing.textContent=count>99?'99+':count;
+  } else {
+    if(existing)existing.remove();
+  }
+}
 var qaState={school:null,week:null,prob:null};
 var qaChatHistory=[];
 var qwSolText='';
@@ -2261,6 +2333,7 @@ async function loadQaData(){
     qaDb.schools=s.data||[];
     qaDb.weeks=w.data||[];
     qaDb.questions=q.data||[];
+  updateAllBadges();
     qaDb.materials=m.data||[];
     if(!qaDb.schools.length){
       var defaults=[{id:'sc_hanbaek',name:'한백고'},{id:'sc_chidong',name:'치동고'}];
@@ -2714,14 +2787,17 @@ function showQaAnswer(q){
   uDiv.style.cssText='display:flex;flex-direction:column;align-items:flex-end;gap:4px';
   uDiv.innerHTML='<div style="max-width:85%;padding:10px 14px;border-radius:12px;border-bottom-right-radius:4px;font-size:13px;line-height:1.75;background:var(--accent);color:white;white-space:pre-wrap">'+q.question+'</div>';
   hist.appendChild(uDiv);
-  // 선생님 답변
-  if(q.teacher_reply){
-    var tDiv=document.createElement('div');
-    tDiv.style.cssText='display:flex;flex-direction:column;align-items:flex-start;gap:4px';
+  // 선생님 답변 or 검토중
+  var reply=q.teacher_reply||q.teacher_note||q.ai_answer||'';
+  var tDiv=document.createElement('div');
+  tDiv.style.cssText='display:flex;flex-direction:column;align-items:flex-start;gap:4px';
+  if(reply){
     tDiv.innerHTML='<span style="font-size:11px;color:var(--accent);font-weight:600;margin-left:4px">선생님 답변</span>'+
-      '<div style="max-width:85%;padding:10px 14px;border-radius:12px;border-bottom-left-radius:4px;font-size:13px;line-height:1.75;background:rgba(79,124,255,0.1);color:var(--text);border:1px solid rgba(79,124,255,0.2);white-space:pre-wrap">'+q.teacher_reply+'</div>';
-    hist.appendChild(tDiv);
+      '<div style="max-width:85%;padding:10px 14px;border-radius:12px;border-bottom-left-radius:4px;font-size:13px;line-height:1.75;background:rgba(79,124,255,0.1);color:var(--text);border:1px solid rgba(79,124,255,0.2);white-space:pre-wrap">'+reply+'</div>';
+  } else {
+    tDiv.innerHTML='<div style="background:var(--amber-bg);border:1px solid rgba(245,158,11,.3);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--amber)">✅ 질문이 전송됐어요! 선생님이 확인 후 답변드릴게요.</div>';
   }
+  hist.appendChild(tDiv);
   document.getElementById('qa-input-area').style.display='none';
   document.getElementById('qa-pending-area').style.display='none';
 }
@@ -2829,6 +2905,7 @@ async function sendTQaReply(){
   tQaCurrentQ.badge='teacher';
   await sb.from('qa_questions').update({teacher_reply:reply,status:'answered',badge:'teacher'}).eq('id',tQaCurrentQ.id);
   notify('답변이 전송됐어요!','success');
+  updateAllBadges();
   document.getElementById('tqa-answer-history').innerHTML='<div style="background:rgba(79,124,255,0.08);border-radius:8px;padding:10px 12px"><div style="font-size:11px;color:var(--accent);font-weight:600;margin-bottom:4px">선생님 답변</div><div style="font-size:13px;line-height:1.7;white-space:pre-wrap">'+escHtml(reply)+'</div></div>';
   document.getElementById('tqa-reply-text').value='';
   renderQaReview();
