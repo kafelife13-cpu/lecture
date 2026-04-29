@@ -2779,11 +2779,18 @@ function openTQaModal(qId){
   // PDF 표시
   var pdfArea=document.getElementById('tqa-pdf-area');
   if(week&&week.pdf_url){
-    pdfArea.innerHTML='<iframe src="'+week.pdf_url+'" style="width:100%;height:100%;border:none;min-height:400px"></iframe>';
-  } else if(week&&week.sol_text){
-    pdfArea.innerHTML='<div style="padding:14px;font-size:12px;color:var(--text2);line-height:1.7;overflow:auto;height:100%;white-space:pre-wrap">'+escHtml(week.sol_text.slice(0,2000))+'</div>';
+    // PDF URL이 있으면 iframe으로 표시
+    pdfArea.innerHTML='<iframe src="'+week.pdf_url+'#toolbar=1&navpanes=0" style="width:100%;height:100%;border:none;min-height:500px" type="application/pdf"></iframe>';
   } else {
-    pdfArea.innerHTML='<div style="color:var(--text3);font-size:13px;text-align:center;padding:2rem">PDF가 등록되지 않았어요</div>';
+    // PDF 없으면 직접 업로드 버튼 제공
+    pdfArea.innerHTML='<div style="padding:2rem;text-align:center;color:var(--text3)">'+
+      '<div style="font-size:2rem;margin-bottom:10px">📄</div>'+
+      '<div style="font-size:13px;margin-bottom:12px">이 주차에 시험지 PDF가 없어요</div>'+
+      '<label style="cursor:pointer;background:var(--accent);color:white;padding:8px 16px;border-radius:6px;font-size:13px">'+
+      '📎 PDF 업로드'+
+      '<input type="file" accept=".pdf" style="display:none" onchange="uploadWeekPdfFromModal(event,''+((week&&week.id)||'')+'')">'+
+      '</label>'+
+      '</div>';
   }
   document.getElementById('modal-qa-teacher').classList.add('show');
 }
@@ -2791,6 +2798,26 @@ function openTQaModal(qId){
 function closeTQaModal(){
   document.getElementById('modal-qa-teacher').classList.remove('show');
   tQaCurrentQ=null;
+}
+
+async function uploadWeekPdfFromModal(event, weekId){
+  var file=event.target.files[0];
+  if(!file||!weekId)return;
+  var week=qaDb.weeks.find(function(w){return w.id===weekId;});
+  if(!week)return;
+  var pdfArea=document.getElementById('tqa-pdf-area');
+  pdfArea.innerHTML='<div style="text-align:center;padding:2rem;color:var(--text2);font-size:13px"><div class="spinner" style="margin:0 auto 10px;width:24px;height:24px;border-width:2px"></div>업로드 중...</div>';
+  try{
+    var path='qa-pdfs/'+week.school_id+'/'+weekId+'.pdf';
+    var upRes=await sb.storage.from('exam-photos').upload(path,file,{upsert:true,contentType:'application/pdf'});
+    if(upRes.error){notify('업로드 실패: '+upRes.error.message,'error');return;}
+    var urlRes=sb.storage.from('exam-photos').getPublicUrl(path);
+    var pdfUrl=urlRes.data?.publicUrl||'';
+    await sb.from('qa_weeks').update({pdf_url:pdfUrl}).eq('id',weekId);
+    week.pdf_url=pdfUrl;
+    pdfArea.innerHTML='<iframe src="'+pdfUrl+'#toolbar=1&navpanes=0" style="width:100%;height:100%;border:none;min-height:500px" type="application/pdf"></iframe>';
+    notify('PDF 업로드 완료!','success');
+  }catch(e){notify('오류: '+e.message,'error');}
 }
 
 async function sendTQaReply(){
