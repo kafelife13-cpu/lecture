@@ -2916,6 +2916,32 @@ function texBackToStep1(){texShowStep(1);}
 
 var parsedQuestions=[];
 
+async function texParseChunk(qText, aText, eText, startNum, endNum){
+  const headers={'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'};
+  const prompt=`시험지에서 ${startNum}번~${endNum}번 문항만 추출해서 JSON 배열로 반환하세요. 마크다운 없이 순수 JSON만.
+
+[시험지]
+${qText}
+
+[정답지]
+${aText}
+
+[해설지]
+${eText||'없음'}
+
+반환형식: [{"num":${startNum},"text":"문제내용(선택지포함,간결하게)","answer":3,"type":"추론·함축","explanation":"해설"}]
+규칙: num=${startNum}~${endNum}번만, answer=숫자1~5(①→1,②→2,③→3,④→4,⑤→5), explanation없으면"", type=사실 확인/추론·함축/어휘·어법/표현 기법/주제·요지/논증 구조/계산·풀이/개념 적용/자료 해석/빈칸 추론/순서 배열/기타`;
+  const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers,body:JSON.stringify({
+    model:'claude-sonnet-4-20250514',max_tokens:8000,
+    messages:[{role:'user',content:prompt}]
+  })});
+  const data=await resp.json();
+  const raw=(data.content||[]).map(c=>c.text||'').join('');
+  let cleaned=raw.replace(/```json|```/g,'').trim();
+  if(!cleaned.endsWith(']')){const lc=cleaned.lastIndexOf('}');if(lc>0)cleaned=cleaned.slice(0,lc+1)+']';}
+  return JSON.parse(cleaned);
+}
+
 async function texParse(){
   CLAUDE_API_KEY=localStorage.getItem('claude_api_key')||CLAUDE_API_KEY;
   if(!CLAUDE_API_KEY){alert('Claude API 키가 없어요. 로그아웃 후 다시 로그인해서 키를 입력해 주세요.');return;}
@@ -2929,43 +2955,32 @@ async function texParse(){
   if(!qRaw){errEl.textContent='시험지 텍스트를 붙여넣어 주세요.';errEl.style.display='block';return;}
   if(!aRaw){errEl.textContent='정답지 텍스트를 붙여넣어 주세요.';errEl.style.display='block';return;}
   texShowStep(2);
-  const msgs=['문항 분리 중...','정답 매칭 중...','해설 연결 중...'];
-  let mi=0;
-  const mt=setInterval(()=>{document.getElementById('tex-parse-msg').textContent=msgs[Math.min(mi++,msgs.length-1)];},4000);
+  const msgEl=document.getElementById('tex-parse-msg');
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',max_tokens:16000,
-      messages:[{role:'user',content:`아래 시험지, 정답지, 해설지 텍스트를 분석해서 문항별로 분리해주세요.
+    // 총 문항 수 먼저 파악
+    msgEl.textContent='문항 수 파악 중...';
+    const countResp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:100,
+        messages:[{role:'user',content:`아래 정답지에서 총 문항 수만 숫자 하나로만 답하세요.
+${aRaw}`}]})});
+    const cd=await countResp.json();
+    const totalStr=(cd.content||[]).map(c=>c.text||'').join('').match(/\d+/);
+    const total=totalStr?parseInt(totalStr[0]):24;
+    const half=Math.ceil(total/2);
 
-[시험지]
-${qRaw}
+    // 1번~절반
+    msgEl.textContent=`1~${half}번 분석 중... (1/2)`;
+    const part1=await texParseChunk(qRaw,aRaw,eRaw,1,half);
 
-[정답지]
-${aRaw}
+    // 절반+1~끝
+    msgEl.textContent=`${half+1}~${total}번 분석 중... (2/2)`;
+    const part2=await texParseChunk(qRaw,aRaw,eRaw,half+1,total);
 
-[해설지]
-${eRaw||'없음'}
-
-순수 JSON 배열만 반환 (마크다운 없이):
-[{"num":1,"text":"문제+선택지(지문 긴 경우 요약가능)","answer":3,"type":"추론·함축","explanation":"해설요약"}]
-
-규칙: answer=숫자1~5(①→1), type=사실 확인/추론·함축/어휘·어법/표현 기법/주제·요지/논증 구조/계산·풀이/개념 적용/자료 해석/빈칸 추론/순서 배열/기타, explanation 없으면 ""
-text는 핵심만 간결하게 (선택지 번호와 핵심어 위주로 축약해도 됨)`}]
-    })});
-    clearInterval(mt);
-    const data=await resp.json();
-    const raw=(data.content||[]).map(c=>c.text||'').join('');
-    let cleaned=raw.replace(/```json|```/g,'').trim();
-    // 잘린 JSON 복구 시도
-    if(!cleaned.endsWith(']')){
-      const lastComplete=cleaned.lastIndexOf('}');
-      if(lastComplete>0)cleaned=cleaned.slice(0,lastComplete+1)+']';
-    }
-    parsedQuestions=JSON.parse(cleaned);
+    parsedQuestions=[...part1,...part2].sort((a,b)=>a.num-b.num);
     renderTexStep3();
     texShowStep(3);
   }catch(e){
-    clearInterval(mt);
     errEl.textContent='AI 분석 오류: '+e.message+' — 다시 시도해 주세요.';
     errEl.style.display='block';
     texShowStep(1);
