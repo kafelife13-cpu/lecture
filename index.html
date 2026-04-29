@@ -2917,6 +2917,8 @@ function texBackToStep1(){texShowStep(1);}
 var parsedQuestions=[];
 
 async function texParse(){
+  CLAUDE_API_KEY=localStorage.getItem('claude_api_key')||CLAUDE_API_KEY;
+  if(!CLAUDE_API_KEY){alert('Claude API 키가 없어요. 로그아웃 후 다시 로그인해서 키를 입력해 주세요.');return;}
   const name=document.getElementById('tex-name').value.trim();
   const qRaw=document.getElementById('tex-questions-raw').value.trim();
   const aRaw=document.getElementById('tex-answers-raw').value.trim();
@@ -3191,6 +3193,8 @@ function sExamBack(){
 }
 
 async function sExamAnalyze(){
+  CLAUDE_API_KEY=localStorage.getItem('claude_api_key')||CLAUDE_API_KEY;
+  if(!CLAUDE_API_KEY){alert('Claude API 키가 없어요. 로그아웃 후 다시 로그인해서 키를 입력해 주세요.');return;}
   if(!sExamData)return;
   const wrongs=sExamData.questions.reduce((acc,q,i)=>{
     const my=sExamAnswers[i];
