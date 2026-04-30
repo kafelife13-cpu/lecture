@@ -2774,7 +2774,7 @@ function openQaModalFromHistory(qid){
   document.getElementById('qa-modal-ctx').textContent=(school?school.name:'')+(week?' · '+week.name:'');
   qaChatHistory=[];
   document.getElementById('qa-chat-history').innerHTML='';
-  document.getElementById('qa-loading-area').style.display='none';
+  var _la=document.getElementById('qa-loading-area');if(_la)_la.style.display='none';
   document.getElementById('qa-pending-area').style.display='none';
   q.status==='answered'?showQaAnswer(q):showQaPending();
   document.getElementById('modal-qa').classList.add('show');
