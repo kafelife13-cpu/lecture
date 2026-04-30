@@ -586,6 +586,7 @@ input,button{font-family:var(--font)}
           <div style="display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:1rem;padding-bottom:2px;flex-wrap:wrap">
             <button class="btn btn-sm active" id="tres-tab-overview" onclick="tResTab('overview')" style="background:rgba(79,124,255,0.1);color:var(--accent)">전체 현황</button>
             <button class="btn btn-sm" id="tres-tab-ranking" onclick="tResTab('ranking')">🏆 순위</button>
+            <button class="btn btn-sm" id="tres-tab-wrong" onclick="tResTab('wrong')">📊 오답 통계</button>
             <button class="btn btn-sm" id="tres-tab-student" onclick="tResTab('student')">학생별 상세</button>
           </div>
           <!-- 전체 현황 -->
@@ -604,6 +605,17 @@ input,button{font-family:var(--font)}
             <div class="card">
               <div class="card-head"><h3>🏆 점수 순위</h3><button class="btn btn-sm" onclick="tResExportRankingPDF()">📄 순위표 PDF</button></div>
               <div id="tres-ranking-list" style="padding:0 1.25rem 0.5rem"></div>
+            </div>
+          </div>
+          <!-- 오답 통계 -->
+          <div id="tres-wrong" style="display:none">
+            <div class="card" style="margin-bottom:1rem">
+              <div class="card-head"><h3>📊 문항별 오답률</h3><span id="tres-wrong-sub" style="font-size:11px;color:var(--text2)"></span></div>
+              <div id="tres-wrong-list" style="padding:0 1.25rem 1rem"></div>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3>🔥 오답 TOP 5</h3></div>
+              <div id="tres-wrong-top" style="padding:0 1.25rem 1rem"></div>
             </div>
           </div>
           <!-- 학생별 상세 -->
@@ -3294,13 +3306,88 @@ async function viewTExamResults(examId,examName){
 }
 
 function tResTab(tab){
-  ['overview','ranking','student'].forEach(function(t){
+  ['overview','ranking','wrong','student'].forEach(function(t){
     var el=document.getElementById('tres-'+t);
     if(el)el.style.display=t===tab?'block':'none';
     var btn=document.getElementById('tres-tab-'+t);
     if(btn){btn.style.background=t===tab?'rgba(79,124,255,0.1)':'';btn.style.color=t===tab?'var(--accent)':'';}
   });
   if(tab==='ranking')renderTResRanking();
+  if(tab==='wrong')renderTResWrongStats();
+}
+
+function renderTResWrongStats(){
+  var exam=tResCurrentExam;
+  var responses=tResCurrentResponses;
+  var listEl=document.getElementById('tres-wrong-list');
+  var topEl=document.getElementById('tres-wrong-top');
+  var subEl=document.getElementById('tres-wrong-sub');
+  if(!responses||!responses.length){
+    listEl.innerHTML='<p style="color:var(--text3);font-size:13px;padding:0.5rem 0">응답 데이터가 없어요</p>';
+    return;
+  }
+  subEl.textContent=responses.length+'명 응답 · 총 '+exam.total_q+'문항';
+
+  // 문항별 오답 집계
+  var wrongCount={};
+  var totalAnswered={};
+  responses.forEach(function(r){
+    if(!r.answers)return;
+    exam.questions.forEach(function(q,i){
+      var my=r.answers[i];
+      if(my){
+        totalAnswered[i]=(totalAnswered[i]||0)+1;
+        if(String(my)!==String(q.answer)){
+          wrongCount[i]=(wrongCount[i]||0)+1;
+        }
+      }
+    });
+  });
+
+  // 오답률 계산 및 정렬
+  var stats=exam.questions.map(function(q,i){
+    var total=totalAnswered[i]||0;
+    var wrong=wrongCount[i]||0;
+    var rate=total>0?Math.round(wrong/total*100):0;
+    return {idx:i,num:i+1,type:q.type||'기타',wrong:wrong,total:total,rate:rate};
+  }).filter(function(s){return s.total>0;});
+
+  var sorted=[].concat(stats).sort(function(a,b){return b.rate-a.rate||b.wrong-a.wrong;});
+
+  // 전체 막대 그래프
+  listEl.innerHTML=stats.map(function(s){
+    var color=s.rate>=70?'var(--red)':s.rate>=40?'var(--amber)':'var(--green)';
+    return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">'+
+      '<span style="min-width:36px;font-size:12px;font-weight:600;color:var(--text2)">'+(s.idx+1)+'번</span>'+
+      '<span style="min-width:60px;font-size:11px;color:var(--text3)">'+s.type+'</span>'+
+      '<div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden">'+
+        '<div style="height:100%;background:'+color+';border-radius:4px;width:'+s.rate+'%;transition:width 0.3s"></div>'+
+      '</div>'+
+      '<span style="min-width:80px;text-align:right;font-size:12px;font-weight:600;color:'+color+'">'+s.rate+'% ('+s.wrong+'/'+s.total+'명)</span>'+
+    '</div>';
+  }).join('');
+
+  // TOP 5
+  topEl.innerHTML=sorted.slice(0,5).map(function(s,rank){
+    var color=rank===0?'var(--red)':rank===1?'var(--amber)':'var(--text2)';
+    var medal=rank===0?'🥇':rank===1?'🥈':rank===2?'🥉':'';
+    return '<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)">'+
+      '<div style="font-size:18px;min-width:28px;text-align:center">'+(medal||'#'+(rank+1))+'</div>'+
+      '<div style="flex:1">'+
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'+
+          '<span style="font-size:14px;font-weight:700;color:'+color+'">'+(s.idx+1)+'번</span>'+
+          '<span style="font-size:12px;color:var(--text2)">'+s.type+'</span>'+
+        '</div>'+
+        '<div style="height:6px;background:var(--border);border-radius:3px;">'+
+          '<div style="height:100%;background:'+color+';border-radius:3px;width:'+s.rate+'%"></div>'+
+        '</div>'+
+      '</div>'+
+      '<div style="text-align:right">'+
+        '<div style="font-size:16px;font-weight:700;color:'+color+'">'+s.rate+'%</div>'+
+        '<div style="font-size:11px;color:var(--text3)">'+s.wrong+'명 오답</div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
 }
 
 function renderTResRanking(){
