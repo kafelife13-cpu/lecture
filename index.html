@@ -2753,7 +2753,8 @@ function openQaModal(probNum){
   document.getElementById('qa-modal-ctx').textContent=(school?school.name:'')+(week?' · '+week.name:'');
   qaChatHistory=[];
   document.getElementById('qa-chat-history').innerHTML='';
-  document.getElementById('qa-loading-area').style.display='none';
+  var loadingEl=document.getElementById('qa-loading-area');
+  if(loadingEl)loadingEl.style.display='none';
   document.getElementById('qa-input-area').style.display='block';
   document.getElementById('qa-pending-area').style.display='none';
   document.getElementById('qa-q-text').value='';
