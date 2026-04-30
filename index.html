@@ -3938,32 +3938,57 @@ if('serviceWorker' in navigator){
 // PWA 설치 프롬프트
 var deferredPrompt;
 var PWA_BTN_IDS=['pwa-install-btn','pwa-install-btn-s','pwa-install-btn-t'];
+
+// 이미 설치된 앱인지 확인
+var isStandalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;
+
 function showPWABtns(show){
   PWA_BTN_IDS.forEach(function(id){
     var el=document.getElementById(id);
-    if(el)el.style.display=show?'inline-flex':'none';
+    if(el)el.style.display=show?'block':'none';
   });
 }
+
+// 설치 안된 경우 항상 버튼 표시
+if(!isStandalone){
+  window.addEventListener('DOMContentLoaded',function(){
+    showPWABtns(true);
+  });
+}
+
 window.addEventListener('beforeinstallprompt', function(e){
   e.preventDefault();
   deferredPrompt=e;
-  showPWABtns(true);
+  if(!isStandalone)showPWABtns(true);
 });
+
 window.addEventListener('appinstalled', function(){
   deferredPrompt=null;
   showPWABtns(false);
 });
+
 function installPWA(){
-  if(!deferredPrompt){
-    // iOS 안내
-    alert('📲 설치 방법\n\niPhone/iPad: 하단 공유 버튼(□↑) → "홈 화면에 추가"\n\n안드로이드: 브라우저 메뉴(⋮) → "홈 화면에 추가"');
-    return;
+  if(deferredPrompt){
+    // 안드로이드 크롬 - 바로 설치 팝업
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function(result){
+      deferredPrompt=null;
+      if(result.outcome==='accepted')showPWABtns(false);
+    });
+  } else {
+    // iOS or 기타 - 안내 모달
+    var isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+    var isAndroid=/android/i.test(navigator.userAgent);
+    var msg='📲 홈 화면에 추가하는 방법\n\n';
+    if(isIOS){
+      msg+='1. 하단 공유 버튼(□↑)을 누르세요\n2. "홈 화면에 추가"를 선택하세요\n3. 오른쪽 위 "추가"를 누르세요';
+    } else if(isAndroid){
+      msg+='1. 브라우저 메뉴(⋮)를 누르세요\n2. "홈 화면에 추가"를 선택하세요';
+    } else {
+      msg+='브라우저 주소창 오른쪽의 설치 아이콘(⊕)을 누르거나\n브라우저 메뉴 → "앱 설치"를 선택하세요';
+    }
+    alert(msg);
   }
-  deferredPrompt.prompt();
-  deferredPrompt.userChoice.then(function(result){
-    deferredPrompt=null;
-    showPWABtns(false);
-  });
 }
 </script>
 </body>
