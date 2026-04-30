@@ -282,7 +282,7 @@ input,button{font-family:var(--font)}
         <div class="nav-item" onclick="tNav('students')" data-p="students" id="nav-students"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>학생 관리</div>
         <div class="nav-item" onclick="tNav('access')" data-p="access" id="nav-access"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습 신청 관리</div>
         <div class="nav-item" onclick="tNav('progress')" data-p="progress"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>진도 현황</div>
-        <div class="nav-item" onclick="tNav('qa')" data-p="qa" id="nav-qa"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A 관리</div>
+        <div class="nav-item" onclick="tNav('qa')" data-p="qa" id="nav-qa" style="position:relative"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A 관리</div>
         <div class="nav-item" onclick="tNav('cert')" data-p="cert"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증 관리</div>
         <div class="nav-item" onclick="tNav('clinic')" data-p="clinic"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉 관리</div>
         <div class="nav-item" onclick="tNav('exam')" data-p="exam"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>시험 분석</div>
@@ -1151,12 +1151,14 @@ function launchTeacher(){
   document.getElementById('t-avatar').textContent=session.name[0];
   document.getElementById('dash-date').textContent=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});
   tNav('dashboard');
+  setTimeout(updateAllBadges,1000);
 }
 function launchStudent(){
   showPage('page-student');
   document.getElementById('s-name-disp').textContent=session.name;
   document.getElementById('s-avatar').textContent=session.name[0];
   sNav('lectures');
+  setTimeout(updateAllBadges,1000);
 }
 
 /* ===== TEACHER NAV ===== */
@@ -2303,19 +2305,20 @@ function clearQaBadge(){
 function setBadge(elId,count,role){
   var el=document.getElementById(elId);
   if(!el)return;
+  el.style.position='relative';
   var existing=el.querySelector('.nav-badge');
   if(count>0){
     if(!existing){
       var badge=document.createElement('span');
       badge.className='nav-badge';
-      badge.style.cssText='position:absolute;top:4px;right:4px;background:#ef4444;color:white;font-size:10px;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 4px;';
-      el.style.position='relative';
+      badge.style.cssText='position:absolute;top:2px;right:2px;background:#ef4444;color:white;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px;z-index:10;pointer-events:none;';
       el.appendChild(badge);
       existing=badge;
     }
-    existing.textContent=count>99?'99+':count;
+    existing.textContent=count>99?'99+':String(count);
+    existing.style.display='flex';
   } else {
-    if(existing)existing.remove();
+    if(existing)existing.style.display='none';
   }
 }
 var qaState={school:null,week:null,prob:null};
@@ -2831,6 +2834,7 @@ async function submitQaQuestion(){
   showQaPending();
   renderSQaProbGrid();renderSQaMyList();
   renderQaReview();
+  updateAllBadges();
 }
 
 // 교사 Q&A 상세 모달
