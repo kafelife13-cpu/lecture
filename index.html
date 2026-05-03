@@ -738,7 +738,7 @@ input,button{font-family:var(--font)}
             </div>
           </div>
         </div>
-        <!-- 답안 입력 -->
+        <!-- 오답 체크 -->
         <div id="s-exam-check" style="display:none">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-wrap:wrap">
             <button class="btn btn-sm" onclick="sExamBack()">← 돌아가기</button>
@@ -747,16 +747,26 @@ input,button{font-family:var(--font)}
               <div id="s-exam-check-sub" style="font-size:12px;color:var(--text2)"></div>
             </div>
           </div>
-          <!-- 답안 일괄 입력 -->
+          <!-- 문항 번호 그리드 -->
           <div class="card" style="margin-bottom:1rem">
-            <div class="card-head"><h3>📝 답안 입력</h3><span style="font-size:12px;color:var(--text2)">각 문제의 답 번호를 선택하세요</span></div>
+            <div class="card-head">
+              <h3>✗ 틀린 문제 선택</h3>
+              <span style="font-size:12px;color:var(--text2)" id="s-wrong-count-label">0문제 선택됨</span>
+            </div>
             <div style="padding:0 1.25rem 1.25rem">
-              <div id="s-exam-answer-grid"></div>
+              <div style="font-size:12px;color:var(--text2);margin-bottom:10px">틀린 문제 번호를 클릭하세요</div>
+              <div id="s-exam-q-grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:10px"></div>
+              <div style="display:flex;gap:14px;font-size:11px;color:var(--text3)">
+                <span>□ 미선택</span>
+                <span style="color:var(--red)">■ 틀린 문제</span>
+              </div>
             </div>
           </div>
+          <!-- 선택된 오답 상세 입력 -->
+          <div id="s-wrong-details"></div>
           <div id="s-exam-check-err" class="err-msg"></div>
-          <button class="btn blue" style="width:100%;margin-bottom:8px" onclick="sExamSubmitScore()">📊 채점하기</button>
-          <p style="font-size:12px;color:var(--text3);text-align:center">모든 답안을 입력하지 않아도 제출 가능해요</p>
+          <button class="btn blue" style="width:100%;margin-bottom:8px" onclick="sExamSubmitScore()">📊 제출하기</button>
+          <p style="font-size:12px;color:var(--text3);text-align:center">틀린 문제가 없으면 그냥 제출해도 돼요</p>
         </div>
         <!-- 채점 결과 -->
         <div id="s-exam-result" style="display:none">
@@ -3666,68 +3676,153 @@ async function sExamSearch(){
   const {data,error}=await sb.from('exams').select('*');
   const found=data&&data.find(e=>e.id.toUpperCase().startsWith(code.toUpperCase())||e.id.toUpperCase()===code.toUpperCase());
   if(!found){errEl.textContent='해당 코드의 시험을 찾을 수 없어요.';return;}
-  sExamData=found;sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;
+  sExamData=found;sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;sWrongChecked={};
   document.getElementById('s-exam-check-title').textContent=found.name;
-  document.getElementById('s-exam-check-sub').textContent='총 '+found.total_q+'문항 · 각 문제의 답 번호를 선택하세요';
+  document.getElementById('s-exam-check-sub').textContent='총 '+found.total_q+'문항 · 틀린 번호를 클릭하세요';
   renderSExamAnswerGrid();
   showSExamView('check');
 }
 
+// 오답 체크된 문항 목록
+var sWrongChecked={};  // {idx: true/false}
+
 function renderSExamAnswerGrid(){
   var total=sExamData.total_q;
-  var el=document.getElementById('s-exam-answer-grid');
-  el.innerHTML=Array.from({length:total},function(_,i){
-    var my=sExamAnswers[i]||'';
-    return '<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);flex-wrap:wrap">'+
-      '<span style="font-size:13px;font-weight:600;min-width:40px;color:var(--text2)">'+(i+1)+'번</span>'+
-      [1,2,3,4,5].map(function(n){
-        var sel=String(n)===String(my);
-        return '<div onclick="sExamPickAnswer('+i+','+n+')" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;cursor:pointer;font-size:14px;font-weight:500;transition:all 0.1s;user-select:none;'+
-          'border:1.5px solid '+(sel?'var(--accent)':'var(--border)')+';'+
-          'background:'+(sel?'var(--accent)':'var(--card)')+';'+
-          'color:'+(sel?'white':'var(--text2)')+'">'+n+'</div>';
-      }).join('')+
+  var grid=document.getElementById('s-exam-q-grid');
+  if(!grid)return;
+  grid.style.gridTemplateColumns='repeat('+Math.min(6,total)+',1fr)';
+  grid.innerHTML=Array.from({length:total},function(_,i){
+    var isWrong=sWrongChecked[i];
+    return '<button type="button" '+
+      'onclick="sToggleWrong('+i+')" '+
+      'style="border:none;padding:10px 4px;text-align:center;cursor:pointer;font-size:13px;font-weight:600;border-radius:8px;transition:all 0.15s;user-select:none;-webkit-tap-highlight-color:transparent;'+
+      'background:'+(isWrong?'var(--red)':'var(--card)')+';'+
+      'color:'+(isWrong?'white':'var(--text2)')+';'+
+      'box-shadow:'+(isWrong?'0 2px 8px rgba(239,68,68,0.4)':'none')+'">'+
+      (i+1)+'</button>';
+  }).join('');
+  updateWrongCountLabel();
+}
+
+function sToggleWrong(idx){
+  sWrongChecked[idx]=!sWrongChecked[idx];
+  if(!sWrongChecked[idx])delete sWrongChecked[idx];
+  renderSExamAnswerGrid();
+  renderWrongDetails();
+}
+
+function updateWrongCountLabel(){
+  var count=Object.keys(sWrongChecked).length;
+  var el=document.getElementById('s-wrong-count-label');
+  if(el)el.textContent=count+'문제 선택됨';
+}
+
+function renderWrongDetails(){
+  var el=document.getElementById('s-wrong-details');
+  if(!el)return;
+  var wrongIdxs=Object.keys(sWrongChecked).map(Number).sort(function(a,b){return a-b;});
+  if(!wrongIdxs.length){el.innerHTML='';return;}
+  el.innerHTML=wrongIdxs.map(function(idx){
+    var q=sExamData.questions[idx];
+    var thought=sExamThoughts[idx]||'';
+    var photo=sExamPhotos[idx];
+    return '<div class="card" style="margin-bottom:10px;border-left:3px solid var(--red)" id="wrong-detail-'+idx+'">'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">'+
+        '<span style="background:var(--red);color:white;font-size:12px;font-weight:700;padding:3px 10px;border-radius:8px">'+(idx+1)+'번 오답</span>'+
+        (q&&q.type?'<span style="font-size:11px;color:var(--text2)">'+q.type+'</span>':'')+'</div>'+
+      // 내 답 + 정답
+      '<div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap">'+
+        '<div style="flex:1;min-width:120px">'+
+          '<div style="font-size:11px;color:var(--text2);margin-bottom:4px">내가 선택한 답</div>'+
+          '<div style="display:flex;gap:6px">'+
+            [1,2,3,4,5].map(function(n){
+              var sel=String(sExamAnswers[idx])===String(n);
+              return '<button type="button" onclick="sExamPickAnswer('+idx+','+n+')" '+
+                'style="width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:13px;font-weight:600;border:1.5px solid '+(sel?'var(--accent)':'var(--border)')+';background:'+(sel?'var(--accent)':'var(--card)')+';color:'+(sel?'white':'var(--text2)')+'">'+n+'</button>';
+            }).join('')+
+          '</div>'+
+        '</div>'+
+        (q&&q.answer?'<div style="flex:1;min-width:80px"><div style="font-size:11px;color:var(--text2);margin-bottom:4px">정답</div><div style="font-size:20px;font-weight:700;color:var(--green)">'+q.answer+'번</div></div>':'')+
+      '</div>'+
+      // 사고과정 입력
+      '<div style="margin-bottom:10px">'+
+        '<div style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:5px">✏️ 내 사고 과정 & 틀린 이유</div>'+
+        '<textarea '+
+          'id="thought-'+idx+'" '+
+          'class="form-input" '+
+          'style="min-height:80px;font-size:13px;resize:vertical" '+
+          'placeholder="왜 이 답을 골랐는지, 어디서 헷갈렸는지 적어보세요&#10;예) 2문단에서 ~라고 했기 때문에 ③번이라 생각했는데..." '+
+          'oninput="sExamThoughts['+idx+']=this.value">'+thought+'</textarea>'+
+      '</div>'+
+      // 사진 첨부
+      '<div>'+
+        '<div style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:5px">📷 문제 사진 첨부 (선택)</div>'+
+        '<label style="display:inline-block;cursor:pointer;background:var(--bg2);border:1.5px dashed var(--border2);border-radius:8px;padding:10px 16px;font-size:12px;color:var(--text2)">'+
+          '📷 '+(photo?'사진 변경':'사진 첨부')+
+          '<input type="file" id="photo-'+idx+'" accept="image/*" capture="environment" style="display:none" onchange="sExamUploadPhotoLocal('+idx+',this)">'+
+        '</label>'+
+        (photo?'<img src="'+photo.preview+'" style="display:block;width:100%;max-height:200px;object-fit:cover;border-radius:8px;margin-top:8px">':'')+
+      '</div>'+
     '</div>';
   }).join('');
 }
 
 function sExamPickAnswer(idx,num){
   sExamAnswers[idx]=String(num);
-  // 해당 행만 리렌더
-  var el=document.getElementById('s-exam-answer-grid');
-  var rows=el.querySelectorAll('div[style*="border-bottom"]');
-  if(rows[idx]){
-    var circles=rows[idx].querySelectorAll('div[onclick]');
-    circles.forEach(function(c,ci){
+  // 해당 상세 카드만 버튼 업데이트
+  var card=document.getElementById('wrong-detail-'+idx);
+  if(card){
+    var btns=card.querySelectorAll('button[onclick*="sExamPickAnswer"]');
+    btns.forEach(function(btn,ci){
       var n=ci+1;
       var sel=n===num;
-      c.style.borderColor=sel?'var(--accent)':'var(--border)';
-      c.style.background=sel?'var(--accent)':'var(--card)';
-      c.style.color=sel?'white':'var(--text2)';
+      btn.style.borderColor=sel?'var(--accent)':'var(--border)';
+      btn.style.background=sel?'var(--accent)':'var(--card)';
+      btn.style.color=sel?'white':'var(--text2)';
     });
   }
+}
+
+function sExamUploadPhotoLocal(idx,input){
+  var file=input.files[0];
+  if(!file)return;
+  sExamPhotos[idx]={file:file,preview:URL.createObjectURL(file)};
+  renderWrongDetails();
 }
 
 async function sExamSubmitScore(){
   if(!sExamData||!session){return;}
   var total=sExamData.total_q;
-  var answered=Object.keys(sExamAnswers).length;
-  if(answered===0){document.getElementById('s-exam-check-err').textContent='최소 1문제 이상 답안을 입력해 주세요.';return;}
+  var wrongIdxs=Object.keys(sWrongChecked).map(Number);
   document.getElementById('s-exam-check-err').textContent='';
-  // 채점
-  var correct=0,wrong=[];
-  sExamData.questions.forEach(function(q,i){
-    var my=sExamAnswers[i];
-    if(my){
-      if(String(my)===String(q.answer))correct++;
-      else wrong.push({idx:i,q:q,my:my});
-    }
-  });
+  // 오답 기준으로 점수 계산
+  var wrongCount=wrongIdxs.length;
+  var correct=total-wrongCount;
   var score=Math.round(correct/total*100);
+  var wrong=wrongIdxs.map(function(idx){
+    return {idx:idx,q:sExamData.questions[idx]||{},my:sExamAnswers[idx]||'?'};
+  });
+  // 사진 업로드
+  var photoUrls={};
+  for(var wi=0;wi<wrongIdxs.length;wi++){
+    var idx=wrongIdxs[wi];
+    if(sExamPhotos[idx]&&sExamPhotos[idx].file){
+      try{
+        var file=sExamPhotos[idx].file;
+        var ext=file.name.split('.').pop()||'jpg';
+        var path='exam-photos/'+sExamData.id+'/'+(session.name||session.id)+'/q'+(idx+1)+'_'+Date.now()+'.'+ext;
+        var up=await sb.storage.from('exam-photos').upload(path,file,{upsert:true});
+        if(!up.error){
+          var urlRes=sb.storage.from('exam-photos').getPublicUrl(path);
+          if(urlRes.data&&urlRes.data.publicUrl)photoUrls[idx]=urlRes.data.publicUrl;
+        }
+      }catch(e){}
+    }
+  }
   // Supabase 저장
   await sb.from('exam_responses').upsert({
     exam_id:sExamData.id,student_name:session.name||session.id,
-    answers:sExamAnswers,photo_urls:{},thoughts:{},
+    answers:sExamAnswers,photo_urls:photoUrls,thoughts:sExamThoughts,
     score:score,correct_count:correct,total_q:total,
     submitted_at:new Date().toISOString()
   },{onConflict:'exam_id,student_name'});
@@ -3854,7 +3949,7 @@ function sExamUploadPhoto(idx,input){
 }
 
 function sExamBack(){
-  sExamData=null;sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;
+  sExamData=null;sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;sWrongChecked={};
   showSExamView('entry');
   document.getElementById('s-exam-code').value='';
 }
