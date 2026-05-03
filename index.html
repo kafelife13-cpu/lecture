@@ -685,27 +685,60 @@ input,button{font-family:var(--font)}
         <div class="card"><div class="card-head"><h3>강의별 진도</h3></div><div id="mypage-list" style="padding:4px 0"></div></div>
       </div>
       <div class="panel" id="panel-qa">
-        <div class="page-header"><h1>Q&A</h1><p>학교 · 주차 · 문제 번호를 선택해 질문하세요</p></div>
-        <div id="s-qa-breadcrumb" style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);margin-bottom:14px;flex-wrap:wrap"></div>
-        <div id="s-qa-school-view">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" id="s-qa-school-list"></div>
+        <div class="page-header"><h1>Q&A</h1><p>과제 질문 또는 자유롭게 질문하세요</p></div>
+        <!-- 카테고리 탭 -->
+        <div style="display:flex;gap:8px;margin-bottom:1rem">
+          <button id="qa-cat-homework" class="btn btn-sm" onclick="sQaSetCat('homework')"
+            style="flex:1;background:rgba(79,124,255,0.1);color:var(--accent);border:1px solid rgba(79,124,255,0.3)">
+            📚 과제 질문
+          </button>
+          <button id="qa-cat-free" class="btn btn-sm" onclick="sQaSetCat('free')"
+            style="flex:1;background:var(--card);color:var(--text2);border:1px solid var(--border)">
+            💬 자유 질문
+          </button>
         </div>
-        <div id="s-qa-week-view" style="display:none">
-          <div style="display:flex;flex-direction:column;gap:8px" id="s-qa-week-list"></div>
-        </div>
-        <div id="s-qa-prob-view" style="display:none">
-          <div class="card">
-            <div class="card-head">
-              <h3 id="s-qa-prob-title">문제 선택</h3>
-              <div style="display:flex;gap:8px;font-size:11px;color:var(--text2);align-items:center">
-                <span style="color:var(--green)">●</span>답변완료 <span style="color:var(--amber)">●</span>검토중
+        <!-- 과제 질문 뷰 -->
+        <div id="s-qa-homework-view">
+          <div id="s-qa-breadcrumb" style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);margin-bottom:14px;flex-wrap:wrap"></div>
+          <div id="s-qa-school-view">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" id="s-qa-school-list"></div>
+          </div>
+          <div id="s-qa-week-view" style="display:none">
+            <div style="display:flex;flex-direction:column;gap:8px" id="s-qa-week-list"></div>
+          </div>
+          <div id="s-qa-prob-view" style="display:none">
+            <div class="card">
+              <div class="card-head">
+                <h3 id="s-qa-prob-title">문제 선택</h3>
+                <div style="display:flex;gap:8px;font-size:11px;color:var(--text2);align-items:center">
+                  <span style="color:var(--green)">●</span>답변완료 <span style="color:var(--amber)">●</span>검토중
+                </div>
               </div>
-            </div>
-            <div style="padding:1rem 1.25rem">
-              <div id="s-qa-prob-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px"></div>
+              <div style="padding:1rem 1.25rem">
+                <div id="s-qa-prob-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px"></div>
+              </div>
             </div>
           </div>
         </div>
+        <!-- 자유 질문 뷰 -->
+        <div id="s-qa-free-view" style="display:none">
+          <div class="card" style="margin-bottom:1rem">
+            <div class="card-head"><h3>💬 자유 질문</h3></div>
+            <div style="padding:0 1.25rem 1.25rem">
+              <div class="form-group" style="margin-bottom:10px">
+                <label class="flabel">제목</label>
+                <input class="form-input" id="free-qa-title" placeholder="질문 제목을 입력하세요">
+              </div>
+              <div class="form-group" style="margin-bottom:14px">
+                <label class="flabel">내용</label>
+                <textarea class="form-input" id="free-qa-content" style="min-height:120px;resize:vertical"
+                  placeholder="궁금한 점을 자유롭게 작성하세요&#10;예) 문법 개념, 지문 해석, 공부 방법 등"></textarea>
+              </div>
+              <button class="btn blue" style="width:100%" onclick="submitFreeQa()">선생님께 질문 전송</button>
+            </div>
+          </div>
+        </div>
+        <!-- 내 질문 내역 (공통) -->
         <div class="card" style="margin-top:1rem">
           <div class="card-head"><h3>내 질문 내역</h3></div>
           <div id="s-qa-my-list" style="padding:4px 0"></div>
@@ -2374,6 +2407,60 @@ function setBadge(elId,count,role){
   }
 }
 var qaState={school:null,week:null,prob:null};
+var sQaCurrentCat='homework'; // 'homework' or 'free'
+
+function sQaSetCat(cat){
+  sQaCurrentCat=cat;
+  var hwBtn=document.getElementById('qa-cat-homework');
+  var frBtn=document.getElementById('qa-cat-free');
+  var hwView=document.getElementById('s-qa-homework-view');
+  var frView=document.getElementById('s-qa-free-view');
+  if(cat==='homework'){
+    hwBtn.style.background='rgba(79,124,255,0.1)';hwBtn.style.color='var(--accent)';hwBtn.style.borderColor='rgba(79,124,255,0.3)';
+    frBtn.style.background='var(--card)';frBtn.style.color='var(--text2)';frBtn.style.borderColor='var(--border)';
+    hwView.style.display='block';frView.style.display='none';
+  } else {
+    frBtn.style.background='rgba(79,124,255,0.1)';frBtn.style.color='var(--accent)';frBtn.style.borderColor='rgba(79,124,255,0.3)';
+    hwBtn.style.background='var(--card)';hwBtn.style.color='var(--text2)';hwBtn.style.borderColor='var(--border)';
+    hwView.style.display='none';frView.style.display='block';
+  }
+}
+
+async function submitFreeQa(){
+  var title=document.getElementById('free-qa-title').value.trim();
+  var content=document.getElementById('free-qa-content').value.trim();
+  if(!title){notify('제목을 입력하세요.','error');return;}
+  if(!content){notify('내용을 입력하세요.','error');return;}
+  if(!session){notify('로그인이 필요해요.','error');return;}
+  // 학교 찾기
+  var school=qaDb.schools.find(function(s){
+    return qaDb.weeks.some(function(w){return w.school_id===s.id;});
+  });
+  var schoolId=school?school.id:(qaDb.schools[0]?qaDb.schools[0].id:'free');
+  var newQ={
+    id:'q_'+Date.now(),
+    school_id:schoolId,
+    week_id:'free',
+    prob_num:'자유',
+    student_id:session.id,
+    student_name:session.name||session.id,
+    question:'['+title+']
+'+content,
+    teacher_reply:'',
+    status:'pending',
+    badge:'pending',
+    category:'free',
+    created_at:new Date().toISOString()
+  };
+  qaDb.questions.unshift(newQ);
+  await sb.from('qa_questions').upsert(newQ,{onConflict:'id'});
+  document.getElementById('free-qa-title').value='';
+  document.getElementById('free-qa-content').value='';
+  notify('질문이 전송됐어요! 선생님이 답변드릴게요 😊','success');
+  renderSQaMyList();
+  renderQaReview();
+  updateAllBadges();
+}
 var qaChatHistory=[];
 var qwSolText='';
 var qwSolFile=null;
@@ -2632,7 +2719,9 @@ function renderQaReview(){
       'onclick="openTQaModal(\'' + q.id + '\')" '+
       'onmouseenter="this.style.background=&quot;var(--bg2)&quot;" onmouseleave="this.style.background=&quot;&quot;">'+
       '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:6px">'+
-      '<span style="font-weight:700;font-size:15px">'+q.prob_num+'번</span>'+
+      (q.category==='free'||q.week_id==='free'?
+        '<span style="background:rgba(79,124,255,0.1);color:var(--accent);font-size:11px;padding:2px 8px;border-radius:8px;font-weight:600">💬 자유질문</span>':
+        '<span style="font-weight:700;font-size:15px">'+q.prob_num+'번</span>')+
       '<span class="tag">'+(school?school.name:'')+'</span>'+
       '<span class="tag teal">'+(week?week.name:'')+'</span>'+
       '<span class="badge partial">'+(student?student.name:q.student_name||q.student_id)+'</span>'+
@@ -2770,15 +2859,16 @@ function renderSQaMyList(){
     var school=qaDb.schools.find(function(s){return s.id===q.school_id;});
     var week=qaDb.weeks.find(function(w){return w.id===q.week_id;});
     return '<div style="display:flex;align-items:center;gap:10px;padding:11px 1.25rem;border-bottom:1px solid var(--border);cursor:pointer" onclick="openQaModalFromHistory(\''+q.id+'\')">'+
+    var isFree=q.category==='free'||q.week_id==='free';
       '<div style="flex:1;min-width:0">'+
       '<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;flex-wrap:wrap">'+
       '<span style="font-weight:700;font-family:var(--mono)">'+q.prob_num+'번</span>'+
-      '<span class="tag" style="font-size:10px">'+(school?school.name:'')+'</span>'+
-      '<span class="tag teal" style="font-size:10px">'+(week?week.name:'')+'</span>'+
+      (isFree?
+        '<span style="background:rgba(79,124,255,0.1);color:var(--accent);font-size:11px;padding:2px 8px;border-radius:8px;font-weight:600">💬 자유질문</span>':
+        ('<span style="font-weight:700;font-family:var(--mono)">'+q.prob_num+'번</span>'
+        +'<span class="tag" style="font-size:10px">'+(school?school.name:'')+'</span>'
+        +'<span class="tag teal" style="font-size:10px">'+(week?week.name:'')+'</span>')+'+
       '<span class="badge '+(q.status==='answered'?'done':'partial')+'" style="font-size:10px">'+(q.status==='answered'?'답변완료':'검토중')+'</span></div>'+
-      '<div style="font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+q.question+'</div></div></div>';
-  }).join('');
-}
 
 function addChatBubble(role,text,badge){
   var hist=document.getElementById('qa-chat-history');
