@@ -2168,11 +2168,34 @@ function renderTCertWeekList(){
   el.innerHTML=weeks.map(function(w){
     var items=certDb.items.filter(function(i){return i.week_id===w.id;});
     var pending=certDb.submissions.filter(function(s){return items.some(function(i){return i.id===s.item_id;})&&s.status==='pending';}).length;
-    return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="selectTCertWeek(\''+w.id+'\')">'+
-      '<div style="flex:1"><div style="font-size:13px;font-weight:600">'+w.name+'</div>'+
+    return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">'+
+      '<div style="flex:1;cursor:pointer" onclick="selectTCertWeek(\''+w.id+'\')">'+
+      '<div style="font-size:13px;font-weight:600">'+w.name+'</div>'+
       '<div style="font-size:11px;color:var(--text2);margin-top:2px">항목 '+items.length+'개'+(pending?' · <span style="color:var(--amber)">대기 '+pending+'</span>':'')+'</div></div>'+
-      '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:var(--text3)"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>';
+      '<button class="btn red btn-sm" onclick="deleteCertWeek(\''+w.id+'\')">삭제</button>'+
+      '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:var(--text3);cursor:pointer;flex-shrink:0" onclick="selectTCertWeek(\''+w.id+'\')"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>';
   }).join('');
+}
+
+async function deleteCertWeek(id){
+  if(!confirm('이 주차와 모든 항목, 제출 내역을 삭제할까요?'))return;
+  var items=certDb.items.filter(function(i){return i.week_id===id;});
+  var itemIds=items.map(function(i){return i.id;});
+  if(itemIds.length){
+    await sb.from('cert_submissions').delete().in('item_id',itemIds);
+    await sb.from('cert_items').delete().eq('week_id',id);
+  }
+  await sb.from('cert_weeks').delete().eq('id',id);
+  certDb.weeks=certDb.weeks.filter(function(w){return w.id!==id;});
+  certDb.items=certDb.items.filter(function(i){return i.week_id!==id;});
+  certDb.submissions=certDb.submissions.filter(function(s){return !itemIds.includes(s.item_id);});
+  if(certState.week===id){
+    certState.week=null;
+    document.getElementById('t-cert-detail-card').style.display='none';
+    document.getElementById('t-cert-submit-card').style.display='none';
+  }
+  notify('삭제됐어요.','info');
+  renderTCertWeekList();
 }
 
 function selectTCertWeek(wid){
