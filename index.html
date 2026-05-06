@@ -964,7 +964,11 @@ input,button{font-family:var(--font)}
       </div>
       <div class="form-group">
         <label>대상 학생 <span style="color:var(--text3);font-size:11px;text-transform:none">(체크한 학생만 인증 필요)</span></label>
-        <div id="ci-student-list" style="max-height:180px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px"></div>
+        <div style="display:flex;gap:6px;margin-bottom:6px">
+          <button class="btn btn-sm" onclick="certSelectAll(true)" style="font-size:11px;padding:4px 10px">전체 선택</button>
+          <button class="btn btn-sm" onclick="certSelectAll(false)" style="font-size:11px;padding:4px 10px">전체 해제</button>
+        </div>
+        <div id="ci-student-list" style="max-height:220px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px"></div>
       </div>
     </div>
     <div class="modal-footer">
@@ -2087,19 +2091,26 @@ async function addCertWeek(){
   renderTCertWeekList();
 }
 
+function certSelectAll(checked){
+  document.querySelectorAll('#ci-student-list input[type="checkbox"]').forEach(function(cb){cb.checked=checked;});
+}
+
 function openCertItemModal(){
   if(!certState.week){notify('주차를 먼저 선택하세요.','error');return;}
   document.getElementById('ci-title').value='';
   document.getElementById('ci-type').value='photo';
-  var school=certState.school;
   var students=db.users.filter(function(u){return u.role==='student'&&u.status==='active';});
   var el=document.getElementById('ci-student-list');
-  if(!students.length){el.innerHTML='<div style="font-size:12px;color:var(--text3)">등록된 학생이 없어요.</div>';return;}
-  el.innerHTML=students.map(function(s){
-    return '<label style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;cursor:pointer">'+
-      '<input type="checkbox" value="'+s.id+'" style="width:16px;height:16px"> '+s.name+
-      '<span style="font-size:11px;color:var(--text2)">('+s.id+')</span></label>';
-  }).join('');
+  if(!students.length){
+    el.innerHTML='<div style="font-size:12px;color:var(--text3);padding:8px">등록된 학생이 없어요.</div>';
+  } else {
+    el.innerHTML=students.map(function(s){
+      return '<label style="display:flex;align-items:center;gap:10px;padding:8px 6px;font-size:13px;cursor:pointer;border-radius:6px;transition:background .1s" onmouseover="this.style.background=\'var(--bg2)\'" onmouseout="this.style.background=\'\'">'+
+        '<input type="checkbox" value="'+s.id+'" style="width:18px;height:18px;cursor:pointer;flex-shrink:0"> '+
+        '<span style="font-weight:500">'+s.name+'</span>'+
+        '<span style="font-size:11px;color:var(--text3);margin-left:auto">'+s.id+'</span></label>';
+    }).join('');
+  }
   document.getElementById('modal-cert-item').classList.add('show');
 }
 function closeCertItemModal(){document.getElementById('modal-cert-item').classList.remove('show');}
@@ -2109,6 +2120,7 @@ async function addCertItem(){
   var type=document.getElementById('ci-type').value;
   if(!title){notify('항목 이름을 입력하세요.','error');return;}
   var checked=Array.from(document.querySelectorAll('#ci-student-list input:checked')).map(function(el){return el.value;});
+  if(!checked.length){notify('대상 학생을 한 명 이상 선택하세요.','error');return;}
   var id='ci_'+Date.now();
   var item={id:id,week_id:certState.week,school_id:certState.school,title:title,type:type,targets:JSON.stringify(checked),created_at:new Date().toISOString()};
   var res=await sb.from('cert_items').insert(item);
@@ -2116,7 +2128,7 @@ async function addCertItem(){
   certDb.items.push(item);
   certDb.targets[id]=checked;
   closeCertItemModal();
-  notify(title+' 추가됐어요.','success');
+  notify(title+' 추가됐어요. 대상: '+checked.length+'명','success');
   renderTCertItemList();renderTCertSubmitList();
 }
 
