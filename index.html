@@ -956,11 +956,16 @@ input,button{font-family:var(--font)}
       <div class="form-group"><label>항목 이름</label><input id="ci-title" class="form-input" placeholder="예: 복습 영상 필기 인증"/></div>
       <div class="form-group">
         <label>인증 방식</label>
-        <select id="ci-type" class="form-select">
+        <select id="ci-type" class="form-select" onchange="toggleCertFormLink()">
           <option value="photo">사진 업로드</option>
           <option value="check">체크만</option>
           <option value="both">둘 다 가능</option>
+          <option value="form">구글 폼 링크</option>
         </select>
+      </div>
+      <div id="ci-form-link-group" style="display:none" class="form-group">
+        <label>구글 폼 링크 <span style="color:var(--text3);font-size:11px;text-transform:none">(학생이 버튼 누르면 열려요)</span></label>
+        <input id="ci-form-link" class="form-input" placeholder="https://forms.gle/..."/>
       </div>
       <div class="form-group">
         <label>대상 학생 <span style="color:var(--text3);font-size:11px;text-transform:none">(체크한 학생만 인증 필요)</span></label>
@@ -2091,6 +2096,11 @@ async function addCertWeek(){
   renderTCertWeekList();
 }
 
+function toggleCertFormLink(){
+  var type=document.getElementById('ci-type').value;
+  document.getElementById('ci-form-link-group').style.display=type==='form'?'block':'none';
+}
+
 function certSelectAll(checked){
   document.querySelectorAll('#ci-student-list input[type="checkbox"]').forEach(function(cb){cb.checked=checked;});
 }
@@ -2099,6 +2109,8 @@ function openCertItemModal(){
   if(!certState.week){notify('주차를 먼저 선택하세요.','error');return;}
   document.getElementById('ci-title').value='';
   document.getElementById('ci-type').value='photo';
+  document.getElementById('ci-form-link').value='';
+  document.getElementById('ci-form-link-group').style.display='none';
   var students=db.users.filter(function(u){return u.role==='student'&&u.status==='active';});
   var el=document.getElementById('ci-student-list');
   if(!students.length){
@@ -2118,11 +2130,13 @@ function closeCertItemModal(){document.getElementById('modal-cert-item').classLi
 async function addCertItem(){
   var title=document.getElementById('ci-title').value.trim();
   var type=document.getElementById('ci-type').value;
+  var formLink=document.getElementById('ci-form-link').value.trim();
   if(!title){notify('항목 이름을 입력하세요.','error');return;}
+  if(type==='form'&&!formLink){notify('구글 폼 링크를 입력하세요.','error');return;}
   var checked=Array.from(document.querySelectorAll('#ci-student-list input:checked')).map(function(el){return el.value;});
   if(!checked.length){notify('대상 학생을 한 명 이상 선택하세요.','error');return;}
   var id='ci_'+Date.now();
-  var item={id:id,week_id:certState.week,school_id:certState.school,title:title,type:type,targets:JSON.stringify(checked),created_at:new Date().toISOString()};
+  var item={id:id,week_id:certState.week,school_id:certState.school,title:title,type:type,targets:JSON.stringify(checked),form_link:formLink||null,created_at:new Date().toISOString()};
   var res=await sb.from('cert_items').insert(item);
   if(res.error){notify('등록 실패: '+res.error.message,'error');return;}
   certDb.items.push(item);
@@ -2323,11 +2337,18 @@ async function renderSCertList(){
 function renderCertSubmitUI(item){
   var canPhoto=item.type==='photo'||item.type==='both';
   var canCheck=item.type==='check'||item.type==='both';
+  var isForm=item.type==='form';
   var html='';
+  if(isForm&&item.form_link){
+    html+='<a href="'+item.form_link+'" target="_blank" style="text-decoration:none">'+
+      '<button class="btn blue btn-sm" style="font-size:13px;padding:10px 18px">📋 과제 제출하기 (구글 폼)</button></a>'+
+      '<div style="font-size:11px;color:var(--text2);margin-top:6px">버튼을 눌러 구글 폼에서 제출해주세요. 제출 후 아래 버튼을 눌러주세요!</div>'+
+      '<button class="btn green btn-sm" style="margin-top:8px" onclick="submitCertCheck(\''+item.id+'\')">✓ 제출 완료 체크</button>';
+  }
   if(canPhoto){
     html+='<div style="margin-bottom:10px">'+
       '<input type="file" id="cert-file-'+item.id+'" accept="image/*,video/*" multiple style="display:none" onchange="submitCertFiles(\''+item.id+'\',this)">'+
-      '<button class="btn blue btn-sm" onclick="document.getElementById(\'cert-file-'+item.id+'\').click()">📷 사진/영상 업로드 (여러 개 가능)</button>'+
+      '<button class="btn blue btn-sm" onclick="document.getElementById(\'cert-file-'+item.id+'\').click()">📷 사진/영상 업로드</button>'+
       '<div id="cert-file-progress-'+item.id+'" style="margin-top:8px"></div></div>';
   }
   if(canCheck){
