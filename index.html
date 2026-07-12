@@ -3397,11 +3397,13 @@ ${eText||'없음'}
 반환형식: [{"num":${startNum},"text":"문제내용(선택지포함,간결하게)","answer":3,"type":"추론·함축","explanation":"해설"}]
 규칙: num=${startNum}~${endNum}번만, answer=숫자1~5(①→1,②→2,③→3,④→4,⑤→5), explanation없으면"", type=사실 확인/추론·함축/어휘·어법/표현 기법/주제·요지/논증 구조/계산·풀이/개념 적용/자료 해석/빈칸 추론/순서 배열/기타`;
   const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers,body:JSON.stringify({
-    model:'claude-sonnet-4-20250514',max_tokens:8000,
+    model:'claude-sonnet-5',max_tokens:8000,
     messages:[{role:'user',content:prompt}]
   })});
   const data=await resp.json();
+  if(data.error)throw new Error(data.error.message||'AI 응답 오류');
   const raw=(data.content||[]).map(c=>c.text||'').join('');
+  if(!raw)throw new Error('AI가 빈 응답을 반환했어요.');
   let cleaned=raw.replace(/```json|```/g,'').trim();
   if(!cleaned.endsWith(']')){const lc=cleaned.lastIndexOf('}');if(lc>0)cleaned=cleaned.slice(0,lc+1)+']';}
   return JSON.parse(cleaned);
@@ -3426,10 +3428,11 @@ async function texParse(){
     msgEl.textContent='문항 수 파악 중...';
     const countResp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:100,
+      body:JSON.stringify({model:'claude-sonnet-5',max_tokens:100,
         messages:[{role:'user',content:`아래 정답지에서 총 문항 수만 숫자 하나로만 답하세요.
 ${aRaw}`}]})});
     const cd=await countResp.json();
+    if(cd.error)throw new Error(cd.error.message||'AI 응답 오류');
     const totalStr=(cd.content||[]).map(c=>c.text||'').join('').match(/\d+/);
     const total=totalStr?parseInt(totalStr[0]):24;
     const half=Math.ceil(total/2);
@@ -4225,7 +4228,7 @@ ${wrongs.some(({idx})=>sExamThoughts[idx])?'각 오답에 학생이 직접 입�
 "nextExam":{"strategy":"전략 3-4문장","focusAreas":["영역1","영역2","영역3"],"timeline":"주차별 계획","avoidMistakes":"반복 실수 패턴"}}`});
 
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1800,messages:[{role:'user',content:contentBlocks}]})});
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:1800,messages:[{role:'user',content:contentBlocks}]})});
     const data=await resp.json();
     const raw=(data.content||[]).map(c=>c.text||'').join('');
     let result;
