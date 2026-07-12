@@ -515,7 +515,8 @@ input,button{font-family:var(--font)}
                     <select class="form-select" id="tex-next"><option value="">없음</option><option>1학기 기말고사</option><option>2학기 중간고사</option><option>2학기 기말고사</option><option>수능</option><option>모의고사</option></select>
                   </div>
                 </div>
-                <div class="form-group" style="margin-bottom:0"><label>다음 시험 범위 (선택)</label><input class="form-input" id="tex-range" placeholder="예: 소설, 비문학 독해"></div>
+                <div class="form-group" style="margin-bottom:12px"><label>다음 시험 범위 (선택)</label><input class="form-input" id="tex-range" placeholder="예: 소설, 비문학 독해"></div>
+                <div class="form-group" style="margin-bottom:0"><label>등급컷 (선택, 성적표에 표시)</label><input class="form-input" id="tex-gradecuts" placeholder="예: 1등급:87 2등급:78 3등급:68"></div>
               </div>
             </div>
             <div class="card" style="margin-bottom:1rem">
@@ -536,11 +537,37 @@ input,button{font-family:var(--font)}
                 <textarea class="form-input" id="tex-explanations-raw" placeholder="예)&#10;1번: 글의 전체 흐름을 볼 때 주제는...&#10;2번: ㉠은 문맥상...&#10;&#10;형식 상관없이 붙여넣으면 AI가 분리합니다" style="min-height:120px;font-size:13px;line-height:1.7"></textarea>
               </div>
             </div>
+            <div class="card" style="margin-bottom:1rem">
+              <div class="card-head"><h3>④ 영역 분류 (선택, ⚡빠른 등록에서만 사용)</h3><span style="font-size:11px;color:var(--text2)">해당 영역 문항 번호만 입력 (예: 1-3 또는 1,2,3)</span></div>
+              <div style="padding:0 1.25rem 1.25rem;display:grid;grid-template-columns:1fr 1fr;gap:8px" id="tex-domain-grid">
+                <div class="form-group" style="margin-bottom:0"><label style="font-size:11px">화법</label><input class="form-input" id="tex-dom-0" placeholder="예: 1-3" style="font-size:12px;padding:6px 8px"></div>
+                <div class="form-group" style="margin-bottom:0"><label style="font-size:11px">작문</label><input class="form-input" id="tex-dom-1" placeholder="예: 4-6" style="font-size:12px;padding:6px 8px"></div>
+                <div class="form-group" style="margin-bottom:0"><label style="font-size:11px">화법·작문 복합</label><input class="form-input" id="tex-dom-2" placeholder="예: 7-9" style="font-size:12px;padding:6px 8px"></div>
+                <div class="form-group" style="margin-bottom:0"><label style="font-size:11px">문법</label><input class="form-input" id="tex-dom-3" placeholder="예: 10-13" style="font-size:12px;padding:6px 8px"></div>
+                <div class="form-group" style="margin-bottom:0"><label style="font-size:11px">독서(인문)</label><input class="form-input" id="tex-dom-4" placeholder="번호" style="font-size:12px;padding:6px 8px"></div>
+                <div class="form-group" style="margin-bottom:0"><label style="font-size:11px">독서(예술)</label><input class="form-input" id="tex-dom-5" placeholder="번호" style="font-size:12px;padding:6px 8px"></div>
+                <div class="form-group" style="margin-bottom:0"><label style="font-size:11px">독서(과학)</label><input class="form-input" id="tex-dom-6" placeholder="번호" style="font-size:12px;padding:6px 8px"></div>
+                <div class="form-group" style="margin-bottom:0"><label style="font-size:11px">독서(기술)</label><input class="form-input" id="tex-dom-7" placeholder="번호" style="font-size:12px;padding:6px 8px"></div>
+                <div class="form-group" style="margin-bottom:0"><label style="font-size:11px">독서(사회)</label><input class="form-input" id="tex-dom-8" placeholder="번호" style="font-size:12px;padding:6px 8px"></div>
+                <div class="form-group" style="margin-bottom:0"><label style="font-size:11px">독서(문화)</label><input class="form-input" id="tex-dom-9" placeholder="번호" style="font-size:12px;padding:6px 8px"></div>
+                <div class="form-group" style="margin-bottom:0"><label style="font-size:11px">문학(현대시)</label><input class="form-input" id="tex-dom-10" placeholder="번호" style="font-size:12px;padding:6px 8px"></div>
+                <div class="form-group" style="margin-bottom:0"><label style="font-size:11px">문학(고전시)</label><input class="form-input" id="tex-dom-11" placeholder="번호" style="font-size:12px;padding:6px 8px"></div>
+                <div class="form-group" style="margin-bottom:0"><label style="font-size:11px">문학(현대소설)</label><input class="form-input" id="tex-dom-12" placeholder="번호" style="font-size:12px;padding:6px 8px"></div>
+                <div class="form-group" style="margin-bottom:0"><label style="font-size:11px">문학(고전소설)</label><input class="form-input" id="tex-dom-13" placeholder="번호" style="font-size:12px;padding:6px 8px"></div>
+                <div class="form-group" style="margin-bottom:0"><label style="font-size:11px">문학(복합지문)</label><input class="form-input" id="tex-dom-14" placeholder="번호" style="font-size:12px;padding:6px 8px"></div>
+              </div>
+            </div>
+            <div class="card" style="margin-bottom:1rem">
+              <div class="card-head"><h3>⑤ 배점 (선택, 기본 2점)</h3></div>
+              <div style="padding:0 1.25rem 1.25rem">
+                <div class="form-group" style="margin-bottom:0"><label>3점 문항 번호 (나머지는 전부 2점)</label><input class="form-input" id="tex-3pt" placeholder="예: 5,12,19,27 또는 5-8"></div>
+              </div>
+            </div>
             <div id="tex-parse-err" style="color:var(--red);font-size:13px;margin-bottom:8px;display:none"></div>
             <button class="btn blue" style="width:100%" onclick="texParse()">AI로 자동 분석하기</button>
             <p style="font-size:11px;color:var(--text3);text-align:center;margin-top:6px">시험지·정답지·해설지를 자동으로 문항별 분리합니다</p>
             <button class="btn" style="width:100%;margin-top:10px" onclick="texQuickRegister()">⚡ 정답지만으로 빠르게 등록 (AI 없이)</button>
-            <p style="font-size:11px;color:var(--text3);text-align:center;margin-top:6px">시험 이름 + 정답지 텍스트만 있으면 채점용으로 바로 등록돼요. 지문·해설은 나중에 추가해도 됩니다.</p>
+            <p style="font-size:11px;color:var(--text3);text-align:center;margin-top:6px">정답지 + 영역 분류 + 배점만으로 바로 등록돼요. 지문·해설은 나중에 추가해도 됩니다.</p>
           </div>
 
           <!-- STEP 2: 파싱 중 -->
@@ -582,7 +609,8 @@ input,button{font-family:var(--font)}
                   <select class="form-select" id="tedit-next"><option value="">없음</option><option>1학기 기말고사</option><option>2학기 중간고사</option><option>2학기 기말고사</option><option>수능</option><option>모의고사</option></select>
                 </div>
               </div>
-              <div class="form-group" style="margin-bottom:0"><label>다음 시험 범위</label><input class="form-input" id="tedit-range" placeholder="예: 소설, 비문학 독해"></div>
+              <div class="form-group" style="margin-bottom:12px"><label>다음 시험 범위</label><input class="form-input" id="tedit-range" placeholder="예: 소설, 비문학 독해"></div>
+              <div class="form-group" style="margin-bottom:0"><label>등급컷 (선택, 성적표에 표시)</label><input class="form-input" id="tedit-gradecuts" placeholder="예: 1등급:87 2등급:78 3등급:68"></div>
             </div>
           </div>
           <div id="tedit-q-list" style="margin-bottom:12px"></div>
@@ -640,6 +668,7 @@ input,button{font-family:var(--font)}
                 <option value="">학생 선택</option>
               </select>
               <button class="btn btn-sm" onclick="tResExportStudentPDF()">📄 이 학생 PDF</button>
+              <button class="btn btn-sm blue" onclick="tResExportStudentReportCard()">📊 성적표</button>
             </div>
             <div id="tres-student-detail"></div>
           </div>
@@ -833,7 +862,10 @@ input,button{font-family:var(--font)}
         <div id="s-exam-result" style="display:none">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
             <div id="s-res-header"></div>
-            <button class="btn btn-sm" onclick="sExamBack()">다시 입력</button>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-sm blue" onclick="sExamShowReportCard()">📊 성적표 보기</button>
+              <button class="btn btn-sm" onclick="sExamBack()">다시 입력</button>
+            </div>
           </div>
           <div class="card" style="margin-bottom:1rem">
             <div id="s-res-stats" style="padding:0.75rem 1.25rem;display:grid;grid-template-columns:repeat(4,1fr);gap:10px"></div>
@@ -3234,8 +3266,8 @@ document.getElementById('modal-qa-teacher').addEventListener('click',function(e)
 const EXAM_TYPES=['사실 확인','추론·함축','어휘·어법','표현 기법','주제·요지','논증 구조','계산·풀이','개념 적용','자료 해석','빈칸 추론','순서 배열','기타'];
 
 // ── Supabase 테이블: exams, exam_responses ──
-// exams: id, name, total_q, questions(json), next_exam, next_range, teacher_id, created_at, category('school'|'mock')
-// exam_responses: id, exam_id, student_name, answers(json), photo_urls(json), created_at
+// exams: id, name, total_q, questions(json: num,type,domain,points,answer,text,explanation), next_exam, next_range, teacher_id, created_at, category('school'|'mock'), grade_cuts(json: [{grade,cut}])
+// exam_responses: id, exam_id, student_name, answers(json: 오답 문항 idx만 키로 존재), photo_urls(json), score, correct_count, total_q, points_earned, points_total, created_at
 
 // ── 교사: 시험 목록 렌더 ──
 async function renderTExam(){
@@ -3309,6 +3341,7 @@ async function openTExamEdit(examId){
   document.getElementById('tedit-name').value=data.name||'';
   document.getElementById('tedit-next').value=data.next_exam||'';
   document.getElementById('tedit-range').value=data.next_range||'';
+  document.getElementById('tedit-gradecuts').value=(data.grade_cuts||[]).map(c=>c.grade+'등급:'+c.cut).join(' ');
   renderTeditQList();
 }
 
@@ -3321,6 +3354,8 @@ function renderTeditQList(){
         <select id="eqt-${i}" onchange="editingQuestions[${i}].type=this.value" style="font-size:12px;padding:4px 6px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text)">
           ${EXAM_TYPES.map(t=>`<option${t===q.type?' selected':''}>${t}</option>`).join('')}
         </select>
+        <input id="eqd-${i}" class="form-input" placeholder="영역(예: 화법)" value="${q.domain||''}" onchange="editingQuestions[${i}].domain=this.value" style="width:110px;font-size:12px;padding:4px 6px">
+        <input id="eqp-${i}" type="number" min="1" class="form-input" placeholder="배점" value="${q.points||1}" onchange="editingQuestions[${i}].points=parseInt(this.value)||1" style="width:56px;font-size:12px;padding:4px 6px">
         <div style="display:flex;gap:4px;align-items:center;margin-left:auto">
           <span style="font-size:11px;color:var(--text2)">정답:</span>
           ${[1,2,3,4,5].map(n=>`<div id="eqa-${i}-${n}" onclick="eSelectAnswer(${i},${n})"
@@ -3361,6 +3396,7 @@ async function saveTExamEdit(){
     total_q:editingQuestions.length,
     next_exam:document.getElementById('tedit-next').value,
     next_range:document.getElementById('tedit-range').value,
+    grade_cuts:parseGradeCuts(document.getElementById('tedit-gradecuts')?.value||''),
   }).eq('id',editingExamId);
   if(error){alert('저장 오류: '+error.message);return;}
   alert('수정됐어요!');
@@ -3425,7 +3461,38 @@ ${eText||'없음'}
   }
 }
 
-// AI 없이 정답지 텍스트만 정규식으로 파싱해서 바로 등록 (문항 수 많을 때 크레딧/오류 걱정 없이 쓸 수 있는 방법)
+// 등급컷 텍스트("1등급:87 2등급:78") 파싱
+function parseGradeCuts(str){
+  if(!str)return[];
+  const cuts=[...str.matchAll(/(\d{1,2})\s*등급\D{0,3}(\d{1,3})/g)].map(m=>({grade:parseInt(m[1]),cut:parseInt(m[2])}));
+  return cuts.sort((a,b)=>a.grade-b.grade);
+}
+
+// 고정 영역 카테고리 목록 (등록 화면 "④ 영역 분류" 입력칸 순서와 1:1 대응, tex-dom-0 ~ tex-dom-14)
+const DOMAIN_CATEGORIES=['화법','작문','화법·작문 복합','문법','독서(인문)','독서(예술)','독서(과학)','독서(기술)','독서(사회)','독서(문화)','문학(현대시)','문학(고전시)','문학(현대소설)','문학(고전소설)','문학(복합지문)'];
+
+// "1-3", "1,2,3", "1-3,5,7-9" 같은 문항 번호 목록 텍스트를 숫자 배열로 파싱
+function parseNumberList(str){
+  if(!str)return[];
+  const out=new Set();
+  str.split(',').forEach(part=>{
+    part=part.trim();
+    if(!part)return;
+    const range=part.match(/^(\d+)\s*[-~]\s*(\d+)$/);
+    if(range){
+      const a=parseInt(range[1]),b=parseInt(range[2]);
+      for(let n=Math.min(a,b);n<=Math.max(a,b);n++)out.add(n);
+    }else{
+      const n=parseInt(part);
+      if(!isNaN(n))out.add(n);
+    }
+  });
+  return[...out];
+}
+
+// 등급컷 텍스트("1등급:87 2등급:78") 파싱은 위쪽 parseGradeCuts 사용
+
+// AI 없이 정답지 텍스트 + 영역 분류칸 + 배점칸만으로 바로 등록 (문항 수 많을 때 크레딧/오류 걱정 없이 쓸 수 있는 방법)
 function texQuickRegister(){
   const name=document.getElementById('tex-name').value.trim();
   const aRaw=document.getElementById('tex-answers-raw').value.trim();
@@ -3434,6 +3501,7 @@ function texQuickRegister(){
   if(!name){errEl.textContent='시험 이름을 입력해 주세요.';errEl.style.display='block';return;}
   if(!aRaw){errEl.textContent='정답지 텍스트를 붙여넣어 주세요.';errEl.style.display='block';return;}
   const circleMap={'①':'1','②':'2','③':'3','④':'4','⑤':'5'};
+
   const matches=[...aRaw.matchAll(/(\d{1,3})번?\s*[-.:)]?\s*([①②③④⑤]|[1-5])번?/g)];
   if(!matches.length){
     errEl.textContent='정답지에서 번호-정답 쌍을 찾지 못했어요. "1-③ 2-① 3-⑤"처럼 번호와 정답이 붙어있는 형식으로 넣어 주세요.';
@@ -3445,8 +3513,25 @@ function texQuickRegister(){
   matches.forEach(m=>{
     const num=parseInt(m[1]);
     const ans=circleMap[m[2]]||m[2];
-    if(!seen[num]){seen[num]=true;questions.push({num,type:'기타',answer:String(ans),text:'',explanation:''});}
+    if(!seen[num]){seen[num]=true;questions.push({num,type:'기타',domain:'',points:2,answer:String(ans),text:'',explanation:''});}
   });
+
+  // 영역 분류칸 반영
+  DOMAIN_CATEGORIES.forEach((cat,idx)=>{
+    const nums=parseNumberList(document.getElementById('tex-dom-'+idx)?.value||'');
+    nums.forEach(n=>{
+      const q=questions.find(q=>q.num===n);
+      if(q)q.domain=cat;
+    });
+  });
+
+  // 3점 문항칸 반영 (나머지는 기본 2점)
+  const threePt=parseNumberList(document.getElementById('tex-3pt')?.value||'');
+  threePt.forEach(n=>{
+    const q=questions.find(q=>q.num===n);
+    if(q)q.points=3;
+  });
+
   parsedQuestions=questions.sort((a,b)=>a.num-b.num);
   renderTexStep3();
   texShowStep(3);
@@ -3510,6 +3595,8 @@ function renderTexStep3(){
         <select id="rqt-${i}" style="font-size:12px;padding:4px 6px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text)">
           ${EXAM_TYPES.map(t=>`<option${t===q.type?' selected':''}>${t}</option>`).join('')}
         </select>
+        <input id="rqd-${i}" class="form-input" placeholder="영역(예: 화법)" value="${q.domain||''}" style="width:110px;font-size:12px;padding:4px 6px">
+        <input id="rqp-${i}" type="number" min="1" class="form-input" placeholder="배점" value="${q.points||1}" style="width:56px;font-size:12px;padding:4px 6px">
         <div style="display:flex;gap:4px;align-items:center;margin-left:auto">
           <span style="font-size:11px;color:var(--text2)">정답:</span>
           ${[1,2,3,4,5].map(n=>`<div id="rqa-${i}-${n}" onclick="rSelectAnswer(${i},${n})"
@@ -3542,6 +3629,8 @@ async function saveTExam(){
   const questions=parsedQuestions.map((q,i)=>({
     num:q.num,
     type:document.getElementById('rqt-'+i)?.value||q.type||'기타',
+    domain:document.getElementById('rqd-'+i)?.value||q.domain||'',
+    points:parseInt(document.getElementById('rqp-'+i)?.value)||q.points||1,
     answer:String(q.answer||''),
     text:document.getElementById('rqtext-'+i)?.value||q.text||'',
     explanation:document.getElementById('rqexp-'+i)?.value||q.explanation||''
@@ -3552,6 +3641,7 @@ async function saveTExam(){
     category:document.getElementById('tex-category')?.value||'school',
     next_exam:document.getElementById('tex-next').value,
     next_range:document.getElementById('tex-range').value,
+    grade_cuts:parseGradeCuts(document.getElementById('tex-gradecuts')?.value||''),
     teacher_id:session.id
   });
   if(error){alert('저장 오류: '+error.message);return;}
@@ -3905,6 +3995,191 @@ function tResExportStudentPDF(){
   tResPrintHTML(tResBuildPrintHTML(name,r,tResCurrentExam),name+'_오답분석');
 }
 
+function tResExportStudentReportCard(){
+  const name=document.getElementById('tres-student-select').value;
+  if(!name){alert('학생을 선택해 주세요.');return;}
+  const r=tResCurrentResponses.find(r=>r.student_name===name);
+  if(!r){alert('응답 데이터를 찾을 수 없어요.');return;}
+  tResPrintHTML(buildReportCardHTML(name,tResCurrentExam,r,tResCurrentResponses),name+'_성적표');
+}
+
+// ════════════════════════════════════════════
+// 성적표(리포트) 생성 — 영역별 점수·레이더차트·문항채점표
+// ════════════════════════════════════════════
+
+function repIsWrong(response,idx){
+  return !!(response&&response.answers&&Object.prototype.hasOwnProperty.call(response.answers,idx));
+}
+
+function repScore(exam,response){
+  var earned=0,total=0;
+  exam.questions.forEach(function(q,i){
+    var pts=q.points||1;
+    total+=pts;
+    if(!repIsWrong(response,i))earned+=pts;
+  });
+  return {earned:earned,total:total||1,pct:total?Math.round(earned/total*1000)/10:0};
+}
+
+function repDomainStats(exam,response){
+  var byDomain={};
+  exam.questions.forEach(function(q,i){
+    var d=q.domain||'미분류';
+    if(!byDomain[d])byDomain[d]={label:d,qCount:0,correctCount:0,maxPoints:0,earnedPoints:0};
+    var pts=q.points||1;
+    byDomain[d].qCount++;
+    byDomain[d].maxPoints+=pts;
+    if(!repIsWrong(response,i)){byDomain[d].correctCount++;byDomain[d].earnedPoints+=pts;}
+  });
+  return byDomain;
+}
+
+function repClassStats(exam,responses){
+  var scores=responses.map(function(r){return repScore(exam,r).pct;});
+  var n=scores.length;
+  var avg=n?scores.reduce(function(a,b){return a+b;},0)/n:0;
+  var variance=n?scores.reduce(function(a,b){return a+(b-avg)*(b-avg);},0)/n:0;
+  var stddev=Math.sqrt(variance);
+  var sorted=scores.slice().sort(function(a,b){return b-a;});
+  var top30=n?sorted[Math.max(0,Math.ceil(n*0.3)-1)]:0;
+  var max=n?sorted[0]:0;
+
+  var domainAgg={};
+  responses.forEach(function(r){
+    var ds=repDomainStats(exam,r);
+    Object.keys(ds).forEach(function(d){
+      if(!domainAgg[d])domainAgg[d]={maxPoints:0,earnedPointsSum:0};
+      domainAgg[d].maxPoints=ds[d].maxPoints;
+      domainAgg[d].earnedPointsSum+=ds[d].earnedPoints;
+    });
+  });
+  var domainClassAvgPct={};
+  Object.keys(domainAgg).forEach(function(d){
+    var a=domainAgg[d];
+    domainClassAvgPct[d]=(n&&a.maxPoints)?Math.round(a.earnedPointsSum/(a.maxPoints*n)*1000)/10:0;
+  });
+
+  return {n:n,avg:Math.round(avg*10)/10,stddev:Math.round(stddev*10)/10,top30:Math.round(top30*10)/10,max:Math.round(max*10)/10,domainClassAvgPct:domainClassAvgPct};
+}
+
+function repGrade(score,gradeCuts){
+  if(!gradeCuts||!gradeCuts.length)return null;
+  var sorted=gradeCuts.slice().sort(function(a,b){return a.grade-b.grade;});
+  for(var i=0;i<sorted.length;i++){
+    if(score>=sorted[i].cut)return sorted[i].grade;
+  }
+  return sorted.length+1;
+}
+
+function repRadarSVG(labels,myPct,avgPct){
+  if(!labels.length)return '';
+  var size=280,cx=size/2,cy=size/2,r=size/2-50;
+  var n=labels.length;
+  var angleFor=function(i){return(Math.PI*2*i/n)-Math.PI/2;};
+  var pointFor=function(i,pct){
+    var rad=r*Math.max(0,Math.min(100,pct))/100;
+    var a=angleFor(i);
+    return[cx+rad*Math.cos(a),cy+rad*Math.sin(a)];
+  };
+  var grids=[20,40,60,80,100].map(function(g){
+    var pts=labels.map(function(_,i){var p=pointFor(i,g);return p[0]+','+p[1];}).join(' ');
+    return '<polygon points="'+pts+'" fill="none" stroke="#e2e2e2" stroke-width="1"/>';
+  }).join('');
+  var axes=labels.map(function(lab,i){
+    var edge=pointFor(i,100);
+    var labelPt=pointFor(i,122);
+    return '<line x1="'+cx+'" y1="'+cy+'" x2="'+edge[0]+'" y2="'+edge[1]+'" stroke="#e2e2e2" stroke-width="1"/>'+
+      '<text x="'+labelPt[0]+'" y="'+labelPt[1]+'" font-size="8.5" text-anchor="middle" fill="#666">'+lab+'</text>';
+  }).join('');
+  var avgPts=labels.map(function(_,i){var p=pointFor(i,avgPct[i]||0);return p[0]+','+p[1];}).join(' ');
+  var myPts=labels.map(function(_,i){var p=pointFor(i,myPct[i]||0);return p[0]+','+p[1];}).join(' ');
+  return '<svg viewBox="0 0 '+size+' '+size+'" width="280" height="280" style="max-width:100%">'+
+    grids+axes+
+    '<polygon points="'+avgPts+'" fill="rgba(150,150,150,0.15)" stroke="#999" stroke-width="1.5" stroke-dasharray="4,3"/>'+
+    '<polygon points="'+myPts+'" fill="rgba(211,47,47,0.15)" stroke="#d32f2f" stroke-width="2"/>'+
+    '</svg>';
+}
+
+function buildReportCardHTML(studentName,exam,response,allResponses,academyName){
+  var stats=repClassStats(exam,allResponses||[response]);
+  var my=repScore(exam,response);
+  var grade=repGrade(my.pct,exam.grade_cuts||[]);
+  var domainStats=repDomainStats(exam,response);
+  var domainLabels=Object.keys(domainStats);
+  var myPct=domainLabels.map(function(d){var s=domainStats[d];return s.maxPoints?Math.round(s.earnedPoints/s.maxPoints*1000)/10:0;});
+  var avgPct=domainLabels.map(function(d){return stats.domainClassAvgPct[d]||0;});
+
+  var noticeHTML=(exam.grade_cuts&&exam.grade_cuts.length)?
+    exam.grade_cuts.map(function(c){return '&nbsp;* '+c.grade+'등급 : '+c.cut+'점';}).join('<br>'):'등급컷 정보 없음';
+  var gradeBadge=grade?('<div style="font-size:22px;font-weight:800;color:#c0392b;margin-top:6px">'+grade+'등급</div>'):'';
+
+  var domainRows=domainLabels.map(function(d){
+    var s=domainStats[d];
+    var classAvg=stats.domainClassAvgPct[d]||0;
+    return '<tr><td style="padding:5px;border-bottom:1px solid #eee">'+d+'</td><td style="padding:5px;text-align:center;border-bottom:1px solid #eee">'+s.qCount+'</td><td style="padding:5px;text-align:center;border-bottom:1px solid #eee">'+s.correctCount+'</td><td style="padding:5px;text-align:center;border-bottom:1px solid #eee;font-weight:700">'+s.earnedPoints+'</td><td style="padding:5px;text-align:center;border-bottom:1px solid #eee;color:#888">'+classAvg+'</td></tr>';
+  }).join('');
+  var domainTotalQ=exam.questions.length;
+  var domainTotalCorrect=exam.questions.filter(function(q,i){return !repIsWrong(response,i);}).length;
+
+  var itemRows=exam.questions.map(function(q,i){
+    var wrong=repIsWrong(response,i);
+    var wrongRate=(allResponses&&allResponses.length)?Math.round(allResponses.filter(function(r){return repIsWrong(r,i);}).length/allResponses.length*1000)/10:0;
+    return {num:q.num||(i+1),label:(q.domain||q.type||''),points:q.points||1,answer:q.answer,mark:wrong?'✗':'○',wrongRate:wrongRate,isWrong:wrong};
+  });
+  var perCol=Math.ceil(itemRows.length/3)||1;
+  var cols=[itemRows.slice(0,perCol),itemRows.slice(perCol,perCol*2),itemRows.slice(perCol*2)];
+  var itemTableHTML='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">'+
+    cols.map(function(col){
+      if(!col.length)return '<div></div>';
+      return '<table style="width:100%;border-collapse:collapse;font-size:11px">'+
+        '<tr style="background:#f0f0f0"><th style="padding:3px">문항</th><th style="padding:3px">영역/유형</th><th style="padding:3px">배점</th><th style="padding:3px">정답</th><th style="padding:3px">채점</th><th style="padding:3px">오답률</th></tr>'+
+        col.map(function(r){
+          return '<tr style="'+(r.isWrong?'background:#fff3f3':'')+'"><td style="text-align:center;padding:3px;border-bottom:1px solid #eee">'+r.num+'</td>'+
+            '<td style="text-align:center;padding:3px;border-bottom:1px solid #eee;font-size:9.5px">'+r.label+'</td>'+
+            '<td style="text-align:center;padding:3px;border-bottom:1px solid #eee">'+r.points+'</td>'+
+            '<td style="text-align:center;padding:3px;border-bottom:1px solid #eee">'+r.answer+'</td>'+
+            '<td style="text-align:center;padding:3px;border-bottom:1px solid #eee;color:'+(r.isWrong?'#c0392b':'#2a7a52')+';font-weight:700">'+r.mark+'</td>'+
+            '<td style="text-align:center;padding:3px;border-bottom:1px solid #eee;color:#888">'+r.wrongRate+'</td></tr>';
+        }).join('')+
+        '</table>';
+    }).join('')+
+    '</div>';
+
+  return '<div style="font-family:sans-serif;max-width:800px;margin:0 auto;padding:24px;color:#222">'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #2d5fa6;padding-bottom:10px;margin-bottom:16px">'+
+      '<h2 style="margin:0;color:#2d5fa6">'+exam.name+'</h2>'+
+      '<div style="font-size:13px;color:#666">'+(academyName||'')+'</div>'+
+    '</div>'+
+    '<div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap">'+
+      '<table style="flex:1;min-width:260px;border-collapse:collapse;font-size:13px;align-self:flex-start">'+
+        '<tr><td style="background:#f5f7fb;padding:6px 10px;font-weight:600;width:80px">성명</td><td style="padding:6px 10px">'+studentName+'</td></tr>'+
+        '<tr><td style="background:#f5f7fb;padding:6px 10px;font-weight:600">시험명</td><td style="padding:6px 10px">'+exam.name+'</td></tr>'+
+      '</table>'+
+      '<div style="flex:1;min-width:220px;background:#fafafa;border:1px solid #eee;border-radius:8px;padding:10px 14px">'+
+        '<div style="font-size:12px;font-weight:600;color:#2d5fa6;margin-bottom:6px">공지사항</div>'+
+        '<div style="font-size:12px;line-height:1.8">'+noticeHTML+'</div>'+
+        gradeBadge+
+      '</div>'+
+    '</div>'+
+    '<table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:20px;text-align:center">'+
+      '<tr style="background:#2d5fa6;color:#fff"><th style="padding:8px">내점수/만점</th><th style="padding:8px">전체 평균</th><th style="padding:8px">표준편차</th><th style="padding:8px">상위 30%</th><th style="padding:8px">최고점</th></tr>'+
+      '<tr><td style="padding:8px;font-weight:700;font-size:16px">'+my.earned+'/'+my.total+'</td><td style="padding:8px">'+stats.avg+'</td><td style="padding:8px">'+stats.stddev+'</td><td style="padding:8px">'+stats.top30+'</td><td style="padding:8px">'+stats.max+'</td></tr>'+
+    '</table>'+
+    '<div style="display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;align-items:flex-start">'+
+      '<table style="flex:1;min-width:280px;border-collapse:collapse;font-size:12px">'+
+        '<tr style="background:#f0f0f0"><th style="padding:5px">영역</th><th style="padding:5px">문항수</th><th style="padding:5px">정답수</th><th style="padding:5px">내점수</th><th style="padding:5px">평균 점수</th></tr>'+
+        domainRows+
+        '<tr style="font-weight:700;background:#fafafa"><td style="padding:5px">합계</td><td style="padding:5px;text-align:center">'+domainTotalQ+'</td><td style="padding:5px;text-align:center">'+domainTotalCorrect+'</td><td style="padding:5px;text-align:center">'+my.earned+'</td><td style="padding:5px;text-align:center">'+stats.avg+'</td></tr>'+
+      '</table>'+
+      '<div style="flex:0 0 auto;text-align:center">'+repRadarSVG(domainLabels,myPct,avgPct)+
+        '<div style="font-size:11px;color:#666">🔴 내 성취도 &nbsp; ⚪ 전체 평균</div>'+
+      '</div>'+
+    '</div>'+
+    '<div style="font-size:14px;font-weight:700;margin-bottom:8px">문항 채점표</div>'+
+    itemTableHTML+
+    '</div>';
+}
+
 function tResExportAllPDF(){
   const exam=tResCurrentExam;
   const responses=tResCurrentResponses;
@@ -4060,13 +4335,18 @@ async function sExamSubmitScore(){
   var total=sExamData.total_q;
   var wrongIdxs=Object.keys(sWrongChecked).map(Number);
   document.getElementById('s-exam-check-err').textContent='';
-  // 오답 기준으로 점수 계산
+  // 오답 기준으로 점수 계산 (문항별 배점 반영)
   var wrongCount=wrongIdxs.length;
   var correct=total-wrongCount;
-  var score=Math.round(correct/total*100);
+  var pointsTotal=sExamData.questions.reduce(function(s,q){return s+(q.points||1);},0)||total;
+  var pointsEarned=sExamData.questions.reduce(function(s,q,i){return s+(wrongIdxs.indexOf(i)>=0?0:(q.points||1));},0);
+  var score=pointsTotal?Math.round(pointsEarned/pointsTotal*100):Math.round(correct/total*100);
   var wrong=wrongIdxs.map(function(idx){
     return {idx:idx,q:sExamData.questions[idx]||{},my:sExamAnswers[idx]||'?'};
   });
+  // 오답 인덱스 전체를 answers 맵의 키로 확실히 남겨서(값을 안 골랐어도 빈 문자열로) 채점 결과가 항상 정확히 복원되게 함
+  var savedAnswers={};
+  wrongIdxs.forEach(function(idx){savedAnswers[idx]=sExamAnswers[idx]||'';});
   // 사진 업로드
   var photoUrls={};
   for(var wi=0;wi<wrongIdxs.length;wi++){
@@ -4087,8 +4367,9 @@ async function sExamSubmitScore(){
   // Supabase 저장
   await sb.from('exam_responses').upsert({
     exam_id:sExamData.id,student_name:session.name||session.id,
-    answers:sExamAnswers,photo_urls:photoUrls,thoughts:sExamThoughts,
+    answers:savedAnswers,photo_urls:photoUrls,thoughts:sExamThoughts,
     score:score,correct_count:correct,total_q:total,
+    points_earned:pointsEarned,points_total:pointsTotal,
     submitted_at:new Date().toISOString()
   },{onConflict:'exam_id,student_name'});
   // 결과 표시
@@ -4116,6 +4397,15 @@ async function sExamSubmitScore(){
           '</div>';
       }).join('')+'</div>';
   }
+}
+
+async function sExamShowReportCard(){
+  if(!sExamData||!session)return;
+  const {data:allResponses,error}=await sb.from('exam_responses').select('*').eq('exam_id',sExamData.id);
+  if(error){alert('성적표를 불러오지 못했어요: '+error.message);return;}
+  const my=(allResponses||[]).find(r=>r.student_name===(session.name||session.id));
+  if(!my){alert('내 응답을 찾을 수 없어요. 먼저 제출해 주세요.');return;}
+  tResPrintHTML(buildReportCardHTML(session.name||session.id,sExamData,my,allResponses||[my]),sExamData.name+'_성적표');
 }
 
 function renderSExamGrid(){
