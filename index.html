@@ -3403,7 +3403,10 @@ ${eText||'없음'}
   const data=await resp.json();
   if(data.error)throw new Error(data.error.message||'AI 응답 오류');
   const raw=(data.content||[]).map(c=>c.text||'').join('');
-  if(!raw)throw new Error('AI가 빈 응답을 반환했어요.');
+  if(!raw){
+    const reason=data.stop_reason?` (stop_reason: ${data.stop_reason})`:'';
+    throw new Error('AI가 빈 응답을 반환했어요'+reason+'. HTTP '+resp.status);
+  }
   let cleaned=raw.replace(/```json|```/g,'').trim();
   if(!cleaned.endsWith(']')){const lc=cleaned.lastIndexOf('}');if(lc>0)cleaned=cleaned.slice(0,lc+1)+']';}
   try{
