@@ -3406,7 +3406,16 @@ ${eText||'없음'}
   if(!raw)throw new Error('AI가 빈 응답을 반환했어요.');
   let cleaned=raw.replace(/```json|```/g,'').trim();
   if(!cleaned.endsWith(']')){const lc=cleaned.lastIndexOf('}');if(lc>0)cleaned=cleaned.slice(0,lc+1)+']';}
-  return JSON.parse(cleaned);
+  try{
+    return JSON.parse(cleaned);
+  }catch(e){
+    // 응답이 중간에 잘려 배열 전체 파싱이 실패한 경우, 완전한 개별 문항 객체만 최대한 살려서 반환
+    const matches=cleaned.match(/\{[^{}]*\}/g)||[];
+    const salvaged=[];
+    matches.forEach(m=>{try{salvaged.push(JSON.parse(m));}catch(e2){}});
+    if(salvaged.length>0)return salvaged;
+    throw new Error('AI 응답을 읽는 데 실패했어요(응답이 너무 길어 잘렸을 수 있어요). 문항 수를 줄여서 다시 시도해 주세요.');
+  }
 }
 
 async function texParse(){
@@ -3435,17 +3444,20 @@ ${aRaw}`}]})});
     if(cd.error)throw new Error(cd.error.message||'AI 응답 오류');
     const totalStr=(cd.content||[]).map(c=>c.text||'').join('').match(/\d+/);
     const total=totalStr?parseInt(totalStr[0]):24;
-    const half=Math.ceil(total/2);
 
-    // 1번~절반
-    msgEl.textContent=`1~${half}번 분석 중... (1/2)`;
-    const part1=await texParseChunk(qRaw,aRaw,eRaw,1,half);
+    // 문항이 많으면 AI 응답이 중간에 잘리는 것을 막기 위해 작은 단위(최대 8문항)로 나눠서 분석
+    const CHUNK_SIZE=8;
+    const chunkCount=Math.ceil(total/CHUNK_SIZE);
+    let allParts=[];
+    for(let i=0;i<chunkCount;i++){
+      const start=i*CHUNK_SIZE+1;
+      const end=Math.min((i+1)*CHUNK_SIZE,total);
+      msgEl.textContent=`${start}~${end}번 분석 중... (${i+1}/${chunkCount})`;
+      const part=await texParseChunk(qRaw,aRaw,eRaw,start,end);
+      allParts=allParts.concat(part);
+    }
 
-    // 절반+1~끝
-    msgEl.textContent=`${half+1}~${total}번 분석 중... (2/2)`;
-    const part2=await texParseChunk(qRaw,aRaw,eRaw,half+1,total);
-
-    parsedQuestions=[...part1,...part2].sort((a,b)=>a.num-b.num);
+    parsedQuestions=allParts.sort((a,b)=>a.num-b.num);
     renderTexStep3();
     texShowStep(3);
   }catch(e){
