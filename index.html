@@ -2125,9 +2125,22 @@ async function renderSClinicList(){
   el.innerHTML=Object.keys(schoolGroups).map(function(sid){
     var school=qaDb.schools.find(function(s){return s.id===sid;});
     var schoolSlots=schoolGroups[sid];
+    var days=[];
+    schoolSlots.forEach(function(s){if(s.day_of_week&&days.indexOf(s.day_of_week)===-1)days.push(s.day_of_week);});
+    var dayOrder={'월':0,'화':1,'수':2,'목':3,'금':4,'토':5};
+    days.sort(function(a,b){return(dayOrder[a]||0)-(dayOrder[b]||0);});
+    var originSelectId='s-clinic-origin-'+sid;
     return '<div class="card" style="margin-bottom:1rem">'+
       '<div class="card-head"><h3>'+(school?school.name:'')+' 클리닉</h3></div>'+
-      '<div style="padding:0 1.25rem 0.5rem">'+
+      '<div style="padding:12px 1.25rem;border-bottom:1px solid var(--border)">'+
+      '<label class="flabel">1. 원래 다니던 요일을 선택하세요</label>'+
+      '<select id="'+originSelectId+'" class="form-select" style="margin-top:4px">'+
+      '<option value="">먼저 선택하세요</option>'+
+      '<option value="__new__">처음 신청이에요 (해당없음)</option>'+
+      days.map(function(d){return '<option value="'+d+'">'+d+'요일</option>';}).join('')+
+      '</select></div>'+
+      '<div style="padding:8px 1.25rem 0.5rem">'+
+      '<label class="flabel" style="margin-bottom:6px;display:block">2. 원하는 시간대를 선택해 신청하세요</label>'+
       schoolSlots.map(function(slot){
         var reqs=clinicDb.requests.filter(function(r){return r.slot_id===slot.id&&r.status==='confirmed';});
         var full=reqs.length>=slot.capacity;
@@ -2144,10 +2157,22 @@ async function renderSClinicList(){
 async function applyClinicSlot(slotId,schoolId){
   var slot=clinicDb.slots.find(function(s){return s.id===slotId;});
   if(!slot)return;
+  var originSel=document.getElementById('s-clinic-origin-'+schoolId);
+  var originVal=originSel?originSel.value:'';
+  if(originVal===''){notify('원래 다니던 요일을 먼저 선택하세요.','error');return;}
   var reqs=clinicDb.requests.filter(function(r){return r.slot_id===slotId&&r.status==='confirmed';});
   if(reqs.length>=slot.capacity){notify('정원이 찼어요.','error');return;}
-  var id='cr_'+Date.now();
-  var req={id:id,slot_id:slotId,student_id:session.id,school_id:schoolId,status:'confirmed',created_at:new Date().toISOString()};
+  var now=Date.now();
+  if(originVal!=='__new__'){
+    var originSlot=clinicDb.slots.find(function(s){return s.school_id===schoolId&&s.day_of_week===originVal;});
+    if(originSlot&&originSlot.day_of_week!==slot.day_of_week){
+      var pastReq={id:'cr_'+(now-1000),slot_id:originSlot.id,student_id:session.id,school_id:schoolId,status:'cancelled',created_at:new Date(now-1000).toISOString()};
+      var pastRes=await sb.from('clinic_requests').insert(pastReq);
+      if(!pastRes.error)clinicDb.requests.push(pastReq);
+    }
+  }
+  var id='cr_'+now;
+  var req={id:id,slot_id:slotId,student_id:session.id,school_id:schoolId,status:'confirmed',created_at:new Date(now).toISOString()};
   var res=await sb.from('clinic_requests').insert(req);
   if(res.error){notify('신청 실패: '+res.error.message,'error');return;}
   clinicDb.requests.push(req);
