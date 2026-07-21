@@ -473,6 +473,10 @@ input,button{font-family:var(--font)}
           <div class="card-head"><h3 id="t-clinic-title">학교를 선택하세요</h3></div>
           <div id="t-clinic-slot-list" style="padding:0 1.25rem 0.5rem"></div>
         </div>
+        <div class="card" id="t-clinic-changes-card" style="display:none;margin-bottom:1rem;border-color:var(--amber)">
+          <div class="card-head" style="background:var(--amber-bg)"><h3 style="color:var(--amber)">🔄 요일 변경 내역</h3></div>
+          <div id="t-clinic-changes-list"></div>
+        </div>
         <div class="card" id="t-clinic-req-card" style="display:none">
           <div class="card-head"><h3>신청 현황</h3></div>
           <div id="t-clinic-req-list"></div>
@@ -1322,6 +1326,7 @@ function tNav(panel){
   if(panel==='progress')renderProgress();
   if(panel==='qa'){renderTQaSchoolTabs();renderTQaWeekList();renderQaWeekFilter();renderQaReview();renderQaMaterialsList();}
   if(panel==='cert'){renderTCertSchoolTabs();renderTCertWeekList();}
+  if(panel==='clinic')renderTClinicSchoolTabs();
   if(panel==='exam')renderTExam();
 }
 
@@ -1996,7 +2001,8 @@ function selectTClinicSchool(sid){
   document.getElementById('t-clinic-title').textContent=school?school.name+' 클리닉 시간대':'';
   document.getElementById('t-clinic-add-btn').style.display='';
   document.getElementById('t-clinic-req-card').style.display='';
-  renderTClinicSchoolTabs();renderTClinicSlotList();renderTClinicReqList();
+  document.getElementById('t-clinic-changes-card').style.display='';
+  renderTClinicSchoolTabs();renderTClinicSlotList();renderTClinicReqList();renderTClinicChanges();
 }
 
 function renderTClinicSlotList(){
@@ -2005,7 +2011,7 @@ function renderTClinicSlotList(){
   var slots=clinicDb.slots.filter(function(s){return s.school_id===clinicSchool;});
   if(!slots.length){el.innerHTML='<div style="padding:1rem 0;font-size:13px;color:var(--text3)">등록된 시간대가 없어요.</div>';return;}
   el.innerHTML=slots.map(function(slot){
-    var reqs=clinicDb.requests.filter(function(r){return r.slot_id===slot.id;});
+    var reqs=clinicDb.requests.filter(function(r){return r.slot_id===slot.id&&r.status==='confirmed';});
     var pct=Math.round(reqs.length/slot.capacity*100);
     var full=reqs.length>=slot.capacity;
     var timeInfo=(slot.day_of_week?slot.day_of_week+'요일 ':'')+(slot.slot_date?slot.slot_date+' ':'')+(slot.start_time||'');
@@ -2019,35 +2025,78 @@ function renderTClinicSlotList(){
   }).join('');
 }
 
+/* 학생별 신청 이력에서, 주어진 확정 신청 바로 이전의 신청을 찾아 요일이 달라졌는지 확인 */
+function findClinicChange(req){
+  var mine=clinicDb.requests.filter(function(r){return r.student_id===req.student_id;})
+    .sort(function(a,b){return new Date(a.created_at)-new Date(b.created_at);});
+  var idx=mine.findIndex(function(r){return r.id===req.id;});
+  if(idx<=0)return null;
+  var prev=mine[idx-1];
+  var prevSlot=clinicDb.slots.find(function(s){return s.id===prev.slot_id;});
+  var curSlot=clinicDb.slots.find(function(s){return s.id===req.slot_id;});
+  if(!prevSlot||!curSlot)return null;
+  if(prevSlot.day_of_week===curSlot.day_of_week&&prevSlot.school_id===curSlot.school_id)return null;
+  return{prevSlot:prevSlot,curSlot:curSlot,changedAt:req.created_at};
+}
+function fmtChangeDate(iso){
+  var d=new Date(iso);
+  return (d.getMonth()+1)+'/'+d.getDate()+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+}
+
 function renderTClinicReqList(){
   var el=document.getElementById('t-clinic-req-list');
   if(!el)return;
   var slots=clinicDb.slots.filter(function(s){return s.school_id===clinicSchool;});
-  var reqs=clinicDb.requests.filter(function(r){return slots.some(function(s){return s.id===r.slot_id;});});
+  var reqs=clinicDb.requests.filter(function(r){return r.status==='confirmed'&&slots.some(function(s){return s.id===r.slot_id;});});
   if(!reqs.length){el.innerHTML='<div style="padding:2rem;text-align:center;color:var(--text3);font-size:13px">신청 내역이 없어요.</div>';return;}
   el.innerHTML=reqs.map(function(req){
     var slot=clinicDb.slots.find(function(s){return s.id===req.slot_id;});
     var student=db.users.find(function(u){return u.id===req.student_id;});
+    var change=findClinicChange(req);
     return '<div style="display:flex;align-items:center;gap:10px;padding:11px 1.25rem;border-bottom:1px solid var(--border)">'+
       '<div style="flex:1"><div style="font-size:13px;font-weight:600">'+(student?student.name:req.student_id)+'</div>'+
-      '<div style="font-size:12px;color:var(--text2)">'+(slot?slot.label:'')+'</div></div>'+
+      '<div style="font-size:12px;color:var(--text2)">'+(slot?slot.label:'')+'</div>'+
+      (change?'<div style="font-size:11px;color:var(--amber);margin-top:2px">🔄 '+change.prevSlot.day_of_week+'요일 → '+change.curSlot.day_of_week+'요일 변경</div>':'')+
+      '</div>'+
       '<span class="badge done">확정</span>'+
       '<button class="btn red btn-sm" onclick="cancelClinicReq(\''+req.id+'\')">취소</button></div>';
   }).join('');
 }
 
+function renderTClinicChanges(){
+  var el=document.getElementById('t-clinic-changes-list');
+  if(!el)return;
+  var slots=clinicDb.slots.filter(function(s){return s.school_id===clinicSchool;});
+  var slotIds={};slots.forEach(function(s){slotIds[s.id]=true;});
+  var confirmed=clinicDb.requests.filter(function(r){return r.status==='confirmed'&&slotIds[r.slot_id];});
+  var changes=confirmed.map(function(req){
+    var change=findClinicChange(req);
+    if(!change)return null;
+    var student=db.users.find(function(u){return u.id===req.student_id;});
+    return{studentName:student?student.name:req.student_id,change:change};
+  }).filter(function(x){return x;}).sort(function(a,b){return new Date(b.change.changedAt)-new Date(a.change.changedAt);});
+  if(!changes.length){el.innerHTML='<div style="padding:1.5rem 1.25rem;text-align:center;color:var(--text3);font-size:13px">요일을 바꾼 학생이 없어요.</div>';return;}
+  el.innerHTML=changes.map(function(c){
+    return '<div style="display:flex;align-items:center;gap:10px;padding:10px 1.25rem;border-bottom:1px solid var(--border)">'+
+      '<div style="flex:1"><span style="font-size:13px;font-weight:600">'+c.studentName+'</span> '+
+      '<span style="font-size:12px;color:var(--text2)">'+c.change.prevSlot.day_of_week+'요일 → '+c.change.curSlot.day_of_week+'요일</span></div>'+
+      '<span style="font-size:11px;color:var(--text3)">'+fmtChangeDate(c.change.changedAt)+'</span></div>';
+  }).join('');
+}
+
 async function cancelClinicReq(id){
   if(!confirm('신청을 취소할까요?'))return;
-  await sb.from('clinic_requests').delete().eq('id',id);
-  clinicDb.requests=clinicDb.requests.filter(function(r){return r.id!==id;});
+  await sb.from('clinic_requests').update({status:'cancelled'}).eq('id',id);
+  var r=clinicDb.requests.find(function(r){return r.id===id;});
+  if(r)r.status='cancelled';
   notify('취소됐어요.','info');
-  renderTClinicSlotList();renderTClinicReqList();renderSClinicList();
+  renderTClinicSlotList();renderTClinicReqList();renderTClinicChanges();renderSClinicList();
 }
 
 async function renderSClinicList(){
   var el=document.getElementById('s-clinic-list');
   if(!el||!session)return;
-  var myReq=clinicDb.requests.find(function(r){return r.student_id===session.id;});
+  var myReq=clinicDb.requests.find(function(r){return r.student_id===session.id&&r.status==='confirmed';});
   var slots=clinicDb.slots.filter(function(s){
     var school=qaDb.schools.find(function(sc){return sc.id===s.school_id;});
     return true;
@@ -2080,7 +2129,7 @@ async function renderSClinicList(){
       '<div class="card-head"><h3>'+(school?school.name:'')+' 클리닉</h3></div>'+
       '<div style="padding:0 1.25rem 0.5rem">'+
       schoolSlots.map(function(slot){
-        var reqs=clinicDb.requests.filter(function(r){return r.slot_id===slot.id;});
+        var reqs=clinicDb.requests.filter(function(r){return r.slot_id===slot.id&&r.status==='confirmed';});
         var full=reqs.length>=slot.capacity;
         var remain=slot.capacity-reqs.length;
         var timeInfo=(slot.day_of_week?slot.day_of_week+'요일 ':'')+(slot.slot_date?slot.slot_date+' ':'')+(slot.start_time||'');
@@ -2095,7 +2144,7 @@ async function renderSClinicList(){
 async function applyClinicSlot(slotId,schoolId){
   var slot=clinicDb.slots.find(function(s){return s.id===slotId;});
   if(!slot)return;
-  var reqs=clinicDb.requests.filter(function(r){return r.slot_id===slotId;});
+  var reqs=clinicDb.requests.filter(function(r){return r.slot_id===slotId&&r.status==='confirmed';});
   if(reqs.length>=slot.capacity){notify('정원이 찼어요.','error');return;}
   var id='cr_'+Date.now();
   var req={id:id,slot_id:slotId,student_id:session.id,school_id:schoolId,status:'confirmed',created_at:new Date().toISOString()};
@@ -2103,15 +2152,16 @@ async function applyClinicSlot(slotId,schoolId){
   if(res.error){notify('신청 실패: '+res.error.message,'error');return;}
   clinicDb.requests.push(req);
   notify(slot.label+' 신청이 완료됐어요! ✓','success');
-  renderSClinicList();renderTClinicSlotList();renderTClinicReqList();
+  renderSClinicList();renderTClinicSlotList();renderTClinicReqList();renderTClinicChanges();
 }
 
 async function cancelMyClinicReq(id){
   if(!confirm('신청을 취소할까요?'))return;
-  await sb.from('clinic_requests').delete().eq('id',id);
-  clinicDb.requests=clinicDb.requests.filter(function(r){return r.id!==id;});
+  await sb.from('clinic_requests').update({status:'cancelled'}).eq('id',id);
+  var r=clinicDb.requests.find(function(r){return r.id===id;});
+  if(r)r.status='cancelled';
   notify('신청이 취소됐어요.','info');
-  renderSClinicList();renderTClinicSlotList();renderTClinicReqList();
+  renderSClinicList();renderTClinicSlotList();renderTClinicReqList();renderTClinicChanges();
 }
 
 document.getElementById('modal-clinic-slot').addEventListener('click',function(e){if(e.target===e.currentTarget)closeClinicSlotModal();});
