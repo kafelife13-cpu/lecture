@@ -1182,7 +1182,7 @@ const sb=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:false,autoRef
 let session=null,currentRole='teacher',progressView='video';
 let db={users:[],videos:[],progress:[],access:[],requests:[]};
 let ytPlayer=null,ytApiReady=false,currentVid=null,currentStartPos=0;
-let watchedSet=new Set(),trackTimer=null,saveTimer=null,lastPos=-1,totalDur=0;
+let watchedSet=new Set(),trackTimer=null,saveTimer=null,lastPos=-1,totalDur=0,maxRateSeen=1;
 
 window.onYouTubeIframeAPIReady=function(){ytApiReady=true;};
 
@@ -1192,6 +1192,8 @@ function thumb(url){const id=ytId(url);return id?`https://img.youtube.com/vi/${i
 function getPct(sid,vid){const r=db.progress.find(p=>p.student_id===sid&&p.video_id===vid);return r?(r.percent||0):0;}
 function getWatchSec(sid,vid){const r=db.progress.find(p=>p.student_id===sid&&p.video_id===vid);return r?(r.watch_seconds||0):0;}
 function getLastPos(sid,vid){const r=db.progress.find(p=>p.student_id===sid&&p.video_id===vid);return r?(r.last_position||0):0;}
+function getMaxRate(sid,vid){const r=db.progress.find(p=>p.student_id===sid&&p.video_id===vid);return r?(r.max_rate||1):1;}
+function fmtRate(r){return(Math.round(r*100)/100)+'x';}
 function hasAccess(sid,vid){return db.access.some(a=>a.student_id===sid&&a.video_id===vid);}
 function hasRequested(sid,vid){return db.requests.some(r=>r.student_id===sid&&r.video_id===vid);}
 function pctColor(p){return p>=100?'var(--green)':p>=50?'var(--amber)':'var(--red)';}
@@ -1230,8 +1232,8 @@ async function loadAll(attempt=0){
   }
 }
 
-async function upsertProgress(sid,vid,pct,watchSec,lastPosition){
-  const payload={student_id:sid,video_id:vid,percent:Math.min(pct,100),watch_seconds:watchSec,last_position:lastPosition,updated_at:new Date().toISOString()};
+async function upsertProgress(sid,vid,pct,watchSec,lastPosition,maxRate){
+  const payload={student_id:sid,video_id:vid,percent:Math.min(pct,100),watch_seconds:watchSec,last_position:lastPosition,max_rate:Math.max(maxRate||1,getMaxRate(sid,vid)),updated_at:new Date().toISOString()};
   const{error}=await sb.from('progress').upsert(payload,{onConflict:'student_id,video_id'});
   if(error){console.error('Save error:',error.message);return;}
   const ex=db.progress.find(p=>p.student_id===sid&&p.video_id===vid);
@@ -1652,7 +1654,7 @@ function renderProgress(){
     if(!vids.length&&!rvids.length){el.innerHTML='<div class="empty"><p>강의가 없습니다.</p></div>';return;}
     const normalCards=vids.map(v=>{
       const rows=sts.map(s=>{
-        const p=getPct(s.id,v.id),ws=getWatchSec(s.id,v.id),lp=getLastPos(s.id,v.id);
+        const p=getPct(s.id,v.id),ws=getWatchSec(s.id,v.id),lp=getLastPos(s.id,v.id),mr=getMaxRate(s.id,v.id);
         return`<div class="prog-row">
           <div class="prog-name">${s.name}</div>
           <div class="prog-bar-wrap"><div class="pbar"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div></div>
@@ -1660,6 +1662,7 @@ function renderProgress(){
           <span class="badge ${pctBadge(p)}" style="margin-left:6px">${pctLabel(p)}</span>
           ${lp>0?`<span class="time-badge" style="margin-left:4px">${p>=100?'완료':fmtTime(lp)+'까지'}</span>`:''}
           ${ws>0?`<span style="font-size:11px;color:var(--text2);margin-left:4px">(${fmtTime(ws)})</span>`:''}
+          ${mr>1.05?`<span style="font-size:11px;color:var(--amber);margin-left:4px">⚡${fmtRate(mr)}</span>`:''}
           <button class="btn btn-sm" style="margin-left:auto" onclick="openDetail('${s.id}','${v.id}')">상세</button>
         </div>`;
       }).join('');
@@ -1671,7 +1674,7 @@ function renderProgress(){
     const reviewCards=rvids.map(v=>{
       const granted=sts.filter(s=>hasAccess(s.id,v.id));
       const rows=granted.map(s=>{
-        const p=getPct(s.id,v.id),ws=getWatchSec(s.id,v.id),lp=getLastPos(s.id,v.id);
+        const p=getPct(s.id,v.id),ws=getWatchSec(s.id,v.id),lp=getLastPos(s.id,v.id),mr=getMaxRate(s.id,v.id);
         return`<div class="prog-row">
           <div class="prog-name">${s.name}</div>
           <div class="prog-bar-wrap"><div class="pbar"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div></div>
@@ -1679,6 +1682,7 @@ function renderProgress(){
           <span class="badge ${pctBadge(p)}" style="margin-left:6px">${pctLabel(p)}</span>
           ${lp>0?`<span class="time-badge" style="margin-left:4px">${p>=100?'완료':fmtTime(lp)+'까지'}</span>`:''}
           ${ws>0?`<span style="font-size:11px;color:var(--text2);margin-left:4px">(${fmtTime(ws)})</span>`:''}
+          ${mr>1.05?`<span style="font-size:11px;color:var(--amber);margin-left:4px">⚡${fmtRate(mr)}</span>`:''}
           <button class="btn btn-sm" style="margin-left:auto" onclick="openDetail('${s.id}','${v.id}')">상세</button>
         </div>`;
       }).join('');
@@ -1694,7 +1698,7 @@ function renderProgress(){
       const myRvids=rvids.filter(v=>hasAccess(s.id,v.id));
       const allVids=vids.concat(myRvids);
       const rows=allVids.map(v=>{
-        const p=getPct(s.id,v.id),ws=getWatchSec(s.id,v.id),lp=getLastPos(s.id,v.id);
+        const p=getPct(s.id,v.id),ws=getWatchSec(s.id,v.id),lp=getLastPos(s.id,v.id),mr=getMaxRate(s.id,v.id);
         const isReview=v.category==='review';
         return`<div class="prog-row">
           <div style="flex:1;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${v.title}${isReview?' <span class="tag purple" style="font-size:10px">복습</span>':''}</div>
@@ -1703,6 +1707,7 @@ function renderProgress(){
           <span class="badge ${pctBadge(p)}" style="margin-left:6px">${pctLabel(p)}</span>
           ${lp>0?`<span class="time-badge" style="margin-left:4px">${p>=100?'완료':fmtTime(lp)+'까지'}</span>`:''}
           ${ws>0?`<span style="font-size:11px;color:var(--text2);margin-left:4px">(${fmtTime(ws)})</span>`:''}
+          ${mr>1.05?`<span style="font-size:11px;color:var(--amber);margin-left:4px">⚡${fmtRate(mr)}</span>`:''}
         </div>`;
       }).join('');
       const progs=allVids.map(v=>getPct(s.id,v.id));
@@ -1728,17 +1733,18 @@ function openDetail2(vid){
 function openDetail(sid,vid){
   const s=db.users.find(u=>u.id===sid);
   const v=db.videos.find(x=>x.id===vid);
-  const p=getPct(sid,vid),ws=getWatchSec(sid,vid),lp=getLastPos(sid,vid);
+  const p=getPct(sid,vid),ws=getWatchSec(sid,vid),lp=getLastPos(sid,vid),mr=getMaxRate(sid,vid);
   document.getElementById('detail-title').textContent=`${s.name} — ${v.title}`;
   document.getElementById('detail-body').innerHTML=`
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem">
       <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:14px;text-align:center"><div style="font-size:24px;font-weight:700;color:${pctColor(p)}">${p}%</div><div style="font-size:11px;color:var(--text2);margin-top:3px">시청 진도</div></div>
       <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:14px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--accent)">${lp>0?fmtTime(lp):'없음'}</div><div style="font-size:11px;color:var(--text2);margin-top:3px">마지막 시청 위치</div></div>
       <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:14px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--purple)">${ws>0?fmtTime(ws):'없음'}</div><div style="font-size:11px;color:var(--text2);margin-top:3px">실제 시청 시간</div></div>
-      <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:14px;text-align:center"><div style="font-size:18px;font-weight:700">${p>=100?'✅':p>0?'▶':'⬜'}</div><div style="font-size:11px;color:var(--text2);margin-top:3px">${p>=100?'완료':p>0?'진행중':'미시청'}</div></div>
+      <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:14px;text-align:center"><div style="font-size:18px;font-weight:700;color:${mr>1.05?'var(--amber)':'var(--text)'}">${mr>1.05?fmtRate(mr):'정상속도'}</div><div style="font-size:11px;color:var(--text2);margin-top:3px">최대 재생 배속</div></div>
+      <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:14px;text-align:center;grid-column:1/-1"><div style="font-size:18px;font-weight:700">${p>=100?'✅':p>0?'▶':'⬜'}</div><div style="font-size:11px;color:var(--text2);margin-top:3px">${p>=100?'완료':p>0?'진행중':'미시청'}</div></div>
     </div>
     <div class="pbar" style="height:10px;margin-bottom:10px"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div>
-    <div style="font-size:12px;padding:10px;background:var(--bg3);border-radius:var(--radius-sm);color:var(--text2)">${p>=100?`✅ 강의 전체를 완료했습니다. (실제 시청: ${fmtTime(ws)})`:lp>0?`▶ <strong style="color:var(--text)">${fmtTime(lp)}</strong> 지점까지 시청했습니다.`:'⬜ 아직 시청하지 않았습니다.'}</div>`;
+    <div style="font-size:12px;padding:10px;background:var(--bg3);border-radius:var(--radius-sm);color:var(--text2)">${p>=100?`✅ 강의 전체를 완료했습니다. (실제 시청: ${fmtTime(ws)})`:lp>0?`▶ <strong style="color:var(--text)">${fmtTime(lp)}</strong> 지점까지 시청했습니다.`:'⬜ 아직 시청하지 않았습니다.'}${mr>1.05?` <strong style="color:var(--amber)">${fmtRate(mr)} 배속</strong>으로 시청한 기록이 있습니다.`:''}</div>`;
   document.getElementById('modal-detail').classList.add('show');
 }
 function closeDetail(){document.getElementById('modal-detail').classList.remove('show');}
@@ -1902,7 +1908,7 @@ function openPlay(vid, forceStart){
 function initYT(videoId){
   if(ytPlayer){try{ytPlayer.destroy();}catch(e){}ytPlayer=null;}
   document.getElementById('yt-player').innerHTML='';
-  watchedSet=new Set();lastPos=-1;totalDur=0;
+  watchedSet=new Set();lastPos=-1;totalDur=0;maxRateSeen=1;
   updateTrackUI(0);
   ytPlayer=new YT.Player('yt-player',{
     videoId,width:'100%',height:'100%',
@@ -1946,6 +1952,7 @@ function startTracking(){
     if(lastPos>=0&&cur>lastPos&&cur-lastPos<=3){for(let i=lastPos;i<=cur;i++)watchedSet.add(i);}
     else{watchedSet.add(cur);}
     lastPos=cur;
+    try{const rate=ytPlayer.getPlaybackRate();if(rate>maxRateSeen)maxRateSeen=rate;}catch(e){}
     const pct=Math.min(Math.round((watchedSet.size/totalDur)*100),100);
     updateTrackUI(pct);scheduleSave();
   },1000);
@@ -1960,7 +1967,7 @@ async function doAutoSave(){
   const pct=Math.min(Math.round((watchedSet.size/totalDur)*100),100);
   const curPct=getPct(session.id,currentVid);
   const curPos=ytPlayer?Math.floor(ytPlayer.getCurrentTime()):0;
-  if(pct>0||curPct>0){await upsertProgress(session.id,currentVid,Math.max(pct,curPct),watchedSet.size,curPos);}
+  if(pct>0||curPct>0){await upsertProgress(session.id,currentVid,Math.max(pct,curPct),watchedSet.size,curPos,maxRateSeen);}
 }
 function updateTrackUI(pct){
   document.getElementById('trk-pct').textContent=pct+'%';
@@ -1979,12 +1986,12 @@ async function closePlay(){
     const pct=Math.min(Math.round((watchedSet.size/totalDur)*100),100);
     const curPct=getPct(session.id,currentVid);
     const curPos=ytPlayer?Math.floor(ytPlayer.getCurrentTime()):0;
-    if(pct>=curPct)await upsertProgress(session.id,currentVid,pct,watchedSet.size,curPos);
+    if(pct>=curPct)await upsertProgress(session.id,currentVid,pct,watchedSet.size,curPos,maxRateSeen);
   }
   if(ytPlayer){try{ytPlayer.stopVideo();ytPlayer.destroy();}catch(e){}ytPlayer=null;}
   document.getElementById('yt-player').innerHTML='';
   document.getElementById('modal-play').classList.remove('show');
-  currentVid=null;currentStartPos=0;watchedSet=new Set();lastPos=-1;totalDur=0;
+  currentVid=null;currentStartPos=0;watchedSet=new Set();lastPos=-1;totalDur=0;maxRateSeen=1;
   if(session&&session.role==='student'){renderLectures();renderStudentReview();}
 }
 
