@@ -1179,7 +1179,7 @@ const SB_URL='https://zniwzwanlvvmzkkcmikh.supabase.co';
 const SB_KEY='sb_publishable_IbfVcXs5TmXfumrnK4Somg_7MzygCdh';
 const sb=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:false,autoRefreshToken:false}});
 
-let session=null,currentRole='teacher',progressView='video';
+let session=null,currentRole='teacher',progressView='video',progressVideoPage=1;
 let db={users:[],videos:[],progress:[],access:[],requests:[]};
 let ytPlayer=null,ytApiReady=false,currentVid=null,currentStartPos=0;
 let watchedSet=new Set(),trackTimer=null,saveTimer=null,lastPos=-1,totalDur=0,maxRateSeen=1;
@@ -1643,55 +1643,42 @@ function renderAccessPanel(){
 /* ===== PROGRESS ===== */
 function setView(v){
   progressView=v;
+  progressVideoPage=1;
   document.getElementById('btn-byvideo').classList.toggle('blue',v==='video');
   document.getElementById('btn-bystudent').classList.toggle('blue',v==='student');
   renderProgress();
 }
+function changeProgressPage(delta){progressVideoPage+=delta;renderProgress();}
 function renderProgress(){
   const el=document.getElementById('progress-content');
   const sts=activeStudents(),vids=normalVideos(),rvids=reviewVideos();
   if(progressView==='video'){
-    if(!vids.length&&!rvids.length){el.innerHTML='<div class="empty"><p>강의가 없습니다.</p></div>';return;}
-    const normalCards=vids.map(v=>{
-      const rows=sts.map(s=>{
-        const p=getPct(s.id,v.id),ws=getWatchSec(s.id,v.id),lp=getLastPos(s.id,v.id),mr=getMaxRate(s.id,v.id);
-        return`<div class="prog-row">
-          <div class="prog-name">${s.name}</div>
-          <div class="prog-bar-wrap"><div class="pbar"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div></div>
-          <div class="prog-pct ${pctClass(p)}">${p}%</div>
-          <span class="badge ${pctBadge(p)}" style="margin-left:6px">${pctLabel(p)}</span>
-          ${lp>0?`<span class="time-badge" style="margin-left:4px">${p>=100?'완료':fmtTime(lp)+'까지'}</span>`:''}
-          ${ws>0?`<span style="font-size:11px;color:var(--text2);margin-left:4px">(${fmtTime(ws)})</span>`:''}
-          ${mr>1.05?`<span style="font-size:11px;color:var(--amber);margin-left:4px">⚡${fmtRate(mr)}</span>`:''}
-          <button class="btn btn-sm" style="margin-left:auto" onclick="openDetail('${s.id}','${v.id}')">상세</button>
-        </div>`;
-      }).join('');
-      const progs=sts.map(s=>getPct(s.id,v.id));
-      const avgP=sts.length?Math.round(progs.reduce((a,b)=>a+b,0)/sts.length):0;
-      const doneC=progs.filter(p=>p>=100).length;
-      return`<div class="card"><div class="card-head"><div style="display:flex;align-items:center;gap:8px"><h3>${v.title}</h3><span class="tag">${doneC}/${sts.length}명 완료</span></div><span style="font-size:12px;font-weight:700;color:${pctColor(avgP)}">평균 ${avgP}%</span></div><div style="padding:4px 1.25rem 12px">${rows||'<div style="padding:1rem;color:var(--text2);font-size:13px">학생이 없습니다.</div>'}</div></div>`;
-    }).join('');
-    const reviewCards=rvids.map(v=>{
-      const granted=sts.filter(s=>hasAccess(s.id,v.id));
-      const rows=granted.map(s=>{
-        const p=getPct(s.id,v.id),ws=getWatchSec(s.id,v.id),lp=getLastPos(s.id,v.id),mr=getMaxRate(s.id,v.id);
-        return`<div class="prog-row">
-          <div class="prog-name">${s.name}</div>
-          <div class="prog-bar-wrap"><div class="pbar"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div></div>
-          <div class="prog-pct ${pctClass(p)}">${p}%</div>
-          <span class="badge ${pctBadge(p)}" style="margin-left:6px">${pctLabel(p)}</span>
-          ${lp>0?`<span class="time-badge" style="margin-left:4px">${p>=100?'완료':fmtTime(lp)+'까지'}</span>`:''}
-          ${ws>0?`<span style="font-size:11px;color:var(--text2);margin-left:4px">(${fmtTime(ws)})</span>`:''}
-          ${mr>1.05?`<span style="font-size:11px;color:var(--amber);margin-left:4px">⚡${fmtRate(mr)}</span>`:''}
-          <button class="btn btn-sm" style="margin-left:auto" onclick="openDetail('${s.id}','${v.id}')">상세</button>
-        </div>`;
-      }).join('');
-      const progs=granted.map(s=>getPct(s.id,v.id));
+    const allVids=vids.map(v=>Object.assign({_isReview:false},v)).concat(rvids.map(v=>Object.assign({_isReview:true},v)));
+    if(!allVids.length){el.innerHTML='<div class="empty"><p>강의가 없습니다.</p></div>';return;}
+    const perPage=15;
+    const totalPages=Math.max(1,Math.ceil(allVids.length/perPage));
+    if(progressVideoPage>totalPages)progressVideoPage=totalPages;
+    if(progressVideoPage<1)progressVideoPage=1;
+    const startIdx=(progressVideoPage-1)*perPage;
+    const pageVids=allVids.slice(startIdx,startIdx+perPage);
+    const rowsHtml=pageVids.map(v=>{
+      const relevantSts=v._isReview?sts.filter(s=>hasAccess(s.id,v.id)):sts;
+      const progs=relevantSts.map(s=>getPct(s.id,v.id));
       const avgP=progs.length?Math.round(progs.reduce((a,b)=>a+b,0)/progs.length):0;
       const doneC=progs.filter(p=>p>=100).length;
-      return`<div class="card"><div class="card-head"><div style="display:flex;align-items:center;gap:8px"><h3>${v.title}</h3><span class="tag purple">복습</span><span class="tag">${doneC}/${granted.length}명 완료</span></div><span style="font-size:12px;font-weight:700;color:${pctColor(avgP)}">평균 ${avgP}%</span></div><div style="padding:4px 1.25rem 12px">${rows||'<div style="padding:1rem;color:var(--text2);font-size:13px">권한을 받은 학생이 없습니다.</div>'}</div></div>`;
+      return`<div class="prog-row" style="cursor:pointer" onclick="openDetail2('${v.id}')">
+        <div style="flex:1;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${v.title}${v._isReview?' <span class="tag purple" style="font-size:10px">복습</span>':''}</div>
+        <span class="tag" style="margin-left:8px;flex-shrink:0">${doneC}/${relevantSts.length}명 완료</span>
+        <span style="font-size:12px;font-weight:700;color:${pctColor(avgP)};margin-left:8px;min-width:52px;text-align:right;flex-shrink:0">평균 ${avgP}%</span>
+        <span style="margin-left:6px;color:var(--text3);flex-shrink:0">›</span>
+      </div>`;
     }).join('');
-    el.innerHTML=normalCards+reviewCards;
+    const pagerHtml=totalPages>1?`<div style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 0 4px">
+      <button class="btn btn-sm" ${progressVideoPage<=1?'disabled':''} onclick="changeProgressPage(-1)">‹ 이전</button>
+      <span style="font-size:12px;color:var(--text2)">${progressVideoPage} / ${totalPages} 페이지 (총 ${allVids.length}개)</span>
+      <button class="btn btn-sm" ${progressVideoPage>=totalPages?'disabled':''} onclick="changeProgressPage(1)">다음 ›</button>
+    </div>`:'';
+    el.innerHTML=`<div class="card"><div class="card-head"><h3>영상 목록</h3><span style="font-size:11px;color:var(--text2)">클릭하면 학생별 시청 현황을 볼 수 있어요</span></div><div style="padding:4px 1.25rem 4px">${rowsHtml}</div></div>${pagerHtml}`;
   } else {
     if(!sts.length){el.innerHTML='<div class="empty"><p>학생이 없습니다.</p></div>';return;}
     el.innerHTML=sts.map(s=>{
@@ -1722,12 +1709,12 @@ function renderProgress(){
 /* ===== DETAIL ===== */
 function openDetail2(vid){
   const v=db.videos.find(x=>x.id===vid);
-  const sts=activeStudents();
+  const sts=v.category==='review'?activeStudents().filter(s=>hasAccess(s.id,vid)):activeStudents();
   document.getElementById('detail-title').textContent=v.title+' — 학생별 현황';
   document.getElementById('detail-body').innerHTML=sts.map(s=>{
-    const p=getPct(s.id,vid),ws=getWatchSec(s.id,vid),lp=getLastPos(s.id,vid);
-    return`<div class="prog-row"><div class="prog-name">${s.name}</div><div class="prog-bar-wrap"><div class="pbar"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div></div><div class="prog-pct ${pctClass(p)}">${p}%</div><span class="badge ${pctBadge(p)}" style="margin-left:6px">${pctLabel(p)}</span>${lp>0?`<span class="time-badge" style="margin-left:4px">${p>=100?'완료':fmtTime(lp)+'까지'}</span>`:''}</div>`;
-  }).join('')||'<p style="color:var(--text2);font-size:13px">학생이 없습니다.</p>';
+    const p=getPct(s.id,vid),ws=getWatchSec(s.id,vid),lp=getLastPos(s.id,vid),mr=getMaxRate(s.id,vid);
+    return`<div class="prog-row"><div class="prog-name">${s.name}</div><div class="prog-bar-wrap"><div class="pbar"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div></div><div class="prog-pct ${pctClass(p)}">${p}%</div><span class="badge ${pctBadge(p)}" style="margin-left:6px">${pctLabel(p)}</span>${lp>0?`<span class="time-badge" style="margin-left:4px">${p>=100?'완료':fmtTime(lp)+'까지'}</span>`:''}${ws>0?`<span style="font-size:11px;color:var(--text2);margin-left:4px">(${fmtTime(ws)})</span>`:''}${mr>1.05?`<span style="font-size:11px;color:var(--amber);margin-left:4px">⚡${fmtRate(mr)}</span>`:''}<button class="btn btn-sm" style="margin-left:auto" onclick="openDetail('${s.id}','${vid}')">상세</button></div>`;
+  }).join('')||'<p style="color:var(--text2);font-size:13px">'+(v.category==='review'?'권한을 받은 학생이 없습니다.':'학생이 없습니다.')+'</p>';
   document.getElementById('modal-detail').classList.add('show');
 }
 function openDetail(sid,vid){
