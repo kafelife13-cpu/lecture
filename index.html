@@ -379,6 +379,17 @@ input,button{font-family:var(--font)}
           <div class="card-head" style="background:var(--teal-bg)"><h3 style="color:var(--teal)">📬 복습 신청 대기</h3><span id="access-pending-count" style="font-size:11px;color:var(--teal)"></span></div>
           <div id="access-pending-list"></div>
         </div>
+        <!-- 직접 권한 부여 -->
+        <div class="card" style="margin-bottom:1rem">
+          <div class="card-head"><h3>학생에게 직접 권한 부여</h3><span style="font-size:11px;color:var(--text2)">학생 신청 없이 바로 부여</span></div>
+          <div class="card-body">
+            <div class="frow">
+              <div style="flex:1"><label class="flabel">학생</label><select id="access-grant-student" class="form-select"></select></div>
+              <div style="flex:1"><label class="flabel">복습 영상</label><select id="access-grant-video" class="form-select"></select></div>
+              <div style="display:flex;align-items:flex-end"><button class="btn blue" onclick="grantAccessDirect()" style="height:40px">부여</button></div>
+            </div>
+          </div>
+        </div>
         <!-- 현재 권한 목록 -->
         <div class="card">
           <div class="card-head"><h3>현재 시청 권한 목록</h3><span style="font-size:11px;color:var(--text2)">권한 해제 시 즉시 적용</span></div>
@@ -1554,7 +1565,30 @@ async function revokeAccess(sid, vid){
   notify(`${s.name}의 시청 권한이 해제되었습니다.`,'info');
   renderAccessPanel();renderDashboard();
 }
+async function grantAccessDirect(){
+  const sid=document.getElementById('access-grant-student').value;
+  const vid=document.getElementById('access-grant-video').value;
+  if(!sid||!vid){notify('학생과 영상을 선택하세요.','error');return;}
+  if(hasAccess(sid,vid)){notify('이미 시청 권한이 있습니다.','error');return;}
+  const s=db.users.find(u=>u.id===sid);
+  const v=db.videos.find(x=>x.id===vid);
+  const accessId='ac'+Date.now();
+  const res=await sb.from('video_access').insert({id:accessId,student_id:sid,video_id:vid});
+  if(res.error){notify('권한 부여 실패: '+res.error.message,'error');return;}
+  db.access.push({id:accessId,student_id:sid,video_id:vid});
+  notify(`${s.name}에게 "${v.title}" 시청 권한을 부여했습니다.`,'success');
+  renderAccessPanel();renderDashboard();
+}
 function renderAccessPanel(){
+  const gStu=document.getElementById('access-grant-student');
+  const gVid=document.getElementById('access-grant-video');
+  if(gStu&&gVid){
+    const curStu=gStu.value,curVid=gVid.value;
+    gStu.innerHTML='<option value="">학생 선택</option>'+activeStudents().map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+    gVid.innerHTML='<option value="">영상 선택</option>'+reviewVideos().map(v=>`<option value="${v.id}">${v.title}</option>`).join('');
+    if(curStu)gStu.value=curStu;
+    if(curVid)gVid.value=curVid;
+  }
   const pending=db.requests.filter(r=>r.status==='pending');
   const apc=document.getElementById('access-pending-card');
   const apl=document.getElementById('access-pending-list');
