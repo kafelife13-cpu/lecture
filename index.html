@@ -1197,8 +1197,8 @@ function pctColor(p){return p>=100?'var(--green)':p>=50?'var(--amber)':'var(--re
 function pctClass(p){return p>=100?'green':p>=50?'amber':'muted';}
 function pctBadge(p){return p>=100?'done':p>0?'partial':'none';}
 function pctLabel(p){return p>=100?'완료':p>0?p+'% 시청':'미시청';}
-function activeStudents(){return db.users.filter(u=>u.role==='student'&&u.status==='active');}
-function pendingStudents(){return db.users.filter(u=>u.role==='student'&&u.status==='pending');}
+function activeStudents(){return db.users.filter(u=>u.role==='student'&&u.status==='active').sort((a,b)=>a.name.localeCompare(b.name,'ko'));}
+function pendingStudents(){return db.users.filter(u=>u.role==='student'&&u.status==='pending').sort((a,b)=>a.name.localeCompare(b.name,'ko'));}
 function normalVideos(){return db.videos.filter(v=>v.category!=='review');}
 function reviewVideos(){return db.videos.filter(v=>v.category==='review');}
 function fmtTime(sec){if(!sec||isNaN(sec)||sec<=0)return '0초';const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=Math.floor(sec%60);if(h>0)return`${h}시간 ${m}분 ${s}초`;if(m>0)return`${m}분 ${s}초`;return`${s}초`;}
