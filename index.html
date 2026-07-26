@@ -209,6 +209,7 @@ input,button{font-family:var(--font)}
 .tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;background:rgba(79,124,255,.1);color:var(--accent);font-weight:500}
 .tag.green{background:var(--green-bg);color:var(--green)}
 .tag.teal{background:var(--teal-bg);color:var(--teal)}
+.tag.purple{background:var(--purple-bg);color:var(--purple)}
 .time-badge{display:inline-flex;align-items:center;padding:2px 6px;border-radius:4px;font-size:11px;background:rgba(34,197,94,.08);color:var(--green);font-family:var(--mono)}
 .frow{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
 .flabel{font-size:11px;color:var(--text2);font-weight:500;letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px;display:block}
@@ -1646,10 +1647,10 @@ function setView(v){
 }
 function renderProgress(){
   const el=document.getElementById('progress-content');
-  const sts=activeStudents(),vids=normalVideos();
+  const sts=activeStudents(),vids=normalVideos(),rvids=reviewVideos();
   if(progressView==='video'){
-    if(!vids.length){el.innerHTML='<div class="empty"><p>강의가 없습니다.</p></div>';return;}
-    el.innerHTML=vids.map(v=>{
+    if(!vids.length&&!rvids.length){el.innerHTML='<div class="empty"><p>강의가 없습니다.</p></div>';return;}
+    const normalCards=vids.map(v=>{
       const rows=sts.map(s=>{
         const p=getPct(s.id,v.id),ws=getWatchSec(s.id,v.id),lp=getLastPos(s.id,v.id);
         return`<div class="prog-row">
@@ -1667,13 +1668,36 @@ function renderProgress(){
       const doneC=progs.filter(p=>p>=100).length;
       return`<div class="card"><div class="card-head"><div style="display:flex;align-items:center;gap:8px"><h3>${v.title}</h3><span class="tag">${doneC}/${sts.length}명 완료</span></div><span style="font-size:12px;font-weight:700;color:${pctColor(avgP)}">평균 ${avgP}%</span></div><div style="padding:4px 1.25rem 12px">${rows||'<div style="padding:1rem;color:var(--text2);font-size:13px">학생이 없습니다.</div>'}</div></div>`;
     }).join('');
+    const reviewCards=rvids.map(v=>{
+      const granted=sts.filter(s=>hasAccess(s.id,v.id));
+      const rows=granted.map(s=>{
+        const p=getPct(s.id,v.id),ws=getWatchSec(s.id,v.id),lp=getLastPos(s.id,v.id);
+        return`<div class="prog-row">
+          <div class="prog-name">${s.name}</div>
+          <div class="prog-bar-wrap"><div class="pbar"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div></div>
+          <div class="prog-pct ${pctClass(p)}">${p}%</div>
+          <span class="badge ${pctBadge(p)}" style="margin-left:6px">${pctLabel(p)}</span>
+          ${lp>0?`<span class="time-badge" style="margin-left:4px">${p>=100?'완료':fmtTime(lp)+'까지'}</span>`:''}
+          ${ws>0?`<span style="font-size:11px;color:var(--text2);margin-left:4px">(${fmtTime(ws)})</span>`:''}
+          <button class="btn btn-sm" style="margin-left:auto" onclick="openDetail('${s.id}','${v.id}')">상세</button>
+        </div>`;
+      }).join('');
+      const progs=granted.map(s=>getPct(s.id,v.id));
+      const avgP=progs.length?Math.round(progs.reduce((a,b)=>a+b,0)/progs.length):0;
+      const doneC=progs.filter(p=>p>=100).length;
+      return`<div class="card"><div class="card-head"><div style="display:flex;align-items:center;gap:8px"><h3>${v.title}</h3><span class="tag purple">복습</span><span class="tag">${doneC}/${granted.length}명 완료</span></div><span style="font-size:12px;font-weight:700;color:${pctColor(avgP)}">평균 ${avgP}%</span></div><div style="padding:4px 1.25rem 12px">${rows||'<div style="padding:1rem;color:var(--text2);font-size:13px">권한을 받은 학생이 없습니다.</div>'}</div></div>`;
+    }).join('');
+    el.innerHTML=normalCards+reviewCards;
   } else {
     if(!sts.length){el.innerHTML='<div class="empty"><p>학생이 없습니다.</p></div>';return;}
     el.innerHTML=sts.map(s=>{
-      const rows=vids.map(v=>{
+      const myRvids=rvids.filter(v=>hasAccess(s.id,v.id));
+      const allVids=vids.concat(myRvids);
+      const rows=allVids.map(v=>{
         const p=getPct(s.id,v.id),ws=getWatchSec(s.id,v.id),lp=getLastPos(s.id,v.id);
+        const isReview=v.category==='review';
         return`<div class="prog-row">
-          <div style="flex:1;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${v.title}</div>
+          <div style="flex:1;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${v.title}${isReview?' <span class="tag purple" style="font-size:10px">복습</span>':''}</div>
           <div style="width:90px;margin:0 8px"><div class="pbar"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div></div>
           <div class="prog-pct ${pctClass(p)}">${p}%</div>
           <span class="badge ${pctBadge(p)}" style="margin-left:6px">${pctLabel(p)}</span>
@@ -1681,11 +1705,11 @@ function renderProgress(){
           ${ws>0?`<span style="font-size:11px;color:var(--text2);margin-left:4px">(${fmtTime(ws)})</span>`:''}
         </div>`;
       }).join('');
-      const progs=vids.map(v=>getPct(s.id,v.id));
+      const progs=allVids.map(v=>getPct(s.id,v.id));
       const avg=progs.length?Math.round(progs.reduce((a,b)=>a+b,0)/progs.length):0;
       const doneC=progs.filter(p=>p>=100).length;
-      const totalW=vids.reduce((a,v)=>a+getWatchSec(s.id,v.id),0);
-      return`<div class="card"><div class="card-head"><div style="display:flex;align-items:center;gap:8px"><div class="avatar student" style="width:28px;height:28px;font-size:11px">${s.name[0]}</div><h3>${s.name}</h3><span class="tag">${doneC}/${vids.length}개 완료</span>${totalW>0?`<span class="tag green">총 ${fmtTime(totalW)}</span>`:''}</div><span style="font-size:12px;font-weight:700;color:${pctColor(avg)}">평균 ${avg}%</span></div><div style="padding:4px 1.25rem 12px">${rows||'<div style="padding:1rem;color:var(--text2);font-size:13px">강의가 없습니다.</div>'}</div></div>`;
+      const totalW=allVids.reduce((a,v)=>a+getWatchSec(s.id,v.id),0);
+      return`<div class="card"><div class="card-head"><div style="display:flex;align-items:center;gap:8px"><div class="avatar student" style="width:28px;height:28px;font-size:11px">${s.name[0]}</div><h3>${s.name}</h3><span class="tag">${doneC}/${allVids.length}개 완료</span>${totalW>0?`<span class="tag green">총 ${fmtTime(totalW)}</span>`:''}</div><span style="font-size:12px;font-weight:700;color:${pctColor(avg)}">평균 ${avg}%</span></div><div style="padding:4px 1.25rem 12px">${rows||'<div style="padding:1rem;color:var(--text2);font-size:13px">강의가 없습니다.</div>'}</div></div>`;
     }).join('');
   }
 }
