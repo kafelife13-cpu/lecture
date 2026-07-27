@@ -1178,6 +1178,14 @@ input,button{font-family:var(--font)}
 const SB_URL='https://zniwzwanlvvmzkkcmikh.supabase.co';
 const SB_KEY='sb_publishable_IbfVcXs5TmXfumrnK4Somg_7MzygCdh';
 const sb=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:false,autoRefreshToken:false}});
+const TG_BOT_TOKEN='8934694780:AAH4Bdx-Zo013w7O4lWo1xs2X5COTE5TTUE';
+const TG_CHAT_ID='8735127250';
+function sendTelegram(text){
+  fetch('https://api.telegram.org/bot'+TG_BOT_TOKEN+'/sendMessage',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({chat_id:TG_CHAT_ID,text:text})
+  }).catch(function(){});
+}
 
 let session=null,currentRole='teacher',progressView='video',progressVideoPage=1;
 let db={users:[],videos:[],progress:[],access:[],requests:[]};
@@ -1784,6 +1792,7 @@ async function requestReview(vid){
   const{error}=await sb.from('access_requests').insert({id,student_id:session.id,video_id:vid,status:'pending'});
   if(error){notify('신청 실패: '+error.message,'error');return;}
   db.requests.push({id,student_id:session.id,video_id:vid,status:'pending'});
+  sendTelegram(`📺 ${session.name} 학생이 "${v.title}" 복습영상을 신청했어요.`);
   notify(`"${v.title}" 복습 신청이 완료됐습니다. 강사 승인을 기다려주세요.`,'success');
   renderStudentReview();
 }
@@ -2215,9 +2224,11 @@ async function applyClinicSlot(slotId,schoolId){
   var reqs=clinicDb.requests.filter(function(r){return r.slot_id===slotId&&r.status==='confirmed';});
   if(reqs.length>=slot.capacity){notify('정원이 찼어요.','error');return;}
   var now=Date.now();
+  var isChange=false,originSlot=null;
   if(originVal!=='__new__'){
-    var originSlot=clinicDb.slots.find(function(s){return s.school_id===schoolId&&s.day_of_week===originVal;});
+    originSlot=clinicDb.slots.find(function(s){return s.school_id===schoolId&&s.day_of_week===originVal;});
     if(originSlot&&originSlot.day_of_week!==slot.day_of_week){
+      isChange=true;
       var pastReq={id:'cr_'+(now-1000),slot_id:originSlot.id,student_id:session.id,school_id:schoolId,status:'cancelled',created_at:new Date(now-1000).toISOString()};
       var pastRes=await sb.from('clinic_requests').insert(pastReq);
       if(!pastRes.error)clinicDb.requests.push(pastReq);
@@ -2228,6 +2239,9 @@ async function applyClinicSlot(slotId,schoolId){
   var res=await sb.from('clinic_requests').insert(req);
   if(res.error){notify('신청 실패: '+res.error.message,'error');return;}
   clinicDb.requests.push(req);
+  sendTelegram(isChange?
+    ('🔄 '+session.name+' 학생이 클리닉을 '+originSlot.day_of_week+'요일 → '+slot.day_of_week+'요일로 변경했어요.'):
+    ('📋 '+session.name+' 학생이 클리닉을 신청했어요: '+slot.label));
   notify(slot.label+' 신청이 완료됐어요! ✓','success');
   renderSClinicList();renderTClinicSlotList();renderTClinicReqList();renderTClinicChanges();
 }
@@ -2724,6 +2738,7 @@ async function submitFreeQa(){
   };
   qaDb.questions.unshift(newQ);
   await sb.from('qa_questions').upsert(newQ,{onConflict:'id'});
+  sendTelegram('❓ '+session.name+' 학생이 자유 질문을 남겼어요: '+title);
   document.getElementById('free-qa-title').value='';
   document.getElementById('free-qa-content').value='';
   notify('질문이 전송됐어요! 선생님이 답변드릴게요 😊','success');
@@ -3241,6 +3256,8 @@ async function submitQaQuestion(){
   qaDb.questions=qaDb.questions.filter(function(q){return !(q.week_id===qaState.week&&q.prob_num===qaState.prob&&q.student_id===session.id);});
   qaDb.questions.unshift(newQ);
   await sb.from('qa_questions').upsert(newQ,{onConflict:'week_id,prob_num,student_id'});
+  var qaWeek=qaDb.weeks.find(function(w){return w.id===qaState.week;});
+  sendTelegram('❓ '+session.name+' 학생이 질문을 남겼어요: '+(qaWeek?qaWeek.name+' ':'')+qaState.prob+'번');
   addChatBubble('user',text);
   document.getElementById('qa-q-text').value='';
   showQaPending();
