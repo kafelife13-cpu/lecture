@@ -294,6 +294,7 @@ input,button{font-family:var(--font)}
         <div class="nav-item" onclick="tNav('qa')" data-p="qa" id="nav-qa" style="position:relative"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A 관리</div>
         <div class="nav-item" onclick="tNav('cert')" data-p="cert"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증 관리</div>
         <div class="nav-item" onclick="tNav('clinic')" data-p="clinic"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉 관리</div>
+        <div class="nav-item" onclick="tNav('study')" data-p="study"><svg viewBox="0 0 24 24"><path d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>공부 타이머</div>
         <div class="nav-item" onclick="tNav('exam')" data-p="exam"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>온라인 채점</div>
       </nav>
       <div class="sidebar-footer">
@@ -492,6 +493,19 @@ input,button{font-family:var(--font)}
         <div class="card" id="t-clinic-req-card" style="display:none">
           <div class="card-head"><h3>신청 현황</h3></div>
           <div id="t-clinic-req-list"></div>
+        </div>
+      </div>
+
+      <!-- 공부 타이머 (교사) -->
+      <div class="panel" id="panel-study">
+        <div class="page-header"><h1>공부 타이머</h1><p>학생들의 하루 공부시간을 확인하세요 (챌린지 기준 60분)</p></div>
+        <div class="card" style="margin-bottom:1rem;border-color:var(--green)">
+          <div class="card-head" style="background:var(--green-bg)"><h3 style="color:var(--green)">🏆 오늘 60분 달성</h3><span id="t-study-achieved-count" style="font-size:11px;color:var(--green)"></span></div>
+          <div id="t-study-achieved-list"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>학생별 공부시간</h3><span style="font-size:11px;color:var(--text2)">오늘 · 누적 (클릭하면 인증사진 확인)</span></div>
+          <div id="t-study-list"></div>
         </div>
       </div>
 
@@ -702,6 +716,7 @@ input,button{font-family:var(--font)}
     <button class="mobile-tab" onclick="tNav('qa')" data-mt="qa" id="mt-qa-t" style="position:relative" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A</button>
     <button class="mobile-tab" onclick="tNav('cert')" data-mt="cert" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증</button>
     <button class="mobile-tab" onclick="tNav('clinic')" data-mt="clinic" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉</button>
+    <button class="mobile-tab" onclick="tNav('study')" data-mt="study" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>타이머</button>
     <button class="mobile-tab" onclick="tNav('exam')" data-mt="exam" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>시험</button>
     <button class="mobile-tab" onclick="doLogout()" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>로그아웃</button>
   </div>
@@ -723,6 +738,7 @@ input,button{font-family:var(--font)}
         <div class="nav-item" onclick="sNav('qa')" data-p="qa" id="nav-qa-s" style="position:relative"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A</div>
         <div class="nav-item" onclick="sNav('cert')" data-p="cert"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증</div>
         <div class="nav-item" onclick="sNav('clinic')" data-p="clinic"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉 변동</div>
+        <div class="nav-item" onclick="sNav('study')" data-p="study"><svg viewBox="0 0 24 24"><path d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>공부 타이머</div>
         <div class="nav-item" onclick="sNav('exam')" data-p="exam"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>온라인 채점</div>
       </nav>
       <div class="sidebar-footer">
@@ -812,6 +828,37 @@ input,button{font-family:var(--font)}
       <div class="panel" id="panel-clinic">
         <div class="page-header"><h1>클리닉 변동 신청</h1><p>변경하고 싶은 클리닉 시간대를 선택하세요. 정원이 차면 자동으로 마감돼요.</p></div>
         <div id="s-clinic-list"></div>
+      </div>
+
+      <!-- 공부 타이머 (학생) -->
+      <div class="panel" id="panel-study">
+        <div class="page-header"><h1>공부 타이머</h1><p>공부 시작/종료할 때 사진을 찍어서 인증해요. 하루 60분 챌린지!</p></div>
+        <div class="card" style="margin-bottom:1rem">
+          <div style="padding:1.25rem;text-align:center">
+            <div style="font-size:12px;color:var(--text2);margin-bottom:4px">오늘 누적 공부시간</div>
+            <div id="s-study-today-time" style="font-size:32px;font-weight:700;color:var(--accent)">0초</div>
+            <div id="s-study-goal-badge" style="margin-top:6px"></div>
+          </div>
+        </div>
+        <div class="card" id="s-study-idle-card">
+          <div style="padding:1.5rem;text-align:center">
+            <button class="btn blue" style="padding:14px 28px;font-size:15px" onclick="startStudySession()">▶ 공부 시작</button>
+            <div style="font-size:11px;color:var(--text2);margin-top:8px">시작 버튼을 누르면 카메라로 인증사진을 찍어요</div>
+          </div>
+        </div>
+        <div class="card" id="s-study-active-card" style="display:none;border-color:var(--green)">
+          <div class="card-head" style="background:var(--green-bg)"><h3 style="color:var(--green)">⏱ 공부 중</h3></div>
+          <div style="padding:1.5rem;text-align:center">
+            <div id="s-study-timer" style="font-size:36px;font-weight:700;font-family:var(--mono);color:var(--green)">00:00:00</div>
+            <div style="font-size:11px;color:var(--text2);margin:8px 0 16px">시작: <span id="s-study-start-label"></span></div>
+            <button class="btn red" style="padding:14px 28px;font-size:15px" onclick="endStudySession()">■ 공부 종료</button>
+          </div>
+        </div>
+        <input type="file" id="study-photo-input" accept="image/*" capture="environment" style="display:none">
+        <div class="card" style="margin-top:1rem">
+          <div class="card-head"><h3>오늘 기록</h3></div>
+          <div id="s-study-log-list"></div>
+        </div>
       </div>
 
       <!-- 시험 분석 (학생) -->
@@ -910,6 +957,7 @@ input,button{font-family:var(--font)}
     <button class="mobile-tab" onclick="sNav('qa')" data-ms="qa" id="mt-qa-s" style="position:relative" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A</button>
     <button class="mobile-tab" onclick="sNav('cert')" data-ms="cert" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증</button>
     <button class="mobile-tab" onclick="sNav('clinic')" data-ms="clinic" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉</button>
+    <button class="mobile-tab" onclick="sNav('study')" data-ms="study" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>타이머</button>
     <button class="mobile-tab" onclick="sNav('exam')" data-ms="exam" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>시험</button>
     <button class="mobile-tab" onclick="doLogout()" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>로그아웃</button>
   </div>
@@ -1349,6 +1397,7 @@ function tNav(panel){
   if(panel==='qa'){renderTQaSchoolTabs();renderTQaWeekList();renderQaWeekFilter();renderQaReview();renderQaMaterialsList();}
   if(panel==='cert'){renderTCertSchoolTabs();renderTCertWeekList();}
   if(panel==='clinic')renderTClinicSchoolTabs();
+  if(panel==='study')renderTStudy();
   if(panel==='exam')renderTExam();
 }
 
@@ -1755,6 +1804,7 @@ function sNav(panel){
   if(panel==='qa'){renderSQaSchoolList();renderSQaMyList();clearQaBadge();}
   if(panel==='cert')renderSCertList();
   if(panel==='clinic')renderSClinicList();
+  if(panel==='study')renderSStudy();
   if(panel==='exam')renderSExam();
 }
 
@@ -2010,6 +2060,161 @@ async function loadClinicData(){
   }catch(e){console.error('clinic load error',e);}
 }
 
+/* ===== 공부 타이머 ===== */
+var studyDb={sessions:[]};
+var studyActiveSession=null,studyTimerInterval=null,studyPendingAction=null;
+
+async function loadStudyData(){
+  try{
+    var r=await sb.from('study_sessions').select('*').order('start_time',{ascending:false});
+    studyDb.sessions=r.data||[];
+  }catch(e){console.error('study load error',e);}
+}
+function studyTodayStr(){return new Date().toDateString();}
+function studySessionsForToday(sid){
+  return studyDb.sessions.filter(function(s){return s.student_id===sid&&new Date(s.start_time).toDateString()===studyTodayStr();});
+}
+function studySeconds(list){
+  var total=0;
+  list.forEach(function(s){
+    var end=s.end_time?new Date(s.end_time):new Date();
+    total+=Math.max(0,(end-new Date(s.start_time))/1000);
+  });
+  return Math.floor(total);
+}
+function studyTodaySeconds(sid){return studySeconds(studySessionsForToday(sid));}
+function studyTotalSeconds(sid){return studySeconds(studyDb.sessions.filter(function(s){return s.student_id===sid;}));}
+
+function renderSStudy(){
+  if(!session)return;
+  studyActiveSession=studyDb.sessions.find(function(s){return s.student_id===session.id&&!s.end_time;})||null;
+  var todaySec=studyTodaySeconds(session.id);
+  document.getElementById('s-study-today-time').textContent=fmtTime(todaySec);
+  var goalEl=document.getElementById('s-study-goal-badge');
+  goalEl.innerHTML=todaySec>=3600?'<span class="badge done">✓ 오늘 60분 달성!</span>':'<span class="badge partial">'+Math.floor(todaySec/60)+'분 / 60분</span>';
+  if(studyActiveSession){
+    document.getElementById('s-study-idle-card').style.display='none';
+    document.getElementById('s-study-active-card').style.display='';
+    document.getElementById('s-study-start-label').textContent=new Date(studyActiveSession.start_time).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+    startStudyTimerDisplay();
+  }else{
+    document.getElementById('s-study-idle-card').style.display='';
+    document.getElementById('s-study-active-card').style.display='none';
+    stopStudyTimerDisplay();
+  }
+  renderSStudyLog();
+}
+function startStudyTimerDisplay(){
+  stopStudyTimerDisplay();
+  var update=function(){
+    if(!studyActiveSession)return;
+    var sec=Math.max(0,Math.floor((Date.now()-new Date(studyActiveSession.start_time).getTime())/1000));
+    var h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60;
+    var el=document.getElementById('s-study-timer');
+    if(el)el.textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  };
+  update();
+  studyTimerInterval=setInterval(update,1000);
+}
+function stopStudyTimerDisplay(){if(studyTimerInterval){clearInterval(studyTimerInterval);studyTimerInterval=null;}}
+function renderSStudyLog(){
+  var el=document.getElementById('s-study-log-list');
+  if(!el)return;
+  var todays=studySessionsForToday(session.id).sort(function(a,b){return new Date(b.start_time)-new Date(a.start_time);});
+  if(!todays.length){el.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px">오늘 기록이 없어요.</div>';return;}
+  el.innerHTML=todays.map(function(s){
+    var start=new Date(s.start_time),end=s.end_time?new Date(s.end_time):null;
+    var dur=end?Math.floor((end-start)/1000):Math.floor((Date.now()-start)/1000);
+    var timeLabel=start.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+(end?' ~ '+end.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}):' ~ 진행중');
+    return '<div style="padding:10px 1.25rem;border-bottom:1px solid var(--border)">'+
+      '<div style="font-size:13px;font-weight:600">'+timeLabel+'</div>'+
+      '<div style="font-size:11px;color:var(--text2)">'+fmtTime(dur)+(end?'':' (진행중)')+'</div></div>';
+  }).join('');
+}
+function startStudySession(){studyPendingAction='start';document.getElementById('study-photo-input').click();}
+function endStudySession(){
+  if(!studyActiveSession){notify('진행중인 공부 세션이 없어요.','error');return;}
+  studyPendingAction='end';document.getElementById('study-photo-input').click();
+}
+async function onStudyPhotoSelected(e){
+  var file=e.target.files[0];
+  e.target.value='';
+  var action=studyPendingAction;studyPendingAction=null;
+  if(!file||!session||!action)return;
+  notify('업로드 중...','info');
+  try{
+    var ext=(file.name.split('.').pop()||'jpg').toLowerCase();
+    var path='study/'+session.id+'/'+Date.now()+'_'+action+'.'+ext;
+    var up=await sb.storage.from('exam-photos').upload(path,file,{upsert:true});
+    if(up.error){notify('업로드 실패: '+up.error.message,'error');return;}
+    var urlRes=sb.storage.from('exam-photos').getPublicUrl(path);
+    var url=urlRes.data?urlRes.data.publicUrl:null;
+    if(action==='start'){
+      var id='ss_'+Date.now();
+      var row={id:id,student_id:session.id,start_time:new Date().toISOString(),start_photo_url:url};
+      var res=await sb.from('study_sessions').insert(row);
+      if(res.error){notify('시작 실패: '+res.error.message,'error');return;}
+      studyDb.sessions.unshift(row);
+      sendTelegram('📚 '+session.name+' 학생이 공부를 시작했어요.');
+      notify('공부를 시작했어요! 화이팅 💪','success');
+    }else{
+      var updates={end_time:new Date().toISOString(),end_photo_url:url};
+      var res2=await sb.from('study_sessions').update(updates).eq('id',studyActiveSession.id);
+      if(res2.error){notify('종료 실패: '+res2.error.message,'error');return;}
+      Object.assign(studyActiveSession,updates);
+      var durSec=Math.floor((new Date(updates.end_time)-new Date(studyActiveSession.start_time))/1000);
+      sendTelegram('📚 '+session.name+' 학생이 공부를 마쳤어요 ('+fmtTime(durSec)+').');
+      notify('수고하셨어요! 공부가 기록됐어요 🎉','success');
+    }
+    renderSStudy();
+  }catch(err){notify('오류: '+err.message,'error');}
+}
+
+function renderTStudy(){
+  var sts=activeStudents();
+  var todayAch=sts.filter(function(s){return studyTodaySeconds(s.id)>=3600;});
+  var achCountEl=document.getElementById('t-study-achieved-count');
+  if(achCountEl)achCountEl.textContent=todayAch.length+'명';
+  var achEl=document.getElementById('t-study-achieved-list');
+  if(achEl)achEl.innerHTML=todayAch.length?todayAch.map(function(s){
+    return '<div style="display:flex;align-items:center;gap:10px;padding:10px 1.25rem;border-bottom:1px solid var(--border)">'+
+      '<div class="avatar student" style="width:28px;height:28px;font-size:11px">'+s.name[0]+'</div>'+
+      '<div style="flex:1;font-size:13px;font-weight:600">'+s.name+'</div>'+
+      '<span class="badge done">'+fmtTime(studyTodaySeconds(s.id))+'</span></div>';
+  }).join(''):'<div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px">아직 없어요.</div>';
+  var listEl=document.getElementById('t-study-list');
+  if(!listEl)return;
+  var sorted=sts.slice().sort(function(a,b){return studyTodaySeconds(b.id)-studyTodaySeconds(a.id);});
+  listEl.innerHTML=sorted.map(function(s){
+    var today=studyTodaySeconds(s.id),total=studyTotalSeconds(s.id);
+    return '<div style="display:flex;align-items:center;gap:10px;padding:11px 1.25rem;border-bottom:1px solid var(--border);cursor:pointer" onclick="openStudyStudentDetail(\''+s.id+'\')">'+
+      '<div class="avatar student" style="width:28px;height:28px;font-size:11px">'+s.name[0]+'</div>'+
+      '<div style="flex:1"><div style="font-size:13px;font-weight:600">'+s.name+'</div>'+
+      '<div style="font-size:11px;color:var(--text2)">오늘 '+fmtTime(today)+' · 누적 '+fmtTime(total)+'</div></div>'+
+      (today>=3600?'<span class="badge done" style="margin-right:6px">🏆</span>':'')+
+      '<span style="color:var(--text3)">›</span></div>';
+  }).join('')||'<div style="padding:2rem;text-align:center;color:var(--text3);font-size:13px">학생이 없습니다.</div>';
+}
+function openStudyStudentDetail(sid){
+  var s=db.users.find(function(u){return u.id===sid;});
+  var mySessions=studyDb.sessions.filter(function(x){return x.student_id===sid;}).sort(function(a,b){return new Date(b.start_time)-new Date(a.start_time);});
+  document.getElementById('detail-title').textContent=(s?s.name:sid)+' — 공부 기록';
+  document.getElementById('detail-body').innerHTML=mySessions.length?mySessions.map(function(x){
+    var start=new Date(x.start_time),end=x.end_time?new Date(x.end_time):null;
+    var dur=end?Math.floor((end-start)/1000):Math.floor((Date.now()-start)/1000);
+    var dateLabel=start.toLocaleDateString('ko-KR')+' '+start.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+(end?' ~ '+end.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}):' (진행중)');
+    return '<div style="padding:12px 0;border-bottom:1px solid var(--border)">'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
+      '<span style="font-size:13px;font-weight:600">'+dateLabel+'</span>'+
+      '<span class="badge '+(end?'done':'partial')+'" style="margin-left:auto">'+fmtTime(dur)+'</span></div>'+
+      '<div style="display:flex;gap:8px">'+
+      (x.start_photo_url?'<a href="'+x.start_photo_url+'" target="_blank"><img src="'+x.start_photo_url+'" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--border)"></a>':'')+
+      (x.end_photo_url?'<a href="'+x.end_photo_url+'" target="_blank"><img src="'+x.end_photo_url+'" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--border)"></a>':'')+
+      '</div></div>';
+  }).join(''):'<p style="color:var(--text2);font-size:13px">기록이 없습니다.</p>';
+  document.getElementById('modal-detail').classList.add('show');
+}
+
 function openClinicSlotModal(){
   document.getElementById('cs-label').value='';
   document.getElementById('cs-day').value='';
@@ -2256,6 +2461,7 @@ async function cancelMyClinicReq(id){
 }
 
 document.getElementById('modal-clinic-slot').addEventListener('click',function(e){if(e.target===e.currentTarget)closeClinicSlotModal();});
+document.getElementById('study-photo-input').addEventListener('change',onStudyPhotoSelected);
 
 /* ===== 인증 ===== */
 var certDb={weeks:[],items:[],submissions:[],targets:{}};
@@ -3386,6 +3592,7 @@ document.getElementById('modal-qa-teacher').addEventListener('click',function(e)
     await loadQaData();
     await loadCertData();
     await loadClinicData();
+    await loadStudyData();
     var saved=localStorage.getItem('lms_sess');
     if(saved){
       try{
