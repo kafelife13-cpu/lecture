@@ -1190,7 +1190,7 @@ function sendTelegram(text){
 let session=null,currentRole='teacher',progressView='video',progressVideoPage=1;
 let db={users:[],videos:[],progress:[],access:[],requests:[]};
 let ytPlayer=null,ytApiReady=false,currentVid=null,currentStartPos=0;
-let watchedSet=new Set(),trackTimer=null,saveTimer=null,lastPos=-1,totalDur=0,maxRateSeen=1,pendingSeek=null;
+let watchedSet=new Set(),trackTimer=null,saveTimer=null,lastPos=-1,totalDur=0,maxRateSeen=1;
 
 window.onYouTubeIframeAPIReady=function(){ytApiReady=true;};
 
@@ -1905,11 +1905,17 @@ function openPlay(vid, forceStart){
 function initYT(videoId){
   if(ytPlayer){try{ytPlayer.destroy();}catch(e){}ytPlayer=null;}
   document.getElementById('yt-player').innerHTML='';
-  watchedSet=new Set();lastPos=-1;totalDur=0;maxRateSeen=1;pendingSeek=null;
+  watchedSet=new Set();lastPos=-1;totalDur=0;maxRateSeen=1;
   updateTrackUI(0);
+  // 이어보기 위치는 seekTo로 나중에 이동시키는 대신, 유튜브 플레이어를
+  // 로드하는 시점에 start 파라미터로 바로 지정한다. 로드 후 seekTo로
+  // 옮기는 방식은 사용자가 재생 버튼을 누르는 순간 유튜브가 0초로
+  // 되돌리는 경우가 있어 신뢰할 수 없었다.
+  const startSec=currentStartPos>0?Math.floor(currentStartPos):0;
+  if(startSec>0)notify(`${fmtTime(startSec)}부터 이어서 재생합니다.`,'info');
   ytPlayer=new YT.Player('yt-player',{
     videoId,width:'100%',height:'100%',
-    playerVars:{rel:0,modestbranding:1,playsinline:1},
+    playerVars:{rel:0,modestbranding:1,playsinline:1,start:startSec},
     events:{onReady:onYTReady,onStateChange:onYTState}
   });
 }
@@ -1922,25 +1928,9 @@ function onYTReady(e){
       if(!currentVid||!session)return;
       const pct=getPct(session.id,currentVid);
       if(pct>0){const ws=Math.floor((pct/100)*totalDur);for(let i=0;i<ws;i++)watchedSet.add(i);updateTrackUI(pct);}
-      // currentStartPos 기반으로 이동. 플레이어가 아직 탐색 가능한 상태가 아니면
-      // seekTo가 조용히 무시될 수 있어서, 몇 초에 걸쳐 위치를 확인하며 반복 보정한다.
-      if(currentStartPos>0){
-        pendingSeek=currentStartPos;
-        notify(`${fmtTime(currentStartPos)}부터 이어서 재생합니다.`,'info');
-        seekWithRetry(currentStartPos,8);
-      }
     } else if(attempts>0){setTimeout(()=>tryDur(attempts-1),500);}
   };
   tryDur(10);
-}
-function seekWithRetry(target,attemptsLeft){
-  if(!ytPlayer||attemptsLeft<=0||pendingSeek===null)return;
-  try{
-    const cur=ytPlayer.getCurrentTime?ytPlayer.getCurrentTime():0;
-    if(Math.abs(cur-target)>2)ytPlayer.seekTo(target,true);
-    else pendingSeek=null;
-  }catch(err){}
-  setTimeout(()=>seekWithRetry(target,attemptsLeft-1),500);
 }
 function onYTState(e){
   const dot=document.getElementById('live-dot');
@@ -1997,7 +1987,7 @@ async function closePlay(){
   if(ytPlayer){try{ytPlayer.stopVideo();ytPlayer.destroy();}catch(e){}ytPlayer=null;}
   document.getElementById('yt-player').innerHTML='';
   document.getElementById('modal-play').classList.remove('show');
-  currentVid=null;currentStartPos=0;watchedSet=new Set();lastPos=-1;totalDur=0;maxRateSeen=1;pendingSeek=null;
+  currentVid=null;currentStartPos=0;watchedSet=new Set();lastPos=-1;totalDur=0;maxRateSeen=1;
   if(session&&session.role==='student'){renderLectures();renderStudentReview();}
 }
 
