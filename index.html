@@ -2128,8 +2128,48 @@ function renderSStudyLog(){
     var timeLabel=start.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+(end?' ~ '+end.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}):' ~ 진행중');
     return '<div style="padding:10px 1.25rem;border-bottom:1px solid var(--border)">'+
       '<div style="font-size:13px;font-weight:600">'+timeLabel+'</div>'+
-      '<div style="font-size:11px;color:var(--text2)">'+fmtTime(dur)+(end?'':' (진행중)')+'</div></div>';
+      '<div style="font-size:11px;color:var(--text2);margin-bottom:8px">'+fmtTime(dur)+(end?'':' (진행중)')+'</div>'+
+      '<div style="display:flex;gap:8px">'+
+      (s.start_photo_url?'<a href="'+s.start_photo_url+'" target="_blank"><img src="'+s.start_photo_url+'" style="width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid var(--border)"></a>':'')+
+      (s.end_photo_url?'<a href="'+s.end_photo_url+'" target="_blank"><img src="'+s.end_photo_url+'" style="width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid var(--border)"></a>':'')+
+      '</div></div>';
   }).join('');
+}
+/* 사진 우측 하단에 촬영 시각을 텍스트로 새겨서 새 파일로 반환 */
+function stampPhotoWithTime(file){
+  return new Promise(function(resolve){
+    var reader=new FileReader();
+    reader.onload=function(e){
+      var img=new Image();
+      img.onload=function(){
+        try{
+          var canvas=document.createElement('canvas');
+          canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
+          var ctx=canvas.getContext('2d');
+          ctx.drawImage(img,0,0);
+          var text=new Date().toLocaleString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+          var fontSize=Math.max(20,Math.round(canvas.width/22));
+          ctx.font='bold '+fontSize+'px sans-serif';
+          var textW=ctx.measureText(text).width;
+          var pad=fontSize*0.5;
+          var x=canvas.width-textW-pad*2;
+          var y=canvas.height-pad*1.3;
+          ctx.fillStyle='rgba(0,0,0,0.55)';
+          ctx.fillRect(Math.max(0,x-pad/2),y-fontSize,textW+pad*1.5,fontSize+pad);
+          ctx.fillStyle='#fff';
+          ctx.fillText(text,Math.max(pad/2,x),y);
+          canvas.toBlob(function(blob){
+            if(!blob){resolve(file);return;}
+            resolve(new File([blob],'photo.jpg',{type:'image/jpeg'}));
+          },'image/jpeg',0.9);
+        }catch(err){resolve(file);}
+      };
+      img.onerror=function(){resolve(file);};
+      img.src=e.target.result;
+    };
+    reader.onerror=function(){resolve(file);};
+    reader.readAsDataURL(file);
+  });
 }
 function startStudySession(){studyPendingAction='start';document.getElementById('study-photo-input').click();}
 function endStudySession(){
@@ -2143,9 +2183,9 @@ async function onStudyPhotoSelected(e){
   if(!file||!session||!action)return;
   notify('업로드 중...','info');
   try{
-    var ext=(file.name.split('.').pop()||'jpg').toLowerCase();
-    var path='study/'+session.id+'/'+Date.now()+'_'+action+'.'+ext;
-    var up=await sb.storage.from('exam-photos').upload(path,file,{upsert:true});
+    var stamped=await stampPhotoWithTime(file);
+    var path='study/'+session.id+'/'+Date.now()+'_'+action+'.jpg';
+    var up=await sb.storage.from('exam-photos').upload(path,stamped,{upsert:true,contentType:'image/jpeg'});
     if(up.error){notify('업로드 실패: '+up.error.message,'error');return;}
     var urlRes=sb.storage.from('exam-photos').getPublicUrl(path);
     var url=urlRes.data?urlRes.data.publicUrl:null;
