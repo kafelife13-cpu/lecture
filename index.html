@@ -1922,23 +1922,29 @@ function onYTReady(e){
       if(!currentVid||!session)return;
       const pct=getPct(session.id,currentVid);
       if(pct>0){const ws=Math.floor((pct/100)*totalDur);for(let i=0;i<ws;i++)watchedSet.add(i);updateTrackUI(pct);}
-      // currentStartPos 기반으로 이동 (실제 재생이 시작된 뒤 onYTState에서 처리)
-      if(currentStartPos>0)pendingSeek=currentStartPos;
+      // currentStartPos 기반으로 이동. 플레이어가 아직 탐색 가능한 상태가 아니면
+      // seekTo가 조용히 무시될 수 있어서, 몇 초에 걸쳐 위치를 확인하며 반복 보정한다.
+      if(currentStartPos>0){
+        pendingSeek=currentStartPos;
+        notify(`${fmtTime(currentStartPos)}부터 이어서 재생합니다.`,'info');
+        seekWithRetry(currentStartPos,8);
+      }
     } else if(attempts>0){setTimeout(()=>tryDur(attempts-1),500);}
   };
   tryDur(10);
 }
+function seekWithRetry(target,attemptsLeft){
+  if(!ytPlayer||attemptsLeft<=0||pendingSeek===null)return;
+  try{
+    const cur=ytPlayer.getCurrentTime?ytPlayer.getCurrentTime():0;
+    if(Math.abs(cur-target)>2)ytPlayer.seekTo(target,true);
+    else pendingSeek=null;
+  }catch(err){}
+  setTimeout(()=>seekWithRetry(target,attemptsLeft-1),500);
+}
 function onYTState(e){
   const dot=document.getElementById('live-dot');
-  if(e.data===YT.PlayerState.PLAYING){
-    dot.classList.add('active');
-    if(pendingSeek!==null){
-      const pos=pendingSeek;pendingSeek=null;
-      try{ytPlayer.seekTo(pos,true);}catch(err){}
-      notify(`${fmtTime(pos)}부터 이어서 재생합니다.`,'info');
-    }
-    startTracking();
-  }
+  if(e.data===YT.PlayerState.PLAYING){dot.classList.add('active');startTracking();}
   else{dot.classList.remove('active');stopTracking();
     if(e.data===YT.PlayerState.ENDED){if(totalDur>0)for(let i=0;i<=Math.floor(totalDur);i++)watchedSet.add(i);updateTrackUI(100);scheduleSave();}
   }
