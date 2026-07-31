@@ -1017,6 +1017,20 @@ input,button{font-family:var(--font)}
 </div>
 
 <!-- 클리닉 시간대 추가 모달 -->
+<!-- 공부 타이머 인증사진 카메라 -->
+<div class="modal-bg" id="modal-study-camera">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-head"><h3>공부 인증 사진</h3><button class="modal-close" onclick="closeStudyCamera()">×</button></div>
+    <div class="modal-body" style="padding:0">
+      <video id="study-cam-video" autoplay playsinline muted style="width:100%;display:block;background:#000;max-height:60vh;object-fit:contain"></video>
+    </div>
+    <div class="modal-footer" style="display:flex;gap:8px">
+      <button class="btn" style="flex:1" onclick="closeStudyCamera()">취소</button>
+      <button class="btn blue" style="flex:2" onclick="captureStudyPhoto()">📸 촬영</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-bg" id="modal-clinic-slot">
   <div class="modal" style="max-width:480px">
     <div class="modal-head"><h3>클리닉 시간대 추가</h3><button class="modal-close" onclick="closeClinicSlotModal()">×</button></div>
@@ -2136,6 +2150,19 @@ function renderSStudyLog(){
   }).join('');
 }
 /* 사진 우측 하단에 촬영 시각을 텍스트로 새겨서 새 파일로 반환 */
+function drawStudyTimeStamp(ctx,w,h){
+  var text=new Date().toLocaleString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  var fontSize=Math.max(20,Math.round(w/22));
+  ctx.font='bold '+fontSize+'px sans-serif';
+  var textW=ctx.measureText(text).width;
+  var pad=fontSize*0.5;
+  var x=w-textW-pad*2;
+  var y=h-pad*1.3;
+  ctx.fillStyle='rgba(0,0,0,0.55)';
+  ctx.fillRect(Math.max(0,x-pad/2),y-fontSize,textW+pad*1.5,fontSize+pad);
+  ctx.fillStyle='#fff';
+  ctx.fillText(text,Math.max(pad/2,x),y);
+}
 function stampPhotoWithTime(file){
   return new Promise(function(resolve){
     var reader=new FileReader();
@@ -2147,17 +2174,7 @@ function stampPhotoWithTime(file){
           canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
           var ctx=canvas.getContext('2d');
           ctx.drawImage(img,0,0);
-          var text=new Date().toLocaleString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});
-          var fontSize=Math.max(20,Math.round(canvas.width/22));
-          ctx.font='bold '+fontSize+'px sans-serif';
-          var textW=ctx.measureText(text).width;
-          var pad=fontSize*0.5;
-          var x=canvas.width-textW-pad*2;
-          var y=canvas.height-pad*1.3;
-          ctx.fillStyle='rgba(0,0,0,0.55)';
-          ctx.fillRect(Math.max(0,x-pad/2),y-fontSize,textW+pad*1.5,fontSize+pad);
-          ctx.fillStyle='#fff';
-          ctx.fillText(text,Math.max(pad/2,x),y);
+          drawStudyTimeStamp(ctx,canvas.width,canvas.height);
           canvas.toBlob(function(blob){
             if(!blob){resolve(file);return;}
             resolve(new File([blob],'photo.jpg',{type:'image/jpeg'}));
@@ -2171,21 +2188,71 @@ function stampPhotoWithTime(file){
     reader.readAsDataURL(file);
   });
 }
-function startStudySession(){studyPendingAction='start';document.getElementById('study-photo-input').click();}
+
+/* 페이지 안에서 카메라를 직접 열어 촬영 — 네이티브 카메라 앱을 띄우지 않아
+   기기에 따라 셔터음이 안 날 수 있다 (단, 국내 정식 출시 기기는 촬영음
+   강제 정책 때문에 이 방식으로도 완전히 막지 못할 수 있음). 카메라 접근이
+   안 되면 기존 파일 선택(기본 카메라 앱) 방식으로 자동 대체된다. */
+var studyCamStream=null;
+function startStudySession(){openStudyCamera('start');}
 function endStudySession(){
   if(!studyActiveSession){notify('진행중인 공부 세션이 없어요.','error');return;}
-  studyPendingAction='end';document.getElementById('study-photo-input').click();
+  openStudyCamera('end');
+}
+async function openStudyCamera(action){
+  studyPendingAction=action;
+  if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)){
+    document.getElementById('study-photo-input').click();
+    return;
+  }
+  try{
+    studyCamStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
+    document.getElementById('study-cam-video').srcObject=studyCamStream;
+    document.getElementById('modal-study-camera').classList.add('show');
+  }catch(err){
+    notify('카메라를 열 수 없어요, 기본 카메라로 대신 촬영해주세요.','info');
+    document.getElementById('study-photo-input').click();
+  }
+}
+function stopStudyCamStream(){
+  if(studyCamStream){try{studyCamStream.getTracks().forEach(function(t){t.stop();});}catch(e){}studyCamStream=null;}
+}
+function closeStudyCamera(){
+  stopStudyCamStream();
+  document.getElementById('modal-study-camera').classList.remove('show');
+  studyPendingAction=null;
+}
+function captureStudyPhoto(){
+  var video=document.getElementById('study-cam-video');
+  var w=video.videoWidth,h=video.videoHeight;
+  if(!w||!h){notify('카메라 준비 중이에요, 잠시 후 다시 시도해주세요.','error');return;}
+  var canvas=document.createElement('canvas');
+  canvas.width=w;canvas.height=h;
+  var ctx=canvas.getContext('2d');
+  ctx.drawImage(video,0,0,w,h);
+  drawStudyTimeStamp(ctx,w,h);
+  var action=studyPendingAction;
+  stopStudyCamStream();
+  document.getElementById('modal-study-camera').classList.remove('show');
+  canvas.toBlob(function(blob){
+    if(!blob){notify('사진 촬영 실패','error');return;}
+    handleStudyPhotoFile(new File([blob],'photo.jpg',{type:'image/jpeg'}),action);
+  },'image/jpeg',0.9);
 }
 async function onStudyPhotoSelected(e){
   var file=e.target.files[0];
   e.target.value='';
   var action=studyPendingAction;studyPendingAction=null;
   if(!file||!session||!action)return;
+  var stamped=await stampPhotoWithTime(file);
+  await handleStudyPhotoFile(stamped,action);
+}
+async function handleStudyPhotoFile(file,action){
+  if(!file||!session||!action)return;
   notify('업로드 중...','info');
   try{
-    var stamped=await stampPhotoWithTime(file);
     var path='study/'+session.id+'/'+Date.now()+'_'+action+'.jpg';
-    var up=await sb.storage.from('exam-photos').upload(path,stamped,{upsert:true,contentType:'image/jpeg'});
+    var up=await sb.storage.from('exam-photos').upload(path,file,{upsert:true,contentType:'image/jpeg'});
     if(up.error){notify('업로드 실패: '+up.error.message,'error');return;}
     var urlRes=sb.storage.from('exam-photos').getPublicUrl(path);
     var url=urlRes.data?urlRes.data.publicUrl:null;
@@ -2502,6 +2569,7 @@ async function cancelMyClinicReq(id){
 
 document.getElementById('modal-clinic-slot').addEventListener('click',function(e){if(e.target===e.currentTarget)closeClinicSlotModal();});
 document.getElementById('study-photo-input').addEventListener('change',onStudyPhotoSelected);
+document.getElementById('modal-study-camera').addEventListener('click',function(e){if(e.target===e.currentTarget)closeStudyCamera();});
 
 /* ===== 인증 ===== */
 var certDb={weeks:[],items:[],submissions:[],targets:{}};
