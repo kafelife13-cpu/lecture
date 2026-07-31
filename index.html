@@ -1190,7 +1190,7 @@ function sendTelegram(text){
 let session=null,currentRole='teacher',progressView='video',progressVideoPage=1;
 let db={users:[],videos:[],progress:[],access:[],requests:[]};
 let ytPlayer=null,ytApiReady=false,currentVid=null,currentStartPos=0;
-let watchedSet=new Set(),trackTimer=null,saveTimer=null,lastPos=-1,totalDur=0,maxRateSeen=1;
+let watchedSet=new Set(),trackTimer=null,saveTimer=null,lastPos=-1,totalDur=0,maxRateSeen=1,pendingSeek=null;
 
 window.onYouTubeIframeAPIReady=function(){ytApiReady=true;};
 
@@ -1905,7 +1905,7 @@ function openPlay(vid, forceStart){
 function initYT(videoId){
   if(ytPlayer){try{ytPlayer.destroy();}catch(e){}ytPlayer=null;}
   document.getElementById('yt-player').innerHTML='';
-  watchedSet=new Set();lastPos=-1;totalDur=0;maxRateSeen=1;
+  watchedSet=new Set();lastPos=-1;totalDur=0;maxRateSeen=1;pendingSeek=null;
   updateTrackUI(0);
   ytPlayer=new YT.Player('yt-player',{
     videoId,width:'100%',height:'100%',
@@ -1922,20 +1922,23 @@ function onYTReady(e){
       if(!currentVid||!session)return;
       const pct=getPct(session.id,currentVid);
       if(pct>0){const ws=Math.floor((pct/100)*totalDur);for(let i=0;i<ws;i++)watchedSet.add(i);updateTrackUI(pct);}
-      // currentStartPos 기반으로 이동
-      if(currentStartPos>0){
-        setTimeout(()=>{
-          try{e.target.seekTo(currentStartPos,true);}catch(err){}
-          notify(`${fmtTime(currentStartPos)}부터 이어서 재생합니다.`,'info');
-        },800);
-      }
+      // currentStartPos 기반으로 이동 (실제 재생이 시작된 뒤 onYTState에서 처리)
+      if(currentStartPos>0)pendingSeek=currentStartPos;
     } else if(attempts>0){setTimeout(()=>tryDur(attempts-1),500);}
   };
   tryDur(10);
 }
 function onYTState(e){
   const dot=document.getElementById('live-dot');
-  if(e.data===YT.PlayerState.PLAYING){dot.classList.add('active');startTracking();}
+  if(e.data===YT.PlayerState.PLAYING){
+    dot.classList.add('active');
+    if(pendingSeek!==null){
+      const pos=pendingSeek;pendingSeek=null;
+      try{ytPlayer.seekTo(pos,true);}catch(err){}
+      notify(`${fmtTime(pos)}부터 이어서 재생합니다.`,'info');
+    }
+    startTracking();
+  }
   else{dot.classList.remove('active');stopTracking();
     if(e.data===YT.PlayerState.ENDED){if(totalDur>0)for(let i=0;i<=Math.floor(totalDur);i++)watchedSet.add(i);updateTrackUI(100);scheduleSave();}
   }
@@ -1988,7 +1991,7 @@ async function closePlay(){
   if(ytPlayer){try{ytPlayer.stopVideo();ytPlayer.destroy();}catch(e){}ytPlayer=null;}
   document.getElementById('yt-player').innerHTML='';
   document.getElementById('modal-play').classList.remove('show');
-  currentVid=null;currentStartPos=0;watchedSet=new Set();lastPos=-1;totalDur=0;maxRateSeen=1;
+  currentVid=null;currentStartPos=0;watchedSet=new Set();lastPos=-1;totalDur=0;maxRateSeen=1;pendingSeek=null;
   if(session&&session.role==='student'){renderLectures();renderStudentReview();}
 }
 
