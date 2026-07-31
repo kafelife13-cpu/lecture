@@ -1895,6 +1895,7 @@ function openPlay(vid, forceStart){
   currentStartPos=(forceStart===true)?0:lp;
   const id=ytId(v.url);
   if(!id){notify('유효하지 않은 유튜브 URL입니다.','error');return;}
+  sendTelegram('▶️ '+session.name+' 학생이 "'+v.title+'" 강의 시청을 시작했어요.');
   document.getElementById('play-title').textContent=v.title;
   document.getElementById('modal-play').classList.add('show');
   let tries=0;
