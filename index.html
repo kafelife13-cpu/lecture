@@ -1264,7 +1264,18 @@ function getWatchSec(sid,vid){const r=db.progress.find(p=>p.student_id===sid&&p.
 function getLastPos(sid,vid){const r=db.progress.find(p=>p.student_id===sid&&p.video_id===vid);return r?(r.last_position||0):0;}
 function getMaxRate(sid,vid){const r=db.progress.find(p=>p.student_id===sid&&p.video_id===vid);return r?(r.max_rate||1):1;}
 function fmtRate(r){return(Math.round(r*100)/100)+'x';}
-function hasAccess(sid,vid){return db.access.some(a=>a.student_id===sid&&a.video_id===vid);}
+/* 복습영상 시청 권한은 부여된 시점 기준으로 그 다음 돌아오는 일요일 밤 9시에 자동 마감된다 */
+function nextSunday9pm(fromDate){
+  const d=new Date(fromDate);
+  const target=new Date(d);
+  target.setHours(21,0,0,0);
+  target.setDate(d.getDate()+((7-d.getDay())%7));
+  if(target<=d)target.setDate(target.getDate()+7);
+  return target;
+}
+function accessExpiry(a){return nextSunday9pm(new Date(a.granted_at));}
+function isAccessExpired(a){const exp=accessExpiry(a);return !isNaN(exp)&&new Date()>exp;}
+function hasAccess(sid,vid){return db.access.some(a=>a.student_id===sid&&a.video_id===vid&&!isAccessExpired(a));}
 function hasRequested(sid,vid){return db.requests.some(r=>r.student_id===sid&&r.video_id===vid);}
 function pctColor(p){return p>=100?'var(--green)':p>=50?'var(--amber)':'var(--red)';}
 function pctClass(p){return p>=100?'green':p>=50?'amber':'muted';}
@@ -1612,9 +1623,10 @@ async function approveAccess(reqId, sid, vid){
   const s=db.users.find(u=>u.id===sid);
   const v=db.videos.find(x=>x.id===vid);
   const accessId='ac'+Date.now();
-  await sb.from('video_access').insert({id:accessId,student_id:sid,video_id:vid});
+  const grantedAt=new Date().toISOString();
+  await sb.from('video_access').insert({id:accessId,student_id:sid,video_id:vid,granted_at:grantedAt});
   await sb.from('access_requests').update({status:'approved'}).eq('id',reqId);
-  db.access.push({id:accessId,student_id:sid,video_id:vid});
+  db.access.push({id:accessId,student_id:sid,video_id:vid,granted_at:grantedAt});
   const req=db.requests.find(r=>r.id===reqId);
   if(req)req.status='approved';
   notify(`${s.name}에게 "${v.title}" 시청 권한을 부여했습니다.`,'success');
@@ -1647,9 +1659,10 @@ async function grantAccessDirect(){
   const s=db.users.find(u=>u.id===sid);
   const v=db.videos.find(x=>x.id===vid);
   const accessId='ac'+Date.now();
-  const res=await sb.from('video_access').insert({id:accessId,student_id:sid,video_id:vid});
+  const grantedAt=new Date().toISOString();
+  const res=await sb.from('video_access').insert({id:accessId,student_id:sid,video_id:vid,granted_at:grantedAt});
   if(res.error){notify('권한 부여 실패: '+res.error.message,'error');return;}
-  db.access.push({id:accessId,student_id:sid,video_id:vid});
+  db.access.push({id:accessId,student_id:sid,video_id:vid,granted_at:grantedAt});
   notify(`${s.name}에게 "${v.title}" 시청 권한을 부여했습니다.`,'success');
   renderAccessPanel();renderDashboard();
 }
@@ -1696,7 +1709,10 @@ function renderAccessPanel(){
     if(!s||!v)return'';
     const t=thumb(v.url);
     const p=getPct(a.student_id,a.video_id);
-    return`<div class="access-row">
+    const expired=isAccessExpired(a);
+    const exp=accessExpiry(a);
+    const expLabel=isNaN(exp)?'':(exp.getMonth()+1)+'/'+exp.getDate()+' '+String(exp.getHours()).padStart(2,'0')+':'+String(exp.getMinutes()).padStart(2,'0');
+    return`<div class="access-row" style="${expired?'opacity:0.55':''}">
       <div class="avatar student" style="width:30px;height:30px;font-size:11px;flex-shrink:0">${s.name[0]}</div>
       <div style="width:50px;height:30px;border-radius:4px;overflow:hidden;flex-shrink:0;background:var(--bg3)">${t?`<img src="${t}" style="width:100%;height:100%;object-fit:cover">`:''}</div>
       <div style="flex:1;min-width:0">
@@ -1704,6 +1720,7 @@ function renderAccessPanel(){
         <div style="display:flex;align-items:center;gap:8px;margin-top:3px">
           <div class="pbar" style="width:80px"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div>
           <span class="badge ${pctBadge(p)}">${pctLabel(p)}</span>
+          ${expired?'<span class="badge" style="background:var(--red-bg);color:var(--red)">마감됨</span>':(expLabel?`<span style="font-size:11px;color:var(--text2)">${expLabel} 마감</span>`:'')}
         </div>
       </div>
       <button class="btn red btn-sm" onclick="revokeAccess('${a.student_id}','${a.video_id}')">권한 해제</button>
