@@ -4833,6 +4833,17 @@ function openOmrSheetModal(){
 function closeOmrSheetModal(){document.getElementById('modal-omr-sheet').classList.remove('show');}
 function pickOmrSheetCount(n){document.getElementById('omr-sheet-count').value=n;}
 
+const OMR_CONSONANTS=['ㄱ','ㄴ','ㄷ','ㄹ','ㅁ','ㅂ','ㅅ','ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+const OMR_VOWELS=['ㅏ','ㅑ','ㅓ','ㅕ','ㅗ','ㅛ','ㅜ','ㅠ','ㅡ','ㅣ'];
+
+function omrDigitGrid(colCount,label){
+  let cols='';
+  for(let c=0;c<colCount;c++){
+    cols+='<div class="omr-jcol">'+Array.from({length:10},function(_,d){return '<span class="omr-jbubble">'+d+'</span>';}).join('')+'</div>';
+  }
+  return '<div class="omr-idblock"><div class="omr-idblock-head">'+label+'</div><div class="omr-jcols">'+cols+'</div></div>';
+}
+
 function generateOmrSheet(){
   const count=parseInt(document.getElementById('omr-sheet-count').value)||0;
   if(!count||count<1){alert('문항 수를 입력해 주세요.');return;}
@@ -4851,13 +4862,22 @@ function generateOmrSheet(){
     }
     colsHtml+='<div class="omr-col"><div class="omr-col-head"><span>문번</span><span>답 란</span></div>'+rows+'</div>';
   }
+  // 성명 마킹칸: 4칸(최대 4글자), 각 칸은 자음 14개 + 모음 10개
+  let nameCols='';
+  for(let c=0;c<4;c++){
+    nameCols+='<div class="omr-jcol">'+
+      OMR_CONSONANTS.map(function(ch){return '<span class="omr-jbubble">'+ch+'</span>';}).join('')+
+      '<div class="omr-jsep"></div>'+
+      OMR_VOWELS.map(function(ch){return '<span class="omr-jbubble">'+ch+'</span>';}).join('')+
+    '</div>';
+  }
   const bodyHtml=
     '<div class="omr-sheet">'+
       '<div class="omr-header">'+
         '<div class="omr-title">'+title+'</div>'+
         '<div class="omr-meta">'+
           '<div class="omr-meta-row"><span>학교</span><span class="omr-fill-line"></span></div>'+
-          '<div class="omr-meta-row"><span>이름</span><span class="omr-fill-line"></span></div>'+
+          '<div class="omr-meta-row"><span>학원</span><span class="omr-fill-line" style="width:70px"></span><span>회차</span><span class="omr-fill-line" style="width:70px"></span></div>'+
           '<div class="omr-meta-row"><span>응시일</span><span class="omr-fill-line"></span></div>'+
         '</div>'+
       '</div>'+
@@ -4866,6 +4886,11 @@ function generateOmrSheet(){
         '1. 반드시 검정색 사인펜(또는 펜)으로 표기합니다.<br>'+
         '2. 표기란에는 ● 와 같이 바르게 표기해야 합니다.<br>'+
         '3. 수정 시에는 두 줄로 긋고 옆에 다시 표기합니다.'+
+      '</div>'+
+      '<div class="omr-idrow">'+
+        '<div class="omr-idblock"><div class="omr-idblock-head">성 명 (좌측부터 차례로 마킹, 자음→모음)</div><div class="omr-jcols">'+nameCols+'</div></div>'+
+        omrDigitGrid(4,'생 일 (예: 5월 1일 → 0501)')+
+        omrDigitGrid(8,'핸드폰 번호 (010- 제외 8자리)')+
       '</div>'+
       '<div class="omr-cols">'+colsHtml+'</div>'+
     '</div>';
@@ -4880,6 +4905,13 @@ function generateOmrSheet(){
       '.omr-meta-row span:first-child{width:44px;color:#555}'+
       '.omr-fill-line{display:inline-block;width:160px;border-bottom:1px solid #999;height:16px}'+
       '.omr-instructions{font-size:11px;color:#555;background:#f7f7f7;border:1px solid #ddd;border-radius:6px;padding:8px 12px;margin-bottom:14px;line-height:1.7}'+
+      '.omr-idrow{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}'+
+      '.omr-idblock{border:1px solid #333;border-radius:6px;overflow:hidden;break-inside:avoid}'+
+      '.omr-idblock-head{background:#2d6b4a;color:#fff;font-size:11px;font-weight:600;padding:5px 8px;text-align:center}'+
+      '.omr-jcols{display:flex;gap:2px;padding:6px;justify-content:center}'+
+      '.omr-jcol{display:flex;flex-direction:column;align-items:center;gap:2px}'+
+      '.omr-jbubble{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border:1px solid #333;border-radius:50%;font-size:8px;color:#333}'+
+      '.omr-jsep{height:4px}'+
       '.omr-cols{display:flex;flex-wrap:wrap;gap:10px}'+
       '.omr-col{border:1px solid #333;border-radius:4px;overflow:hidden;min-width:170px;break-inside:avoid}'+
       '.omr-col-head{display:flex;background:#333;color:#fff;font-size:12px;font-weight:600}'+
