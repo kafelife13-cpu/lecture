@@ -254,7 +254,13 @@ input,button{font-family:var(--font)}
       <div class="form-group"><label>아이디</label><input id="login-id" class="form-input" type="text" placeholder="아이디 입력" onkeydown="if(event.key==='Enter')doLogin()"/></div>
       <div class="form-group"><label>비밀번호</label><input id="login-pw" class="form-input" type="password" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter')doLogin()"/></div>
       <div class="form-group" id="api-key-group" style="display:none">
-        <label>Claude API 키 <span style="color:var(--text3);text-transform:none;font-weight:400">(브라우저에 저장됩니다)</span></label>
+        <label>AI 제공사 <span style="color:var(--text3);text-transform:none;font-weight:400">(시험 등록 AI 분석에 사용)</span></label>
+        <select id="login-ai-provider" class="form-select" onchange="onLoginAIProviderChange()" style="margin-bottom:8px">
+          <option value="claude">Claude</option>
+          <option value="openai">GPT (OpenAI)</option>
+          <option value="gemini">Gemini (Google)</option>
+        </select>
+        <label>API 키 <span style="color:var(--text3);text-transform:none;font-weight:400">(브라우저에 저장됩니다)</span></label>
         <input id="login-apikey" class="form-input" type="password" placeholder="sk-ant-api03-..."/>
         <div style="font-size:11px;color:var(--text3);margin-top:4px" id="api-key-hint"></div>
       </div>
@@ -1408,16 +1414,24 @@ function selectRole(r){
   currentRole=r;
   document.querySelectorAll('.role-tab').forEach((b,i)=>b.classList.toggle('active',(i===0&&r==='teacher')||(i===1&&r==='student')));
   var apiGroup=document.getElementById('api-key-group');
-  var hint=document.getElementById('api-key-hint');
   if(r==='teacher'){
     apiGroup.style.display='block';
-    var saved=localStorage.getItem('claude_api_key');
-    document.getElementById('login-apikey').placeholder=saved?'저장된 키 있음 (변경 시에만 입력)':'sk-ant-api03-...';
-    if(hint)hint.textContent=saved?'API 키가 저장되어 있어요. 변경하려면 새 키를 입력하세요.':'';
-    document.getElementById('login-apikey').value='';
+    var providerSel=document.getElementById('login-ai-provider');
+    if(providerSel)providerSel.value=localStorage.getItem('ai_provider')||'claude';
+    onLoginAIProviderChange();
   }else{
     apiGroup.style.display='none';
   }
+}
+function onLoginAIProviderChange(){
+  var provider=document.getElementById('login-ai-provider')?.value||'claude';
+  var saved=localStorage.getItem(provider+'_api_key');
+  var placeholders={claude:'sk-ant-api03-...',openai:'sk-...',gemini:'AIza...'};
+  var apEl=document.getElementById('login-apikey');
+  var hint=document.getElementById('api-key-hint');
+  if(apEl)apEl.placeholder=saved?'저장된 키 있음 (변경 시에만 입력)':(placeholders[provider]||'');
+  if(hint)hint.textContent=saved?'API 키가 저장되어 있어요. 변경하려면 새 키를 입력하세요.':'';
+  if(apEl)apEl.value='';
 }
 async function doLogin(){
   const id=document.getElementById('login-id').value.trim();
@@ -1427,9 +1441,11 @@ async function doLogin(){
   err.textContent='';
   if(!id||!pw){err.textContent='아이디와 비밀번호를 입력하세요.';return;}
   if(currentRole==='teacher'){
+    const provider=document.getElementById('login-ai-provider')?.value||'claude';
+    localStorage.setItem('ai_provider',provider);
     const inputKey=document.getElementById('login-apikey').value.trim();
-    if(inputKey){localStorage.setItem('claude_api_key',inputKey);CLAUDE_API_KEY=inputKey;}
-    else{const saved=localStorage.getItem('claude_api_key');if(saved)CLAUDE_API_KEY=saved;}
+    if(inputKey)localStorage.setItem(provider+'_api_key',inputKey);
+    CLAUDE_API_KEY=localStorage.getItem('claude_api_key')||CLAUDE_API_KEY;
   }
   btn.disabled=true;btn.textContent='로그인 중...';
   try{
@@ -3235,6 +3251,41 @@ var qwSolText='';
 var qwSolFile=null;
 var CLAUDE_API_KEY=localStorage.getItem('claude_api_key')||'';
 
+// ── 시험 등록 AI 분석용 provider 선택 (Claude/GPT/Gemini) ──
+function getAIProvider(){return localStorage.getItem('ai_provider')||'claude';}
+function getAIKey(provider){return localStorage.getItem((provider||getAIProvider())+'_api_key')||'';}
+function aiProviderLabel(provider){return provider==='openai'?'GPT':provider==='gemini'?'Gemini':'Claude';}
+
+async function callTextAI(prompt,maxTokens){
+  const provider=getAIProvider();
+  const key=getAIKey(provider);
+  if(!key)throw new Error(aiProviderLabel(provider)+' API 키가 없어요. 로그아웃 후 다시 로그인해서 키를 입력해 주세요.');
+  if(provider==='openai'){
+    const resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+      body:JSON.stringify({model:'gpt-4o',max_tokens:maxTokens,messages:[{role:'user',content:prompt}]})});
+    const data=await resp.json();
+    if(data.error)throw new Error(data.error.message||'AI 응답 오류');
+    return (data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'';
+  }
+  if(provider==='gemini'){
+    const resp=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+encodeURIComponent(key),{method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
+    const data=await resp.json();
+    if(data.error)throw new Error(data.error.message||'AI 응답 오류');
+    const parts=data.candidates&&data.candidates[0]&&data.candidates[0].content&&data.candidates[0].content.parts;
+    return parts?parts.map(p=>p.text||'').join(''):'';
+  }
+  // claude (기본)
+  const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-5',max_tokens:maxTokens,thinking:{type:'disabled'},messages:[{role:'user',content:prompt}]})});
+  const data=await resp.json();
+  if(data.error)throw new Error(data.error.message||'AI 응답 오류');
+  return (data.content||[]).map(c=>c.text||'').join('');
+}
+
 async function loadQaData(){
   try{
     var s=await sb.from('qa_schools').select('*').order('created_at');
@@ -4092,7 +4143,6 @@ function texBackToStep1(){texShowStep(1);}
 var parsedQuestions=[];
 
 async function texParseChunk(qText, aText, eText, startNum, endNum){
-  const headers={'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'};
   const prompt=`시험지에서 ${startNum}번~${endNum}번 문항만 추출해서 JSON 배열로 반환하세요. 마크다운 없이 순수 JSON만.
 
 [시험지]
@@ -4106,18 +4156,9 @@ ${eText||'없음'}
 
 반환형식: [{"num":${startNum},"text":"문제내용(선택지포함,간결하게)","answer":3,"type":"추론·함축","explanation":"해설"}]
 규칙: num=${startNum}~${endNum}번만, answer=숫자1~5(①→1,②→2,③→3,④→4,⑤→5), explanation없으면"", type=사실 확인/추론·함축/어휘·어법/표현 기법/주제·요지/논증 구조/계산·풀이/개념 적용/자료 해석/빈칸 추론/순서 배열/기타`;
-  const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers,body:JSON.stringify({
-    model:'claude-sonnet-5',max_tokens:16000,
-    thinking:{type:'disabled'},
-    messages:[{role:'user',content:prompt}]
-  })});
-  const data=await resp.json();
-  if(data.error)throw new Error(data.error.message||'AI 응답 오류');
-  const raw=(data.content||[]).map(c=>c.text||'').join('');
+  const raw=await callTextAI(prompt,16000);
   if(!raw){
-    const reason=data.stop_reason?` (stop_reason: ${data.stop_reason})`:'';
-    const blockTypes=(data.content||[]).map(c=>c.type).join(',')||'없음';
-    throw new Error('AI가 빈 응답을 반환했어요'+reason+'. HTTP '+resp.status+' / blocks: '+blockTypes);
+    throw new Error('AI가 빈 응답을 반환했어요.');
   }
   let cleaned=raw.replace(/```json|```/g,'').trim();
   if(!cleaned.endsWith(']')){const lc=cleaned.lastIndexOf('}');if(lc>0)cleaned=cleaned.slice(0,lc+1)+']';}
@@ -4210,8 +4251,8 @@ function texQuickRegister(){
 }
 
 async function texParse(){
-  CLAUDE_API_KEY=localStorage.getItem('claude_api_key')||CLAUDE_API_KEY;
-  if(!CLAUDE_API_KEY){alert('Claude API 키가 없어요. 로그아웃 후 다시 로그인해서 키를 입력해 주세요.');return;}
+  const aiProvider=getAIProvider();
+  if(!getAIKey(aiProvider)){alert(aiProviderLabel(aiProvider)+' API 키가 없어요. 로그아웃 후 다시 로그인해서 키를 입력해 주세요.');return;}
   const name=document.getElementById('tex-name').value.trim();
   const qRaw=document.getElementById('tex-questions-raw').value.trim();
   const aRaw=document.getElementById('tex-answers-raw').value.trim();
@@ -4226,14 +4267,9 @@ async function texParse(){
   try{
     // 총 문항 수 먼저 파악
     msgEl.textContent='문항 수 파악 중...';
-    const countResp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-5',max_tokens:200,thinking:{type:'disabled'},
-        messages:[{role:'user',content:`아래 정답지에서 총 문항 수만 숫자 하나로만 답하세요.
-${aRaw}`}]})});
-    const cd=await countResp.json();
-    if(cd.error)throw new Error(cd.error.message||'AI 응답 오류');
-    const totalStr=(cd.content||[]).map(c=>c.text||'').join('').match(/\d+/);
+    const countText=await callTextAI(`아래 정답지에서 총 문항 수만 숫자 하나로만 답하세요.
+${aRaw}`,200);
+    const totalStr=countText.match(/\d+/);
     const total=totalStr?parseInt(totalStr[0]):24;
 
     // 문항이 많으면 AI 응답이 중간에 잘리는 것을 막기 위해 작은 단위(최대 8문항)로 나눠서 분석
