@@ -5254,16 +5254,21 @@ async function tResPrintOxForStudent(){
 // 성적표(리포트) 생성 — 영역별 점수·레이더차트·문항채점표
 // ════════════════════════════════════════════
 
+// 답이 1~5 중 하나로 명확한 객관식 문항인지 (서술형·주관식 등은 자동채점 대상에서 제외)
+function isObjectiveAnswer(ans){return ['1','2','3','4','5'].indexOf(String(ans))>=0;}
+
 function repIsWrong(response,idx,exam){
   if(!response||!response.answers||!Object.prototype.hasOwnProperty.call(response.answers,idx))return false;
   var q=exam&&exam.questions&&exam.questions[idx];
   if(!q)return true; // 문항 정보를 알 수 없으면(구 형식) 키 존재만으로 오답 처리
+  if(!isObjectiveAnswer(q.answer))return false; // 서술형 등은 자동 오답 판정하지 않음
   return String(response.answers[idx])!==String(q.answer);
 }
 
 function repScore(exam,response){
   var earned=0,total=0;
   exam.questions.forEach(function(q,i){
+    if(!isObjectiveAnswer(q.answer))return; // 서술형·주관식은 자동 채점 집계에서 제외
     var pts=q.points||1;
     total+=pts;
     if(!repIsWrong(response,i,exam))earned+=pts;
@@ -5274,6 +5279,7 @@ function repScore(exam,response){
 function repDomainStats(exam,response){
   var byDomain={};
   exam.questions.forEach(function(q,i){
+    if(!isObjectiveAnswer(q.answer))return; // 서술형·주관식은 자동 채점 집계에서 제외
     var d=q.domain||'미분류';
     if(!byDomain[d])byDomain[d]={label:d,qCount:0,correctCount:0,maxPoints:0,earnedPoints:0};
     var pts=q.points||1;
@@ -5608,6 +5614,14 @@ function renderSExamFullGrid(){
   const el=document.getElementById('s-exam-full-grid');
   if(!el)return;
   el.innerHTML=Array.from({length:total},function(_,i){
+    const q=sExamData.questions[i]||{};
+    if(!isObjectiveAnswer(q.answer)){
+      return '<div class="card" style="margin-bottom:8px;border-left:3px solid var(--amber)">'+
+        '<div style="padding:0.75rem 1rem;display:flex;align-items:center;gap:8px">'+
+          '<span style="min-width:34px;font-size:13px;font-weight:700;color:var(--amber)">'+(i+1)+'번</span>'+
+          '<span style="font-size:12px;color:var(--text2)">서술형·주관식 문항이에요 (자동채점 대상 아님, 선생님이 별도로 확인해요)</span>'+
+        '</div></div>';
+    }
     const my=sExamFullAnswers[i];
     return '<div class="card" style="margin-bottom:8px">'+
       '<div style="padding:0.75rem 1rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap">'+
@@ -5631,23 +5645,29 @@ function sExamPickFullAnswer(idx,n){
 async function sExamSubmitFull(){
   if(!sExamData||!session)return;
   const total=sExamData.total_q;
-  const unanswered=[];
-  for(let i=0;i<total;i++){if(!sExamFullAnswers[i])unanswered.push(i+1);}
+  const objIdxs=[];
+  sExamData.questions.forEach(function(q,i){if(isObjectiveAnswer(q.answer))objIdxs.push(i);});
+  const unanswered=objIdxs.filter(function(i){return !sExamFullAnswers[i];}).map(function(i){return i+1;});
   if(unanswered.length){
     if(!confirm(unanswered.length+'문항 답을 아직 선택 안 했어요 ('+unanswered.slice(0,8).join(',')+(unanswered.length>8?'...':'')+'). 그래도 제출할까요?'))return;
   }
   const savedAnswers={};
-  for(let i=0;i<total;i++){savedAnswers[i]=sExamFullAnswers[i]||'';}
+  objIdxs.forEach(function(i){savedAnswers[i]=sExamFullAnswers[i]||'';});
   let correct=0;
   const wrong=[];
-  sExamData.questions.forEach(function(q,i){
+  objIdxs.forEach(function(i){
+    const q=sExamData.questions[i];
     const my=savedAnswers[i];
     if(my&&String(my)===String(q.answer))correct++;
     else wrong.push({idx:i,q:q,my:my||'미선택'});
   });
-  const pointsTotal=sExamData.questions.reduce(function(s,q){return s+(q.points||1);},0)||total;
-  const pointsEarned=sExamData.questions.reduce(function(s,q,i){return s+(String(savedAnswers[i])===String(q.answer)?(q.points||1):0);},0);
-  const score=pointsTotal?Math.round(pointsEarned/pointsTotal*100):Math.round(correct/total*100);
+  const pointsTotal=objIdxs.reduce(function(s,i){return s+(sExamData.questions[i].points||1);},0)||objIdxs.length||1;
+  const pointsEarned=objIdxs.reduce(function(s,i){
+    const q=sExamData.questions[i];
+    const my=savedAnswers[i];
+    return s+((my&&String(my)===String(q.answer))?(q.points||1):0);
+  },0);
+  const score=pointsTotal?Math.round(pointsEarned/pointsTotal*100):0;
   const nextAttempt=(sExamPriorResponse&&sExamPriorResponse.attempt_count)?sExamPriorResponse.attempt_count+1:1;
   let photoUrls={};
   if(sOmrCurrentPhoto){
@@ -5663,14 +5683,14 @@ async function sExamSubmitFull(){
   await sb.from('exam_responses').upsert({
     exam_id:sExamData.id,student_name:session.name||session.id,
     answers:savedAnswers,photo_urls:photoUrls,thoughts:{},
-    score:score,correct_count:correct,total_q:total,
+    score:score,correct_count:correct,total_q:objIdxs.length,
     points_earned:pointsEarned,points_total:pointsTotal,
     attempt_count:nextAttempt,regrade_requested:false,regrade_approved:false,
     submitted_at:new Date().toISOString()
   },{onConflict:'exam_id,student_name'});
   sExamPriorResponse=null;sOmrCurrentPhoto=null;
   showSExamView('result');
-  renderSExamResultView(score,correct,wrong,total);
+  renderSExamResultView(score,correct,wrong,objIdxs.length);
 }
 
 /* 학생 OMR 사진 촬영 채점 (공유 AI 키 사용) */
