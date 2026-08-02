@@ -657,6 +657,7 @@ input,button{font-family:var(--font)}
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
             <button class="btn btn-sm" onclick="closeTExamResults()">← 목록으로</button>
             <div style="display:flex;gap:8px">
+              <button class="btn btn-sm green" onclick="openOmrModal()">📷 OMR 채점</button>
               <button class="btn btn-sm blue" onclick="tResExportAllPDF()">📄 전체 PDF</button>
             </div>
           </div>
@@ -704,6 +705,7 @@ input,button{font-family:var(--font)}
               </select>
               <button class="btn btn-sm" onclick="tResExportStudentPDF()">📄 이 학생 PDF</button>
               <button class="btn btn-sm blue" onclick="tResExportStudentReportCard()">📊 성적표</button>
+              <button class="btn btn-sm" style="color:var(--accent)" onclick="tResCopyReportLink()">🔗 성적표 링크 복사</button>
             </div>
             <div id="tres-student-detail"></div>
           </div>
@@ -1032,6 +1034,39 @@ input,button{font-family:var(--font)}
     <div class="modal-footer" style="display:flex;gap:8px">
       <button class="btn" style="flex:1" onclick="closeStudyCamera()">취소</button>
       <button class="btn blue" style="flex:2" onclick="captureStudyPhoto()">📸 촬영</button>
+    </div>
+  </div>
+</div>
+
+<!-- OMR 채점 -->
+<div class="modal-bg" id="modal-omr">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-head"><h3>📷 OMR 채점</h3><button class="modal-close" onclick="closeOmrModal()">×</button></div>
+    <div class="modal-body">
+      <div id="omr-step-student">
+        <div class="form-group"><label>학생 선택</label><select id="omr-student-select" class="form-select"></select></div>
+        <button class="btn blue" style="width:100%;margin-top:8px" onclick="omrStartCamera()">다음: 답안지 촬영 →</button>
+      </div>
+      <div id="omr-step-camera" style="display:none">
+        <video id="omr-cam-video" autoplay playsinline muted style="width:100%;display:block;background:#000;max-height:50vh;object-fit:contain;border-radius:8px"></video>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="btn" style="flex:1" onclick="closeOmrModal()">취소</button>
+          <button class="btn blue" style="flex:2" onclick="omrCapturePhoto()">📸 촬영</button>
+        </div>
+      </div>
+      <div id="omr-step-loading" style="display:none;text-align:center;padding:2.5rem 1rem">
+        <div class="spinner" style="margin:0 auto 14px"></div>
+        <div id="omr-loading-msg" style="font-size:13px;color:var(--text2)">AI가 답안지를 읽는 중...</div>
+      </div>
+      <div id="omr-step-review" style="display:none">
+        <img id="omr-review-img" style="width:100%;border-radius:8px;margin-bottom:10px;max-height:200px;object-fit:contain;background:var(--bg2)">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:10px">AI가 읽은 답이에요. 틀리게 읽은 문항은 숫자를 직접 고쳐주세요 (초록: 정답 일치, 빨강: 오답, 회색: 미마킹).</div>
+        <div id="omr-review-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:6px;max-height:260px;overflow-y:auto;padding:2px"></div>
+        <div style="display:flex;gap:8px;margin-top:14px">
+          <button class="btn" style="flex:1" onclick="closeOmrModal()">취소</button>
+          <button class="btn blue" style="flex:2" onclick="omrConfirmScore()">✓ 채점 확정</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -2653,6 +2688,7 @@ async function cancelMyClinicReq(id){
 document.getElementById('modal-clinic-slot').addEventListener('click',function(e){if(e.target===e.currentTarget)closeClinicSlotModal();});
 document.getElementById('study-photo-input').addEventListener('change',onStudyPhotoSelected);
 document.getElementById('modal-study-camera').addEventListener('click',function(e){if(e.target===e.currentTarget)closeStudyCamera();});
+document.getElementById('modal-omr').addEventListener('click',function(e){if(e.target===e.currentTarget)closeOmrModal();});
 
 /* ===== 인증 ===== */
 var certDb={weeks:[],items:[],submissions:[],targets:{}};
@@ -3754,7 +3790,26 @@ document.getElementById('modal-qa-school').addEventListener('click',function(e){
 document.getElementById('modal-qa-teacher').addEventListener('click',function(e){if(e.target===e.currentTarget)closeTQaModal();});
 
 /* ===== INIT ===== */
+/* 로그인 없이 성적표만 보여주는 공유 링크 모드 (?report=exam_responses.id) */
+async function renderStandaloneReportCard(responseId){
+  document.body.innerHTML='<div id="omr-share-root" style="min-height:100vh;background:#fff"><div style="text-align:center;padding:4rem 1rem;color:#666;font-family:sans-serif">성적표를 불러오는 중...</div></div>';
+  try{
+    const{data:resp,error}=await sb.from('exam_responses').select('*').eq('id',responseId).single();
+    if(error||!resp)throw new Error('응답을 찾을 수 없어요');
+    const[{data:exam},{data:allResponses}]=await Promise.all([
+      sb.from('exams').select('*').eq('id',resp.exam_id).single(),
+      sb.from('exam_responses').select('*').eq('exam_id',resp.exam_id)
+    ]);
+    if(!exam)throw new Error('시험 정보를 찾을 수 없어요');
+    document.getElementById('omr-share-root').innerHTML=buildReportCardHTML(resp.student_name,exam,resp,allResponses||[resp]);
+  }catch(e){
+    document.getElementById('omr-share-root').innerHTML='<div style="text-align:center;padding:4rem 1rem;color:#999;font-family:sans-serif">성적표를 찾을 수 없어요. 링크를 다시 확인해주세요.</div>';
+  }
+}
+
 (async function(){
+  const reportId=new URLSearchParams(location.search).get('report');
+  if(reportId){await renderStandaloneReportCard(reportId);return;}
   if(!navigator.onLine){
     document.querySelector('.loading-text').textContent='인터넷 연결을 확인해주세요.';
     setTimeout(function(){hideLoading();showPage('page-login');},2000);
@@ -4543,6 +4598,168 @@ function tResExportStudentReportCard(){
   const r=tResCurrentResponses.find(r=>r.student_name===name);
   if(!r){alert('응답 데이터를 찾을 수 없어요.');return;}
   tResPrintHTML(buildReportCardHTML(name,tResCurrentExam,r,tResCurrentResponses),name+'_성적표');
+}
+function tResCopyReportLink(){
+  const name=document.getElementById('tres-student-select').value;
+  if(!name){alert('학생을 선택해 주세요.');return;}
+  const r=tResCurrentResponses.find(r=>r.student_name===name);
+  if(!r||!r.id){alert('응답 데이터를 찾을 수 없어요.');return;}
+  const url=location.origin+location.pathname+'?report='+r.id;
+  navigator.clipboard.writeText(url).then(function(){
+    notify('성적표 링크가 복사됐어요! 카톡에 붙여넣어 학부모님께 보내주세요.','success');
+  }).catch(function(){
+    prompt('아래 링크를 복사해주세요:',url);
+  });
+}
+
+/* ════════════════════════════════════════════
+   OMR 채점 — 답안지 사진을 AI가 읽어 채점
+   ════════════════════════════════════════════ */
+var omrCamStream=null,omrCurrentPhoto=null,omrReadAnswers={};
+function openOmrModal(){
+  if(!tResCurrentExam){alert('시험 정보를 불러올 수 없어요.');return;}
+  const sel=document.getElementById('omr-student-select');
+  sel.innerHTML='<option value="">학생 선택</option>'+activeStudents().map(function(s){return`<option value="${s.name}">${s.name}</option>`;}).join('');
+  document.getElementById('omr-step-student').style.display='';
+  document.getElementById('omr-step-camera').style.display='none';
+  document.getElementById('omr-step-loading').style.display='none';
+  document.getElementById('omr-step-review').style.display='none';
+  document.getElementById('modal-omr').classList.add('show');
+}
+function closeOmrModal(){
+  if(omrCamStream){try{omrCamStream.getTracks().forEach(function(t){t.stop();});}catch(e){}omrCamStream=null;}
+  document.getElementById('modal-omr').classList.remove('show');
+  omrCurrentPhoto=null;omrReadAnswers={};
+}
+async function omrStartCamera(){
+  const name=document.getElementById('omr-student-select').value;
+  if(!name){alert('학생을 선택해 주세요.');return;}
+  if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)){alert('이 브라우저는 카메라 촬영을 지원하지 않아요.');return;}
+  try{
+    omrCamStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
+    document.getElementById('omr-cam-video').srcObject=omrCamStream;
+    document.getElementById('omr-step-student').style.display='none';
+    document.getElementById('omr-step-camera').style.display='';
+  }catch(err){
+    alert('카메라를 열 수 없어요: '+err.message);
+  }
+}
+function omrCapturePhoto(){
+  const video=document.getElementById('omr-cam-video');
+  const w=video.videoWidth,h=video.videoHeight;
+  if(!w||!h){notify('카메라 준비 중이에요, 잠시 후 다시 시도해주세요.','error');return;}
+  const canvas=document.createElement('canvas');
+  canvas.width=w;canvas.height=h;
+  canvas.getContext('2d').drawImage(video,0,0,w,h);
+  if(omrCamStream){try{omrCamStream.getTracks().forEach(function(t){t.stop();});}catch(e){}omrCamStream=null;}
+  document.getElementById('omr-step-camera').style.display='none';
+  document.getElementById('omr-step-loading').style.display='';
+  canvas.toBlob(async function(blob){
+    if(!blob){notify('사진 촬영 실패','error');closeOmrModal();return;}
+    omrCurrentPhoto=new File([blob],'omr.jpg',{type:'image/jpeg'});
+    document.getElementById('omr-review-img').src=URL.createObjectURL(blob);
+    await omrReadWithAI();
+  },'image/jpeg',0.9);
+}
+async function omrReadWithAI(){
+  CLAUDE_API_KEY=localStorage.getItem('claude_api_key')||CLAUDE_API_KEY;
+  if(!CLAUDE_API_KEY){alert('Claude API 키가 없어요. 로그아웃 후 다시 로그인해서 키를 입력해 주세요.');closeOmrModal();return;}
+  const exam=tResCurrentExam;
+  const total=exam.total_q;
+  try{
+    const b64=await new Promise(function(res){const r=new FileReader();r.onload=function(){res(r.result.split(',')[1]);};r.readAsDataURL(omrCurrentPhoto);});
+    const promptText='당신은 OMR 답안지를 읽는 전문가입니다. 첨부된 이미지는 학생이 마킹한 OMR 답안지 사진입니다.\n'+
+      '총 문항 수: '+total+'개, 각 문항은 1~5번 중 하나를 마킹합니다.\n'+
+      '사진을 보고 문항 번호 1~'+total+'번까지 각각 마킹된 번호를 읽어서 JSON으로만 답하세요.\n'+
+      '마킹이 없거나 두 개 이상 마킹되어 읽기 애매한 문항은 0으로 표시하세요.\n'+
+      '형식 예시: {"1":3,"2":1,"3":0}\n다른 설명 없이 순수 JSON 객체만 반환하세요.';
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:2000,thinking:{type:'disabled'},messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},{type:'text',text:promptText}]}]})});
+    const data=await resp.json();
+    const raw=(data.content||[]).map(function(c){return c.text||'';}).join('');
+    let parsed={};
+    try{parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());}catch(e){parsed={};}
+    omrReadAnswers={};
+    for(let i=0;i<total;i++){
+      const v=parsed[String(i+1)];
+      omrReadAnswers[i]=(v&&Number(v)>=1&&Number(v)<=9)?String(v):'';
+    }
+  }catch(e){
+    notify('AI 읽기 실패, 직접 입력해주세요: '+e.message,'error');
+    omrReadAnswers={};
+    for(let i=0;i<total;i++)omrReadAnswers[i]='';
+  }
+  renderOmrReview();
+}
+function renderOmrReview(){
+  const exam=tResCurrentExam;
+  document.getElementById('omr-step-loading').style.display='none';
+  document.getElementById('omr-step-review').style.display='';
+  const grid=document.getElementById('omr-review-grid');
+  grid.innerHTML=exam.questions.map(function(q,i){
+    const val=omrReadAnswers[i]||'';
+    return'<div style="text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:2px">'+(i+1)+'번</div>'+
+      '<input type="number" min="1" max="9" value="'+val+'" data-idx="'+i+'" onchange="omrUpdateAnswer('+i+',this.value)" '+
+      'style="width:100%;padding:6px 2px;text-align:center;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:13px"></div>';
+  }).join('');
+  omrColorizeGrid();
+}
+function omrUpdateAnswer(idx,val){
+  omrReadAnswers[idx]=(val||'').toString().trim();
+  omrColorizeGrid();
+}
+function omrColorizeGrid(){
+  const exam=tResCurrentExam;
+  document.querySelectorAll('#omr-review-grid input').forEach(function(inp){
+    const idx=Number(inp.dataset.idx);
+    const q=exam.questions[idx]||{};
+    const val=omrReadAnswers[idx]||'';
+    if(!val){inp.style.borderColor='var(--border)';inp.style.color='var(--text2)';}
+    else if(String(val)===String(q.answer)){inp.style.borderColor='var(--green)';inp.style.color='var(--green)';}
+    else{inp.style.borderColor='var(--red)';inp.style.color='var(--red)';}
+  });
+}
+async function omrConfirmScore(){
+  const exam=tResCurrentExam;
+  const name=document.getElementById('omr-student-select').value;
+  if(!exam||!name)return;
+  const total=exam.total_q;
+  const wrongIdxs=[];
+  for(let i=0;i<total;i++){
+    const val=omrReadAnswers[i]||'';
+    const q=exam.questions[i]||{};
+    if(!val||String(val)!==String(q.answer))wrongIdxs.push(i);
+  }
+  const correct=total-wrongIdxs.length;
+  const pointsTotal=exam.questions.reduce(function(s,q){return s+(q.points||1);},0)||total;
+  const pointsEarned=exam.questions.reduce(function(s,q,i){return s+(wrongIdxs.indexOf(i)>=0?0:(q.points||1));},0);
+  const score=pointsTotal?Math.round(pointsEarned/pointsTotal*100):Math.round(correct/total*100);
+  const savedAnswers={};
+  wrongIdxs.forEach(function(idx){savedAnswers[idx]=omrReadAnswers[idx]||'';});
+
+  let photoUrl=null;
+  try{
+    if(omrCurrentPhoto){
+      const path='omr-photos/'+exam.id+'/'+name+'_'+Date.now()+'.jpg';
+      const up=await sb.storage.from('exam-photos').upload(path,omrCurrentPhoto,{upsert:true,contentType:'image/jpeg'});
+      if(!up.error){
+        const urlRes=sb.storage.from('exam-photos').getPublicUrl(path);
+        if(urlRes.data&&urlRes.data.publicUrl)photoUrl=urlRes.data.publicUrl;
+      }
+    }
+  }catch(e){}
+
+  const payload={
+    exam_id:exam.id,student_name:name,
+    answers:savedAnswers,photo_urls:photoUrl?{omr:photoUrl}:{},thoughts:{},
+    score:score,correct_count:correct,total_q:total,
+    points_earned:pointsEarned,points_total:pointsTotal,
+    submitted_at:new Date().toISOString()
+  };
+  const res=await sb.from('exam_responses').upsert(payload,{onConflict:'exam_id,student_name'});
+  if(res.error){notify('채점 저장 실패: '+res.error.message,'error');return;}
+  closeOmrModal();
+  notify(name+' 학생 채점 완료! ('+score+'점)','success');
+  await viewTExamResults(exam.id,exam.name);
 }
 
 // ════════════════════════════════════════════
