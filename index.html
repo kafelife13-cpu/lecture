@@ -5119,9 +5119,8 @@ async function ensureOxQuestions(examId,domain,explanationTexts){
 var oxQuizItems=[],oxQuizAnswers={},oxQuizExamId=null;
 async function openOxQuizFromResult(){
   if(!sExamData||!session)return;
-  const savedAnswers={};
-  Object.keys(sWrongChecked||{}).forEach(function(idx){savedAnswers[idx]=sExamAnswers[idx]||'';});
-  await startOxQuiz(sExamData,{exam_id:sExamData.id,student_name:session.name||session.id,answers:savedAnswers});
+  // 방금 제출/조회한 실제 응답을 DB에서 다시 읽어와 사용 (FULL 모드에서는 sWrongChecked가 비어있어 오답 도메인을 못 찾는 문제 방지)
+  await openOxQuizForExamId(sExamData.id);
 }
 async function openOxQuizForExamId(examId){
   if(!session)return;
