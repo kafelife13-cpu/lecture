@@ -1045,7 +1045,8 @@ input,button{font-family:var(--font)}
     <div class="modal-body">
       <div id="omr-step-student">
         <div class="form-group"><label>학생 선택</label><select id="omr-student-select" class="form-select"></select></div>
-        <button class="btn blue" style="width:100%;margin-top:8px" onclick="omrStartCamera()">다음: 답안지 촬영 →</button>
+        <button class="btn blue" style="width:100%;margin-top:8px" onclick="omrStartCamera()">📷 답안지 촬영해서 AI로 읽기</button>
+        <button class="btn" style="width:100%;margin-top:8px" onclick="omrManualEntry()">⌨️ 번호 직접 입력하기</button>
       </div>
       <div id="omr-step-camera" style="display:none">
         <video id="omr-cam-video" autoplay playsinline muted style="width:100%;display:block;background:#000;max-height:50vh;object-fit:contain;border-radius:8px"></video>
@@ -1060,7 +1061,7 @@ input,button{font-family:var(--font)}
       </div>
       <div id="omr-step-review" style="display:none">
         <img id="omr-review-img" style="width:100%;border-radius:8px;margin-bottom:10px;max-height:200px;object-fit:contain;background:var(--bg2)">
-        <div style="font-size:12px;color:var(--text2);margin-bottom:10px">AI가 읽은 답이에요. 틀리게 읽은 문항은 숫자를 직접 고쳐주세요 (초록: 정답 일치, 빨강: 오답, 회색: 미마킹).</div>
+        <div id="omr-review-hint" style="font-size:12px;color:var(--text2);margin-bottom:10px">AI가 읽은 답이에요. 틀리게 읽은 문항은 숫자를 직접 고쳐주세요 (초록: 정답 일치, 빨강: 오답, 회색: 미마킹).</div>
         <div id="omr-review-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:6px;max-height:260px;overflow-y:auto;padding:2px"></div>
         <div style="display:flex;gap:8px;margin-top:14px">
           <button class="btn" style="flex:1" onclick="closeOmrModal()">취소</button>
@@ -3900,6 +3901,7 @@ function renderTExamList(elId,list,emptyMsg){
         </div>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn btn-sm green" onclick="openOmrModalForExam('${e.id}')">📷 OMR 채점</button>
         <button class="btn btn-sm blue" onclick="viewTExamResults('${e.id}','${e.name}')">결과 보기</button>
         <button class="btn btn-sm" onclick="copyExamCode('${e.id}')">코드 복사</button>
         <button class="btn btn-sm" onclick="openTExamEdit('${e.id}')">✏️ 수정</button>
@@ -4623,6 +4625,14 @@ function tResCopyReportLink(){
    OMR 채점 — 답안지 사진을 AI가 읽어 채점
    ════════════════════════════════════════════ */
 var omrCamStream=null,omrCurrentPhoto=null,omrReadAnswers={};
+async function openOmrModalForExam(examId){
+  if(!tResCurrentExam||tResCurrentExam.id!==examId){
+    const{data,error}=await sb.from('exams').select('*').eq('id',examId).single();
+    if(error||!data){alert('시험 정보를 불러올 수 없어요.');return;}
+    tResCurrentExam=data;
+  }
+  openOmrModal();
+}
 function openOmrModal(){
   if(!tResCurrentExam){alert('시험 정보를 불러올 수 없어요.');return;}
   const sel=document.getElementById('omr-student-select');
@@ -4637,6 +4647,16 @@ function closeOmrModal(){
   if(omrCamStream){try{omrCamStream.getTracks().forEach(function(t){t.stop();});}catch(e){}omrCamStream=null;}
   document.getElementById('modal-omr').classList.remove('show');
   omrCurrentPhoto=null;omrReadAnswers={};
+}
+function omrManualEntry(){
+  const name=document.getElementById('omr-student-select').value;
+  if(!name){alert('학생을 선택해 주세요.');return;}
+  const exam=tResCurrentExam;
+  omrCurrentPhoto=null;
+  omrReadAnswers={};
+  for(let i=0;i<exam.total_q;i++)omrReadAnswers[i]='';
+  document.getElementById('omr-step-student').style.display='none';
+  renderOmrReview();
 }
 async function omrStartCamera(){
   const name=document.getElementById('omr-student-select').value;
@@ -4701,6 +4721,9 @@ function renderOmrReview(){
   const exam=tResCurrentExam;
   document.getElementById('omr-step-loading').style.display='none';
   document.getElementById('omr-step-review').style.display='';
+  document.getElementById('omr-review-img').style.display=omrCurrentPhoto?'':'none';
+  const hint=document.getElementById('omr-review-hint');
+  if(hint)hint.textContent=omrCurrentPhoto?'AI가 읽은 답이에요. 틀리게 읽은 문항은 숫자를 직접 고쳐주세요 (초록: 정답 일치, 빨강: 오답, 회색: 미마킹).':'문항별로 마킹된 번호를 입력하세요 (초록: 정답 일치, 빨강: 오답, 회색: 미입력).';
   const grid=document.getElementById('omr-review-grid');
   grid.innerHTML=exam.questions.map(function(q,i){
     const val=omrReadAnswers[i]||'';
