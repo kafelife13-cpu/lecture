@@ -1662,11 +1662,15 @@ function renderStudents(){
 async function approveAccess(reqId, sid, vid){
   const s=db.users.find(u=>u.id===sid);
   const v=db.videos.find(x=>x.id===vid);
-  const accessId='ac'+Date.now();
+  // video_access는 (student_id,video_id) 유니크 제약이 있어서, 예전에(마감된 뒤라도)
+  // 한 번이라도 권한을 받았던 영상이면 새로 insert하지 않고 같은 행을 upsert해야 함
+  const existing=db.access.find(a=>a.student_id===sid&&a.video_id===vid);
+  const accessId=existing?existing.id:'ac'+Date.now();
   const grantedAt=new Date().toISOString();
-  await sb.from('video_access').insert({id:accessId,student_id:sid,video_id:vid,granted_at:grantedAt});
+  await sb.from('video_access').upsert({id:accessId,student_id:sid,video_id:vid,granted_at:grantedAt},{onConflict:'student_id,video_id'});
   await sb.from('access_requests').update({status:'approved'}).eq('id',reqId);
-  db.access.push({id:accessId,student_id:sid,video_id:vid,granted_at:grantedAt});
+  if(existing)existing.granted_at=grantedAt;
+  else db.access.push({id:accessId,student_id:sid,video_id:vid,granted_at:grantedAt});
   const req=db.requests.find(r=>r.id===reqId);
   if(req)req.status='approved';
   notify(`${s.name}에게 "${v.title}" 시청 권한을 부여했습니다.`,'success');
@@ -1698,11 +1702,14 @@ async function grantAccessDirect(){
   if(hasAccess(sid,vid)){notify('이미 시청 권한이 있습니다.','error');return;}
   const s=db.users.find(u=>u.id===sid);
   const v=db.videos.find(x=>x.id===vid);
-  const accessId='ac'+Date.now();
+  // 예전에(마감된 뒤라도) 한 번이라도 권한을 받았던 영상이면 같은 행을 upsert
+  const existing=db.access.find(a=>a.student_id===sid&&a.video_id===vid);
+  const accessId=existing?existing.id:'ac'+Date.now();
   const grantedAt=new Date().toISOString();
-  const res=await sb.from('video_access').insert({id:accessId,student_id:sid,video_id:vid,granted_at:grantedAt});
+  const res=await sb.from('video_access').upsert({id:accessId,student_id:sid,video_id:vid,granted_at:grantedAt},{onConflict:'student_id,video_id'});
   if(res.error){notify('권한 부여 실패: '+res.error.message,'error');return;}
-  db.access.push({id:accessId,student_id:sid,video_id:vid,granted_at:grantedAt});
+  if(existing)existing.granted_at=grantedAt;
+  else db.access.push({id:accessId,student_id:sid,video_id:vid,granted_at:grantedAt});
   notify(`${s.name}에게 "${v.title}" 시청 권한을 부여했습니다.`,'success');
   renderAccessPanel();renderDashboard();
 }
