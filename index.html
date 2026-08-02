@@ -526,7 +526,7 @@ input,button{font-family:var(--font)}
         <!-- 시험 목록 / 등록 -->
         <div id="t-exam-main">
           <div class="card" style="margin-bottom:1rem">
-            <div class="card-head"><h3>새 시험 등록</h3><button class="btn blue btn-sm" onclick="openTExamCreate()">+ 등록</button></div>
+            <div class="card-head"><h3>새 시험 등록</h3><div style="display:flex;gap:6px"><button class="btn btn-sm" onclick="openOmrSheetModal()">🖨️ OMR 답안지 생성</button><button class="btn blue btn-sm" onclick="openTExamCreate()">+ 등록</button></div></div>
           </div>
           <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>🏫</span> 클리닉</div><div class="section-divider-line"></div></div>
           <div class="card" style="margin-bottom:1rem">
@@ -535,6 +535,10 @@ input,button{font-family:var(--font)}
           <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📝</span> 모의고사</div><div class="section-divider-line"></div></div>
           <div class="card" style="margin-bottom:1rem">
             <div id="t-exam-list-mock" style="padding:0 1.25rem 0.5rem"><p style="color:var(--text3);font-size:13px;padding:1rem 0">등록된 모의고사가 없습니다</p></div>
+          </div>
+          <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📚</span> 내신시험지 분석</div><div class="section-divider-line"></div></div>
+          <div class="card" style="margin-bottom:1rem">
+            <div id="t-exam-list-naeshin" style="padding:0 1.25rem 0.5rem"><p style="color:var(--text3);font-size:13px;padding:1rem 0">등록된 내신시험지가 없습니다</p></div>
           </div>
         </div>
         <!-- 시험 생성 폼 -->
@@ -548,6 +552,7 @@ input,button{font-family:var(--font)}
                   <select class="form-select" id="tex-category" onchange="texToggleClinicFields()">
                     <option value="school">🏫 클리닉</option>
                     <option value="mock">📝 모의고사</option>
+                    <option value="naeshin">📚 내신시험지 분석</option>
                   </select>
                 </div>
                 <div id="tex-clinic-fields" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
@@ -934,8 +939,10 @@ input,button{font-family:var(--font)}
           <div id="s-exam-clinic-groups" style="margin-bottom:1rem"></div>
           <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📝</span> 모의고사 채점</div><div class="section-divider-line"></div></div>
           <div id="s-exam-list-mock" style="margin-bottom:1rem"></div>
+          <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📚</span> 내신시험지 분석</div><div class="section-divider-line"></div></div>
+          <div id="s-exam-list-naeshin" style="margin-bottom:1rem"></div>
         </div>
-        <!-- 오답 체크 -->
+        <!-- 채점 화면 -->
         <div id="s-exam-check" style="display:none">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-wrap:wrap">
             <button class="btn btn-sm" onclick="sExamBack()">← 돌아가기</button>
@@ -944,26 +951,58 @@ input,button{font-family:var(--font)}
               <div id="s-exam-check-sub" style="font-size:12px;color:var(--text2)"></div>
             </div>
           </div>
-          <!-- 문항 번호 그리드 -->
-          <div class="card" style="margin-bottom:1rem">
-            <div class="card-head">
-              <h3>✗ 틀린 문제 선택</h3>
-              <span style="font-size:12px;color:var(--text2)" id="s-wrong-count-label">0문제 선택됨</span>
-            </div>
-            <div style="padding:0 1.25rem 1.25rem">
-              <div style="font-size:12px;color:var(--text2);margin-bottom:10px">틀린 문제 번호를 클릭하세요</div>
-              <div id="s-exam-q-grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:10px"></div>
-              <div style="display:flex;gap:14px;font-size:11px;color:var(--text3)">
-                <span>□ 미선택</span>
-                <span style="color:var(--red)">■ 틀린 문제</span>
+
+          <!-- FULL 모드 (클리닉/모의고사): 온라인 시험 — 문항별 답 선택 -->
+          <div id="s-exam-check-full" style="display:none">
+            <div id="s-exam-full-choice">
+              <div class="card" style="margin-bottom:10px">
+                <div style="padding:1.25rem;text-align:center">
+                  <button class="btn blue" style="width:100%;margin-bottom:8px" onclick="sExamFullManualStart()">✏️ 직접 답 체크</button>
+                  <button class="btn" style="width:100%" onclick="sOmrStartCamera()">📷 OMR 사진으로 채점</button>
+                </div>
               </div>
             </div>
+            <div id="s-exam-full-camera" style="display:none">
+              <video id="s-omr-cam-video" autoplay playsinline muted style="width:100%;display:block;background:#000;max-height:50vh;object-fit:contain;border-radius:8px"></video>
+              <div style="display:flex;gap:8px;margin-top:10px">
+                <button class="btn" style="flex:1" onclick="sExamBack()">취소</button>
+                <button class="btn blue" style="flex:2" onclick="sOmrCapturePhoto()">📸 촬영</button>
+              </div>
+            </div>
+            <div id="s-exam-full-loading" style="display:none;text-align:center;padding:2.5rem 1rem">
+              <div class="spinner" style="margin:0 auto 14px"></div>
+              <div style="font-size:13px;color:var(--text2)">AI가 답안지를 읽는 중...</div>
+            </div>
+            <div id="s-exam-full-grid-wrap" style="display:none">
+              <div id="s-omr-photo-preview"></div>
+              <div id="s-exam-full-grid" style="margin-bottom:10px"></div>
+              <button class="btn blue" style="width:100%;margin-bottom:8px" onclick="sExamSubmitFull()">📊 제출하기</button>
+            </div>
           </div>
-          <!-- 선택된 오답 상세 입력 -->
-          <div id="s-wrong-details"></div>
-          <div id="s-exam-check-err" class="err-msg"></div>
-          <button class="btn blue" style="width:100%;margin-bottom:8px" onclick="sExamSubmitScore()">📊 제출하기</button>
-          <p style="font-size:12px;color:var(--text3);text-align:center">틀린 문제가 없으면 그냥 제출해도 돼요</p>
+
+          <!-- WRONGONLY 모드 (내신시험지 분석): 오답만 체크 + 이유 작성 -->
+          <div id="s-exam-check-wrong" style="display:none">
+            <!-- 문항 번호 그리드 -->
+            <div class="card" style="margin-bottom:1rem">
+              <div class="card-head">
+                <h3>✗ 틀린 문제 선택</h3>
+                <span style="font-size:12px;color:var(--text2)" id="s-wrong-count-label">0문제 선택됨</span>
+              </div>
+              <div style="padding:0 1.25rem 1.25rem">
+                <div style="font-size:12px;color:var(--text2);margin-bottom:10px">틀린 문제 번호를 클릭하세요</div>
+                <div id="s-exam-q-grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:10px"></div>
+                <div style="display:flex;gap:14px;font-size:11px;color:var(--text3)">
+                  <span>□ 미선택</span>
+                  <span style="color:var(--red)">■ 틀린 문제</span>
+                </div>
+              </div>
+            </div>
+            <!-- 선택된 오답 상세 입력 -->
+            <div id="s-wrong-details"></div>
+            <div id="s-exam-check-err" class="err-msg"></div>
+            <button class="btn blue" style="width:100%;margin-bottom:8px" onclick="sExamSubmitScore()">📊 제출하기</button>
+            <p style="font-size:12px;color:var(--text3);text-align:center">틀린 문제가 없으면 그냥 제출해도 돼요</p>
+          </div>
         </div>
         <!-- 채점 결과 -->
         <div id="s-exam-result" style="display:none">
@@ -1115,6 +1154,32 @@ input,button{font-family:var(--font)}
           <button class="btn blue" style="flex:2" onclick="omrConfirmScore()">✓ 채점 확정</button>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- OMR 답안지(빈 시험지) 생성 -->
+<div class="modal-bg" id="modal-omr-sheet">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-head"><h3>🖨️ OMR 답안지 생성</h3><button class="modal-close" onclick="closeOmrSheetModal()">×</button></div>
+    <div class="modal-body">
+      <div class="form-group" style="margin-bottom:12px">
+        <label>문항 수</label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">
+          <button type="button" class="btn btn-sm" onclick="pickOmrSheetCount(20)">20문항</button>
+          <button type="button" class="btn btn-sm" onclick="pickOmrSheetCount(30)">30문항</button>
+          <button type="button" class="btn btn-sm" onclick="pickOmrSheetCount(45)">45문항</button>
+          <button type="button" class="btn btn-sm" onclick="pickOmrSheetCount(70)">70문항</button>
+          <button type="button" class="btn btn-sm" onclick="pickOmrSheetCount(80)">80문항</button>
+        </div>
+        <input class="form-input" id="omr-sheet-count" type="number" min="1" max="200" placeholder="직접 입력 (예: 25)">
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label>시험명 (선택)</label>
+        <input class="form-input" id="omr-sheet-name" placeholder="예: 8월 1주차 클리닉">
+      </div>
+      <button class="btn blue" style="width:100%;margin-top:16px" onclick="generateOmrSheet()">🖨️ 생성 및 인쇄</button>
+      <p style="font-size:11px;color:var(--text3);text-align:center;margin-top:6px">인쇄 창에서 "PDF로 저장"을 선택하면 파일로도 저장할 수 있어요</p>
     </div>
   </div>
 </div>
@@ -1339,6 +1404,7 @@ function sendTelegram(text){
 
 let session=null,currentRole='teacher',progressView='video',progressVideoPage=1;
 let db={users:[],videos:[],progress:[],access:[],requests:[]};
+var sharedAISettings=null;
 let ytPlayer=null,ytApiReady=false,currentVid=null,currentStartPos=0;
 let watchedSet=new Set(),trackTimer=null,saveTimer=null,lastPos=-1,totalDur=0,maxRateSeen=1;
 
@@ -1381,16 +1447,18 @@ function hideLoading(){document.getElementById('loading-screen').classList.add('
 /* ===== DB ===== */
 async function loadAll(attempt=0){
   try{
-    const [u,v,p,a,r]=await Promise.all([
+    const [u,v,p,a,r,st]=await Promise.all([
       sb.from('users').select('*'),
       sb.from('videos').select('*').order('created_at'),
       sb.from('progress').select('*'),
       sb.from('video_access').select('*'),
-      sb.from('access_requests').select('*')
+      sb.from('access_requests').select('*'),
+      sb.from('app_settings').select('*').eq('id','default').maybeSingle()
     ]);
     if(u.error)throw new Error(u.error.message);
     db.users=u.data||[];db.videos=v.data||[];db.progress=p.data||[];
     db.access=a.data||[];db.requests=r.data||[];
+    if(st&&st.data)sharedAISettings=st.data;
   }catch(e){
     if(attempt<3){
       document.querySelector('.loading-text').textContent=`재연결 중... (${attempt+1}/3)`;
@@ -1444,7 +1512,14 @@ async function doLogin(){
     const provider=document.getElementById('login-ai-provider')?.value||'claude';
     localStorage.setItem('ai_provider',provider);
     const inputKey=document.getElementById('login-apikey').value.trim();
-    if(inputKey)localStorage.setItem(provider+'_api_key',inputKey);
+    if(inputKey){
+      localStorage.setItem(provider+'_api_key',inputKey);
+      const settingsPatch={id:'default',ai_provider:provider,updated_at:new Date().toISOString()};
+      settingsPatch[provider+'_api_key']=inputKey;
+      sb.from('app_settings').upsert(settingsPatch,{onConflict:'id'}).then(function(res){
+        if(!res.error)sharedAISettings=Object.assign({},sharedAISettings,settingsPatch);
+      });
+    }
     CLAUDE_API_KEY=localStorage.getItem('claude_api_key')||CLAUDE_API_KEY;
   }
   btn.disabled=true;btn.textContent='로그인 중...';
@@ -3252,9 +3327,14 @@ var qwSolFile=null;
 var CLAUDE_API_KEY=localStorage.getItem('claude_api_key')||'';
 
 // ── 시험 등록 AI 분석용 provider 선택 (Claude/GPT/Gemini) ──
-function getAIProvider(){return localStorage.getItem('ai_provider')||'claude';}
-function getAIKey(provider){return localStorage.getItem((provider||getAIProvider())+'_api_key')||'';}
+function getAIProvider(){return localStorage.getItem('ai_provider')||(sharedAISettings&&sharedAISettings.ai_provider)||'claude';}
+function getAIKey(provider){
+  provider=provider||getAIProvider();
+  return localStorage.getItem(provider+'_api_key')||(sharedAISettings&&sharedAISettings[provider+'_api_key'])||'';
+}
 function aiProviderLabel(provider){return provider==='openai'?'GPT':provider==='gemini'?'Gemini':'Claude';}
+// OMR 사진 판독은 항상 Claude 비전을 사용 (학생 화면에서도 동작하도록 공유 설정에서 키를 가져옴)
+function getSharedClaudeKey(){return localStorage.getItem('claude_api_key')||(sharedAISettings&&sharedAISettings.claude_api_key)||'';}
 
 async function callTextAI(prompt,maxTokens){
   const provider=getAIProvider();
@@ -3974,12 +4054,15 @@ async function renderTExam(){
   if(error||!data){
     renderTExamList('t-exam-list',[],'등록된 클리닉이 없습니다');
     renderTExamList('t-exam-list-mock',[],'등록된 모의고사가 없습니다');
+    renderTExamList('t-exam-list-naeshin',[],'등록된 내신시험지가 없습니다');
     return;
   }
   const school=data.filter(e=>(e.category||'school')==='school');
   const mock=data.filter(e=>e.category==='mock');
+  const naeshin=data.filter(e=>e.category==='naeshin');
   renderTExamList('t-exam-list',school,'등록된 클리닉이 없습니다');
   renderTExamList('t-exam-list-mock',mock,'등록된 모의고사가 없습니다');
+  renderTExamList('t-exam-list-naeshin',naeshin,'등록된 내신시험지가 없습니다');
 }
 
 function renderTExamList(elId,list,emptyMsg){
@@ -4740,6 +4823,80 @@ function tResCopyReportLink(){
 }
 
 /* ════════════════════════════════════════════
+   OMR 답안지(빈 시험지) 생성 — 인쇄/PDF 저장용
+   ════════════════════════════════════════════ */
+function openOmrSheetModal(){
+  document.getElementById('omr-sheet-count').value='';
+  document.getElementById('omr-sheet-name').value='';
+  document.getElementById('modal-omr-sheet').classList.add('show');
+}
+function closeOmrSheetModal(){document.getElementById('modal-omr-sheet').classList.remove('show');}
+function pickOmrSheetCount(n){document.getElementById('omr-sheet-count').value=n;}
+
+function generateOmrSheet(){
+  const count=parseInt(document.getElementById('omr-sheet-count').value)||0;
+  if(!count||count<1){alert('문항 수를 입력해 주세요.');return;}
+  const title=document.getElementById('omr-sheet-name').value.trim()||'OMR 답안지';
+  const COL_SIZE=20;
+  const colCount=Math.ceil(count/COL_SIZE);
+  let colsHtml='';
+  for(let c=0;c<colCount;c++){
+    const start=c*COL_SIZE+1;
+    const end=Math.min((c+1)*COL_SIZE,count);
+    let rows='';
+    for(let n=start;n<=end;n++){
+      rows+='<div class="omr-row"><div class="omr-qnum">'+n+'</div><div class="omr-choices">'+
+        [1,2,3,4,5].map(function(i){return '<span class="omr-bubble">'+i+'</span>';}).join('')+
+        '</div></div>';
+    }
+    colsHtml+='<div class="omr-col"><div class="omr-col-head"><span>문번</span><span>답 란</span></div>'+rows+'</div>';
+  }
+  const bodyHtml=
+    '<div class="omr-sheet">'+
+      '<div class="omr-header">'+
+        '<div class="omr-title">'+title+'</div>'+
+        '<div class="omr-meta">'+
+          '<div class="omr-meta-row"><span>학교</span><span class="omr-fill-line"></span></div>'+
+          '<div class="omr-meta-row"><span>이름</span><span class="omr-fill-line"></span></div>'+
+          '<div class="omr-meta-row"><span>응시일</span><span class="omr-fill-line"></span></div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="omr-instructions">'+
+        '<strong>지켜야 할 사항</strong><br>'+
+        '1. 반드시 검정색 사인펜(또는 펜)으로 표기합니다.<br>'+
+        '2. 표기란에는 ● 와 같이 바르게 표기해야 합니다.<br>'+
+        '3. 수정 시에는 두 줄로 긋고 옆에 다시 표기합니다.'+
+      '</div>'+
+      '<div class="omr-cols">'+colsHtml+'</div>'+
+    '</div>';
+  const style=
+    '<style>'+
+      '@media print{ button{display:none} }'+
+      'body{font-family:"Malgun Gothic",sans-serif;padding:20px;color:#222}'+
+      '.omr-sheet{max-width:900px;margin:0 auto}'+
+      '.omr-header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #333;padding-bottom:10px;margin-bottom:10px}'+
+      '.omr-title{font-size:22px;font-weight:700}'+
+      '.omr-meta-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:13px}'+
+      '.omr-meta-row span:first-child{width:44px;color:#555}'+
+      '.omr-fill-line{display:inline-block;width:160px;border-bottom:1px solid #999;height:16px}'+
+      '.omr-instructions{font-size:11px;color:#555;background:#f7f7f7;border:1px solid #ddd;border-radius:6px;padding:8px 12px;margin-bottom:14px;line-height:1.7}'+
+      '.omr-cols{display:flex;flex-wrap:wrap;gap:10px}'+
+      '.omr-col{border:1px solid #333;border-radius:4px;overflow:hidden;min-width:170px;break-inside:avoid}'+
+      '.omr-col-head{display:flex;background:#333;color:#fff;font-size:12px;font-weight:600}'+
+      '.omr-col-head span:first-child{width:44px;text-align:center;padding:6px 0;border-right:1px solid #555}'+
+      '.omr-col-head span:last-child{flex:1;text-align:center;padding:6px 0}'+
+      '.omr-row{display:flex;align-items:center;border-top:1px solid #ccc}'+
+      '.omr-qnum{width:44px;text-align:center;font-size:12px;font-weight:600;border-right:1px solid #ccc;padding:5px 0}'+
+      '.omr-choices{flex:1;display:flex;justify-content:space-around;padding:4px 2px}'+
+      '.omr-bubble{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border:1.2px solid #333;border-radius:50%;font-size:9px;color:#333}'+
+    '</style>';
+  const w=window.open('','_blank');
+  w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+title+' OMR</title>'+style+'</head><body>'+bodyHtml+'<br><button onclick="window.print()" style="padding:10px 24px;background:#1a1612;color:white;border:none;border-radius:6px;font-size:14px;cursor:pointer;margin:10px">🖨️ 인쇄 / PDF로 저장</button></body></html>');
+  w.document.close();
+  closeOmrSheetModal();
+}
+
+/* ════════════════════════════════════════════
    OMR 채점 — 답안지 사진을 AI가 읽어 채점
    ════════════════════════════════════════════ */
 var omrCamStream=null,omrCurrentPhoto=null,omrReadAnswers={};
@@ -4807,7 +4964,7 @@ function omrCapturePhoto(){
   },'image/jpeg',0.9);
 }
 async function omrReadWithAI(){
-  CLAUDE_API_KEY=localStorage.getItem('claude_api_key')||CLAUDE_API_KEY;
+  CLAUDE_API_KEY=getSharedClaudeKey();
   if(!CLAUDE_API_KEY){alert('Claude API 키가 없어요. 로그아웃 후 다시 로그인해서 키를 입력해 주세요.');closeOmrModal();return;}
   const exam=tResCurrentExam;
   const total=exam.total_q;
@@ -4917,7 +5074,8 @@ async function omrConfirmScore(){
 function getWrongDomainsForResponse(exam,response){
   var domains={};
   (exam.questions||[]).forEach(function(q,i){
-    var wrong=!!(response&&response.answers&&Object.prototype.hasOwnProperty.call(response.answers,i));
+    var hasEntry=!!(response&&response.answers&&Object.prototype.hasOwnProperty.call(response.answers,i));
+    var wrong=hasEntry&&String(response.answers[i])!==String(q.answer);
     if(wrong){
       var d=q.domain||q.type||'기타';
       if(!domains[d])domains[d]=[];
@@ -4930,11 +5088,11 @@ async function fetchOxQuestions(examId,domain){
   const{data}=await sb.from('ox_questions').select('*').eq('exam_id',examId).eq('domain',domain);
   return data||[];
 }
-/* 교사 전용: 없으면 AI로 새로 생성해서 저장(있으면 그대로 재사용) */
+/* 없으면 AI로 새로 생성해서 저장(있으면 그대로 재사용). 학생 화면에서도 호출 가능(공유 키 사용) */
 async function ensureOxQuestions(examId,domain,explanationTexts){
   const existing=await fetchOxQuestions(examId,domain);
   if(existing.length)return existing;
-  CLAUDE_API_KEY=localStorage.getItem('claude_api_key')||CLAUDE_API_KEY;
+  CLAUDE_API_KEY=getSharedClaudeKey();
   if(!CLAUDE_API_KEY)return[];
   try{
     const promptText='당신은 국어 문제 출제 전문가입니다. 아래는 "'+domain+'" 개념과 관련된 문제의 해설입니다.\n\n'+
@@ -4983,13 +5141,13 @@ async function startOxQuiz(exam,response){
   oxQuizExamId=exam.id;
   let allQ=[];
   for(const d of domains){
-    const qs=await fetchOxQuestions(exam.id,d);
+    const qs=await ensureOxQuestions(exam.id,d,domainMap[d]);
     allQ=allQ.concat(qs);
   }
   oxQuizItems=allQ;
   oxQuizAnswers={};
   if(!allQ.length){
-    document.getElementById('ox-quiz-body').innerHTML='<div style="text-align:center;padding:2rem;color:var(--text2);font-size:13px">아직 재시험 문제가 준비되지 않았어요.<br>선생님께 문의해주세요.</div>';
+    document.getElementById('ox-quiz-body').innerHTML='<div style="text-align:center;padding:2rem;color:var(--text2);font-size:13px">재시험 문제를 만들지 못했어요.<br>잠시 후 다시 시도해주세요.</div>';
     return;
   }
   renderOxQuiz();
@@ -5044,16 +5202,23 @@ async function renderSOxReview(){
   if(!el||!session)return;
   el.innerHTML='<div style="text-align:center;padding:2rem;color:var(--text2);font-size:13px">불러오는 중...</div>';
   const{data:responses}=await sb.from('exam_responses').select('*').eq('student_name',session.name||session.id);
-  const mine=(responses||[]).filter(function(r){return r.answers&&Object.keys(r.answers).length>0;});
-  if(!mine.length){el.innerHTML='<div style="text-align:center;padding:2rem;color:var(--text3);font-size:13px">틀린 문제가 있는 시험이 없어요.</div>';return;}
-  const examIds=mine.map(function(r){return r.exam_id;});
-  const{data:exams}=await sb.from('exams').select('id,name').in('id',examIds);
-  el.innerHTML=mine.map(function(r){
+  const withAnswers=(responses||[]).filter(function(r){return r.answers&&Object.keys(r.answers).length>0;});
+  if(!withAnswers.length){el.innerHTML='<div style="text-align:center;padding:2rem;color:var(--text3);font-size:13px">틀린 문제가 있는 시험이 없어요.</div>';return;}
+  const examIds=withAnswers.map(function(r){return r.exam_id;});
+  const{data:exams}=await sb.from('exams').select('id,name,questions').in('id',examIds);
+  const rows=withAnswers.map(function(r){
     const exam=(exams||[]).find(function(e){return e.id===r.exam_id;});
-    const wrongCount=Object.keys(r.answers).length;
-    return'<div class="access-row"><div style="flex:1"><div style="font-size:13px;font-weight:600">'+(exam?exam.name:'시험')+'</div>'+
-      '<div style="font-size:11px;color:var(--text2)">오답 '+wrongCount+'개</div></div>'+
-      '<button class="btn blue btn-sm" onclick="openOxQuizForExamId(\''+r.exam_id+'\')">OX 재시험</button></div>';
+    const wrongCount=Object.keys(r.answers).filter(function(idx){
+      const q=exam&&exam.questions&&exam.questions[idx];
+      return q&&String(r.answers[idx])!==String(q.answer);
+    }).length;
+    return{r:r,exam:exam,wrongCount:wrongCount};
+  }).filter(function(x){return x.wrongCount>0;});
+  if(!rows.length){el.innerHTML='<div style="text-align:center;padding:2rem;color:var(--text3);font-size:13px">틀린 문제가 있는 시험이 없어요.</div>';return;}
+  el.innerHTML=rows.map(function(x){
+    return'<div class="access-row"><div style="flex:1"><div style="font-size:13px;font-weight:600">'+(x.exam?x.exam.name:'시험')+'</div>'+
+      '<div style="font-size:11px;color:var(--text2)">오답 '+x.wrongCount+'개</div></div>'+
+      '<button class="btn blue btn-sm" onclick="openOxQuizForExamId(\''+x.r.exam_id+'\')">OX 재시험</button></div>';
   }).join('');
 }
 
@@ -5089,8 +5254,11 @@ async function tResPrintOxForStudent(){
 // 성적표(리포트) 생성 — 영역별 점수·레이더차트·문항채점표
 // ════════════════════════════════════════════
 
-function repIsWrong(response,idx){
-  return !!(response&&response.answers&&Object.prototype.hasOwnProperty.call(response.answers,idx));
+function repIsWrong(response,idx,exam){
+  if(!response||!response.answers||!Object.prototype.hasOwnProperty.call(response.answers,idx))return false;
+  var q=exam&&exam.questions&&exam.questions[idx];
+  if(!q)return true; // 문항 정보를 알 수 없으면(구 형식) 키 존재만으로 오답 처리
+  return String(response.answers[idx])!==String(q.answer);
 }
 
 function repScore(exam,response){
@@ -5098,7 +5266,7 @@ function repScore(exam,response){
   exam.questions.forEach(function(q,i){
     var pts=q.points||1;
     total+=pts;
-    if(!repIsWrong(response,i))earned+=pts;
+    if(!repIsWrong(response,i,exam))earned+=pts;
   });
   return {earned:earned,total:total||1,pct:total?Math.round(earned/total*1000)/10:0};
 }
@@ -5111,7 +5279,7 @@ function repDomainStats(exam,response){
     var pts=q.points||1;
     byDomain[d].qCount++;
     byDomain[d].maxPoints+=pts;
-    if(!repIsWrong(response,i)){byDomain[d].correctCount++;byDomain[d].earnedPoints+=pts;}
+    if(!repIsWrong(response,i,exam)){byDomain[d].correctCount++;byDomain[d].earnedPoints+=pts;}
   });
   return byDomain;
 }
@@ -5201,11 +5369,11 @@ function buildReportCardHTML(studentName,exam,response,allResponses,academyName)
     return '<tr><td style="padding:5px;border-bottom:1px solid #eee">'+d+'</td><td style="padding:5px;text-align:center;border-bottom:1px solid #eee">'+s.qCount+'</td><td style="padding:5px;text-align:center;border-bottom:1px solid #eee">'+s.correctCount+'</td><td style="padding:5px;text-align:center;border-bottom:1px solid #eee;font-weight:700">'+s.earnedPoints+'</td><td style="padding:5px;text-align:center;border-bottom:1px solid #eee;color:#888">'+classAvg+'</td></tr>';
   }).join('');
   var domainTotalQ=exam.questions.length;
-  var domainTotalCorrect=exam.questions.filter(function(q,i){return !repIsWrong(response,i);}).length;
+  var domainTotalCorrect=exam.questions.filter(function(q,i){return !repIsWrong(response,i,exam);}).length;
 
   var itemRows=exam.questions.map(function(q,i){
-    var wrong=repIsWrong(response,i);
-    var wrongRate=(allResponses&&allResponses.length)?Math.round(allResponses.filter(function(r){return repIsWrong(r,i);}).length/allResponses.length*1000)/10:0;
+    var wrong=repIsWrong(response,i,exam);
+    var wrongRate=(allResponses&&allResponses.length)?Math.round(allResponses.filter(function(r){return repIsWrong(r,i,exam);}).length/allResponses.length*1000)/10:0;
     return {num:q.num||(i+1),label:(q.domain||q.type||''),points:q.points||1,answer:q.answer,mark:wrong?'✗':'○',wrongRate:wrongRate,isWrong:wrong};
   });
   var perCol=Math.ceil(itemRows.length/3)||1;
@@ -5281,14 +5449,19 @@ var sExamPriorResponse=null;
 var sExamClinicCache=[];
 var sExamRespCache={};
 var sExamClinicWeekOpen={};
+var sExamCheckMode='full'; // 'full'(클리닉/모의고사: 문항별 답 선택) | 'wrongonly'(내신시험지 분석: 오답만 체크)
+var sExamFullAnswers={};
+var sOmrCamStream=null,sOmrCurrentPhoto=null;
 
 async function renderSExam(){
   sExamData=null;sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;sWrongChecked={};sExamPriorResponse=null;
   showSExamView('entry');
   const clinicEl=document.getElementById('s-exam-clinic-groups');
   const mockEl=document.getElementById('s-exam-list-mock');
+  const naeshinEl=document.getElementById('s-exam-list-naeshin');
   if(clinicEl)clinicEl.innerHTML='<div style="padding:1rem;text-align:center;color:var(--text3);font-size:13px">불러오는 중...</div>';
   if(mockEl)mockEl.innerHTML='';
+  if(naeshinEl)naeshinEl.innerHTML='';
   const myName=session.name||session.id;
   const [{data:exams},{data:myResponses}]=await Promise.all([
     sb.from('exams').select('*').order('created_at',{ascending:false}),
@@ -5297,10 +5470,12 @@ async function renderSExam(){
   sExamRespCache={};
   (myResponses||[]).forEach(function(r){sExamRespCache[r.exam_id]=r;});
   const list=exams||[];
-  sExamClinicCache=list.filter(function(e){return (e.category||'school')!=='mock';});
+  sExamClinicCache=list.filter(function(e){return (e.category||'school')==='school';});
   const mock=list.filter(function(e){return e.category==='mock';});
+  const naeshin=list.filter(function(e){return e.category==='naeshin';});
   renderSExamClinicGroups();
   if(mockEl)mockEl.innerHTML=renderSExamListCards(mock,sExamRespCache,'등록된 모의고사가 없어요');
+  if(naeshinEl)naeshinEl.innerHTML=renderSExamListCards(naeshin,sExamRespCache,'등록된 내신시험지가 없어요');
 }
 
 function renderSExamClinicGroups(){
@@ -5398,11 +5573,171 @@ async function sExamOpenForGrading(examId){
     return;
   }
   sExamData=found;sExamPriorResponse=resp||null;
-  sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;sWrongChecked={};
-  document.getElementById('s-exam-check-title').textContent=(found.category==='mock'?'📝 ':'🏫 ')+found.name;
-  document.getElementById('s-exam-check-sub').textContent='총 '+found.total_q+'문항 · 틀린 번호를 클릭하세요';
-  renderSExamAnswerGrid();
+  sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;sWrongChecked={};sExamFullAnswers={};
+  sExamCheckMode=found.category==='naeshin'?'wrongonly':'full';
+  const icon=found.category==='mock'?'📝 ':found.category==='naeshin'?'📚 ':'🏫 ';
+  document.getElementById('s-exam-check-title').textContent=icon+found.name;
+  const fullEl=document.getElementById('s-exam-check-full');
+  const wrongEl=document.getElementById('s-exam-check-wrong');
+  if(sExamCheckMode==='full'){
+    fullEl.style.display='block';wrongEl.style.display='none';
+    document.getElementById('s-exam-check-sub').textContent='총 '+found.total_q+'문항 · 답을 선택하거나 OMR 사진으로 채점하세요';
+    document.getElementById('s-exam-full-choice').style.display='block';
+    document.getElementById('s-exam-full-camera').style.display='none';
+    document.getElementById('s-exam-full-loading').style.display='none';
+    document.getElementById('s-exam-full-grid-wrap').style.display='none';
+  }else{
+    fullEl.style.display='none';wrongEl.style.display='block';
+    document.getElementById('s-exam-check-sub').textContent='총 '+found.total_q+'문항 · 틀린 번호를 클릭하세요';
+    renderSExamAnswerGrid();
+  }
   showSExamView('check');
+}
+
+/* ── FULL 모드: 문항별 답 선택 온라인 시험 (직접 체크 또는 OMR 사진) ── */
+function sExamFullManualStart(){
+  sExamFullAnswers={};
+  document.getElementById('s-exam-full-choice').style.display='none';
+  document.getElementById('s-exam-full-grid-wrap').style.display='block';
+  document.getElementById('s-omr-photo-preview').innerHTML='';
+  renderSExamFullGrid();
+}
+
+function renderSExamFullGrid(){
+  const total=sExamData.total_q;
+  const el=document.getElementById('s-exam-full-grid');
+  if(!el)return;
+  el.innerHTML=Array.from({length:total},function(_,i){
+    const my=sExamFullAnswers[i];
+    return '<div class="card" style="margin-bottom:8px">'+
+      '<div style="padding:0.75rem 1rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap">'+
+        '<span style="min-width:34px;font-size:13px;font-weight:700;color:var(--accent)">'+(i+1)+'번</span>'+
+        '<div style="display:flex;gap:6px">'+
+        [1,2,3,4,5].map(function(n){
+          const sel=String(my)===String(n);
+          return '<button type="button" onclick="sExamPickFullAnswer('+i+','+n+')" style="width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:13px;font-weight:600;border:1.5px solid '+(sel?'var(--accent)':'var(--border)')+';background:'+(sel?'var(--accent)':'var(--card)')+';color:'+(sel?'white':'var(--text2)')+'">'+n+'</button>';
+        }).join('')+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+function sExamPickFullAnswer(idx,n){
+  sExamFullAnswers[idx]=String(n);
+  renderSExamFullGrid();
+}
+
+async function sExamSubmitFull(){
+  if(!sExamData||!session)return;
+  const total=sExamData.total_q;
+  const unanswered=[];
+  for(let i=0;i<total;i++){if(!sExamFullAnswers[i])unanswered.push(i+1);}
+  if(unanswered.length){
+    if(!confirm(unanswered.length+'문항 답을 아직 선택 안 했어요 ('+unanswered.slice(0,8).join(',')+(unanswered.length>8?'...':'')+'). 그래도 제출할까요?'))return;
+  }
+  const savedAnswers={};
+  for(let i=0;i<total;i++){savedAnswers[i]=sExamFullAnswers[i]||'';}
+  let correct=0;
+  const wrong=[];
+  sExamData.questions.forEach(function(q,i){
+    const my=savedAnswers[i];
+    if(my&&String(my)===String(q.answer))correct++;
+    else wrong.push({idx:i,q:q,my:my||'미선택'});
+  });
+  const pointsTotal=sExamData.questions.reduce(function(s,q){return s+(q.points||1);},0)||total;
+  const pointsEarned=sExamData.questions.reduce(function(s,q,i){return s+(String(savedAnswers[i])===String(q.answer)?(q.points||1):0);},0);
+  const score=pointsTotal?Math.round(pointsEarned/pointsTotal*100):Math.round(correct/total*100);
+  const nextAttempt=(sExamPriorResponse&&sExamPriorResponse.attempt_count)?sExamPriorResponse.attempt_count+1:1;
+  let photoUrls={};
+  if(sOmrCurrentPhoto){
+    try{
+      const path='exam-photos/'+sExamData.id+'/'+(session.name||session.id)+'/omr_'+Date.now()+'.jpg';
+      const up=await sb.storage.from('exam-photos').upload(path,sOmrCurrentPhoto,{upsert:true,contentType:'image/jpeg'});
+      if(!up.error){
+        const urlRes=sb.storage.from('exam-photos').getPublicUrl(path);
+        if(urlRes.data&&urlRes.data.publicUrl)photoUrls={omr:urlRes.data.publicUrl};
+      }
+    }catch(e){}
+  }
+  await sb.from('exam_responses').upsert({
+    exam_id:sExamData.id,student_name:session.name||session.id,
+    answers:savedAnswers,photo_urls:photoUrls,thoughts:{},
+    score:score,correct_count:correct,total_q:total,
+    points_earned:pointsEarned,points_total:pointsTotal,
+    attempt_count:nextAttempt,regrade_requested:false,regrade_approved:false,
+    submitted_at:new Date().toISOString()
+  },{onConflict:'exam_id,student_name'});
+  sExamPriorResponse=null;sOmrCurrentPhoto=null;
+  showSExamView('result');
+  renderSExamResultView(score,correct,wrong,total);
+}
+
+/* 학생 OMR 사진 촬영 채점 (공유 AI 키 사용) */
+async function sOmrStartCamera(){
+  if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)){alert('이 브라우저는 카메라 촬영을 지원하지 않아요.');return;}
+  try{
+    sOmrCamStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
+    document.getElementById('s-omr-cam-video').srcObject=sOmrCamStream;
+    document.getElementById('s-exam-full-choice').style.display='none';
+    document.getElementById('s-exam-full-camera').style.display='block';
+  }catch(err){
+    alert('카메라를 열 수 없어요: '+err.message);
+  }
+}
+function sOmrStopCamera(){
+  if(sOmrCamStream){try{sOmrCamStream.getTracks().forEach(function(t){t.stop();});}catch(e){}sOmrCamStream=null;}
+}
+function sOmrCapturePhoto(){
+  const video=document.getElementById('s-omr-cam-video');
+  const w=video.videoWidth,h=video.videoHeight;
+  if(!w||!h){notify('카메라 준비 중이에요, 잠시 후 다시 시도해주세요.','error');return;}
+  const canvas=document.createElement('canvas');
+  canvas.width=w;canvas.height=h;
+  canvas.getContext('2d').drawImage(video,0,0,w,h);
+  sOmrStopCamera();
+  document.getElementById('s-exam-full-camera').style.display='none';
+  document.getElementById('s-exam-full-loading').style.display='block';
+  canvas.toBlob(async function(blob){
+    if(!blob){notify('사진 촬영 실패','error');sExamBack();return;}
+    sOmrCurrentPhoto=new File([blob],'omr.jpg',{type:'image/jpeg'});
+    await sOmrReadWithAI(URL.createObjectURL(blob));
+  },'image/jpeg',0.9);
+}
+async function sOmrReadWithAI(previewUrl){
+  const key=getSharedClaudeKey();
+  if(!key){
+    alert('AI 채점에 쓸 API 키가 아직 설정되지 않았어요. 선생님께 로그인 후 키 등록을 요청해주세요.');
+    sExamFullManualStart();
+    return;
+  }
+  const exam=sExamData;
+  const total=exam.total_q;
+  try{
+    const b64=await new Promise(function(res){const r=new FileReader();r.onload=function(){res(r.result.split(',')[1]);};r.readAsDataURL(sOmrCurrentPhoto);});
+    const promptText='당신은 OMR 답안지를 읽는 전문가입니다. 첨부된 이미지는 학생이 마킹한 OMR 답안지 사진입니다.\n'+
+      '총 문항 수: '+total+'개, 각 문항은 1~5번 중 하나를 마킹합니다.\n'+
+      '사진을 보고 문항 번호 1~'+total+'번까지 각각 마킹된 번호를 읽어서 JSON으로만 답하세요.\n'+
+      '마킹이 없거나 두 개 이상 마킹되어 읽기 애매한 문항은 0으로 표시하세요.\n'+
+      '형식 예시: {"1":3,"2":1,"3":0}\n다른 설명 없이 순수 JSON 객체만 반환하세요.';
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:2000,thinking:{type:'disabled'},messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},{type:'text',text:promptText}]}]})});
+    const data=await resp.json();
+    const raw=(data.content||[]).map(function(c){return c.text||'';}).join('');
+    let parsed={};
+    try{parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());}catch(e){parsed={};}
+    sExamFullAnswers={};
+    for(let i=0;i<total;i++){
+      const v=parsed[String(i+1)];
+      sExamFullAnswers[i]=(v&&Number(v)>=1&&Number(v)<=9)?String(v):'';
+    }
+  }catch(e){
+    notify('AI 읽기 실패, 직접 체크해주세요: '+e.message,'error');
+    sExamFullAnswers={};
+  }
+  document.getElementById('s-exam-full-loading').style.display='none';
+  document.getElementById('s-exam-full-grid-wrap').style.display='block';
+  document.getElementById('s-omr-photo-preview').innerHTML=previewUrl?'<img src="'+previewUrl+'" style="width:100%;border-radius:8px;margin-bottom:6px;max-height:200px;object-fit:contain;background:var(--bg2)"><div style="font-size:12px;color:var(--text2);margin-bottom:10px">AI가 읽은 답이에요. 잘못 읽은 문항은 눌러서 고쳐주세요.</div>':'';
+  renderSExamFullGrid();
 }
 
 async function sExamRequestRegrade(examId,examName){
@@ -5424,7 +5759,10 @@ async function sExamViewResult(examId){
   if(e1||e2||!exam||!resp){alert('결과를 불러오지 못했어요.');return;}
   sExamData=exam;
   const answers=resp.answers||{};
-  const wrongIdxs=Object.keys(answers).map(Number);
+  const wrongIdxs=Object.keys(answers).map(Number).filter(function(idx){
+    const q=exam.questions[idx];
+    return q&&String(answers[idx])!==String(q.answer);
+  });
   const wrong=wrongIdxs.map(function(idx){return {idx:idx,q:exam.questions[idx]||{},my:answers[idx]||'?'};});
   showSExamView('result');
   renderSExamResultView(resp.score,resp.correct_count,wrong,resp.total_q);
@@ -5718,6 +6056,8 @@ function sExamUploadPhoto(idx,input){
 }
 
 function sExamBack(){
+  sOmrStopCamera();
+  sOmrCurrentPhoto=null;
   renderSExam();
 }
 
