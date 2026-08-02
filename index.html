@@ -393,9 +393,14 @@ input,button{font-family:var(--font)}
           </div>
         </div>
         <!-- 현재 권한 목록 -->
-        <div class="card">
+        <div class="card" style="margin-bottom:1rem">
           <div class="card-head"><h3>현재 시청 권한 목록</h3><span style="font-size:11px;color:var(--text2)">권한 해제 시 즉시 적용</span></div>
           <div id="access-granted-list"></div>
+        </div>
+        <!-- 주차별 기록 -->
+        <div class="card">
+          <div class="card-head"><h3>📅 주차별 시청 권한 기록</h3><span style="font-size:11px;color:var(--text2)">시작~마감 이력, 클릭해서 펼치기</span></div>
+          <div id="access-weekly-history"></div>
         </div>
       </div>
 
@@ -1702,7 +1707,7 @@ function renderAccessPanel(){
   }
   // 현재 권한 목록
   const gl=document.getElementById('access-granted-list');
-  if(!db.access.length){gl.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text2);font-size:13px">현재 시청 권한을 가진 학생이 없습니다.</div>';return;}
+  if(!db.access.length){gl.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text2);font-size:13px">현재 시청 권한을 가진 학생이 없습니다.</div>';renderAccessWeeklyHistory();return;}
   gl.innerHTML=db.access.map(a=>{
     const s=db.users.find(u=>u.id===a.student_id);
     const v=db.videos.find(x=>x.id===a.video_id);
@@ -1724,6 +1729,67 @@ function renderAccessPanel(){
         </div>
       </div>
       <button class="btn red btn-sm" onclick="revokeAccess('${a.student_id}','${a.video_id}')">권한 해제</button>
+    </div>`;
+  }).join('');
+  renderAccessWeeklyHistory();
+}
+/* granted_at이 속한 주의 마감 일요일을 기준으로 "N월 N주차" 라벨을 만든다 (그 달의 몇 번째 일요일인지로 계산) */
+function weekLabelForDate(d){
+  let count=0;
+  for(let day=1;day<=d.getDate();day++){
+    if(new Date(d.getFullYear(),d.getMonth(),day).getDay()===0)count++;
+  }
+  return (d.getMonth()+1)+'월 '+count+'주차';
+}
+let accessWeekOpen=null;
+function toggleAccessWeek(key){
+  accessWeekOpen=(accessWeekOpen===key)?null:key;
+  renderAccessWeeklyHistory();
+}
+function renderAccessWeeklyHistory(){
+  const el=document.getElementById('access-weekly-history');
+  if(!el)return;
+  if(!db.access.length){el.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text2);font-size:13px">기록이 없습니다.</div>';return;}
+  const groups={};
+  db.access.forEach(a=>{
+    const exp=accessExpiry(a);
+    if(isNaN(exp))return;
+    const key=exp.toDateString();
+    if(!groups[key])groups[key]={exp,items:[]};
+    groups[key].items.push(a);
+  });
+  const weeks=Object.keys(groups).map(k=>groups[k]).sort((a,b)=>b.exp-a.exp);
+  if(accessWeekOpen===null&&weeks.length)accessWeekOpen=weeks[0].exp.toDateString();
+  el.innerHTML=weeks.map(w=>{
+    const key=w.exp.toDateString();
+    const open=accessWeekOpen===key;
+    const label=weekLabelForDate(w.exp);
+    const expLabel=(w.exp.getMonth()+1)+'/'+w.exp.getDate()+'(일) 21:00 마감';
+    const doneC=w.items.filter(a=>getPct(a.student_id,a.video_id)>=100).length;
+    const rows=w.items.map(a=>{
+      const s=db.users.find(u=>u.id===a.student_id);
+      const v=db.videos.find(x=>x.id===a.video_id);
+      if(!s||!v)return'';
+      const p=getPct(a.student_id,a.video_id);
+      const g=new Date(a.granted_at);
+      const startLabel=(g.getMonth()+1)+'/'+g.getDate()+' '+String(g.getHours()).padStart(2,'0')+':'+String(g.getMinutes()).padStart(2,'0');
+      return`<div style="display:flex;align-items:center;gap:10px;padding:10px 1.25rem;border-bottom:1px solid var(--border)">
+        <div class="avatar student" style="width:26px;height:26px;font-size:10px;flex-shrink:0">${s.name[0]}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:600">${s.name} <span style="font-weight:400;color:var(--text2)">→</span> ${v.title}</div>
+          <div style="font-size:11px;color:var(--text2)">시작 ${startLabel} · 마감 ${expLabel}</div>
+        </div>
+        <span class="badge ${pctBadge(p)}">${pctLabel(p)}</span>
+      </div>`;
+    }).join('');
+    return`<div style="border-bottom:1px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:10px;padding:12px 1.25rem;cursor:pointer" onclick="toggleAccessWeek('${key}')">
+        <span style="font-size:13px;font-weight:700">${label}</span>
+        <span style="font-size:11px;color:var(--text2)">${expLabel}</span>
+        <span style="font-size:11px;color:var(--text2);margin-left:auto">${doneC}/${w.items.length}명 완료</span>
+        <span style="color:var(--text3)">${open?'▾':'▸'}</span>
+      </div>
+      ${open?rows:''}
     </div>`;
   }).join('');
 }
