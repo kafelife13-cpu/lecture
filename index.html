@@ -522,9 +522,9 @@ input,button{font-family:var(--font)}
           <div class="card" style="margin-bottom:1rem">
             <div class="card-head"><h3>새 시험 등록</h3><button class="btn blue btn-sm" onclick="openTExamCreate()">+ 등록</button></div>
           </div>
-          <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📖</span> 학교시험</div><div class="section-divider-line"></div></div>
+          <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>🏫</span> 클리닉</div><div class="section-divider-line"></div></div>
           <div class="card" style="margin-bottom:1rem">
-            <div id="t-exam-list" style="padding:0 1.25rem 0.5rem"><p style="color:var(--text3);font-size:13px;padding:1rem 0">등록된 시험이 없습니다</p></div>
+            <div id="t-exam-list" style="padding:0 1.25rem 0.5rem"><p style="color:var(--text3);font-size:13px;padding:1rem 0">등록된 클리닉이 없습니다</p></div>
           </div>
           <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📝</span> 모의고사</div><div class="section-divider-line"></div></div>
           <div class="card" style="margin-bottom:1rem">
@@ -539,10 +539,19 @@ input,button{font-family:var(--font)}
               <div class="card-head"><h3>시험 등록</h3><button class="btn btn-sm" onclick="closeTExamCreate()">취소</button></div>
               <div style="padding:0 1.25rem 1.25rem">
                 <div class="form-group" style="margin-bottom:12px"><label>구분</label>
-                  <select class="form-select" id="tex-category">
-                    <option value="school">📖 학교시험</option>
+                  <select class="form-select" id="tex-category" onchange="texToggleClinicFields()">
+                    <option value="school">🏫 클리닉</option>
                     <option value="mock">📝 모의고사</option>
                   </select>
+                </div>
+                <div id="tex-clinic-fields" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+                  <div class="form-group" style="margin-bottom:0"><label>학교</label>
+                    <select class="form-select" id="tex-clinic-school">
+                      <option value="한백고">한백고</option>
+                      <option value="치동고">치동고</option>
+                    </select>
+                  </div>
+                  <div class="form-group" style="margin-bottom:0"><label>주차</label><input class="form-input" id="tex-clinic-week" placeholder="예: 8월 1주차"></div>
                 </div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
                   <div class="form-group"><label>시험 이름</label><input class="form-input" id="tex-name" placeholder="예: 1학기 중간고사 국어"></div>
@@ -557,18 +566,39 @@ input,button{font-family:var(--font)}
             <div class="card" style="margin-bottom:1rem">
               <div class="card-head"><h3>① 시험지 텍스트</h3><span style="font-size:11px;color:var(--text2)">한글에서 Ctrl+A → Ctrl+C 후 붙여넣기</span></div>
               <div style="padding:0 1.25rem 1.25rem">
+                <div style="margin-bottom:8px">
+                  <label style="display:inline-block;cursor:pointer;background:var(--bg2);border:1.5px dashed var(--border2);border-radius:8px;padding:8px 14px;font-size:12px;color:var(--text2)">
+                    📄 PDF 업로드 (선택)
+                    <input type="file" accept="application/pdf" style="display:none" onchange="texPdfUpload(this,'tex-questions-raw','tex-questions-pdf-status')">
+                  </label>
+                  <span id="tex-questions-pdf-status" style="font-size:11px;color:var(--text2);margin-left:6px"></span>
+                </div>
                 <textarea class="form-input" id="tex-questions-raw" placeholder="시험지 전체 텍스트를 붙여넣으세요&#10;&#10;예)&#10;1. 다음 글의 주제로 가장 적절한 것은?&#10;①...②...③...&#10;2. 밑줄 친 ㉠의 의미로 가장 적절한 것은?" style="min-height:180px;font-size:13px;line-height:1.7"></textarea>
               </div>
             </div>
             <div class="card" style="margin-bottom:1rem">
               <div class="card-head"><h3>② 정답지 텍스트</h3><span style="font-size:11px;color:var(--text2)">어떤 형식이든 OK</span></div>
               <div style="padding:0 1.25rem 1.25rem">
+                <div style="margin-bottom:8px">
+                  <label style="display:inline-block;cursor:pointer;background:var(--bg2);border:1.5px dashed var(--border2);border-radius:8px;padding:8px 14px;font-size:12px;color:var(--text2)">
+                    📄 PDF 업로드 (선택)
+                    <input type="file" accept="application/pdf" style="display:none" onchange="texPdfUpload(this,'tex-answers-raw','tex-answers-pdf-status')">
+                  </label>
+                  <span id="tex-answers-pdf-status" style="font-size:11px;color:var(--text2);margin-left:6px"></span>
+                </div>
                 <textarea class="form-input" id="tex-answers-raw" placeholder="예) 1-③ 2-① 3-⑤ 4-② 5-④&#10;또는&#10;1번: 3번  2번: 1번&#10;또는&#10;1③ 2① 3⑤ ..." style="min-height:100px;font-size:13px;line-height:1.7"></textarea>
               </div>
             </div>
             <div class="card" style="margin-bottom:1rem">
               <div class="card-head"><h3>③ 해설지 텍스트</h3><span style="font-size:11px;color:var(--text2)">선택사항</span></div>
               <div style="padding:0 1.25rem 1.25rem">
+                <div style="margin-bottom:8px">
+                  <label style="display:inline-block;cursor:pointer;background:var(--bg2);border:1.5px dashed var(--border2);border-radius:8px;padding:8px 14px;font-size:12px;color:var(--text2)">
+                    📄 PDF 업로드 (선택)
+                    <input type="file" accept="application/pdf" style="display:none" onchange="texPdfUpload(this,'tex-explanations-raw','tex-explanations-pdf-status')">
+                  </label>
+                  <span id="tex-explanations-pdf-status" style="font-size:11px;color:var(--text2);margin-left:6px"></span>
+                </div>
                 <textarea class="form-input" id="tex-explanations-raw" placeholder="예)&#10;1번: 글의 전체 흐름을 볼 때 주제는...&#10;2번: ㉠은 문맥상...&#10;&#10;형식 상관없이 붙여넣으면 AI가 분리합니다" style="min-height:120px;font-size:13px;line-height:1.7"></textarea>
               </div>
             </div>
@@ -645,6 +675,16 @@ input,button{font-family:var(--font)}
                 </div>
               </div>
               <div class="form-group" style="margin-bottom:12px"><label>다음 시험 범위</label><input class="form-input" id="tedit-range" placeholder="예: 소설, 비문학 독해"></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+                <div class="form-group" style="margin-bottom:0"><label>학교 (클리닉인 경우)</label>
+                  <select class="form-select" id="tedit-clinic-school">
+                    <option value="">-</option>
+                    <option value="한백고">한백고</option>
+                    <option value="치동고">치동고</option>
+                  </select>
+                </div>
+                <div class="form-group" style="margin-bottom:0"><label>주차 (클리닉인 경우)</label><input class="form-input" id="tedit-clinic-week" placeholder="예: 8월 1주차"></div>
+              </div>
               <div class="form-group" style="margin-bottom:0"><label>등급컷 (선택, 성적표에 표시)</label><input class="form-input" id="tedit-gradecuts" placeholder="예: 1등급:87 2등급:78 3등급:68"></div>
             </div>
           </div>
@@ -881,33 +921,13 @@ input,button{font-family:var(--font)}
 
       <!-- 시험 분석 (학생) -->
       <div class="panel" id="panel-exam">
-        <div class="page-header"><h1>온라인 채점</h1><p>시험 코드를 입력하고 답안을 제출하면 자동으로 채점됩니다</p></div>
-        <!-- 코드 입력 -->
+        <div class="page-header"><h1>온라인 채점</h1><p>목록에서 시험을 선택하면 바로 채점할 수 있어요</p></div>
+        <!-- 시험 목록 -->
         <div id="s-exam-entry">
-          <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📖</span> 학교시험</div><div class="section-divider-line"></div></div>
-          <div class="card" style="margin-bottom:1rem">
-            <div class="card-head"><h3>학교시험 코드 입력</h3></div>
-            <div style="padding:0 1.25rem 1.25rem">
-              <p style="font-size:13px;color:var(--text2);margin-bottom:12px">선생님께 받은 학교시험 코드를 입력하세요</p>
-              <div style="display:flex;gap:8px">
-                <input class="form-input" id="s-exam-code-school" placeholder="코드 입력 (예: A1B2C3D4)" style="flex:1;letter-spacing:0.1em;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')sExamSearch('s-exam-code-school','s-exam-code-err-school')">
-                <button class="btn blue" onclick="sExamSearch('s-exam-code-school','s-exam-code-err-school')">찾기</button>
-              </div>
-              <div id="s-exam-code-err-school" class="err-msg"></div>
-            </div>
-          </div>
-          <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📝</span> 모의고사</div><div class="section-divider-line"></div></div>
-          <div class="card" style="margin-bottom:1rem">
-            <div class="card-head"><h3>모의고사 코드 입력</h3></div>
-            <div style="padding:0 1.25rem 1.25rem">
-              <p style="font-size:13px;color:var(--text2);margin-bottom:12px">선생님께 받은 모의고사 코드를 입력하세요</p>
-              <div style="display:flex;gap:8px">
-                <input class="form-input" id="s-exam-code-mock" placeholder="코드 입력 (예: A1B2C3D4)" style="flex:1;letter-spacing:0.1em;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')sExamSearch('s-exam-code-mock','s-exam-code-err-mock')">
-                <button class="btn blue" onclick="sExamSearch('s-exam-code-mock','s-exam-code-err-mock')">찾기</button>
-              </div>
-              <div id="s-exam-code-err-mock" class="err-msg"></div>
-            </div>
-          </div>
+          <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>🏫</span> 클리닉 채점</div><div class="section-divider-line"></div></div>
+          <div id="s-exam-clinic-groups" style="margin-bottom:1rem"></div>
+          <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📝</span> 모의고사 채점</div><div class="section-divider-line"></div></div>
+          <div id="s-exam-list-mock" style="margin-bottom:1rem"></div>
         </div>
         <!-- 오답 체크 -->
         <div id="s-exam-check" style="display:none">
@@ -3901,13 +3921,13 @@ const EXAM_TYPES=['사실 확인','추론·함축','어휘·어법','표현 기�
 async function renderTExam(){
   const {data,error}=await sb.from('exams').select('*').order('created_at',{ascending:false});
   if(error||!data){
-    renderTExamList('t-exam-list',[],'등록된 시험이 없습니다');
+    renderTExamList('t-exam-list',[],'등록된 클리닉이 없습니다');
     renderTExamList('t-exam-list-mock',[],'등록된 모의고사가 없습니다');
     return;
   }
   const school=data.filter(e=>(e.category||'school')==='school');
   const mock=data.filter(e=>e.category==='mock');
-  renderTExamList('t-exam-list',school,'등록된 시험이 없습니다');
+  renderTExamList('t-exam-list',school,'등록된 클리닉이 없습니다');
   renderTExamList('t-exam-list-mock',mock,'등록된 모의고사가 없습니다');
 }
 
@@ -3919,23 +3939,18 @@ function renderTExamList(elId,list,emptyMsg){
     <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px">
       <div>
         <div style="font-size:14px;font-weight:500">${e.name}</div>
-        <div style="font-size:11px;color:var(--text2);margin-top:2px">${e.total_q}문항 · 코드: <strong style="letter-spacing:0.08em;color:var(--accent)">${e.id.slice(0,8).toUpperCase()}</strong>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px">${e.total_q}문항
+          ${e.clinic_school?` · ${e.clinic_school}`:''}${e.clinic_week?` · ${e.clinic_week}`:''}
           ${e.next_exam?` · 다음: ${e.next_exam}`:''}
         </div>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
         <button class="btn btn-sm green" onclick="openOmrModalForExam('${e.id}')">📷 OMR 채점</button>
         <button class="btn btn-sm blue" onclick="viewTExamResults('${e.id}','${e.name}')">결과 보기</button>
-        <button class="btn btn-sm" onclick="copyExamCode('${e.id}')">코드 복사</button>
         <button class="btn btn-sm" onclick="openTExamEdit('${e.id}')">✏️ 수정</button>
         <button class="btn btn-sm" style="color:var(--red)" onclick="deleteTExam('${e.id}')">삭제</button>
       </div>
     </div>`).join('');
-}
-
-function copyExamCode(id){
-  navigator.clipboard.writeText(id.slice(0,8).toUpperCase());
-  alert('코드가 복사됐어요!\n학생에게 이 코드를 알려주세요: '+id.slice(0,8).toUpperCase());
 }
 
 async function deleteTExam(id){
@@ -3956,6 +3971,30 @@ function showTExamView(v){
 function openTExamCreate(){
   showTExamView('t-exam-create');
   texShowStep(1);
+  const wkEl=document.getElementById('tex-clinic-week');
+  if(wkEl)wkEl.value=weekLabelForDate(new Date());
+  ['tex-questions-pdf-status','tex-answers-pdf-status','tex-explanations-pdf-status'].forEach(function(id){
+    const el=document.getElementById(id);if(el)el.textContent='';
+  });
+  texToggleClinicFields();
+}
+
+function texToggleClinicFields(){
+  const cat=document.getElementById('tex-category')?.value;
+  const el=document.getElementById('tex-clinic-fields');
+  if(el)el.style.display=cat==='school'?'grid':'none';
+}
+
+async function texPdfUpload(inputEl,targetId,statusId){
+  const file=inputEl.files[0];
+  if(!file)return;
+  const statusEl=document.getElementById(statusId);
+  if(statusEl)statusEl.textContent='📖 PDF 읽는 중...';
+  const text=await extractPdfText(file);
+  if(!text){if(statusEl)statusEl.textContent='⚠️ 텍스트를 추출하지 못했어요';return;}
+  const ta=document.getElementById(targetId);
+  if(ta)ta.value=ta.value.trim()?ta.value+'\n\n'+text:text;
+  if(statusEl)statusEl.textContent='✓ '+file.name+' 반영됨';
 }
 
 var editingExamId=null;
@@ -3971,6 +4010,8 @@ async function openTExamEdit(examId){
   document.getElementById('tedit-next').value=data.next_exam||'';
   document.getElementById('tedit-range').value=data.next_range||'';
   document.getElementById('tedit-gradecuts').value=(data.grade_cuts||[]).map(c=>c.grade+'등급:'+c.cut).join(' ');
+  document.getElementById('tedit-clinic-school').value=data.clinic_school||'';
+  document.getElementById('tedit-clinic-week').value=data.clinic_week||'';
   renderTeditQList();
 }
 
@@ -4026,6 +4067,8 @@ async function saveTExamEdit(){
     next_exam:document.getElementById('tedit-next').value,
     next_range:document.getElementById('tedit-range').value,
     grade_cuts:parseGradeCuts(document.getElementById('tedit-gradecuts')?.value||''),
+    clinic_school:document.getElementById('tedit-clinic-school')?.value||null,
+    clinic_week:document.getElementById('tedit-clinic-week')?.value.trim()||null,
   }).eq('id',editingExamId);
   if(error){alert('저장 오류: '+error.message);return;}
   alert('수정됐어요!');
@@ -4265,9 +4308,12 @@ async function saveTExam(){
     explanation:document.getElementById('rqexp-'+i)?.value||q.explanation||''
   }));
   if(!questions.some(q=>q.answer)){alert('정답이 설정된 문항이 없어요. 정답을 확인해 주세요.');return;}
+  const category=document.getElementById('tex-category')?.value||'school';
   const {error}=await sb.from('exams').insert({
     name,total_q:questions.length,questions,
-    category:document.getElementById('tex-category')?.value||'school',
+    category,
+    clinic_school:category==='school'?(document.getElementById('tex-clinic-school')?.value||null):null,
+    clinic_week:category==='school'?(document.getElementById('tex-clinic-week')?.value.trim()||null):null,
     next_exam:document.getElementById('tex-next').value,
     next_range:document.getElementById('tex-range').value,
     grade_cuts:parseGradeCuts(document.getElementById('tex-gradecuts')?.value||''),
@@ -4275,7 +4321,7 @@ async function saveTExam(){
   });
   if(error){alert('저장 오류: '+error.message);return;}
   parsedQuestions=[];
-  alert('시험이 저장됐어요!\n코드를 학생들에게 공유해 주세요.');
+  alert('시험이 저장됐어요! 학생 목록에 바로 표시돼요.');
   closeTExamCreate();
 }
 
@@ -4501,13 +4547,26 @@ function renderTResOverview(){
       <div style="width:34px;height:34px;border-radius:50%;background:rgba(79,124,255,0.15);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--accent);flex-shrink:0">${(r.student_name||'?')[0]}</div>
       <div style="flex:1">
         <div style="font-size:13px;font-weight:500">${r.student_name}</div>
-        <div style="font-size:11px;color:var(--text2);margin-top:2px">오답 ${wrongCnt}문 ${hasThoughts?'· ✏️ 사고과정 있음':''}</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px">오답 ${wrongCnt}문 ${hasThoughts?'· ✏️ 사고과정 있음':''}${r.regrade_requested?' · <span style="color:var(--amber);font-weight:600">🔁 재채점 요청됨</span>':''}</div>
       </div>
-      <div style="text-align:right">
+      ${r.regrade_requested?
+        `<button class="btn btn-sm green" onclick="tApproveRegrade('${exam.id}','${r.student_name}',event)">🔓 승인</button>`
+        :`<div style="text-align:right">
         <div style="font-size:15px;font-weight:600;color:${acc>=80?'var(--green)':acc>=60?'var(--amber)':'var(--red)'}">${acc}%</div>
         <div style="font-size:11px;color:var(--accent);margin-top:2px">상세 보기 →</div>
-      </div>
+      </div>`}
     </div>`;}).join('');
+}
+
+async function tApproveRegrade(examId,studentName,ev){
+  if(ev)ev.stopPropagation();
+  if(!confirm(studentName+' 학생의 재채점을 승인할까요?'))return;
+  const {error}=await sb.from('exam_responses').update({regrade_approved:true,regrade_requested:false}).eq('exam_id',examId).eq('student_name',studentName);
+  if(error){alert('승인 실패: '+error.message);return;}
+  const r=tResCurrentResponses.find(x=>x.student_name===studentName);
+  if(r){r.regrade_approved=true;r.regrade_requested=false;}
+  renderTResOverview();
+  notify(studentName+' 재채점 승인됨','success');
 }
 
 function renderTResStudentSelect(){
@@ -5182,32 +5241,157 @@ var sExamAnswers={};
 var sExamPhotos={};
 var sExamThoughts={};
 var sExamSelectedQ=null;
+var sExamPriorResponse=null;
+var sExamClinicCache=[];
+var sExamRespCache={};
+var sExamClinicWeekOpen={};
 
-function renderSExam(){
-  sExamData=null;sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;
+async function renderSExam(){
+  sExamData=null;sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;sWrongChecked={};sExamPriorResponse=null;
   showSExamView('entry');
+  const clinicEl=document.getElementById('s-exam-clinic-groups');
+  const mockEl=document.getElementById('s-exam-list-mock');
+  if(clinicEl)clinicEl.innerHTML='<div style="padding:1rem;text-align:center;color:var(--text3);font-size:13px">불러오는 중...</div>';
+  if(mockEl)mockEl.innerHTML='';
+  const myName=session.name||session.id;
+  const [{data:exams},{data:myResponses}]=await Promise.all([
+    sb.from('exams').select('*').order('created_at',{ascending:false}),
+    sb.from('exam_responses').select('exam_id,score,attempt_count,regrade_requested,regrade_approved').eq('student_name',myName)
+  ]);
+  sExamRespCache={};
+  (myResponses||[]).forEach(function(r){sExamRespCache[r.exam_id]=r;});
+  const list=exams||[];
+  sExamClinicCache=list.filter(function(e){return (e.category||'school')!=='mock';});
+  const mock=list.filter(function(e){return e.category==='mock';});
+  renderSExamClinicGroups();
+  if(mockEl)mockEl.innerHTML=renderSExamListCards(mock,sExamRespCache,'등록된 모의고사가 없어요');
+}
+
+function renderSExamClinicGroups(){
+  const el=document.getElementById('s-exam-clinic-groups');
+  if(!el)return;
+  const clinic=sExamClinicCache;
+  const respMap=sExamRespCache;
+  if(!clinic.length){el.innerHTML='<div class="card"><div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px">등록된 클리닉이 없어요</div></div>';return;}
+  const curWeek=weekLabelForDate(new Date());
+  const schools=[];
+  clinic.forEach(function(e){if(e.clinic_school&&schools.indexOf(e.clinic_school)===-1)schools.push(e.clinic_school);});
+  const noSchool=clinic.filter(function(e){return !e.clinic_school;});
+  let html='';
+  schools.forEach(function(school){
+    const items=clinic.filter(function(e){return e.clinic_school===school;});
+    const thisWeek=items.filter(function(e){return e.clinic_week===curWeek;});
+    const past=items.filter(function(e){return e.clinic_week!==curWeek;});
+    const open=!!sExamClinicWeekOpen[school];
+    html+='<div class="card" style="margin-bottom:1rem">'+
+      '<div class="card-head"><h3>🏫 '+school+'</h3></div>'+
+      '<div style="padding:0 1.25rem 1.25rem">'+
+      (thisWeek.length?
+        '<div style="font-size:11px;color:var(--accent);font-weight:700;margin:10px 0 6px">📌 이번주 클리닉 채점 ('+curWeek+')</div>'+renderSExamListCards(thisWeek,respMap,'')
+        :'<div style="font-size:12px;color:var(--text3);padding:10px 0">이번주('+curWeek+') 등록된 클리닉이 없어요</div>')+
+      (past.length?
+        '<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">'+
+          '<div style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:var(--text2);font-weight:600" onclick="sExamToggleClinicPast(\''+school+'\')">'+
+            '<span>'+(open?'▾':'▸')+'</span><span>지난 클리닉 채점 ('+past.length+')</span>'+
+          '</div>'+
+          (open?'<div style="margin-top:8px">'+renderSExamListCards(past,respMap,'')+'</div>':'')+
+        '</div>':'')+
+      '</div></div>';
+  });
+  if(noSchool.length){
+    html+='<div class="card" style="margin-bottom:1rem"><div class="card-head"><h3>기타 클리닉</h3></div><div style="padding:0 1.25rem 1.25rem">'+renderSExamListCards(noSchool,respMap,'')+'</div></div>';
+  }
+  el.innerHTML=html;
+}
+
+function sExamToggleClinicPast(school){
+  sExamClinicWeekOpen[school]=!sExamClinicWeekOpen[school];
+  renderSExamClinicGroups();
+}
+
+function renderSExamListCards(list,respMap,emptyLabel){
+  if(!list.length)return emptyLabel?'<div style="padding:1rem 0;text-align:center;color:var(--text3);font-size:12px">'+emptyLabel+'</div>':'';
+  return list.map(function(e){
+    var resp=respMap[e.id];
+    var safeName=(e.name||'').replace(/'/g,"\\'");
+    var actionHtml;
+    if(!resp){
+      actionHtml='<button class="btn blue btn-sm" onclick="sExamOpenForGrading(\''+e.id+'\')">바로 채점하기</button>';
+    } else if(resp.regrade_approved){
+      actionHtml='<div style="display:flex;gap:6px">'+
+        '<button class="btn btn-sm" onclick="sExamViewResult(\''+e.id+'\')">결과보기</button>'+
+        '<button class="btn btn-sm green" onclick="sExamOpenForGrading(\''+e.id+'\')">🔓 재채점하기</button>'+
+      '</div>';
+    } else if(resp.regrade_requested){
+      actionHtml='<div style="display:flex;align-items:center;gap:6px">'+
+        '<button class="btn btn-sm" onclick="sExamViewResult(\''+e.id+'\')">결과보기</button>'+
+        '<span style="font-size:11px;color:var(--text3)">⏳ 승인 대기중</span>'+
+      '</div>';
+    } else {
+      actionHtml='<div style="display:flex;gap:6px">'+
+        '<button class="btn btn-sm" onclick="sExamViewResult(\''+e.id+'\')">결과보기</button>'+
+        '<button class="btn btn-sm" style="color:var(--accent)" onclick="sExamRequestRegrade(\''+e.id+'\',\''+safeName+'\')">재채점 요청</button>'+
+      '</div>';
+    }
+    return '<div class="card" style="margin-bottom:8px">'+
+      '<div style="padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">'+
+        '<div>'+
+          '<div style="font-size:14px;font-weight:600">'+e.name+'</div>'+
+          '<div style="font-size:12px;color:var(--text2);margin-top:2px">총 '+e.total_q+'문항'+(resp?' · 제출완료 '+resp.score+'점':'')+'</div>'+
+        '</div>'+
+        actionHtml+
+      '</div>'+
+    '</div>';
+  }).join('');
 }
 
 function showSExamView(v){
   ['entry','check','loading','result'].forEach(n=>document.getElementById('s-exam-'+n).style.display=n===v?'block':'none');
 }
 
-async function sExamSearch(codeElId,errElId){
-  codeElId=codeElId||'s-exam-code-school';
-  errElId=errElId||'s-exam-code-err-school';
-  const codeEl=document.getElementById(codeElId);
-  const errEl=document.getElementById(errElId);
-  const code=(codeEl?codeEl.value:'').trim();
-  errEl.textContent='';
-  if(!code){errEl.textContent='코드를 입력해 주세요.';return;}
-  const {data,error}=await sb.from('exams').select('*');
-  const found=data&&data.find(e=>e.id.toUpperCase().startsWith(code.toUpperCase())||e.id.toUpperCase()===code.toUpperCase());
-  if(!found){errEl.textContent='해당 코드의 시험을 찾을 수 없어요.';return;}
-  sExamData=found;sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;sWrongChecked={};
-  document.getElementById('s-exam-check-title').textContent=(found.category==='mock'?'📝 ':'📖 ')+found.name;
+async function sExamOpenForGrading(examId){
+  const myName=session.name||session.id;
+  const [{data:found,error:e1},{data:resp}]=await Promise.all([
+    sb.from('exams').select('*').eq('id',examId).single(),
+    sb.from('exam_responses').select('*').eq('exam_id',examId).eq('student_name',myName).maybeSingle()
+  ]);
+  if(e1||!found){alert('시험 정보를 불러오지 못했어요.');return;}
+  if(resp&&!resp.regrade_approved){
+    alert('이미 제출한 시험이에요. 다시 채점하려면 선생님 승인이 필요해요.');
+    renderSExam();
+    return;
+  }
+  sExamData=found;sExamPriorResponse=resp||null;
+  sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;sWrongChecked={};
+  document.getElementById('s-exam-check-title').textContent=(found.category==='mock'?'📝 ':'🏫 ')+found.name;
   document.getElementById('s-exam-check-sub').textContent='총 '+found.total_q+'문항 · 틀린 번호를 클릭하세요';
   renderSExamAnswerGrid();
   showSExamView('check');
+}
+
+async function sExamRequestRegrade(examId,examName){
+  if(!confirm(examName+' 재채점을 요청할까요?\n선생님 승인 후 다시 채점할 수 있어요.'))return;
+  const myName=session.name||session.id;
+  const {error}=await sb.from('exam_responses').update({regrade_requested:true}).eq('exam_id',examId).eq('student_name',myName);
+  if(error){alert('요청 실패: '+error.message);return;}
+  sendTelegram('🔁 재채점 요청\n'+myName+' · '+examName);
+  notify('재채점을 요청했어요. 선생님 승인을 기다려주세요.','success');
+  renderSExam();
+}
+
+async function sExamViewResult(examId){
+  const myName=session.name||session.id;
+  const [{data:exam,error:e1},{data:resp,error:e2}]=await Promise.all([
+    sb.from('exams').select('*').eq('id',examId).single(),
+    sb.from('exam_responses').select('*').eq('exam_id',examId).eq('student_name',myName).single()
+  ]);
+  if(e1||e2||!exam||!resp){alert('결과를 불러오지 못했어요.');return;}
+  sExamData=exam;
+  const answers=resp.answers||{};
+  const wrongIdxs=Object.keys(answers).map(Number);
+  const wrong=wrongIdxs.map(function(idx){return {idx:idx,q:exam.questions[idx]||{},my:answers[idx]||'?'};});
+  showSExamView('result');
+  renderSExamResultView(resp.score,resp.correct_count,wrong,resp.total_q);
 }
 
 // 오답 체크된 문항 목록
@@ -5351,16 +5535,23 @@ async function sExamSubmitScore(){
       }catch(e){}
     }
   }
-  // Supabase 저장
+  // Supabase 저장 (재채점은 승인된 경우에만 여기 도달함 — 제출 후 승인 플래그는 다시 잠금)
+  var nextAttempt=(sExamPriorResponse&&sExamPriorResponse.attempt_count)?sExamPriorResponse.attempt_count+1:1;
   await sb.from('exam_responses').upsert({
     exam_id:sExamData.id,student_name:session.name||session.id,
     answers:savedAnswers,photo_urls:photoUrls,thoughts:sExamThoughts,
     score:score,correct_count:correct,total_q:total,
     points_earned:pointsEarned,points_total:pointsTotal,
+    attempt_count:nextAttempt,regrade_requested:false,regrade_approved:false,
     submitted_at:new Date().toISOString()
   },{onConflict:'exam_id,student_name'});
+  sExamPriorResponse=null;
   // 결과 표시
   showSExamView('result');
+  renderSExamResultView(score,correct,wrong,total);
+}
+
+function renderSExamResultView(score,correct,wrong,total){
   document.getElementById('s-res-header').innerHTML=
     '<div style="font-size:17px;font-weight:600">'+sExamData.name+'</div>'+
     '<div style="font-size:12px;color:var(--text2);margin-top:2px">'+(session.name||'')+'</div>';
@@ -5491,10 +5682,7 @@ function sExamUploadPhoto(idx,input){
 }
 
 function sExamBack(){
-  sExamData=null;sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;sWrongChecked={};
-  showSExamView('entry');
-  const sc=document.getElementById('s-exam-code-school');if(sc)sc.value='';
-  const mc=document.getElementById('s-exam-code-mock');if(mc)mc.value='';
+  renderSExam();
 }
 
 async function sExamAnalyze(){
