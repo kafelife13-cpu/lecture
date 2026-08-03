@@ -758,6 +758,8 @@ input,button{font-family:var(--font)}
               <button class="btn btn-sm blue" onclick="tResExportStudentReportCard()">📊 성적표</button>
               <button class="btn btn-sm" style="color:var(--accent)" onclick="tResCopyReportLink()">🔗 성적표 링크 복사</button>
               <button class="btn btn-sm green" onclick="tResPrintOxForStudent()">🖨️ OX 재시험지</button>
+              <button class="btn btn-sm" style="color:var(--red)" onclick="tResDeleteStudentResponse()">🗑️ 결과 삭제</button>
+              <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);margin-left:auto"><input type="checkbox" id="tres-show-rank" onchange="tResToggleShowRank(this.checked)">성적표에 전체 석차 포함</label>
             </div>
             <div id="tres-student-detail"></div>
           </div>
@@ -4729,11 +4731,37 @@ function renderTResStudentSelect(){
   sel.innerHTML='<option value="">학생 선택</option>'+tResCurrentResponses.map(r=>`<option value="${r.student_name}">${r.student_name}</option>`).join('');
 }
 
+async function tResDeleteStudentResponse(){
+  const name=document.getElementById('tres-student-select').value;
+  if(!name){alert('학생을 선택해 주세요.');return;}
+  if(!tResCurrentExam)return;
+  if(!confirm(name+' 학생의 이 시험 결과를 삭제할까요? 되돌릴 수 없어요.'))return;
+  const {error}=await sb.from('exam_responses').delete().eq('exam_id',tResCurrentExam.id).eq('student_name',name);
+  if(error){alert('삭제 실패: '+error.message);return;}
+  tResCurrentResponses=tResCurrentResponses.filter(function(r){return r.student_name!==name;});
+  document.getElementById('tres-student-detail').innerHTML='';
+  renderTResStudentSelect();
+  renderTResOverview();
+  notify(name+' 결과 삭제됨','success');
+}
+
+async function tResToggleShowRank(checked){
+  const name=document.getElementById('tres-student-select').value;
+  if(!name||!tResCurrentExam)return;
+  const r=tResCurrentResponses.find(function(r){return r.student_name===name;});
+  if(!r)return;
+  const {error}=await sb.from('exam_responses').update({show_rank:checked}).eq('id',r.id);
+  if(error){alert('저장 실패: '+error.message);document.getElementById('tres-show-rank').checked=!checked;return;}
+  r.show_rank=checked;
+}
+
 function tResLoadStudent(name){
   if(!name)return;
   const exam=tResCurrentExam;
   const r=tResCurrentResponses.find(r=>r.student_name===name);
   if(!r){document.getElementById('tres-student-detail').innerHTML='<p style="color:var(--text3);font-size:13px">데이터 없음</p>';return;}
+  const rankCb=document.getElementById('tres-show-rank');
+  if(rankCb)rankCb.checked=!!r.show_rank;
   const wrongs=exam.questions.reduce((acc,q,i)=>{
     const my=r.answers?.[i];
     if(my&&my!==String(q.answer))acc.push({idx:i,q,my});
@@ -5637,6 +5665,32 @@ function repGrade(score,gradeCuts){
   return sorted.length+1;
 }
 
+// 영역별 성취도를 바탕으로 약점 분석 및 개선 제안 문구를 규칙 기반으로 생성 (AI 호출 없이 즉시 표시)
+function repAnalysisText(domainStats,myPct){
+  var domains=Object.keys(domainStats).map(function(d){
+    var s=domainStats[d];
+    return {label:d,pct:s.maxPoints?Math.round(s.earnedPoints/s.maxPoints*1000)/10:0,qCount:s.qCount};
+  }).filter(function(d){return d.qCount>0;});
+  var lines=[];
+  if(myPct>=90)lines.push('전반적으로 매우 우수한 성취를 보였습니다.');
+  else if(myPct>=75)lines.push('전반적으로 양호한 성취를 보였습니다.');
+  else if(myPct>=60)lines.push('기본기는 갖추었으나 보완이 필요한 부분이 있습니다.');
+  else lines.push('전반적인 개념 재점검과 반복 학습이 필요해 보입니다.');
+  if(domains.length>1){
+    var sorted=domains.slice().sort(function(a,b){return a.pct-b.pct;});
+    var weakest=sorted[0],strongest=sorted[sorted.length-1];
+    if(weakest.pct<80){
+      lines.push('특히 "'+weakest.label+'" 영역의 정답률이 '+weakest.pct+'%로 가장 낮았습니다. 이 영역의 기본 개념과 문제 유형을 집중적으로 복습하는 것을 추천합니다.');
+    }
+    if(strongest.label!==weakest.label&&strongest.pct>=80){
+      lines.push('"'+strongest.label+'" 영역은 '+strongest.pct+'%로 강점을 보이고 있습니다.');
+    }
+  }else if(domains.length===1&&domains[0].pct<80){
+    lines.push('"'+domains[0].label+'" 영역의 정답률이 '+domains[0].pct+'%로, 관련 개념을 다시 확인해보는 것을 추천합니다.');
+  }
+  return lines.join(' ');
+}
+
 function repRadarSVG(labels,myPct,avgPct){
   if(!labels.length)return '';
   var size=280,cx=size/2,cy=size/2,r=size/2-50;
@@ -5674,6 +5728,13 @@ function buildReportCardHTML(studentName,exam,response,allResponses,academyName)
   var domainLabels=Object.keys(domainStats);
   var myPct=domainLabels.map(function(d){var s=domainStats[d];return s.maxPoints?Math.round(s.earnedPoints/s.maxPoints*1000)/10:0;});
   var avgPct=domainLabels.map(function(d){return stats.domainClassAvgPct[d]||0;});
+  var showRank=!!response.show_rank;
+  var myRank=0;
+  if(showRank&&allResponses&&allResponses.length){
+    var higherCount=allResponses.filter(function(r){return repScore(exam,r).pct>my.pct;}).length;
+    myRank=higherCount+1;
+  }
+  var analysisText=repAnalysisText(domainStats,my.pct);
 
   var noticeHTML=(exam.grade_cuts&&exam.grade_cuts.length)?
     exam.grade_cuts.map(function(c){return '&nbsp;* '+c.grade+'등급 : '+c.cut+'점';}).join('<br>'):'등급컷 정보 없음';
@@ -5728,9 +5789,13 @@ function buildReportCardHTML(studentName,exam,response,allResponses,academyName)
       '</div>'+
     '</div>'+
     '<table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:20px;text-align:center">'+
-      '<tr style="background:#2d5fa6;color:#fff"><th style="padding:8px">내점수/만점</th><th style="padding:8px">전체 평균</th><th style="padding:8px">표준편차</th><th style="padding:8px">상위 30%</th><th style="padding:8px">최고점</th></tr>'+
-      '<tr><td style="padding:8px;font-weight:700;font-size:16px">'+my.earned+'/'+my.total+'</td><td style="padding:8px">'+stats.avg+'</td><td style="padding:8px">'+stats.stddev+'</td><td style="padding:8px">'+stats.top30+'</td><td style="padding:8px">'+stats.max+'</td></tr>'+
+      '<tr style="background:#2d5fa6;color:#fff"><th style="padding:8px">내점수/만점</th><th style="padding:8px">전체 평균</th><th style="padding:8px">표준편차</th><th style="padding:8px">상위 30%</th><th style="padding:8px">최고점</th>'+(showRank?'<th style="padding:8px">전체 석차</th>':'')+'</tr>'+
+      '<tr><td style="padding:8px;font-weight:700;font-size:16px">'+my.earned+'/'+my.total+'</td><td style="padding:8px">'+stats.avg+'</td><td style="padding:8px">'+stats.stddev+'</td><td style="padding:8px">'+stats.top30+'</td><td style="padding:8px">'+stats.max+'</td>'+(showRank?'<td style="padding:8px;font-weight:700">'+myRank+' / '+stats.n+'</td>':'')+'</tr>'+
     '</table>'+
+    (analysisText?'<div style="background:#eef6f1;border:1px solid #cfe8db;border-radius:8px;padding:12px 16px;margin-bottom:20px">'+
+      '<div style="font-size:12px;font-weight:700;color:#2a7a52;margin-bottom:4px">📋 학습 분석 및 제안</div>'+
+      '<div style="font-size:13px;line-height:1.7;color:#333">'+analysisText+'</div>'+
+    '</div>':'')+
     '<div style="display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;align-items:flex-start">'+
       '<table style="flex:1;min-width:280px;border-collapse:collapse;font-size:12px">'+
         '<tr style="background:#f0f0f0"><th style="padding:5px">영역</th><th style="padding:5px">문항수</th><th style="padding:5px">정답수</th><th style="padding:5px">내점수</th><th style="padding:5px">평균 점수</th></tr>'+
