@@ -1133,6 +1133,23 @@ input,button{font-family:var(--font)}
         <div class="form-group"><label>학생 선택</label><select id="omr-student-select" class="form-select"></select></div>
         <button class="btn blue" style="width:100%;margin-top:8px" onclick="omrStartCamera()">📷 답안지 촬영해서 AI로 읽기</button>
         <button class="btn" style="width:100%;margin-top:8px" onclick="omrManualEntry()">⌨️ 번호 직접 입력하기</button>
+        <label style="display:block;cursor:pointer;background:var(--bg2);border:1.5px dashed var(--border2);border-radius:8px;padding:12px;text-align:center;font-size:13px;color:var(--accent);margin-top:10px">
+          📁 여러 장 한번에 업로드 (스캔파일)
+          <input type="file" id="omr-batch-input" accept="image/*,application/pdf" multiple style="display:none" onchange="omrBatchStart(this.files)">
+        </label>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px;text-align:center">답안지에 핸드폰 번호를 마킹했다면 자동으로 학생을 인식해서 한번에 채점해요</div>
+      </div>
+      <div id="omr-step-batch-progress" style="display:none;text-align:center;padding:2.5rem 1rem">
+        <div class="spinner" style="margin:0 auto 14px"></div>
+        <div id="omr-batch-progress-msg" style="font-size:13px;color:var(--text2)">처리 중...</div>
+      </div>
+      <div id="omr-step-batch-review" style="display:none">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:10px">각 답안지의 학생을 확인하고, 자동 인식이 안 됐으면 직접 선택하세요. 이상 없으면 일괄 저장하세요.</div>
+        <div id="omr-batch-list" style="max-height:360px;overflow-y:auto"></div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="btn" style="flex:1" onclick="closeOmrModal()">취소</button>
+          <button class="btn blue" style="flex:2" onclick="omrBatchSaveAll()">✓ 일괄 채점 확정</button>
+        </div>
       </div>
       <div id="omr-step-camera" style="display:none">
         <video id="omr-cam-video" autoplay playsinline muted style="width:100%;display:block;background:#000;max-height:50vh;object-fit:contain;border-radius:8px"></video>
@@ -1147,6 +1164,7 @@ input,button{font-family:var(--font)}
       </div>
       <div id="omr-step-review" style="display:none">
         <img id="omr-review-img" style="width:100%;border-radius:8px;margin-bottom:10px;max-height:200px;object-fit:contain;background:var(--bg2)">
+        <div class="form-group" style="margin-bottom:10px"><label>학생 (핸드폰 번호 마킹으로 자동 인식돼요)</label><select id="omr-student-select-review" class="form-select" onchange="document.getElementById('omr-student-select').value=this.value"></select></div>
         <div id="omr-review-hint" style="font-size:12px;color:var(--text2);margin-bottom:10px">AI가 읽은 답이에요. 틀리게 읽은 문항은 숫자를 직접 고쳐주세요 (초록: 정답 일치, 빨강: 오답, 회색: 미마킹).</div>
         <div id="omr-review-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:6px;max-height:260px;overflow-y:auto;padding:2px"></div>
         <div style="display:flex;gap:8px;margin-top:14px">
@@ -4889,8 +4907,7 @@ function generateOmrSheet(){
       '</div>'+
       '<div class="omr-idrow">'+
         '<div class="omr-idblock"><div class="omr-idblock-head">성 명 (좌측부터 차례로 마킹, 자음→모음)</div><div class="omr-jcols">'+nameCols+'</div></div>'+
-        omrDigitGrid(4,'생 일 (예: 5월 1일 → 0501)')+
-        omrDigitGrid(8,'핸드폰 번호 (010- 제외 8자리)')+
+        omrDigitGrid(8,'핸드폰 번호 (010- 제외 8자리) — 학생 자동 인식용')+
       '</div>'+
       '<div class="omr-cols">'+colsHtml+'</div>'+
     '</div>';
@@ -4932,6 +4949,7 @@ function generateOmrSheet(){
    OMR 채점 — 답안지 사진을 AI가 읽어 채점
    ════════════════════════════════════════════ */
 var omrCamStream=null,omrCurrentPhoto=null,omrReadAnswers={};
+var omrBatchResults=[];
 async function openOmrModalForExam(examId){
   if(!tResCurrentExam||tResCurrentExam.id!==examId){
     const{data,error}=await sb.from('exams').select('*').eq('id',examId).single();
@@ -4942,18 +4960,24 @@ async function openOmrModalForExam(examId){
 }
 function openOmrModal(){
   if(!tResCurrentExam){alert('시험 정보를 불러올 수 없어요.');return;}
-  const sel=document.getElementById('omr-student-select');
-  sel.innerHTML='<option value="">학생 선택</option>'+activeStudents().map(function(s){return`<option value="${s.name}">${s.name}</option>`;}).join('');
+  const optsHtml='<option value="">학생 선택</option>'+activeStudents().map(function(s){return`<option value="${s.name}">${s.name}</option>`;}).join('');
+  document.getElementById('omr-student-select').innerHTML=optsHtml;
+  const revSel=document.getElementById('omr-student-select-review');
+  if(revSel)revSel.innerHTML=optsHtml;
   document.getElementById('omr-step-student').style.display='';
   document.getElementById('omr-step-camera').style.display='none';
   document.getElementById('omr-step-loading').style.display='none';
   document.getElementById('omr-step-review').style.display='none';
+  document.getElementById('omr-step-batch-progress').style.display='none';
+  document.getElementById('omr-step-batch-review').style.display='none';
+  document.getElementById('omr-batch-input').value='';
   document.getElementById('modal-omr').classList.add('show');
 }
 function closeOmrModal(){
   if(omrCamStream){try{omrCamStream.getTracks().forEach(function(t){t.stop();});}catch(e){}omrCamStream=null;}
   document.getElementById('modal-omr').classList.remove('show');
   omrCurrentPhoto=null;omrReadAnswers={};
+  omrBatchResults=[];
 }
 function omrManualEntry(){
   const name=document.getElementById('omr-student-select').value;
@@ -4966,8 +4990,7 @@ function omrManualEntry(){
   renderOmrReview();
 }
 async function omrStartCamera(){
-  const name=document.getElementById('omr-student-select').value;
-  if(!name){alert('학생을 선택해 주세요.');return;}
+  // 학생을 미리 선택하지 않아도 됨 — 답안지에 마킹된 핸드폰 번호로 AI가 자동 인식을 시도함
   if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)){alert('이 브라우저는 카메라 촬영을 지원하지 않아요.');return;}
   try{
     omrCamStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
@@ -4995,6 +5018,24 @@ function omrCapturePhoto(){
     await omrReadWithAI();
   },'image/jpeg',0.9);
 }
+// 마킹된 핸드폰 번호(뒤 8자리)로 학생 자동 인식: 앞4자리=id, 뒤4자리=pw(전화번호 기반 가입 규칙)
+function omrTryAutoIdentify(phone){
+  const sel=document.getElementById('omr-student-select');
+  if(!sel)return;
+  const digits=(phone||'').replace(/\D/g,'');
+  if(digits.length!==8){
+    if(!sel.value)notify('핸드폰 번호 마킹을 인식하지 못했어요. 학생을 직접 선택해주세요.','error');
+    return;
+  }
+  const idPart=digits.slice(0,4),pwPart=digits.slice(4,8);
+  const matched=activeStudents().find(function(s){return s.id===idPart&&s.pw===pwPart;});
+  if(matched){
+    sel.value=matched.name;
+    notify('📱 '+matched.name+' 학생으로 자동 인식됐어요.','success');
+  }else if(!sel.value){
+    notify('핸드폰 번호로 일치하는 학생을 찾지 못했어요. 직접 선택해주세요.','error');
+  }
+}
 async function omrReadWithAI(){
   CLAUDE_API_KEY=getSharedClaudeKey();
   if(!CLAUDE_API_KEY){alert('Claude API 키가 없어요. 로그아웃 후 다시 로그인해서 키를 입력해 주세요.');closeOmrModal();return;}
@@ -5004,19 +5045,22 @@ async function omrReadWithAI(){
     const b64=await new Promise(function(res){const r=new FileReader();r.onload=function(){res(r.result.split(',')[1]);};r.readAsDataURL(omrCurrentPhoto);});
     const promptText='당신은 OMR 답안지를 읽는 전문가입니다. 첨부된 이미지는 학생이 마킹한 OMR 답안지 사진입니다.\n'+
       '총 문항 수: '+total+'개, 각 문항은 1~5번 중 하나를 마킹합니다.\n'+
-      '사진을 보고 문항 번호 1~'+total+'번까지 각각 마킹된 번호를 읽어서 JSON으로만 답하세요.\n'+
+      '사진을 보고 문항 번호 1~'+total+'번까지 각각 마킹된 번호를 읽어서 answers에 담으세요.\n'+
       '마킹이 없거나 두 개 이상 마킹되어 읽기 애매한 문항은 0으로 표시하세요.\n'+
-      '형식 예시: {"1":3,"2":1,"3":0}\n다른 설명 없이 순수 JSON 객체만 반환하세요.';
+      '또한 답안지 상단의 "핸드폰 번호(010- 제외 8자리)" 마킹칸도 찾아서 마킹된 8자리 숫자를 읽어 phone에 담으세요. 마킹이 없거나 읽기 애매하면 빈 문자열로 두세요.\n'+
+      'JSON으로만 답하세요. 형식 예시: {"answers":{"1":3,"2":1,"3":0},"phone":"12345678"}\n다른 설명 없이 순수 JSON 객체만 반환하세요.';
     const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:2000,thinking:{type:'disabled'},messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},{type:'text',text:promptText}]}]})});
     const data=await resp.json();
     const raw=(data.content||[]).map(function(c){return c.text||'';}).join('');
     let parsed={};
     try{parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());}catch(e){parsed={};}
+    const answersObj=parsed.answers||parsed||{};
     omrReadAnswers={};
     for(let i=0;i<total;i++){
-      const v=parsed[String(i+1)];
+      const v=answersObj[String(i+1)];
       omrReadAnswers[i]=(v&&Number(v)>=1&&Number(v)<=9)?String(v):'';
     }
+    omrTryAutoIdentify(parsed.phone||'');
   }catch(e){
     notify('AI 읽기 실패, 직접 입력해주세요: '+e.message,'error');
     omrReadAnswers={};
@@ -5024,11 +5068,169 @@ async function omrReadWithAI(){
   }
   renderOmrReview();
 }
+
+/* ── OMR 여러 장 한번에 업로드 (스캔파일) — 핸드폰 번호 마킹으로 학생 자동 인식 ── */
+function omrBlobToBase64(blob){
+  return new Promise(function(res){const r=new FileReader();r.onload=function(){res(r.result.split(',')[1]);};r.readAsDataURL(blob);});
+}
+async function omrPdfFileToImages(file){
+  const buf=await file.arrayBuffer();
+  const pdfjsLib=window['pdfjs-dist/build/pdf'];
+  if(!pdfjsLib)return[];
+  pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  const pdf=await pdfjsLib.getDocument({data:buf}).promise;
+  const blobs=[];
+  for(let p=1;p<=pdf.numPages;p++){
+    const page=await pdf.getPage(p);
+    const viewport=page.getViewport({scale:2});
+    const canvas=document.createElement('canvas');
+    canvas.width=viewport.width;canvas.height=viewport.height;
+    await page.render({canvasContext:canvas.getContext('2d'),viewport:viewport}).promise;
+    const blob=await new Promise(function(res){canvas.toBlob(res,'image/jpeg',0.9);});
+    if(blob)blobs.push(blob);
+  }
+  return blobs;
+}
+async function omrBatchStart(files){
+  if(!files||!files.length)return;
+  const key=getSharedClaudeKey();
+  if(!key){alert('AI 키가 없어요. 로그아웃 후 다시 로그인해서 키를 등록해주세요.');return;}
+  const exam=tResCurrentExam;
+  if(!exam){alert('시험 정보를 불러올 수 없어요.');return;}
+  document.getElementById('omr-step-student').style.display='none';
+  document.getElementById('omr-step-batch-progress').style.display='';
+  const msgEl=document.getElementById('omr-batch-progress-msg');
+  const total=exam.total_q;
+  msgEl.textContent='파일 준비 중...';
+  const jobs=[];
+  for(const f of Array.from(files)){
+    if(f.type==='application/pdf'){
+      const pages=await omrPdfFileToImages(f);
+      pages.forEach(function(blob,i){jobs.push({name:f.name+' (p'+(i+1)+')',blob:blob});});
+    }else{
+      jobs.push({name:f.name,blob:f});
+    }
+  }
+  omrBatchResults=[];
+  for(let i=0;i<jobs.length;i++){
+    msgEl.textContent='답안지 읽는 중... ('+(i+1)+'/'+jobs.length+')';
+    const job=jobs[i];
+    const previewUrl=URL.createObjectURL(job.blob);
+    const result={fileName:job.name,previewUrl:previewUrl,blob:job.blob,answers:{},matchedName:'',include:true,readError:null};
+    try{
+      const b64=await omrBlobToBase64(job.blob);
+      const promptText='당신은 OMR 답안지를 읽는 전문가입니다. 첨부된 이미지는 학생이 마킹한 OMR 답안지 사진입니다.\n'+
+        '총 문항 수: '+total+'개, 각 문항은 1~5번 중 하나를 마킹합니다.\n'+
+        '사진을 보고 문항 번호 1~'+total+'번까지 각각 마킹된 번호를 읽어서 answers에 담으세요.\n'+
+        '마킹이 없거나 두 개 이상 마킹되어 읽기 애매한 문항은 0으로 표시하세요.\n'+
+        '또한 답안지 상단의 "핸드폰 번호(010- 제외 8자리)" 마킹칸도 찾아서 마킹된 8자리 숫자를 읽어 phone에 담으세요. 마킹이 없거나 읽기 애매하면 빈 문자열로 두세요.\n'+
+        'JSON으로만 답하세요. 형식 예시: {"answers":{"1":3,"2":1,"3":0},"phone":"12345678"}\n다른 설명 없이 순수 JSON 객체만 반환하세요.';
+      const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:2000,thinking:{type:'disabled'},messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},{type:'text',text:promptText}]}]})});
+      const data=await resp.json();
+      const raw=(data.content||[]).map(function(c){return c.text||'';}).join('');
+      let parsed={};
+      try{parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());}catch(e){parsed={};}
+      const answersObj=parsed.answers||{};
+      const answers={};
+      for(let qi=0;qi<total;qi++){
+        const v=answersObj[String(qi+1)];
+        answers[qi]=(v&&Number(v)>=1&&Number(v)<=9)?String(v):'';
+      }
+      result.answers=answers;
+      const digits=(parsed.phone||'').replace(/\D/g,'');
+      if(digits.length===8){
+        const idPart=digits.slice(0,4),pwPart=digits.slice(4,8);
+        const m=activeStudents().find(function(s){return s.id===idPart&&s.pw===pwPart;});
+        if(m)result.matchedName=m.name;
+      }
+    }catch(e){
+      result.readError=e.message;result.include=false;
+    }
+    omrBatchResults.push(result);
+  }
+  document.getElementById('omr-step-batch-progress').style.display='none';
+  document.getElementById('omr-step-batch-review').style.display='';
+  renderOmrBatchList();
+}
+function omrBatchStudentOptions(selectedName){
+  return '<option value="">미인식 — 선택</option>'+activeStudents().map(function(s){
+    return '<option value="'+s.name+'"'+(s.name===selectedName?' selected':'')+'>'+s.name+'</option>';
+  }).join('');
+}
+function renderOmrBatchList(){
+  const el=document.getElementById('omr-batch-list');
+  const exam=tResCurrentExam;
+  if(!el||!exam)return;
+  const total=exam.total_q;
+  el.innerHTML=omrBatchResults.map(function(r,idx){
+    const wrongCount=Object.keys(r.answers).filter(function(qi){
+      const q=exam.questions[qi];
+      return q&&isObjectiveAnswer(q.answer)&&r.answers[qi]&&String(r.answers[qi])!==String(q.answer);
+    }).length;
+    const answeredCount=Object.values(r.answers).filter(Boolean).length;
+    return '<div class="card" style="margin-bottom:8px'+(r.matchedName?'':';border-left:3px solid var(--red)')+'">'+
+      '<div style="padding:10px 12px;display:flex;gap:10px;align-items:center">'+
+        '<img src="'+r.previewUrl+'" style="width:44px;height:44px;object-fit:cover;border-radius:6px;background:var(--bg2);flex-shrink:0">'+
+        '<div style="flex:1;min-width:0">'+
+          '<select class="form-select" style="font-size:13px;font-weight:600;padding:4px 6px" onchange="omrBatchSetName('+idx+',this.value)">'+omrBatchStudentOptions(r.matchedName)+'</select>'+
+          '<div style="font-size:11px;color:var(--text2);margin-top:2px">'+r.fileName+' · 응답 '+answeredCount+'/'+total+' · 오답(추정) '+wrongCount+'개'+(r.readError?' · ⚠️ 읽기 실패':'')+'</div>'+
+        '</div>'+
+        '<label style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2);flex-shrink:0"><input type="checkbox" '+(r.include?'checked':'')+' onchange="omrBatchToggle('+idx+',this.checked)">포함</label>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+function omrBatchSetName(idx,name){omrBatchResults[idx].matchedName=name;renderOmrBatchList();}
+function omrBatchToggle(idx,checked){omrBatchResults[idx].include=checked;}
+async function omrBatchSaveAll(){
+  const exam=tResCurrentExam;
+  if(!exam)return;
+  const total=exam.total_q;
+  const toSave=omrBatchResults.filter(function(r){return r.include&&r.matchedName;});
+  if(!toSave.length){alert('저장할 항목이 없어요. 학생이 인식됐는지, 체크박스가 켜져 있는지 확인해주세요.');return;}
+  if(!confirm(toSave.length+'명 채점을 저장할까요?'))return;
+  let okCount=0,failCount=0;
+  for(const r of toSave){
+    const objIdxs=[];
+    exam.questions.forEach(function(q,i){if(isObjectiveAnswer(q.answer))objIdxs.push(i);});
+    const wrongIdxs=objIdxs.filter(function(i){
+      const val=r.answers[i]||'';
+      const q=exam.questions[i];
+      return !val||String(val)!==String(q.answer);
+    });
+    const correct=objIdxs.length-wrongIdxs.length;
+    const pointsTotal=objIdxs.reduce(function(s,i){return s+(exam.questions[i].points||1);},0)||objIdxs.length||1;
+    const pointsEarned=objIdxs.reduce(function(s,i){return s+(wrongIdxs.indexOf(i)>=0?0:(exam.questions[i].points||1));},0);
+    const score=pointsTotal?Math.round(pointsEarned/pointsTotal*100):0;
+    const savedAnswers={};
+    wrongIdxs.forEach(function(idx){savedAnswers[idx]=r.answers[idx]||'';});
+    let photoUrl=null;
+    try{
+      const path='omr-photos/'+exam.id+'/'+r.matchedName+'_'+Date.now()+'.jpg';
+      const up=await sb.storage.from('exam-photos').upload(path,r.blob,{upsert:true,contentType:'image/jpeg'});
+      if(!up.error){const urlRes=sb.storage.from('exam-photos').getPublicUrl(path);if(urlRes.data&&urlRes.data.publicUrl)photoUrl=urlRes.data.publicUrl;}
+    }catch(e){}
+    const res=await sb.from('exam_responses').upsert({
+      exam_id:exam.id,student_name:r.matchedName,
+      answers:savedAnswers,photo_urls:photoUrl?{omr:photoUrl}:{},thoughts:{},
+      score:score,correct_count:correct,total_q:objIdxs.length,
+      points_earned:pointsEarned,points_total:pointsTotal,
+      submitted_at:new Date().toISOString()
+    },{onConflict:'exam_id,student_name'});
+    if(res.error)failCount++;else okCount++;
+  }
+  notify(okCount+'명 저장 완료'+(failCount?', '+failCount+'명 실패':''),failCount?'error':'success');
+  const examId=exam.id,examName=exam.name;
+  closeOmrModal();
+  viewTExamResults(examId,examName);
+}
 function renderOmrReview(){
   const exam=tResCurrentExam;
   document.getElementById('omr-step-loading').style.display='none';
   document.getElementById('omr-step-review').style.display='';
   document.getElementById('omr-review-img').style.display=omrCurrentPhoto?'':'none';
+  const revSel=document.getElementById('omr-student-select-review');
+  if(revSel)revSel.value=document.getElementById('omr-student-select').value;
   const hint=document.getElementById('omr-review-hint');
   if(hint)hint.textContent=omrCurrentPhoto?'AI가 읽은 답이에요. 틀리게 읽은 문항은 숫자를 직접 고쳐주세요 (초록: 정답 일치, 빨강: 오답, 회색: 미마킹).':'문항별로 마킹된 번호를 입력하세요 (초록: 정답 일치, 빨강: 오답, 회색: 미입력).';
   const grid=document.getElementById('omr-review-grid');
@@ -5058,7 +5260,8 @@ function omrColorizeGrid(){
 async function omrConfirmScore(){
   const exam=tResCurrentExam;
   const name=document.getElementById('omr-student-select').value;
-  if(!exam||!name)return;
+  if(!exam)return;
+  if(!name){alert('학생이 자동 인식되지 않았어요. 위 목록에서 직접 선택해주세요.');return;}
   const total=exam.total_q;
   const wrongIdxs=[];
   for(let i=0;i<total;i++){
@@ -5111,7 +5314,7 @@ function getWrongDomainsForResponse(exam,response){
     if(wrong){
       var d=q.domain||q.type||'기타';
       if(!domains[d])domains[d]=[];
-      if(q.explanation)domains[d].push(q.explanation);
+      if(q.explanation||q.text)domains[d].push({text:q.text||'',explanation:q.explanation||''});
     }
   });
   return domains;
@@ -5120,26 +5323,32 @@ async function fetchOxQuestions(examId,domain){
   const{data}=await sb.from('ox_questions').select('*').eq('exam_id',examId).eq('domain',domain);
   return data||[];
 }
-/* 없으면 AI로 새로 생성해서 저장(있으면 그대로 재사용). 학생 화면에서도 호출 가능(공유 키 사용) */
-async function ensureOxQuestions(examId,domain,explanationTexts){
+/* 없으면 AI로 새로 생성해서 저장(있으면 그대로 재사용). 학생 화면에서도 호출 가능(공유 키 사용)
+   sourceItems: [{text, explanation}] — 원래 오답 문항의 지문/문제 내용과 해설 */
+async function ensureOxQuestions(examId,domain,sourceItems){
   const existing=await fetchOxQuestions(examId,domain);
   if(existing.length)return existing;
   CLAUDE_API_KEY=getSharedClaudeKey();
   if(!CLAUDE_API_KEY)return[];
   try{
-    const promptText='당신은 국어 문제 출제 전문가입니다. 아래는 "'+domain+'" 개념과 관련된 문제의 해설입니다.\n\n'+
-      (explanationTexts.filter(Boolean).join('\n---\n')||'(해설 없음, "'+domain+'" 개념 자체에 대해 출제하세요)')+'\n\n'+
-      '위 해설을 바탕으로, 학생이 이 개념을 제대로 이해했는지 확인하는 O/X 문제 3개를 만들어주세요.\n'+
+    const items=(sourceItems||[]).filter(function(it){return it&&(it.text||it.explanation);});
+    const sourceBlock=items.length?items.map(function(it,i){
+      return '['+(i+1)+']\n문제/지문: '+(it.text||'(없음)')+'\n해설: '+(it.explanation||'(없음)');
+    }).join('\n---\n'):'(원문 없음, "'+domain+'" 개념 자체에 대해 출제하세요)';
+    const promptText='당신은 국어 문제 출제 전문가입니다. 아래는 "'+domain+'" 개념과 관련해 학생이 틀린 문제의 지문/문제 내용과 해설입니다.\n\n'+
+      sourceBlock+'\n\n'+
+      '위 내용을 바탕으로, 학생이 이 개념을 제대로 이해했는지 확인하는 O/X 문제 3개를 만들어주세요.\n'+
       '원래 문제를 그대로 반복하지 말고, 같은 개념·유형을 다른 방식으로 확인하는 문제여야 합니다.\n'+
+      '각 문제는 원문을 다시 보지 않아도 풀 수 있도록, 판단에 필요한 지문/본문 내용을 passage에 짧게 발췌하거나 요약해 포함하세요(원문이 없으면 passage는 빈 문자열로).\n'+
       '순수 JSON 배열만 반환하세요. 다른 설명 없이. 형식:\n'+
-      '[{"statement":"OX로 판단할 문장","answer":true,"explanation":"정답 이유 한두 문장"}]';
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:1500,thinking:{type:'disabled'},messages:[{role:'user',content:promptText}]})});
+      '[{"passage":"OX 판단에 필요한 본문 발췌/요약","statement":"OX로 판단할 문장","answer":true,"explanation":"정답 이유 한두 문장"}]';
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:2000,thinking:{type:'disabled'},messages:[{role:'user',content:promptText}]})});
     const data=await resp.json();
     const raw=(data.content||[]).map(function(c){return c.text||'';}).join('');
-    let items=[];
-    try{items=JSON.parse(raw.replace(/```json|```/g,'').trim());}catch(e){items=[];}
-    const rows=items.slice(0,3).map(function(it,i){
-      return{id:'ox_'+Date.now()+'_'+i,exam_id:examId,domain:domain,statement:it.statement||'',answer:!!it.answer,explanation:it.explanation||''};
+    let parsed=[];
+    try{parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());}catch(e){parsed=[];}
+    const rows=parsed.slice(0,3).map(function(it,i){
+      return{id:'ox_'+Date.now()+'_'+i,exam_id:examId,domain:domain,passage:it.passage||'',statement:it.statement||'',answer:!!it.answer,explanation:it.explanation||''};
     });
     if(!rows.length)return[];
     const ins=await sb.from('ox_questions').insert(rows);
@@ -5191,6 +5400,7 @@ function renderOxQuiz(){
       const my=oxQuizAnswers[q.id];
       return'<div style="padding:12px 0;border-bottom:1px solid var(--border)">'+
         '<div style="font-size:11px;color:var(--accent);margin-bottom:4px">'+q.domain+'</div>'+
+        (q.passage?'<div style="font-size:12px;color:var(--text2);background:var(--bg2);border-radius:6px;padding:8px 10px;margin-bottom:8px;line-height:1.6;white-space:pre-wrap">'+q.passage+'</div>':'')+
         '<div style="font-size:14px;margin-bottom:8px">'+(i+1)+'. '+q.statement+'</div>'+
         '<div style="display:flex;gap:8px">'+
         '<button class="btn btn-sm'+(my===true?' blue':'')+'" onclick="oxAnswer(\''+q.id+'\',true)" style="flex:1">O</button>'+
@@ -5313,9 +5523,18 @@ async function tResPrintOxForStudent(){
     allQ.map(function(q,i){
       return'<div style="padding:14px 0;border-bottom:1px solid #eee">'+
         '<div style="font-size:11px;color:#888">'+q.domain+'</div>'+
+        (q.passage?'<div style="font-size:12px;color:#555;background:#f7f7f7;border-radius:6px;padding:8px 10px;margin:4px 0;line-height:1.6;white-space:pre-wrap">'+q.passage+'</div>':'')+
         '<div style="font-size:14px;margin:4px 0">'+(i+1)+'. '+q.statement+'&nbsp;&nbsp;&nbsp;( &nbsp;O&nbsp; / &nbsp;X&nbsp; )</div>'+
         '</div>';
     }).join('')+
+    '<div style="page-break-before:always;border-top:2px dashed #ccc;margin-top:24px;padding-top:20px">'+
+      '<h3 style="margin-bottom:12px;color:#c0392b">정답 및 해설 (채점용)</h3>'+
+      allQ.map(function(q,i){
+        return '<div style="padding:8px 0;border-bottom:1px solid #eee;font-size:13px">'+
+          (i+1)+'. 정답: <strong>'+(q.answer?'O':'X')+'</strong>'+(q.explanation?' — '+q.explanation:'')+
+          '</div>';
+      }).join('')+
+    '</div>'+
     '</div>';
   tResPrintHTML(html,name+'_OX재시험지');
 }
