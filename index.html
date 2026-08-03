@@ -4894,53 +4894,55 @@ function generateOmrSheet(){
       '<div class="omr-header">'+
         '<div class="omr-title">'+title+'</div>'+
         '<div class="omr-meta">'+
-          '<div class="omr-meta-row"><span>학교</span><span class="omr-fill-line"></span></div>'+
-          '<div class="omr-meta-row"><span>학원</span><span class="omr-fill-line" style="width:70px"></span><span>회차</span><span class="omr-fill-line" style="width:70px"></span></div>'+
-          '<div class="omr-meta-row"><span>응시일</span><span class="omr-fill-line"></span></div>'+
+          '<div class="omr-meta-row"><span>학교</span><span class="omr-fill-line"></span><span>학원</span><span class="omr-fill-line" style="width:60px"></span><span>회차</span><span class="omr-fill-line" style="width:50px"></span><span>응시일</span><span class="omr-fill-line" style="width:80px"></span></div>'+
         '</div>'+
       '</div>'+
       '<div class="omr-instructions">'+
-        '<strong>지켜야 할 사항</strong><br>'+
-        '1. 반드시 검정색 사인펜(또는 펜)으로 표기합니다.<br>'+
-        '2. 표기란에는 ● 와 같이 바르게 표기해야 합니다.<br>'+
-        '3. 수정 시에는 두 줄로 긋고 옆에 다시 표기합니다.'+
+        '<strong>지켜야 할 사항</strong> '+
+        '1. 반드시 검정색 사인펜(또는 펜)으로 표기 · '+
+        '2. 표기란에는 ● 와 같이 바르게 표기 · '+
+        '3. 수정 시에는 두 줄로 긋고 옆에 다시 표기'+
       '</div>'+
-      '<div class="omr-idrow">'+
-        '<div class="omr-idblock"><div class="omr-idblock-head">성 명 (좌측부터 차례로 마킹, 자음→모음)</div><div class="omr-jcols">'+nameCols+'</div></div>'+
-        omrDigitGrid(8,'핸드폰 번호 (010- 제외 8자리) — 학생 자동 인식용')+
+      '<div class="omr-main">'+
+        '<div class="omr-idcol">'+
+          '<div class="omr-idblock"><div class="omr-idblock-head">성 명 (좌→우, 자음→모음)</div><div class="omr-jcols">'+nameCols+'</div></div>'+
+          omrDigitGrid(8,'핸드폰 번호 (010- 제외 8자리, 학생 자동인식용)')+
+        '</div>'+
+        '<div class="omr-cols">'+colsHtml+'</div>'+
       '</div>'+
-      '<div class="omr-cols">'+colsHtml+'</div>'+
     '</div>';
   const style=
     '<style>'+
-      '@media print{ button{display:none} }'+
-      'body{font-family:"Malgun Gothic",sans-serif;padding:20px;color:#222}'+
-      '.omr-sheet{max-width:900px;margin:0 auto}'+
-      '.omr-header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #333;padding-bottom:10px;margin-bottom:10px}'+
-      '.omr-title{font-size:22px;font-weight:700}'+
-      '.omr-meta-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:13px}'+
-      '.omr-meta-row span:first-child{width:44px;color:#555}'+
-      '.omr-fill-line{display:inline-block;width:160px;border-bottom:1px solid #999;height:16px}'+
-      '.omr-instructions{font-size:11px;color:#555;background:#f7f7f7;border:1px solid #ddd;border-radius:6px;padding:8px 12px;margin-bottom:14px;line-height:1.7}'+
-      '.omr-idrow{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}'+
-      '.omr-idblock{border:1px solid #333;border-radius:6px;overflow:hidden;break-inside:avoid}'+
-      '.omr-idblock-head{background:#2d6b4a;color:#fff;font-size:11px;font-weight:600;padding:5px 8px;text-align:center}'+
-      '.omr-jcols{display:flex;gap:2px;padding:6px;justify-content:center}'+
+      '@page{ size: landscape; margin:8mm; }'+
+      '@media print{ button{display:none} body{padding:0} }'+
+      'body{font-family:"Malgun Gothic",sans-serif;padding:14px;color:#222}'+
+      '.omr-sheet{width:100%}'+
+      '.omr-header{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #333;padding-bottom:6px;margin-bottom:6px}'+
+      '.omr-title{font-size:18px;font-weight:700}'+
+      '.omr-meta-row{display:flex;align-items:center;gap:6px;font-size:12px}'+
+      '.omr-meta-row span{color:#555}'+
+      '.omr-fill-line{display:inline-block;width:110px;border-bottom:1px solid #999;height:14px}'+
+      '.omr-instructions{font-size:10px;color:#555;background:#f7f7f7;border:1px solid #ddd;border-radius:6px;padding:5px 10px;margin-bottom:8px;line-height:1.6}'+
+      '.omr-main{display:flex;gap:10px;align-items:flex-start;flex-wrap:nowrap}'+
+      '.omr-idcol{display:flex;flex-direction:column;gap:8px;flex-shrink:0}'+
+      '.omr-idblock{border:1px solid #333;border-radius:6px;overflow:hidden}'+
+      '.omr-idblock-head{background:#2d6b4a;color:#fff;font-size:10px;font-weight:600;padding:4px 6px;text-align:center}'+
+      '.omr-jcols{display:flex;gap:2px;padding:5px;justify-content:center}'+
       '.omr-jcol{display:flex;flex-direction:column;align-items:center;gap:2px}'+
-      '.omr-jbubble{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border:1px solid #333;border-radius:50%;font-size:8px;color:#333}'+
+      '.omr-jbubble{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border:1px solid #333;border-radius:50%;font-size:7.5px;color:#333}'+
       '.omr-jsep{height:4px}'+
-      '.omr-cols{display:flex;flex-wrap:wrap;gap:10px}'+
-      '.omr-col{border:1px solid #333;border-radius:4px;overflow:hidden;min-width:170px;break-inside:avoid}'+
-      '.omr-col-head{display:flex;background:#333;color:#fff;font-size:12px;font-weight:600}'+
-      '.omr-col-head span:first-child{width:44px;text-align:center;padding:6px 0;border-right:1px solid #555}'+
-      '.omr-col-head span:last-child{flex:1;text-align:center;padding:6px 0}'+
+      '.omr-cols{display:flex;flex-wrap:nowrap;gap:6px;flex:1}'+
+      '.omr-col{border:1px solid #333;border-radius:4px;overflow:hidden;flex:1;min-width:0}'+
+      '.omr-col-head{display:flex;background:#333;color:#fff;font-size:11px;font-weight:600}'+
+      '.omr-col-head span:first-child{width:32px;text-align:center;padding:4px 0;border-right:1px solid #555}'+
+      '.omr-col-head span:last-child{flex:1;text-align:center;padding:4px 0}'+
       '.omr-row{display:flex;align-items:center;border-top:1px solid #ccc}'+
-      '.omr-qnum{width:44px;text-align:center;font-size:12px;font-weight:600;border-right:1px solid #ccc;padding:5px 0}'+
-      '.omr-choices{flex:1;display:flex;justify-content:space-around;padding:4px 2px}'+
-      '.omr-bubble{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border:1.2px solid #333;border-radius:50%;font-size:9px;color:#333}'+
+      '.omr-qnum{width:32px;text-align:center;font-size:11px;font-weight:600;border-right:1px solid #ccc;padding:3px 0}'+
+      '.omr-choices{flex:1;display:flex;justify-content:space-around;padding:3px 2px}'+
+      '.omr-bubble{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border:1.2px solid #333;border-radius:50%;font-size:8px;color:#333}'+
     '</style>';
   const w=window.open('','_blank');
-  w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+title+' OMR</title>'+style+'</head><body>'+bodyHtml+'<br><button onclick="window.print()" style="padding:10px 24px;background:#1a1612;color:white;border:none;border-radius:6px;font-size:14px;cursor:pointer;margin:10px">🖨️ 인쇄 / PDF로 저장</button></body></html>');
+  w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+title+' OMR</title>'+style+'</head><body>'+bodyHtml+'<br><button onclick="window.print()" style="padding:10px 24px;background:#1a1612;color:white;border:none;border-radius:6px;font-size:14px;cursor:pointer;margin:10px">🖨️ 인쇄(가로) / PDF로 저장</button></body></html>');
   w.document.close();
   closeOmrSheetModal();
 }
