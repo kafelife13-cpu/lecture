@@ -4316,18 +4316,19 @@ async function submitVocabUnitQuiz(){
   var unanswered=q.items.filter(function(_,i){return !q.answers[i];}).length;
   if(unanswered){if(!confirm(unanswered+'개 문제에 답을 안 골랐어요. 그래도 제출할까요?'))return;}
   var unitCount=q.unitItemCount||q.items.length;
-  var unitCorrect=0,unitWrong=[],newWrongForUnit=[];
-  var reviewCorrect=0,reviewTotal=q.items.length-unitCount,reviewStillWrong=[];
+  var unitCorrect=0,unitWrong=[],newWrongForUnit=[],unitDetail=[];
+  var reviewCorrect=0,reviewTotal=q.items.length-unitCount,reviewDetail=[];
   var toResolve=[];
   q.items.forEach(function(it,i){
-    var my=q.answers[i];
-    var ok=my&&my===it.correct;
+    var my=q.answers[i]||'';
+    var ok=!!my&&my===it.correct;
     if(i<unitCount){
+      unitDetail.push({prompt:it.prompt,correct:it.correct,my:my,ok:ok});
       if(ok)unitCorrect++;
       else{unitWrong.push(it);newWrongForUnit.push(it);}
     }else{
+      reviewDetail.push({prompt:it.prompt,correct:it.correct,my:my,ok:ok});
       if(ok){reviewCorrect++;if(it.wrongRowId)toResolve.push(it.wrongRowId);}
-      else reviewStillWrong.push(it);
     }
   });
   var score=unitCount?Math.round(unitCorrect/unitCount*100):0;
@@ -4350,19 +4351,20 @@ async function submitVocabUnitQuiz(){
     await sb.from('vocab_wrong_words').update({resolved:true,resolved_at:new Date().toISOString()}).in('id',toResolve);
   }
   vocabCurrentQuiz=null;
-  showVocabResult(score,unitCorrect,unitCount,unitWrong,false,reviewTotal>0?{correct:reviewCorrect,total:reviewTotal,stillWrong:reviewStillWrong}:null);
+  showVocabResult(score,unitCorrect,unitCount,unitDetail,false,reviewTotal>0?{correct:reviewCorrect,total:reviewTotal,items:reviewDetail}:null);
 }
 async function submitVocabRetest(){
   var q=vocabCurrentQuiz;
   var unanswered=q.items.filter(function(_,i){return !q.answers[i];}).length;
   if(unanswered){if(!confirm(unanswered+'개 문제에 답을 안 골랐어요. 그래도 제출할까요?'))return;}
   var correct=0;
-  var stillWrong=[];
   var toResolve=[];
+  var detail=[];
   q.items.forEach(function(it,i){
-    var my=q.answers[i];
-    if(my&&my===it.correct){correct++;toResolve.push(it.wrongRowId);}
-    else stillWrong.push(it);
+    var my=q.answers[i]||'';
+    var ok=!!my&&my===it.correct;
+    detail.push({prompt:it.prompt,correct:it.correct,my:my,ok:ok});
+    if(ok){correct++;toResolve.push(it.wrongRowId);}
   });
   if(toResolve.length){
     await sb.from('vocab_wrong_words').update({resolved:true,resolved_at:new Date().toISOString()}).in('id',toResolve);
@@ -4370,7 +4372,7 @@ async function submitVocabRetest(){
   var total=q.items.length;
   var score=Math.round(correct/total*100);
   vocabCurrentQuiz=null;
-  showVocabResult(score,correct,total,stillWrong,true);
+  showVocabResult(score,correct,total,detail,true);
 }
 function showVocabView(v){
   var entry=document.getElementById('vocab-entry');
@@ -4384,13 +4386,19 @@ function vocabBackToEntry(){
   vocabCurrentQuiz=null;
   renderVocabEntry();
 }
-function vocabWrongDetailRow(it){
-  return '<div style="padding:8px 0;border-bottom:1px solid var(--border)">'+
-    '<div style="font-size:12px;color:var(--text2);margin-bottom:3px;line-height:1.5">'+it.prompt+'</div>'+
-    '<div style="font-size:13px;font-weight:700;color:var(--green)">정답: '+it.correct+'</div>'+
+function vocabDetailRow(it,num){
+  return '<div style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:6px">'+
+    '<span style="font-size:12px;font-weight:700;color:'+(it.ok?'var(--green)':'var(--red)')+';min-width:16px">'+(it.ok?'✓':'✗')+'</span>'+
+    '<div style="flex:1">'+
+      '<div style="font-size:12px;color:var(--text2);line-height:1.5">'+(num?num+'. ':'')+it.prompt+'</div>'+
+      '<div style="font-size:12px;margin-top:3px">'+
+        (it.ok?'<span style="color:var(--green);font-weight:600">'+it.my+'</span>':
+          '<span style="color:var(--red)">내 답: '+(it.my||'미선택')+'</span> · <span style="color:var(--green);font-weight:600">정답: '+it.correct+'</span>')+
+      '</div>'+
+    '</div>'+
   '</div>';
 }
-function showVocabResult(score,correct,total,wrongItems,isRetest,reviewInfo){
+function showVocabResult(score,correct,total,detail,isRetest,reviewInfo){
   showVocabView('result');
   var el=document.getElementById('vocab-result-body');
   if(!el)return;
@@ -4398,18 +4406,17 @@ function showVocabResult(score,correct,total,wrongItems,isRetest,reviewInfo){
     '<div style="font-size:32px;font-weight:700;color:'+(score>=80?'var(--green)':score>=60?'var(--amber)':'var(--red)')+'">'+score+'점</div>'+
     '<div style="font-size:13px;color:var(--text2);margin-top:4px">'+correct+' / '+total+'</div>'+
     '</div></div>';
-  html+=wrongItems.length?
-    '<div class="card" style="margin-bottom:1rem"><div class="card-head"><h3>'+(isRetest?'아직 틀린 단어':'틀린 단어')+' ('+wrongItems.length+'개) — 바로 확인'+'</h3></div>'+
+  html+='<div class="card" style="margin-bottom:1rem"><div class="card-head"><h3>'+(isRetest?'재시험 결과':'문항별 결과')+' — 맞았는지 바로 확인'+'</h3></div>'+
     '<div style="padding:0 1.25rem 1rem">'+
-    wrongItems.map(vocabWrongDetailRow).join('')+
-    '</div></div>'+
-    '<div style="font-size:12px;color:var(--text3);text-align:center;margin-bottom:1rem">이 단어들은 다음 단어시험을 볼 때 자동으로 같이 나와요</div>'
-    :'<div class="card" style="margin-bottom:1rem"><div style="padding:2rem;text-align:center;color:var(--green)">🎉 모두 맞았어요!</div></div>';
+    detail.map(function(it,i){return vocabDetailRow(it,i+1);}).join('')+
+    '</div></div>';
+  if(detail.some(function(it){return !it.ok;})){
+    html+='<div style="font-size:12px;color:var(--text3);text-align:center;margin-bottom:1rem">틀린 단어는 다음 단어시험을 볼 때 자동으로 같이 나와요</div>';
+  }
   if(reviewInfo){
-    html+='<div class="card" style="border-left:3px solid var(--amber)"><div class="card-head"><h3>🔁 오답 복습 결과</h3></div>'+
+    html+='<div class="card" style="border-left:3px solid var(--amber)"><div class="card-head"><h3>🔁 오답 복습 결과 ('+reviewInfo.correct+'/'+reviewInfo.total+' 통과)</h3></div>'+
       '<div style="padding:0 1.25rem 1rem">'+
-      '<div style="font-size:13px;color:var(--text2);margin-bottom:8px">'+reviewInfo.correct+' / '+reviewInfo.total+'개 통과'+(reviewInfo.stillWrong.length?' · 아직 '+reviewInfo.stillWrong.length+'개는 다음에 또 나와요':' · 모두 통과했어요 🎉')+'</div>'+
-      reviewInfo.stillWrong.map(vocabWrongDetailRow).join('')+
+      reviewInfo.items.map(function(it){return vocabDetailRow(it,null);}).join('')+
       '</div></div>';
   }
   el.innerHTML=html;
