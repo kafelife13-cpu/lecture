@@ -1189,6 +1189,19 @@ input,button{font-family:var(--font)}
   </div>
 </div>
 
+<div class="modal-bg" id="modal-cert-camera">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-head"><h3>인증 사진 촬영</h3><button class="modal-close" onclick="closeCertCamera()">×</button></div>
+    <div class="modal-body" style="padding:0">
+      <video id="cert-cam-video" autoplay playsinline muted style="width:100%;display:block;background:#000;max-height:60vh;object-fit:contain"></video>
+    </div>
+    <div class="modal-footer" style="display:flex;gap:8px">
+      <button class="btn" style="flex:1" onclick="closeCertCamera()">취소</button>
+      <button class="btn blue" style="flex:2" onclick="captureCertPhoto()">📸 촬영</button>
+    </div>
+  </div>
+</div>
+
 <!-- 오답 개념 OX 재시험 -->
 <div class="modal-bg" id="modal-ox-quiz">
   <div class="modal" style="max-width:480px">
@@ -3018,6 +3031,7 @@ async function cancelMyClinicReq(id){
 document.getElementById('modal-clinic-slot').addEventListener('click',function(e){if(e.target===e.currentTarget)closeClinicSlotModal();});
 document.getElementById('study-photo-input').addEventListener('change',onStudyPhotoSelected);
 document.getElementById('modal-study-camera').addEventListener('click',function(e){if(e.target===e.currentTarget)closeStudyCamera();});
+document.getElementById('modal-cert-camera').addEventListener('click',function(e){if(e.target===e.currentTarget)closeCertCamera();});
 document.getElementById('modal-omr').addEventListener('click',function(e){if(e.target===e.currentTarget)closeOmrModal();});
 document.getElementById('modal-ox-quiz').addEventListener('click',function(e){if(e.target===e.currentTarget)closeOxQuiz();});
 
@@ -3316,7 +3330,7 @@ function renderCertSubmitUI(item){
     html+='<div style="margin-bottom:10px">'+
       '<input type="file" id="cert-cam-'+item.id+'" accept="image/*" capture="environment" style="display:none" onchange="submitCertFiles(\''+item.id+'\',this)">'+
       '<input type="file" id="cert-file-'+item.id+'" accept="image/*,video/*" multiple style="display:none" onchange="submitCertFiles(\''+item.id+'\',this)">'+
-      '<button class="btn blue btn-sm" onclick="document.getElementById(\'cert-cam-'+item.id+'\').click()">📷 사진 촬영</button> '+
+      '<button class="btn blue btn-sm" onclick="openCertCamera(\''+item.id+'\')">📷 사진 촬영</button> '+
       '<button class="btn btn-sm" onclick="document.getElementById(\'cert-file-'+item.id+'\').click()">🖼 앨범에서 선택</button>'+
       '<div id="cert-file-progress-'+item.id+'" style="margin-top:8px"></div></div>';
   }
@@ -3326,13 +3340,64 @@ function renderCertSubmitUI(item){
   return html;
 }
 
+/* 페이지 안에서 카메라를 직접 열어 촬영 — 네이티브 카메라 앱을 띄우지 않아
+   기기에 따라 셔터음이 안 날 수 있다. 카메라 접근이 안 되면 기존 파일
+   선택(기본 카메라 앱) 방식으로 자동 대체된다. */
+var certCamStream=null;
+var certCamItemId=null;
+async function openCertCamera(itemId){
+  certCamItemId=itemId;
+  if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)){
+    document.getElementById('cert-cam-'+itemId).click();
+    return;
+  }
+  try{
+    certCamStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
+    document.getElementById('cert-cam-video').srcObject=certCamStream;
+    document.getElementById('modal-cert-camera').classList.add('show');
+  }catch(err){
+    notify('카메라를 열 수 없어요, 기본 카메라로 대신 촬영해주세요.','info');
+    document.getElementById('cert-cam-'+itemId).click();
+  }
+}
+function stopCertCamStream(){
+  if(certCamStream){try{certCamStream.getTracks().forEach(function(t){t.stop();});}catch(e){}certCamStream=null;}
+}
+function closeCertCamera(){
+  stopCertCamStream();
+  document.getElementById('modal-cert-camera').classList.remove('show');
+  certCamItemId=null;
+}
+function captureCertPhoto(){
+  var video=document.getElementById('cert-cam-video');
+  var w=video.videoWidth,h=video.videoHeight;
+  if(!w||!h){notify('카메라 준비 중이에요, 잠시 후 다시 시도해주세요.','error');return;}
+  var canvas=document.createElement('canvas');
+  canvas.width=w;canvas.height=h;
+  var ctx=canvas.getContext('2d');
+  ctx.drawImage(video,0,0,w,h);
+  var itemId=certCamItemId;
+  stopCertCamStream();
+  document.getElementById('modal-cert-camera').classList.remove('show');
+  canvas.toBlob(function(blob){
+    if(!blob){notify('사진 촬영 실패','error');return;}
+    uploadCertFiles(itemId,[new File([blob],'photo.jpg',{type:'image/jpeg'})]);
+  },'image/jpeg',0.9);
+}
+
 async function submitCertFiles(itemId,input){
   var files=Array.from(input.files);
+  input.value='';
+  if(!files.length)return;
+  await uploadCertFiles(itemId,files);
+}
+
+async function uploadCertFiles(itemId,files){
   if(!files.length)return;
   var progressEl=document.getElementById('cert-file-progress-'+itemId);
-  progressEl.innerHTML='<div style="font-size:12px;color:var(--text2)">업로드 중... 0/'+files.length+'</div>';
+  if(progressEl)progressEl.innerHTML='<div style="font-size:12px;color:var(--text2)">업로드 중... 0/'+files.length+'</div>';
   var urls=[];
-  var BUCKET='qa 파일';
+  var BUCKET='qa-files';
   try{
     for(var i=0;i<files.length;i++){
       var file=files[i];
@@ -3342,13 +3407,12 @@ async function submitCertFiles(itemId,input){
       var contentType=file.type||(ext==='heic'||ext==='heif'?'image/heic':'application/octet-stream');
       var upload=await sb.storage.from(BUCKET).upload(path,file,{upsert:true,contentType:contentType});
       if(upload.error){
-        progressEl.innerHTML='<div style="font-size:12px;color:var(--red)">❌ 업로드 실패: '+upload.error.message+'</div>';
-        input.value='';
+        if(progressEl)progressEl.innerHTML='<div style="font-size:12px;color:var(--red)">❌ 업로드 실패: '+upload.error.message+'</div>';
         return;
       }
       var url=sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
       urls.push(url);
-      progressEl.innerHTML='<div style="font-size:12px;color:var(--text2)">업로드 중... '+(i+1)+'/'+files.length+'</div>';
+      if(progressEl)progressEl.innerHTML='<div style="font-size:12px;color:var(--text2)">업로드 중... '+(i+1)+'/'+files.length+'</div>';
     }
     var existing=certDb.submissions.find(function(s){return s.item_id===itemId&&s.student_id===session.id;});
     var prevUrls=[];
@@ -3357,11 +3421,9 @@ async function submitCertFiles(itemId,input){
     }
     var allUrls=prevUrls.concat(urls);
     await saveCertSubmission(itemId,JSON.stringify(allUrls));
-    progressEl.innerHTML='<div style="font-size:12px;color:var(--green)">✓ '+files.length+'개 파일 제출됐어요! (누적 '+allUrls.length+'개)</div>';
-    input.value='';
+    if(progressEl)progressEl.innerHTML='<div style="font-size:12px;color:var(--green)">✓ '+files.length+'개 파일 제출됐어요! (누적 '+allUrls.length+'개)</div>';
   }catch(e){
-    progressEl.innerHTML='<div style="font-size:12px;color:var(--red)">❌ 오류: '+e.message+'</div>';
-    input.value='';
+    if(progressEl)progressEl.innerHTML='<div style="font-size:12px;color:var(--red)">❌ 오류: '+e.message+'</div>';
   }
 }
 
