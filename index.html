@@ -5429,12 +5429,13 @@ function pickOmrSheetCount(n){document.getElementById('omr-sheet-count').value=n
 const OMR_CONSONANTS=['ㄱ','ㄴ','ㄷ','ㄹ','ㅁ','ㅂ','ㅅ','ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
 const OMR_VOWELS=['ㅏ','ㅑ','ㅓ','ㅕ','ㅗ','ㅛ','ㅜ','ㅠ','ㅡ','ㅣ'];
 
+function omrIdBlockWidth(colCount){ return colCount*16+8; }
 function omrDigitGrid(colCount,label){
   let cols='';
   for(let c=0;c<colCount;c++){
     cols+='<div class="omr-jcol">'+Array.from({length:10},function(_,d){return '<span class="omr-jbubble">'+d+'</span>';}).join('')+'</div>';
   }
-  return '<div class="omr-idblock"><div class="omr-idblock-head">'+label+'</div><div class="omr-jcols">'+cols+'</div></div>';
+  return '<div class="omr-idblock" style="width:'+omrIdBlockWidth(colCount)+'px"><div class="omr-idblock-head">'+label+'</div><div class="omr-jcols">'+cols+'</div></div>';
 }
 
 function generateOmrSheet(){
@@ -5467,22 +5468,33 @@ function generateOmrSheet(){
   const bodyHtml=
     '<div class="omr-sheet">'+
       '<div class="omr-corner tl"></div><div class="omr-corner tr"></div><div class="omr-corner bl"></div><div class="omr-corner br"></div>'+
-      '<div class="omr-header">'+
+      '<div class="omr-topbar">'+
         '<div class="omr-title">'+title+'</div>'+
-        '<div class="omr-meta">'+
-          '<div class="omr-meta-row"><span>학교</span><span class="omr-fill-line"></span><span>학원</span><span class="omr-fill-line" style="width:60px"></span><span>회차</span><span class="omr-fill-line" style="width:50px"></span><span>응시일</span><span class="omr-fill-line" style="width:80px"></span></div>'+
+        '<div class="omr-schoolbox"><table>'+
+          '<tr><td class="omr-lbl">학&nbsp;&nbsp;교</td><td class="omr-fillcell"></td></tr>'+
+          '<tr><td class="omr-lbl">학&nbsp;&nbsp;원</td><td class="omr-fillcell" style="width:70px"></td><td class="omr-lbl">회차</td><td class="omr-fillcell" style="width:44px"></td></tr>'+
+        '</table></div>'+
+        '<div class="omr-rules">'+
+          '<strong>지켜야 할 사항</strong>'+
+          '<ol>'+
+            '<li>반드시 검정색 사인펜(또는 펜)으로 표기합니다.</li>'+
+            '<li>표기란에는 <span class="omr-ex omr-ex-good"></span>와 같이 바르게 표기합니다.</li>'+
+            '<li>수정 시에는 두 줄로 긋고 옆에 다시 표기합니다.</li>'+
+          '</ol>'+
+          '<div class="omr-wrongex"><b>잘못된 표기 예시</b>'+
+            '<span class="omr-ex omr-ex-empty"></span>'+
+            '<span class="omr-ex omr-ex-half"></span>'+
+            '<span class="omr-ex omr-ex-faint"></span>'+
+            '<span class="omr-ex omr-ex-double">'+
+              '<span class="omr-ex-double-a"></span><span class="omr-ex-double-b"></span>'+
+            '</span>'+
+          '</div>'+
         '</div>'+
-      '</div>'+
-      '<div class="omr-instructions">'+
-        '<strong>지켜야 할 사항</strong> '+
-        '1. 반드시 검정색 사인펜(또는 펜)으로 표기 · '+
-        '2. 표기란에는 ● 와 같이 바르게 표기 · '+
-        '3. 수정 시에는 두 줄로 긋고 옆에 다시 표기'+
       '</div>'+
       '<div class="omr-main">'+
         '<div class="omr-idcol">'+
-          '<div class="omr-idblock"><div class="omr-idblock-head">성 명 (좌→우, 자음→모음)</div><div class="omr-jcols">'+nameCols+'</div></div>'+
-          omrDigitGrid(8,'핸드폰 번호 (010- 제외 8자리, 학생 자동인식용)')+
+          '<div class="omr-idblock" style="width:'+omrIdBlockWidth(4)+'px"><div class="omr-idblock-head">성 명 (좌→우, 자음→모음)</div><div class="omr-jcols">'+nameCols+'</div></div>'+
+          omrDigitGrid(8,'핸드폰 번호 (뒤 8자리, 자동인식용)')+
         '</div>'+
         '<div class="omr-cols">'+colsHtml+'</div>'+
       '</div>'+
@@ -5498,15 +5510,26 @@ function generateOmrSheet(){
       '.omr-corner.tr{top:-6px;right:-6px}'+
       '.omr-corner.bl{bottom:-6px;left:-6px}'+
       '.omr-corner.br{bottom:-6px;right:-6px}'+
-      '.omr-header{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #333;padding-bottom:6px;margin-bottom:6px}'+
-      '.omr-title{font-size:18px;font-weight:700}'+
-      '.omr-meta-row{display:flex;align-items:center;gap:6px;font-size:12px}'+
-      '.omr-meta-row span{color:#555}'+
-      '.omr-fill-line{display:inline-block;width:110px;border-bottom:1px solid #999;height:14px}'+
-      '.omr-instructions{font-size:10px;color:#555;background:#f7f7f7;border:1px solid #ddd;border-radius:6px;padding:5px 10px;margin-bottom:8px;line-height:1.6}'+
+      '.omr-topbar{display:flex;gap:10px;align-items:stretch;border-bottom:2px solid #333;padding-bottom:8px;margin-bottom:8px}'+
+      '.omr-title{font-size:16px;font-weight:700;display:flex;align-items:center;flex-shrink:0;padding-right:6px}'+
+      '.omr-schoolbox{flex-shrink:0}'+
+      '.omr-schoolbox table{border-collapse:collapse}'+
+      '.omr-schoolbox td{border:1px solid #333;font-size:11px;padding:4px 6px}'+
+      '.omr-schoolbox .omr-lbl{background:#f0f0f0;font-weight:600;text-align:center;white-space:nowrap}'+
+      '.omr-schoolbox .omr-fillcell{min-width:70px}'+
+      '.omr-rules{flex:1;font-size:10px;color:#333;background:#f7f7f7;border:1px solid #ddd;border-radius:6px;padding:5px 10px;line-height:1.5}'+
+      '.omr-rules ol{margin:2px 0 0;padding-left:16px}'+
+      '.omr-wrongex{margin-top:3px;display:flex;align-items:center;gap:8px}'+
+      '.omr-ex{display:inline-flex;align-items:center;justify-content:center;width:13px;height:13px;border-radius:50%;border:1.2px solid #333;position:relative}'+
+      '.omr-ex-good{background:#111;border-color:#111}'+
+      '.omr-ex-empty{background:#fff}'+
+      '.omr-ex-half{background:linear-gradient(90deg,#111 50%,#fff 50%)}'+
+      '.omr-ex-faint{background:#bbb;border-color:#bbb}'+
+      '.omr-ex-double{border:none;width:22px;gap:2px}'+
+      '.omr-ex-double-a,.omr-ex-double-b{display:inline-block;width:10px;height:10px;border-radius:50%;border:1.2px solid #333;background:#111}'+
       '.omr-main{display:flex;gap:10px;align-items:flex-start;flex-wrap:nowrap}'+
       '.omr-idcol{display:flex;flex-direction:row;gap:8px;flex-shrink:0}'+
-      '.omr-idblock{border:1px solid #333;border-radius:6px;overflow:hidden;width:130px;box-sizing:border-box}'+
+      '.omr-idblock{border:1px solid #333;border-radius:6px;overflow:hidden;box-sizing:border-box}'+
       '.omr-idblock-head{background:#2d6b4a;color:#fff;font-size:9px;font-weight:600;padding:4px 3px;text-align:center;line-height:1.35;word-break:keep-all}'+
       '.omr-jcols{display:flex;gap:2px;padding:5px;justify-content:center}'+
       '.omr-jcol{display:flex;flex-direction:column;align-items:center;gap:2px}'+
