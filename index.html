@@ -5427,7 +5427,7 @@ function closeOmrSheetModal(){document.getElementById('modal-omr-sheet').classLi
 function pickOmrSheetCount(n){document.getElementById('omr-sheet-count').value=n;}
 
 const OMR_CONSONANTS=['ㄱ','ㄴ','ㄷ','ㄹ','ㅁ','ㅂ','ㅅ','ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
-const OMR_VOWELS=['ㅏ','ㅑ','ㅓ','ㅕ','ㅗ','ㅛ','ㅜ','ㅠ','ㅡ','ㅣ'];
+const OMR_VOWELS_FULL=['ㅏ','ㅑ','ㅓ','ㅕ','ㅗ','ㅛ','ㅜ','ㅠ','ㅡ','ㅣ','ㅘ','ㅚ','ㅝ','ㅟ'];
 
 function omrIdBlockWidth(colCount){ return colCount*16+8; }
 function omrDigitGrid(colCount,label){
@@ -5436,6 +5436,10 @@ function omrDigitGrid(colCount,label){
     cols+='<div class="omr-jcol">'+Array.from({length:10},function(_,d){return '<span class="omr-jbubble">'+d+'</span>';}).join('')+'</div>';
   }
   return '<div class="omr-idblock" style="width:'+omrIdBlockWidth(colCount)+'px"><div class="omr-idblock-head">'+label+'</div><div class="omr-jcols">'+cols+'</div></div>';
+}
+function omrWriteBoxes(count,label,width){
+  const boxes=Array.from({length:count},function(){return '<span class="omr-writebox"></span>';}).join('');
+  return '<div class="omr-idblock" style="width:'+width+'px"><div class="omr-idblock-head">'+label+'</div><div class="omr-writeboxes">'+boxes+'</div></div>';
 }
 
 function generateOmrSheet(){
@@ -5456,15 +5460,14 @@ function generateOmrSheet(){
     }
     colsHtml+='<div class="omr-col"><div class="omr-col-head"><span>문번</span><span>답 란</span></div>'+rows+'</div>';
   }
-  // 성명 마킹칸: 4칸(최대 4글자), 각 칸은 자음 14개 + 모음 10개
+  // 성명 마킹칸: 4글자, 글자마다 초성(14)·중성(14)·종성(14) 3개 열
+  const omrConsCol=function(){return '<div class="omr-jcol">'+OMR_CONSONANTS.map(function(ch){return '<span class="omr-jbubble">'+ch+'</span>';}).join('')+'</div>';};
+  const omrVowCol=function(){return '<div class="omr-jcol">'+OMR_VOWELS_FULL.map(function(ch){return '<span class="omr-jbubble">'+ch+'</span>';}).join('')+'</div>';};
   let nameCols='';
   for(let c=0;c<4;c++){
-    nameCols+='<div class="omr-jcol">'+
-      OMR_CONSONANTS.map(function(ch){return '<span class="omr-jbubble">'+ch+'</span>';}).join('')+
-      '<div class="omr-jsep"></div>'+
-      OMR_VOWELS.map(function(ch){return '<span class="omr-jbubble">'+ch+'</span>';}).join('')+
-    '</div>';
+    nameCols+='<div class="omr-nameslot'+(c>0?' sep':'')+'">'+omrConsCol()+omrVowCol()+omrConsCol()+'</div>';
   }
+  const NAME_BLOCK_W=4*(3*14+2*2)+3*8+10;
   const bodyHtml=
     '<div class="omr-sheet">'+
       '<div class="omr-corner tl"></div><div class="omr-corner tr"></div><div class="omr-corner bl"></div><div class="omr-corner br"></div>'+
@@ -5493,8 +5496,12 @@ function generateOmrSheet(){
       '</div>'+
       '<div class="omr-main">'+
         '<div class="omr-idcol">'+
-          '<div class="omr-idblock" style="width:'+omrIdBlockWidth(4)+'px"><div class="omr-idblock-head">성 명 (좌→우, 자음→모음)</div><div class="omr-jcols">'+nameCols+'</div></div>'+
-          omrDigitGrid(8,'핸드폰 번호 (뒤 8자리, 자동인식용)')+
+          '<div class="omr-idblock" style="width:'+NAME_BLOCK_W+'px">'+
+            '<div class="omr-idblock-head">성 명 (좌측부터 차례로 마킹)</div>'+
+            '<div class="omr-namewrite"></div>'+
+            '<div class="omr-jcols omr-namecols">'+nameCols+'</div>'+
+          '</div>'+
+          omrWriteBoxes(8,'핸드폰 번호 (뒤 8자리, 자동인식용) — 숫자를 또박또박 적어주세요',184)+
         '</div>'+
         '<div class="omr-cols">'+colsHtml+'</div>'+
       '</div>'+
@@ -5531,10 +5538,15 @@ function generateOmrSheet(){
       '.omr-idcol{display:flex;flex-direction:row;gap:8px;flex-shrink:0}'+
       '.omr-idblock{border:1px solid #333;border-radius:6px;overflow:hidden;box-sizing:border-box}'+
       '.omr-idblock-head{background:#2d6b4a;color:#fff;font-size:9px;font-weight:600;padding:4px 3px;text-align:center;line-height:1.35;word-break:keep-all}'+
+      '.omr-namewrite{border:1px solid #ccc;border-radius:4px;min-height:24px;margin:6px 6px 2px}'+
       '.omr-jcols{display:flex;gap:2px;padding:5px;justify-content:center}'+
+      '.omr-namecols{gap:0}'+
+      '.omr-nameslot{display:flex;gap:2px}'+
+      '.omr-nameslot.sep{border-left:1px dashed #2d6b4a;margin-left:5px;padding-left:5px}'+
       '.omr-jcol{display:flex;flex-direction:column;align-items:center;gap:2px}'+
       '.omr-jbubble{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border:1px solid #333;border-radius:50%;font-size:7.5px;color:#333}'+
-      '.omr-jsep{height:4px}'+
+      '.omr-writeboxes{display:flex;gap:2px;padding:5px;justify-content:center;flex-wrap:wrap}'+
+      '.omr-writebox{display:inline-block;width:18px;height:26px;border:1px solid #333;border-radius:3px;box-sizing:border-box}'+
       '.omr-cols{display:flex;flex-wrap:nowrap;gap:6px;flex:1}'+
       '.omr-col{border:1px solid #333;border-radius:4px;overflow:hidden;flex:1;min-width:0}'+
       '.omr-col-head{display:flex;background:#333;color:#fff;font-size:11px;font-weight:600}'+
@@ -5653,7 +5665,7 @@ async function omrReadWithAI(){
       '총 문항 수: '+total+'개, 각 문항은 1~5번 중 하나를 마킹합니다.\n'+
       '사진을 보고 문항 번호 1~'+total+'번까지 각각 마킹된 번호를 읽어서 answers에 담으세요.\n'+
       '마킹이 없거나 두 개 이상 마킹되어 읽기 애매한 문항은 0으로 표시하세요.\n'+
-      '또한 답안지 상단의 "핸드폰 번호(010- 제외 8자리)" 마킹칸도 찾아서 마킹된 8자리 숫자를 읽어 phone에 담으세요. 마킹이 없거나 읽기 애매하면 빈 문자열로 두세요.\n'+
+      '또한 답안지 상단의 "핸드폰 번호(뒤 8자리)" 칸에 학생이 손으로 적은 8자리 숫자를 읽어 phone에 담으세요. 글씨가 없거나 읽기 애매하면 빈 문자열로 두세요.\n'+
       'JSON으로만 답하세요. 형식 예시: {"answers":{"1":3,"2":1,"3":0},"phone":"12345678"}\n다른 설명 없이 순수 JSON 객체만 반환하세요.';
     const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:2000,thinking:{type:'disabled'},messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},{type:'text',text:promptText}]}]})});
     const data=await resp.json();
@@ -5729,7 +5741,7 @@ async function omrBatchStart(files){
         '총 문항 수: '+total+'개, 각 문항은 1~5번 중 하나를 마킹합니다.\n'+
         '사진을 보고 문항 번호 1~'+total+'번까지 각각 마킹된 번호를 읽어서 answers에 담으세요.\n'+
         '마킹이 없거나 두 개 이상 마킹되어 읽기 애매한 문항은 0으로 표시하세요.\n'+
-        '또한 답안지 상단의 "핸드폰 번호(010- 제외 8자리)" 마킹칸도 찾아서 마킹된 8자리 숫자를 읽어 phone에 담으세요. 마킹이 없거나 읽기 애매하면 빈 문자열로 두세요.\n'+
+        '또한 답안지 상단의 "핸드폰 번호(뒤 8자리)" 칸에 학생이 손으로 적은 8자리 숫자를 읽어 phone에 담으세요. 글씨가 없거나 읽기 애매하면 빈 문자열로 두세요.\n'+
         'JSON으로만 답하세요. 형식 예시: {"answers":{"1":3,"2":1,"3":0},"phone":"12345678"}\n다른 설명 없이 순수 JSON 객체만 반환하세요.';
       const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:2000,thinking:{type:'disabled'},messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},{type:'text',text:promptText}]}]})});
       const data=await resp.json();
