@@ -774,7 +774,7 @@ input,button{font-family:var(--font)}
         <div class="card" style="margin-bottom:1rem">
           <div class="card-head"><h3>스케줄 설정</h3></div>
           <div style="padding:0 1.25rem 1.25rem">
-            <div class="form-group" style="margin-bottom:8px"><label>시작일 (1강 시행일, 월/수/금 중 하루)</label><input type="date" id="t-vocab-start" class="form-input"></div>
+            <div class="form-group" style="margin-bottom:8px"><label>시작일 (1강이 시작되는 주의 아무 날짜나 선택 — 그 주 월요일 기준으로 계산돼요)</label><input type="date" id="t-vocab-start" class="form-input"></div>
             <button class="btn blue btn-sm" onclick="tSaveVocabStart()">저장</button>
             <div id="t-vocab-today-label" style="font-size:12px;color:var(--text2);margin-top:8px"></div>
           </div>
@@ -1061,9 +1061,10 @@ input,button{font-family:var(--font)}
 
       <!-- 오늘의 어휘 (학생) -->
       <div class="panel" id="panel-vocab">
-        <div class="page-header"><h1>오늘의 어휘</h1><p>단어 시험을 보고, 틀린 단어는 다음 날 다시 확인해요</p></div>
+        <div class="page-header"><h1>오늘의 어휘</h1><p>월~금 자유롭게 응시하고, 토·일은 밀린 시험을 보충해요</p></div>
         <div id="vocab-entry">
-          <div id="vocab-today-card"></div>
+          <div id="vocab-week-card"></div>
+          <div id="vocab-catchup-card" style="margin-top:1rem"></div>
           <div id="vocab-retest-card" style="margin-top:1rem"></div>
         </div>
         <div id="vocab-quiz-view" style="display:none">
@@ -4061,21 +4062,14 @@ async function renderStandaloneReportCard(responseId){
 }
 
 /* ════════════════════════════════════════════
-   오늘의 어휘 — 단어 시험 (월/수/금 자동 스케줄, 오답 다음날 재시험)
+   오늘의 어휘 — 단어 시험
+   한 주(월~일)에 3강씩 배정, 월~금 자유 순서로 응시, 토·일은 밀린 것 보충
    ════════════════════════════════════════════ */
 var VOCAB_UNITS_CACHE=null;
 var vocabCurrentQuiz=null;
+const VOCAB_PER_WEEK=3;
 
-function isMonWedFri(d){var wd=d.getDay();return wd===1||wd===3||wd===5;}
 function vocabYmd(d){var dt=new Date(d);return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
-function countSessionDays(startStr,endDate){
-  var start=new Date(startStr+'T00:00:00');
-  var end=new Date(endDate);end.setHours(0,0,0,0);
-  if(end<start)return 0;
-  var count=0;var cur=new Date(start);
-  while(cur<=end){if(isMonWedFri(cur))count++;cur.setDate(cur.getDate()+1);}
-  return count;
-}
 async function ensureVocabUnitsLoaded(){
   if(!VOCAB_UNITS_CACHE){
     const{data}=await sb.from('vocab_units').select('*').order('week');
@@ -4084,33 +4078,35 @@ async function ensureVocabUnitsLoaded(){
   return VOCAB_UNITS_CACHE;
 }
 function vocabMaxWeek(){return VOCAB_UNITS_CACHE?VOCAB_UNITS_CACHE.length:0;}
-function vocabTodayWeek(){
-  var startStr=(sharedAISettings&&sharedAISettings.vocab_start_date)||null;
-  if(!startStr)return null;
-  var today=new Date();
-  if(!isMonWedFri(today))return null;
-  var idx=countSessionDays(startStr,today);
-  var maxWeek=vocabMaxWeek();
-  if(idx<1||(maxWeek&&idx>maxWeek))return null;
-  return idx;
+// vocab_start_date가 속한 주(월요일 기준)를 0주차로 보고, 그 이후 매 주마다 3강씩 순서대로 배정
+function vocabWeekIndexForDate(startStr,d){
+  var start=new Date(startStr+'T00:00:00');
+  var sDow=start.getDay();var sMonOffset=sDow===0?-6:1-sDow;
+  var startMonday=new Date(start);startMonday.setDate(start.getDate()+sMonOffset);
+  var dt=new Date(d);dt.setHours(0,0,0,0);
+  var dDow=dt.getDay();var dMonOffset=dDow===0?-6:1-dDow;
+  var dMonday=new Date(dt);dMonday.setDate(dt.getDate()+dMonOffset);
+  var diffDays=Math.round((dMonday-startMonday)/86400000);
+  return Math.floor(diffDays/7); // 0-based 주차
 }
-function vocabThisWeekSessions(){
+function vocabUnitsForWeekIndex(weekIdx){
+  if(weekIdx<0)return [];
+  var maxWeek=vocabMaxWeek();
+  var startUnit=weekIdx*VOCAB_PER_WEEK+1;
+  var nums=[];
+  for(var i=0;i<VOCAB_PER_WEEK;i++){
+    var n=startUnit+i;
+    if(n>=1&&(!maxWeek||n<=maxWeek))nums.push(n);
+  }
+  return nums;
+}
+// 이번 주(오늘 기준)에 배정된 강 번호 목록 (월~일 아무 때나 응시 가능)
+function vocabCurrentWeekUnits(){
   var startStr=(sharedAISettings&&sharedAISettings.vocab_start_date)||null;
   if(!startStr)return [];
-  var today=new Date();today.setHours(0,0,0,0);
-  var dow=today.getDay();
-  var monOffset=dow===0?-6:1-dow;
-  var monday=new Date(today);monday.setDate(today.getDate()+monOffset);
-  var weeks=[];
-  var maxWeek=vocabMaxWeek();
-  for(var i=0;i<5;i++){
-    var d=new Date(monday);d.setDate(monday.getDate()+i);
-    if(isMonWedFri(d)&&d<=today){
-      var idx=countSessionDays(startStr,d);
-      if(idx>=1&&(!maxWeek||idx<=maxWeek))weeks.push(idx);
-    }
-  }
-  return weeks;
+  var today=new Date();
+  var wi=vocabWeekIndexForDate(startStr,today);
+  return vocabUnitsForWeekIndex(wi);
 }
 function shuffleArr(arr){
   var a=arr.slice();
@@ -4159,25 +4155,53 @@ function buildRetestQuizItems(wrongRows){
   return items;
 }
 
+function vocabUnitRowHtml(week,resp){
+  var unit=(VOCAB_UNITS_CACHE||[]).find(function(u){return u.week===week;});
+  return '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">'+
+    '<div><div style="font-size:13px;font-weight:600">'+week+'강'+(unit?' — '+unit.title:'')+'</div>'+
+    '<div style="font-size:11px;color:var(--text2);margin-top:2px">'+(resp?'제출완료 · '+resp.score+'점 ('+resp.correct_count+'/'+resp.total_q+')':'총 15문항')+'</div></div>'+
+    (resp?'<span class="badge done">완료</span>':'<button class="btn blue btn-sm" onclick="startVocabUnit('+week+')">시작하기</button>')+
+    '</div>';
+}
 async function renderVocabEntry(){
   await ensureVocabUnitsLoaded();
   showVocabView('entry');
   var myName=session.name||session.id;
-  var todayWeek=vocabTodayWeek();
-  var todayEl=document.getElementById('vocab-today-card');
-  if(!todayEl)return;
-  if(!todayWeek){
-    todayEl.innerHTML='<div class="card"><div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px">오늘은 단어시험이 없는 날이에요 (월/수/금)</div></div>';
+  var weekEl=document.getElementById('vocab-week-card');
+  var catchupEl=document.getElementById('vocab-catchup-card');
+  if(!weekEl)return;
+  var startStr=(sharedAISettings&&sharedAISettings.vocab_start_date)||null;
+  if(!startStr){
+    weekEl.innerHTML='<div class="card"><div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px">아직 단어시험 일정이 설정되지 않았어요</div></div>';
+    if(catchupEl)catchupEl.innerHTML='';
   }else{
-    var unit=VOCAB_UNITS_CACHE.find(function(u){return u.week===todayWeek;});
-    var{data:resp}=await sb.from('vocab_responses').select('*').eq('id','vr_'+todayWeek+'_'+myName).maybeSingle();
-    todayEl.innerHTML='<div class="card"><div class="card-head"><h3>📌 오늘의 단어시험 — '+todayWeek+'강</h3></div>'+
-      '<div style="padding:0 1.25rem 1.25rem">'+
-      (resp?
-        '<div style="font-size:13px;color:var(--text2);margin-bottom:8px">제출완료 · '+resp.score+'점 ('+resp.correct_count+'/'+resp.total_q+')</div>'
-        :'<div style="font-size:13px;color:var(--text2);margin-bottom:8px">'+(unit?unit.title:'')+' · 총 15문항</div>')+
-      (resp?'':'<button class="btn blue" style="width:100%" onclick="startVocabUnit('+todayWeek+')">시작하기</button>')+
-      '</div></div>';
+    var thisWeekUnits=vocabCurrentWeekUnits();
+    var curWeekIdx=vocabWeekIndexForDate(startStr,new Date());
+    var pastUnits=[];
+    for(var wi=0;wi<curWeekIdx;wi++)pastUnits=pastUnits.concat(vocabUnitsForWeekIndex(wi));
+    var allNums=thisWeekUnits.concat(pastUnits);
+    var{data:resps}=allNums.length?await sb.from('vocab_responses').select('*').in('unit_week',allNums).eq('student_name',myName):{data:[]};
+    var respMap={};
+    (resps||[]).forEach(function(r){respMap[r.unit_week]=r;});
+    if(!thisWeekUnits.length){
+      weekEl.innerHTML='<div class="card"><div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px">이번 주에 준비된 단어시험이 없어요</div></div>';
+    }else{
+      weekEl.innerHTML='<div class="card"><div class="card-head"><h3>📌 이번 주 단어시험</h3></div>'+
+        '<div style="padding:0 1.25rem 0.25rem">'+
+        thisWeekUnits.map(function(w){return vocabUnitRowHtml(w,respMap[w]);}).join('')+
+        '</div></div>';
+    }
+    var pastIncomplete=pastUnits.filter(function(w){return !respMap[w];});
+    if(catchupEl){
+      if(pastIncomplete.length){
+        catchupEl.innerHTML='<div class="card" style="border-left:3px solid var(--amber)"><div class="card-head"><h3>🗓️ 밀린 시험 (보충)</h3></div>'+
+          '<div style="padding:0 1.25rem 0.25rem">'+
+          pastIncomplete.map(function(w){return vocabUnitRowHtml(w,respMap[w]);}).join('')+
+          '</div></div>';
+      }else{
+        catchupEl.innerHTML='';
+      }
+    }
   }
   var todayStr=vocabYmd(new Date());
   var{data:wrongRows}=await sb.from('vocab_wrong_words').select('*').eq('student_name',myName).eq('resolved',false);
@@ -4330,13 +4354,16 @@ async function renderTVocab(){
   await ensureVocabUnitsLoaded();
   var startEl=document.getElementById('t-vocab-start');
   if(startEl)startEl.value=(sharedAISettings&&sharedAISettings.vocab_start_date)||'';
-  var todayWeek=vocabTodayWeek();
   var lbl=document.getElementById('t-vocab-today-label');
+  var hasStart=!!(sharedAISettings&&sharedAISettings.vocab_start_date);
   if(lbl){
-    if(!(sharedAISettings&&sharedAISettings.vocab_start_date))lbl.textContent='시작일을 먼저 설정해주세요.';
-    else lbl.textContent=todayWeek?('오늘은 '+todayWeek+'강 시험 날이에요'):'오늘은 단어시험이 없는 날이에요 (월/수/금만 진행, 단원 소진 시에도 없음)';
+    if(!hasStart)lbl.textContent='시작일을 먼저 설정해주세요.';
+    else{
+      var wk=vocabCurrentWeekUnits();
+      lbl.textContent=wk.length?('이번 주 배정: '+wk.join(', ')+'강 (월~금 자유 응시, 토·일은 밀린 시험 보충)'):'이번 주에 배정된 단어시험이 없어요';
+    }
   }
-  var thisWeekWeeks=vocabThisWeekSessions();
+  var thisWeekWeeks=vocabCurrentWeekUnits();
   var statusEl=document.getElementById('t-vocab-week-status');
   if(statusEl){
     if(!thisWeekWeeks.length){
@@ -4367,8 +4394,6 @@ async function renderTVocab(){
 async function tSaveVocabStart(){
   var val=document.getElementById('t-vocab-start').value;
   if(!val){alert('날짜를 선택해 주세요.');return;}
-  var d=new Date(val+'T00:00:00');
-  if(!isMonWedFri(d)){if(!confirm('선택한 날짜가 월/수/금이 아니에요. 그래도 저장할까요?'))return;}
   const{error}=await sb.from('app_settings').upsert({id:'default',vocab_start_date:val,updated_at:new Date().toISOString()},{onConflict:'id'});
   if(error){alert('저장 실패: '+error.message);return;}
   sharedAISettings=Object.assign({},sharedAISettings,{vocab_start_date:val});
