@@ -4194,8 +4194,27 @@ function vocabUnitRowHtml(week,resp){
   return '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">'+
     '<div><div style="font-size:13px;font-weight:600">'+week+'강'+(unit?' — '+unit.title:'')+'</div>'+
     '<div style="font-size:11px;color:var(--text2);margin-top:2px">'+(resp?'제출완료 · '+resp.score+'점 ('+resp.correct_count+'/'+resp.total_q+')':'총 15문항')+'</div></div>'+
-    (resp?'<span class="badge done">완료</span>':'<button class="btn blue btn-sm" onclick="startVocabUnit('+week+')">시작하기</button>')+
+    (resp?'<button class="btn btn-sm" onclick="viewVocabPastResult('+week+')">결과보기</button>':'<button class="btn blue btn-sm" onclick="startVocabUnit('+week+')">시작하기</button>')+
     '</div>';
+}
+async function viewVocabPastResult(week){
+  await ensureVocabUnitsLoaded();
+  var unit=(VOCAB_UNITS_CACHE||[]).find(function(u){return u.week===week;});
+  if(!unit)return;
+  var myName=session.name||session.id;
+  var{data:resp}=await sb.from('vocab_responses').select('*').eq('id','vr_'+week+'_'+myName).maybeSingle();
+  if(!resp){notify('제출 기록을 찾을 수 없어요.','error');return;}
+  var wrongMap={};
+  (resp.wrong||[]).forEach(function(w){wrongMap[w.type+'_'+w.index]=w;});
+  var allItems=buildUnitQuizItems(unit);
+  var detail=allItems.map(function(it){
+    var w=wrongMap[it.type+'_'+it.index];
+    if(w)return{prompt:it.prompt,correct:it.correct,my:w.my||'미선택',ok:false};
+    return{prompt:it.prompt,correct:it.correct,my:it.correct,ok:true};
+  });
+  vocabCurrentQuiz=null;
+  document.getElementById('vocab-quiz-title').textContent=week+'강 단어시험 결과';
+  showVocabResult(resp.score,resp.correct_count,resp.total_q,detail,false,null);
 }
 async function renderVocabEntry(){
   await ensureVocabUnitsLoaded();
@@ -4325,7 +4344,7 @@ async function submitVocabUnitQuiz(){
     if(i<unitCount){
       unitDetail.push({prompt:it.prompt,correct:it.correct,my:my,ok:ok});
       if(ok)unitCorrect++;
-      else{unitWrong.push(it);newWrongForUnit.push(it);}
+      else{unitWrong.push({type:it.type,index:it.index,label:it.correct,my:my});newWrongForUnit.push(it);}
     }else{
       reviewDetail.push({prompt:it.prompt,correct:it.correct,my:my,ok:ok});
       if(ok){reviewCorrect++;if(it.wrongRowId)toResolve.push(it.wrongRowId);}
@@ -4337,7 +4356,7 @@ async function submitVocabUnitQuiz(){
     id:'vr_'+q.week+'_'+myName,
     unit_week:q.week,student_name:myName,
     score:score,correct_count:unitCorrect,total_q:unitCount,
-    wrong:unitWrong.map(function(it){return{type:it.type,index:it.index,label:it.label};}),
+    wrong:unitWrong,
     submitted_at:new Date().toISOString()
   },{onConflict:'id'});
   if(saveRes.error){alert('저장 실패: '+saveRes.error.message);return;}
