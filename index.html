@@ -3237,16 +3237,18 @@ function renderTCertSubmitList(){
       '<div style="flex:1"><div style="font-size:13px;font-weight:600;margin-bottom:2px">'+(student?student.name:sub.student_id)+'</div>'+
       '<div style="font-size:12px;color:var(--text2)">'+(item?item.title:'')+' · '+new Date(sub.submitted_at).toLocaleDateString('ko-KR')+'</div></div>'+
       statusBadge+
-      (sub.photo_url?'<button class="btn btn-sm" onclick="viewCertPhoto(\''+sub.id+'\',\''+sub.photo_url+'\')">사진보기</button>':'')+
+      (sub.photo_url?'<button class="btn btn-sm" onclick="viewCertPhoto(\''+sub.id+'\')">사진보기</button>':'')+
       (sub.status==='pending'?'<button class="btn green btn-sm" onclick="approveCert(\''+sub.id+'\')">승인</button><button class="btn red btn-sm" onclick="rejectCert(\''+sub.id+'\')">반려</button>':'')+'</div>';
   }).join('');
 }
 
 var currentCertSubId=null;
-function viewCertPhoto(subId,urlJson){
+function viewCertPhoto(subId){
   currentCertSubId=subId;
+  var sub=certDb.submissions.find(function(s){return s.id===subId;});
+  var urlJson=sub?sub.photo_url:null;
   var urls=[];
-  try{urls=JSON.parse(urlJson);}catch(e){urls=[urlJson];}
+  try{urls=JSON.parse(urlJson);}catch(e){urls=urlJson?[urlJson]:[];}
   if(!Array.isArray(urls))urls=[urls];
   var content='';
   urls.forEach(function(url){
