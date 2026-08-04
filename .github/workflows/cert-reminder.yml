@@ -1,0 +1,17 @@
+name: 어휘 테스트 미제출자 알림
+
+on:
+  schedule:
+    # 매주 금요일 12:10 KST = 03:10 UTC (한국은 서머타임 없음)
+    - cron: '10 3 * * 5'
+  workflow_dispatch: {}   # 수동으로도 실행/테스트 가능 (Actions 탭 → Run workflow)
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node scripts/cert-reminder.mjs
