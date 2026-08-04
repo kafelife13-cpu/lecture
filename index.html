@@ -5466,6 +5466,7 @@ function generateOmrSheet(){
   }
   const bodyHtml=
     '<div class="omr-sheet">'+
+      '<div class="omr-corner tl"></div><div class="omr-corner tr"></div><div class="omr-corner bl"></div><div class="omr-corner br"></div>'+
       '<div class="omr-header">'+
         '<div class="omr-title">'+title+'</div>'+
         '<div class="omr-meta">'+
@@ -5491,7 +5492,12 @@ function generateOmrSheet(){
       '@page{ size: landscape; margin:8mm; }'+
       '@media print{ button{display:none} body{padding:0} }'+
       'body{font-family:"Malgun Gothic",sans-serif;padding:14px;color:#222}'+
-      '.omr-sheet{width:100%}'+
+      '.omr-sheet{width:100%;position:relative}'+
+      '.omr-corner{position:absolute;width:14px;height:14px;background:#000}'+
+      '.omr-corner.tl{top:-6px;left:-6px}'+
+      '.omr-corner.tr{top:-6px;right:-6px}'+
+      '.omr-corner.bl{bottom:-6px;left:-6px}'+
+      '.omr-corner.br{bottom:-6px;right:-6px}'+
       '.omr-header{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #333;padding-bottom:6px;margin-bottom:6px}'+
       '.omr-title{font-size:18px;font-weight:700}'+
       '.omr-meta-row{display:flex;align-items:center;gap:6px;font-size:12px}'+
@@ -5499,9 +5505,9 @@ function generateOmrSheet(){
       '.omr-fill-line{display:inline-block;width:110px;border-bottom:1px solid #999;height:14px}'+
       '.omr-instructions{font-size:10px;color:#555;background:#f7f7f7;border:1px solid #ddd;border-radius:6px;padding:5px 10px;margin-bottom:8px;line-height:1.6}'+
       '.omr-main{display:flex;gap:10px;align-items:flex-start;flex-wrap:nowrap}'+
-      '.omr-idcol{display:flex;flex-direction:column;gap:8px;flex-shrink:0}'+
-      '.omr-idblock{border:1px solid #333;border-radius:6px;overflow:hidden}'+
-      '.omr-idblock-head{background:#2d6b4a;color:#fff;font-size:10px;font-weight:600;padding:4px 6px;text-align:center}'+
+      '.omr-idcol{display:flex;flex-direction:row;gap:8px;flex-shrink:0}'+
+      '.omr-idblock{border:1px solid #333;border-radius:6px;overflow:hidden;width:130px;box-sizing:border-box}'+
+      '.omr-idblock-head{background:#2d6b4a;color:#fff;font-size:9px;font-weight:600;padding:4px 3px;text-align:center;line-height:1.35;word-break:keep-all}'+
       '.omr-jcols{display:flex;gap:2px;padding:5px;justify-content:center}'+
       '.omr-jcol{display:flex;flex-direction:column;align-items:center;gap:2px}'+
       '.omr-jbubble{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border:1px solid #333;border-radius:50%;font-size:7.5px;color:#333}'+
