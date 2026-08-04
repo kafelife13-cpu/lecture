@@ -817,7 +817,8 @@ input,button{font-family:var(--font)}
         <div class="sidebar-user-info"><p id="s-name-disp">학생</p><span class="badge student-role" style="font-size:10px">학생</span></div>
       </div>
       <nav class="sidebar-nav">
-        <div class="nav-item active" onclick="sNav('lectures')" data-p="lectures"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의 목록</div>
+        <div class="nav-item active" onclick="sNav('home')" data-p="home"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>홈</div>
+        <div class="nav-item" onclick="sNav('lectures')" data-p="lectures"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의 목록</div>
         <div class="nav-item" onclick="sNav('review')" data-p="review"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습 신청</div>
         <div class="nav-item" onclick="sNav('mypage')" data-p="mypage"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>내 진도</div>
         <div class="nav-item" onclick="sNav('qa')" data-p="qa" id="nav-qa-s" style="position:relative"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A</div>
@@ -834,7 +835,11 @@ input,button{font-family:var(--font)}
       </div>
     </div>
     <div class="main"><div class="main-inner">
-      <div class="panel active" id="panel-lectures">
+      <div class="panel active" id="panel-home">
+        <div class="page-header"><h1>안녕하세요, <span id="home-greet-name">학생</span>님 👋</h1><p>오늘 할 일을 확인해보세요</p></div>
+        <div id="home-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px"></div>
+      </div>
+      <div class="panel" id="panel-lectures">
         <div class="page-header"><h1>강의 목록</h1><p>강의를 시청하면 진도가 자동으로 기록됩니다</p></div>
         <div id="student-lectures"></div>
       </div>
@@ -1084,7 +1089,8 @@ input,button{font-family:var(--font)}
     </div></div>
   </div>
   <div class="mobile-tabbar" id="s-tabbar" style="overflow-x:auto">
-    <button class="mobile-tab active" onclick="sNav('lectures')" data-ms="lectures" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의</button>
+    <button class="mobile-tab active" onclick="sNav('home')" data-ms="home" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>홈</button>
+    <button class="mobile-tab" onclick="sNav('lectures')" data-ms="lectures" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의</button>
     <button class="mobile-tab" onclick="sNav('review')" data-ms="review" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습신청</button>
     <button class="mobile-tab" onclick="sNav('mypage')" data-ms="mypage" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>내 진도</button>
     <button class="mobile-tab" onclick="sNav('qa')" data-ms="qa" id="mt-qa-s" style="position:relative" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Q&A</button>
@@ -1648,8 +1654,35 @@ function launchStudent(){
   showPage('page-student');
   document.getElementById('s-name-disp').textContent=session.name;
   document.getElementById('s-avatar').textContent=session.name[0];
-  sNav('lectures');
+  sNav('home');
   setTimeout(updateAllBadges,1000);
+}
+
+function renderSHome(){
+  var greet=document.getElementById('home-greet-name');
+  if(greet)greet.textContent=session.name||'학생';
+  var grid=document.getElementById('home-grid');
+  if(!grid)return;
+  var cards=[
+    ['🎬','내 강의','강의 목록·시청','lectures'],
+    ['🔁','복습 신청','신청·시청','review'],
+    ['📈','내 진도','시청률 확인','mypage'],
+    ['💬','Q&A','질문하기','qa'],
+    ['✅','인증','사진·완료 제출','cert'],
+    ['🏫','클리닉 변동','시간 변경 신청','clinic'],
+    ['⏱','공부 타이머','순공 인증','study'],
+    ['🔁','오답 재풀이','OX 재시험','oxreview'],
+    ['📝','온라인 채점','시험·OMR 채점','exam'],
+    ['🔤','오늘의 어휘','단어 시험','vocab']
+  ];
+  grid.innerHTML=cards.map(function(c){
+    return '<div class="card" style="cursor:pointer" onclick="sNav(\''+c[3]+'\')">'+
+      '<div style="padding:1.5rem 1rem;text-align:center">'+
+        '<div style="font-size:30px;margin-bottom:8px">'+c[0]+'</div>'+
+        '<div style="font-size:14px;font-weight:700">'+c[1]+'</div>'+
+        '<div style="font-size:11px;color:var(--text2);margin-top:3px">'+c[2]+'</div>'+
+      '</div></div>';
+  }).join('');
 }
 
 /* ===== TEACHER NAV ===== */
@@ -2151,6 +2184,7 @@ function sNav(panel){
   if(panel==='oxreview')renderSOxReview();
   if(panel==='exam')renderSExam();
   if(panel==='vocab')renderVocabEntry();
+  if(panel==='home')renderSHome();
 }
 
 /* ===== 학생: 일반 강의 ===== */
