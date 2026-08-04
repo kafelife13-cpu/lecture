@@ -302,6 +302,7 @@ input,button{font-family:var(--font)}
         <div class="nav-item" onclick="tNav('clinic')" data-p="clinic"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉 관리</div>
         <div class="nav-item" onclick="tNav('study')" data-p="study"><svg viewBox="0 0 24 24"><path d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>공부 타이머</div>
         <div class="nav-item" onclick="tNav('exam')" data-p="exam"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>온라인 채점</div>
+        <div class="nav-item" onclick="tNav('vocab')" data-p="vocab"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 13.5L4.24 12.5 2 11.15v3.7L12 20l10-5.15v-3.7l-2.24 1.35L12 16.5z"/></svg>오늘의 어휘</div>
       </nav>
       <div class="sidebar-footer">
         <button id="pwa-install-btn-s" onclick="installPWA()" style="display:none;width:100%;margin-bottom:6px;background:rgba(79,124,255,0.1);border:1px solid rgba(79,124,255,0.3);color:var(--accent);border-radius:var(--radius-sm);padding:8px;font-size:12px;cursor:pointer;font-family:inherit">📲 앱으로 설치</button>
@@ -767,6 +768,27 @@ input,button{font-family:var(--font)}
         </div>
       </div>
 
+      <!-- 오늘의 어휘 (교사) -->
+      <div class="panel" id="panel-vocab">
+        <div class="page-header"><h1>오늘의 어휘</h1><p>단어 시험 스케줄과 제출 현황을 확인하세요</p></div>
+        <div class="card" style="margin-bottom:1rem">
+          <div class="card-head"><h3>스케줄 설정</h3></div>
+          <div style="padding:0 1.25rem 1.25rem">
+            <div class="form-group" style="margin-bottom:8px"><label>시작일 (1강 시행일, 월/수/금 중 하루)</label><input type="date" id="t-vocab-start" class="form-input"></div>
+            <button class="btn blue btn-sm" onclick="tSaveVocabStart()">저장</button>
+            <div id="t-vocab-today-label" style="font-size:12px;color:var(--text2);margin-top:8px"></div>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:1rem">
+          <div class="card-head"><h3>이번 주 제출 현황</h3></div>
+          <div id="t-vocab-week-status" style="padding:0 1.25rem 1.25rem"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>단원 목록</h3></div>
+          <div id="t-vocab-units-list" style="padding:0 1.25rem 1.25rem"></div>
+        </div>
+      </div>
+
     </div></div>
   </div>
   <div class="mobile-tabbar" id="t-tabbar" style="overflow-x:auto">
@@ -780,6 +802,7 @@ input,button{font-family:var(--font)}
     <button class="mobile-tab" onclick="tNav('clinic')" data-mt="clinic" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉</button>
     <button class="mobile-tab" onclick="tNav('study')" data-mt="study" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>타이머</button>
     <button class="mobile-tab" onclick="tNav('exam')" data-mt="exam" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>시험</button>
+    <button class="mobile-tab" onclick="tNav('vocab')" data-mt="vocab" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 13.5L4.24 12.5 2 11.15v3.7L12 20l10-5.15v-3.7l-2.24 1.35L12 16.5z"/></svg>어휘</button>
     <button class="mobile-tab" onclick="doLogout()" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>로그아웃</button>
   </div>
 </div>
@@ -803,6 +826,7 @@ input,button{font-family:var(--font)}
         <div class="nav-item" onclick="sNav('study')" data-p="study"><svg viewBox="0 0 24 24"><path d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>공부 타이머</div>
         <div class="nav-item" onclick="sNav('oxreview')" data-p="oxreview"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>오답 재풀이</div>
         <div class="nav-item" onclick="sNav('exam')" data-p="exam"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>온라인 채점</div>
+        <div class="nav-item" onclick="sNav('vocab')" data-p="vocab"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 13.5L4.24 12.5 2 11.15v3.7L12 20l10-5.15v-3.7l-2.24 1.35L12 16.5z"/></svg>오늘의 어휘</div>
       </nav>
       <div class="sidebar-footer">
         <button id="pwa-install-btn-t" onclick="installPWA()" style="display:none;width:100%;margin-bottom:6px;background:rgba(79,124,255,0.1);border:1px solid rgba(79,124,255,0.3);color:var(--accent);border-radius:var(--radius-sm);padding:8px;font-size:12px;cursor:pointer;font-family:inherit">📲 앱으로 설치</button>
@@ -1035,6 +1059,27 @@ input,button{font-family:var(--font)}
         <div id="s-res-next" style="display:none"></div>
       </div>
 
+      <!-- 오늘의 어휘 (학생) -->
+      <div class="panel" id="panel-vocab">
+        <div class="page-header"><h1>오늘의 어휘</h1><p>단어 시험을 보고, 틀린 단어는 다음 날 다시 확인해요</p></div>
+        <div id="vocab-entry">
+          <div id="vocab-today-card"></div>
+          <div id="vocab-retest-card" style="margin-top:1rem"></div>
+        </div>
+        <div id="vocab-quiz-view" style="display:none">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem">
+            <button class="btn btn-sm" onclick="vocabBackToEntry()">← 돌아가기</button>
+            <div id="vocab-quiz-title" style="font-size:16px;font-weight:600"></div>
+          </div>
+          <div id="vocab-quiz-body"></div>
+          <button class="btn blue" style="width:100%;margin-top:10px" onclick="vocabSubmit()">제출하기</button>
+        </div>
+        <div id="vocab-result-view" style="display:none">
+          <div id="vocab-result-body"></div>
+          <button class="btn" style="width:100%;margin-top:10px" onclick="vocabBackToEntry()">목록으로</button>
+        </div>
+      </div>
+
     </div></div>
   </div>
   <div class="mobile-tabbar" id="s-tabbar" style="overflow-x:auto">
@@ -1047,6 +1092,7 @@ input,button{font-family:var(--font)}
     <button class="mobile-tab" onclick="sNav('study')" data-ms="study" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>타이머</button>
     <button class="mobile-tab" onclick="sNav('oxreview')" data-ms="oxreview" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>오답재풀이</button>
     <button class="mobile-tab" onclick="sNav('exam')" data-ms="exam" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>시험</button>
+    <button class="mobile-tab" onclick="sNav('vocab')" data-ms="vocab" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 13.5L4.24 12.5 2 11.15v3.7L12 20l10-5.15v-3.7l-2.24 1.35L12 16.5z"/></svg>어휘</button>
     <button class="mobile-tab" onclick="doLogout()" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>로그아웃</button>
   </div>
 </div>
@@ -1620,6 +1666,7 @@ function tNav(panel){
   if(panel==='clinic')renderTClinicSchoolTabs();
   if(panel==='study')renderTStudy();
   if(panel==='exam')renderTExam();
+  if(panel==='vocab')renderTVocab();
 }
 
 /* ===== DASHBOARD ===== */
@@ -2102,6 +2149,7 @@ function sNav(panel){
   if(panel==='study')renderSStudy();
   if(panel==='oxreview')renderSOxReview();
   if(panel==='exam')renderSExam();
+  if(panel==='vocab')renderVocabEntry();
 }
 
 /* ===== 학생: 일반 강의 ===== */
@@ -4010,6 +4058,322 @@ async function renderStandaloneReportCard(responseId){
   }catch(e){
     document.getElementById('omr-share-root').innerHTML='<div style="text-align:center;padding:4rem 1rem;color:#999;font-family:sans-serif">성적표를 찾을 수 없어요. 링크를 다시 확인해주세요.</div>';
   }
+}
+
+/* ════════════════════════════════════════════
+   오늘의 어휘 — 단어 시험 (월/수/금 자동 스케줄, 오답 다음날 재시험)
+   ════════════════════════════════════════════ */
+var VOCAB_UNITS_CACHE=null;
+var vocabCurrentQuiz=null;
+
+function isMonWedFri(d){var wd=d.getDay();return wd===1||wd===3||wd===5;}
+function vocabYmd(d){var dt=new Date(d);return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
+function countSessionDays(startStr,endDate){
+  var start=new Date(startStr+'T00:00:00');
+  var end=new Date(endDate);end.setHours(0,0,0,0);
+  if(end<start)return 0;
+  var count=0;var cur=new Date(start);
+  while(cur<=end){if(isMonWedFri(cur))count++;cur.setDate(cur.getDate()+1);}
+  return count;
+}
+async function ensureVocabUnitsLoaded(){
+  if(!VOCAB_UNITS_CACHE){
+    const{data}=await sb.from('vocab_units').select('*').order('week');
+    VOCAB_UNITS_CACHE=data||[];
+  }
+  return VOCAB_UNITS_CACHE;
+}
+function vocabMaxWeek(){return VOCAB_UNITS_CACHE?VOCAB_UNITS_CACHE.length:0;}
+function vocabTodayWeek(){
+  var startStr=(sharedAISettings&&sharedAISettings.vocab_start_date)||null;
+  if(!startStr)return null;
+  var today=new Date();
+  if(!isMonWedFri(today))return null;
+  var idx=countSessionDays(startStr,today);
+  var maxWeek=vocabMaxWeek();
+  if(idx<1||(maxWeek&&idx>maxWeek))return null;
+  return idx;
+}
+function vocabThisWeekSessions(){
+  var startStr=(sharedAISettings&&sharedAISettings.vocab_start_date)||null;
+  if(!startStr)return [];
+  var today=new Date();today.setHours(0,0,0,0);
+  var dow=today.getDay();
+  var monOffset=dow===0?-6:1-dow;
+  var monday=new Date(today);monday.setDate(today.getDate()+monOffset);
+  var weeks=[];
+  var maxWeek=vocabMaxWeek();
+  for(var i=0;i<5;i++){
+    var d=new Date(monday);d.setDate(monday.getDate()+i);
+    if(isMonWedFri(d)&&d<=today){
+      var idx=countSessionDays(startStr,d);
+      if(idx>=1&&(!maxWeek||idx<=maxWeek))weeks.push(idx);
+    }
+  }
+  return weeks;
+}
+function shuffleArr(arr){
+  var a=arr.slice();
+  for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
+  return a;
+}
+function buildUnitQuizItems(unit){
+  var items=[];
+  var bankA=(unit.section_a||[]).map(function(x){return x.word;});
+  (unit.section_a||[]).forEach(function(x,i){
+    items.push({type:'a',index:i,week:unit.week,prompt:x.definition,options:shuffleArr(bankA),correct:x.word,label:x.word});
+  });
+  var bankB=(unit.section_b||[]).map(function(x){return x.meaning;});
+  (unit.section_b||[]).forEach(function(x,i){
+    items.push({type:'b',index:i,week:unit.week,prompt:x.idiom,options:shuffleArr(bankB),correct:x.meaning,label:x.idiom});
+  });
+  var bankC=(unit.section_c||[]).map(function(x){return x.word;});
+  (unit.section_c||[]).forEach(function(x,i){
+    items.push({type:'c',index:i,week:unit.week,prompt:x.sentence,options:shuffleArr(bankC),correct:x.word,label:x.word});
+  });
+  return items;
+}
+function buildRetestQuizItems(wrongRows){
+  var groups={};
+  wrongRows.forEach(function(w){
+    var key=w.week+'_'+w.item_type;
+    if(!groups[key])groups[key]=[];
+    groups[key].push(w);
+  });
+  var items=[];
+  Object.keys(groups).forEach(function(key){
+    var rows=groups[key];
+    var week=rows[0].week,type=rows[0].item_type;
+    var unit=(VOCAB_UNITS_CACHE||[]).find(function(u){return u.week===week;});
+    if(!unit)return;
+    var section=type==='a'?unit.section_a:type==='b'?unit.section_b:unit.section_c;
+    var bank=(section||[]).map(function(x){return type==='b'?x.meaning:x.word;});
+    rows.forEach(function(w){
+      var x=(section||[])[w.item_index];
+      if(!x)return;
+      var prompt=type==='a'?x.definition:type==='b'?x.idiom:x.sentence;
+      var correct=type==='b'?x.meaning:x.word;
+      items.push({type:type,index:w.item_index,week:week,prompt:prompt,options:shuffleArr(bank),correct:correct,label:correct,wrongRowId:w.id});
+    });
+  });
+  return items;
+}
+
+async function renderVocabEntry(){
+  await ensureVocabUnitsLoaded();
+  showVocabView('entry');
+  var myName=session.name||session.id;
+  var todayWeek=vocabTodayWeek();
+  var todayEl=document.getElementById('vocab-today-card');
+  if(!todayEl)return;
+  if(!todayWeek){
+    todayEl.innerHTML='<div class="card"><div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px">오늘은 단어시험이 없는 날이에요 (월/수/금)</div></div>';
+  }else{
+    var unit=VOCAB_UNITS_CACHE.find(function(u){return u.week===todayWeek;});
+    var{data:resp}=await sb.from('vocab_responses').select('*').eq('id','vr_'+todayWeek+'_'+myName).maybeSingle();
+    todayEl.innerHTML='<div class="card"><div class="card-head"><h3>📌 오늘의 단어시험 — '+todayWeek+'강</h3></div>'+
+      '<div style="padding:0 1.25rem 1.25rem">'+
+      (resp?
+        '<div style="font-size:13px;color:var(--text2);margin-bottom:8px">제출완료 · '+resp.score+'점 ('+resp.correct_count+'/'+resp.total_q+')</div>'
+        :'<div style="font-size:13px;color:var(--text2);margin-bottom:8px">'+(unit?unit.title:'')+' · 총 15문항</div>')+
+      (resp?'':'<button class="btn blue" style="width:100%" onclick="startVocabUnit('+todayWeek+')">시작하기</button>')+
+      '</div></div>';
+  }
+  var todayStr=vocabYmd(new Date());
+  var{data:wrongRows}=await sb.from('vocab_wrong_words').select('*').eq('student_name',myName).eq('resolved',false);
+  var retestable=(wrongRows||[]).filter(function(w){return vocabYmd(w.created_at)<todayStr;});
+  var retestEl=document.getElementById('vocab-retest-card');
+  if(retestEl){
+    if(retestable.length){
+      retestEl.innerHTML='<div class="card" style="border-left:3px solid var(--amber)"><div class="card-head"><h3>🔁 오답 단어 재시험</h3></div>'+
+        '<div style="padding:0 1.25rem 1.25rem">'+
+        '<div style="font-size:13px;color:var(--text2);margin-bottom:8px">지난번에 틀린 단어 '+retestable.length+'개가 있어요. 통과할 때까지 다시 확인해요.</div>'+
+        '<button class="btn" style="width:100%;color:var(--amber);border-color:var(--amber)" onclick="startVocabRetest()">재시험 보기</button>'+
+        '</div></div>';
+    }else{
+      retestEl.innerHTML='';
+    }
+  }
+}
+
+function startVocabUnit(week){
+  var unit=(VOCAB_UNITS_CACHE||[]).find(function(u){return u.week===week;});
+  if(!unit)return;
+  vocabCurrentQuiz={mode:'unit',week:week,items:buildUnitQuizItems(unit),answers:{}};
+  document.getElementById('vocab-quiz-title').textContent=week+'강 단어시험';
+  renderVocabQuiz();
+  showVocabView('quiz');
+}
+async function startVocabRetest(){
+  var myName=session.name||session.id;
+  var todayStr=vocabYmd(new Date());
+  var{data:wrongRows}=await sb.from('vocab_wrong_words').select('*').eq('student_name',myName).eq('resolved',false);
+  var retestable=(wrongRows||[]).filter(function(w){return vocabYmd(w.created_at)<todayStr;});
+  var items=buildRetestQuizItems(retestable);
+  if(!items.length){notify('재시험할 단어가 없어요.','info');return;}
+  vocabCurrentQuiz={mode:'retest',items:items,answers:{}};
+  document.getElementById('vocab-quiz-title').textContent='오답 단어 재시험 ('+items.length+'개)';
+  renderVocabQuiz();
+  showVocabView('quiz');
+}
+function renderVocabQuiz(){
+  var el=document.getElementById('vocab-quiz-body');
+  if(!el||!vocabCurrentQuiz)return;
+  var typeLabel={a:'뜻풀이',b:'한자성어',c:'빈칸 채우기'};
+  el.innerHTML=vocabCurrentQuiz.items.map(function(it,i){
+    var my=vocabCurrentQuiz.answers[i];
+    return '<div class="card" style="margin-bottom:8px">'+
+      '<div style="padding:10px 14px">'+
+        '<div style="font-size:11px;color:var(--accent);margin-bottom:4px">'+typeLabel[it.type]+'</div>'+
+        '<div style="font-size:14px;margin-bottom:8px;line-height:1.6">'+(i+1)+'. '+it.prompt+'</div>'+
+        '<div style="display:flex;flex-wrap:wrap;gap:6px">'+
+        it.options.map(function(opt){
+          var sel=my===opt;
+          return '<button type="button" onclick="vocabPickAnswer('+i+',\''+opt.replace(/'/g,"\\'")+'\')" style="padding:6px 10px;border-radius:8px;font-size:12px;border:1.5px solid '+(sel?'var(--accent)':'var(--border)')+';background:'+(sel?'var(--accent)':'var(--card)')+';color:'+(sel?'white':'var(--text2)')+'">'+opt+'</button>';
+        }).join('')+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+function vocabPickAnswer(idx,val){
+  vocabCurrentQuiz.answers[idx]=val;
+  renderVocabQuiz();
+}
+function vocabSubmit(){
+  if(!vocabCurrentQuiz)return;
+  if(vocabCurrentQuiz.mode==='unit')submitVocabUnitQuiz();
+  else submitVocabRetest();
+}
+async function submitVocabUnitQuiz(){
+  var q=vocabCurrentQuiz;
+  var unanswered=q.items.filter(function(_,i){return !q.answers[i];}).length;
+  if(unanswered){if(!confirm(unanswered+'개 문제에 답을 안 골랐어요. 그래도 제출할까요?'))return;}
+  var correct=0;
+  var wrongItems=[];
+  q.items.forEach(function(it,i){
+    var my=q.answers[i];
+    if(my&&my===it.correct)correct++;
+    else wrongItems.push(it);
+  });
+  var total=q.items.length;
+  var score=Math.round(correct/total*100);
+  var myName=session.name||session.id;
+  const saveRes=await sb.from('vocab_responses').upsert({
+    id:'vr_'+q.week+'_'+myName,
+    unit_week:q.week,student_name:myName,
+    score:score,correct_count:correct,total_q:total,
+    wrong:wrongItems.map(function(it){return{type:it.type,index:it.index,label:it.label};}),
+    submitted_at:new Date().toISOString()
+  },{onConflict:'id'});
+  if(saveRes.error){alert('저장 실패: '+saveRes.error.message);return;}
+  if(wrongItems.length){
+    var rows=wrongItems.map(function(it,i){
+      return{id:'vw_'+q.week+'_'+it.type+'_'+it.index+'_'+myName+'_'+Date.now()+'_'+i,student_name:myName,week:q.week,item_type:it.type,item_index:it.index,label:it.label,resolved:false};
+    });
+    await sb.from('vocab_wrong_words').insert(rows);
+  }
+  vocabCurrentQuiz=null;
+  showVocabResult(score,correct,total,wrongItems,false);
+}
+async function submitVocabRetest(){
+  var q=vocabCurrentQuiz;
+  var unanswered=q.items.filter(function(_,i){return !q.answers[i];}).length;
+  if(unanswered){if(!confirm(unanswered+'개 문제에 답을 안 골랐어요. 그래도 제출할까요?'))return;}
+  var correct=0;
+  var stillWrong=[];
+  var toResolve=[];
+  q.items.forEach(function(it,i){
+    var my=q.answers[i];
+    if(my&&my===it.correct){correct++;toResolve.push(it.wrongRowId);}
+    else stillWrong.push(it);
+  });
+  if(toResolve.length){
+    await sb.from('vocab_wrong_words').update({resolved:true,resolved_at:new Date().toISOString()}).in('id',toResolve);
+  }
+  var total=q.items.length;
+  var score=Math.round(correct/total*100);
+  vocabCurrentQuiz=null;
+  showVocabResult(score,correct,total,stillWrong,true);
+}
+function showVocabView(v){
+  var entry=document.getElementById('vocab-entry');
+  var quiz=document.getElementById('vocab-quiz-view');
+  var result=document.getElementById('vocab-result-view');
+  if(entry)entry.style.display=v==='entry'?'block':'none';
+  if(quiz)quiz.style.display=v==='quiz'?'block':'none';
+  if(result)result.style.display=v==='result'?'block':'none';
+}
+function vocabBackToEntry(){
+  vocabCurrentQuiz=null;
+  renderVocabEntry();
+}
+function showVocabResult(score,correct,total,wrongItems,isRetest){
+  showVocabView('result');
+  var el=document.getElementById('vocab-result-body');
+  if(!el)return;
+  el.innerHTML='<div class="card" style="margin-bottom:1rem"><div style="padding:1.5rem;text-align:center">'+
+    '<div style="font-size:32px;font-weight:700;color:'+(score>=80?'var(--green)':score>=60?'var(--amber)':'var(--red)')+'">'+score+'점</div>'+
+    '<div style="font-size:13px;color:var(--text2);margin-top:4px">'+correct+' / '+total+'</div>'+
+    '</div></div>'+
+    (wrongItems.length?
+      '<div class="card"><div class="card-head"><h3>'+(isRetest?'아직 틀린 단어':'틀린 단어')+' ('+wrongItems.length+'개)</h3></div>'+
+      '<div style="padding:0 1.25rem 1rem">'+
+      wrongItems.map(function(it){return '<div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:13px">'+it.label+'</div>';}).join('')+
+      '</div></div>'+
+      '<div style="font-size:12px;color:var(--text3);text-align:center;margin-top:8px">틀린 단어는 내일부터 다시 확인할 수 있어요</div>'
+    :'<div class="card"><div style="padding:2rem;text-align:center;color:var(--green)">🎉 모두 맞았어요!</div></div>');
+}
+
+/* ── 교사: 오늘의 어휘 관리 ── */
+async function renderTVocab(){
+  await ensureVocabUnitsLoaded();
+  var startEl=document.getElementById('t-vocab-start');
+  if(startEl)startEl.value=(sharedAISettings&&sharedAISettings.vocab_start_date)||'';
+  var todayWeek=vocabTodayWeek();
+  var lbl=document.getElementById('t-vocab-today-label');
+  if(lbl){
+    if(!(sharedAISettings&&sharedAISettings.vocab_start_date))lbl.textContent='시작일을 먼저 설정해주세요.';
+    else lbl.textContent=todayWeek?('오늘은 '+todayWeek+'강 시험 날이에요'):'오늘은 단어시험이 없는 날이에요 (월/수/금만 진행, 단원 소진 시에도 없음)';
+  }
+  var thisWeekWeeks=vocabThisWeekSessions();
+  var statusEl=document.getElementById('t-vocab-week-status');
+  if(statusEl){
+    if(!thisWeekWeeks.length){
+      statusEl.innerHTML='<p style="color:var(--text3);font-size:13px">이번 주 시험이 아직 없어요</p>';
+    }else{
+      const{data:resps}=await sb.from('vocab_responses').select('*').in('unit_week',thisWeekWeeks);
+      const students=activeStudents();
+      statusEl.innerHTML=thisWeekWeeks.map(function(w){
+        var unit=VOCAB_UNITS_CACHE.find(function(u){return u.week===w;});
+        var done=(resps||[]).filter(function(r){return r.unit_week===w;});
+        var doneNames=done.map(function(r){return r.student_name;});
+        var missing=students.filter(function(s){return doneNames.indexOf(s.name)<0;});
+        return '<div style="padding:10px 0;border-bottom:1px solid var(--border)">'+
+          '<div style="font-size:13px;font-weight:600;margin-bottom:4px">'+w+'강'+(unit?' — '+unit.title:'')+'</div>'+
+          '<div style="font-size:12px;color:var(--text2)">제출 '+done.length+'/'+students.length+'명'+
+          (missing.length?' · 미제출: '+missing.map(function(s){return s.name;}).join(', '):' · 전원 완료 🎉')+
+          '</div></div>';
+      }).join('');
+    }
+  }
+  var listEl=document.getElementById('t-vocab-units-list');
+  if(listEl){
+    listEl.innerHTML=(VOCAB_UNITS_CACHE||[]).map(function(u){
+      return '<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">'+u.week+'강 — '+u.title+' <span style="color:var(--text3);font-size:11px">(15문항)</span></div>';
+    }).join('')||'<p style="color:var(--text3);font-size:13px">등록된 단어장이 없어요</p>';
+  }
+}
+async function tSaveVocabStart(){
+  var val=document.getElementById('t-vocab-start').value;
+  if(!val){alert('날짜를 선택해 주세요.');return;}
+  var d=new Date(val+'T00:00:00');
+  if(!isMonWedFri(d)){if(!confirm('선택한 날짜가 월/수/금이 아니에요. 그래도 저장할까요?'))return;}
+  const{error}=await sb.from('app_settings').upsert({id:'default',vocab_start_date:val,updated_at:new Date().toISOString()},{onConflict:'id'});
+  if(error){alert('저장 실패: '+error.message);return;}
+  sharedAISettings=Object.assign({},sharedAISettings,{vocab_start_date:val});
+  notify('저장됐어요.','success');
+  renderTVocab();
 }
 
 (async function(){
