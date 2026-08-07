@@ -1507,7 +1507,7 @@ function sendTelegram(text){
 }
 
 let session=null,currentRole='teacher',progressView='video',progressVideoPage=1;
-let db={users:[],videos:[],progress:[],access:[],requests:[]};
+let db={users:[],videos:[],progress:[],access:[],requests:[],accessLog:[]};
 var sharedAISettings=null;
 let ytPlayer=null,ytApiReady=false,currentVid=null,currentStartPos=0;
 let watchedSet=new Set(),trackTimer=null,saveTimer=null,lastPos=-1,totalDur=0,maxRateSeen=1;
@@ -1551,17 +1551,19 @@ function hideLoading(){document.getElementById('loading-screen').classList.add('
 /* ===== DB ===== */
 async function loadAll(attempt=0){
   try{
-    const [u,v,p,a,r,st]=await Promise.all([
+    const [u,v,p,a,r,st,al]=await Promise.all([
       sb.from('users').select('*'),
       sb.from('videos').select('*').order('created_at'),
       sb.from('progress').select('*'),
       sb.from('video_access').select('*'),
       sb.from('access_requests').select('*'),
-      sb.from('app_settings').select('*').eq('id','default').maybeSingle()
+      sb.from('app_settings').select('*').eq('id','default').maybeSingle(),
+      sb.from('video_access_log').select('*').order('granted_at',{ascending:false})
     ]);
     if(u.error)throw new Error(u.error.message);
     db.users=u.data||[];db.videos=v.data||[];db.progress=p.data||[];
     db.access=a.data||[];db.requests=r.data||[];
+    db.accessLog=al.data||[]; // video_access_log 테이블이 아직 없으면(마이그레이션 전) 조용히 빈 배열
     if(st&&st.data)sharedAISettings=st.data;
   }catch(e){
     if(attempt<3){
@@ -1667,7 +1669,7 @@ async function doSignup(){
   finally{btn.disabled=false;btn.textContent='가입 신청';}
 }
 function doLogout(){
-  closePlay();session=null;db={users:[],videos:[],progress:[],access:[],requests:[]};
+  closePlay();session=null;db={users:[],videos:[],progress:[],access:[],requests:[],accessLog:[]};
   localStorage.removeItem('lms_sess');showPage('page-login');
   document.getElementById('login-id').value='';document.getElementById('login-pw').value='';
   document.getElementById('login-err').textContent='';
@@ -2002,6 +2004,7 @@ async function approveAccess(reqId, sid, vid){
   const grantedAt=new Date().toISOString();
   await sb.from('video_access').upsert({id:accessId,student_id:sid,video_id:vid,granted_at:grantedAt},{onConflict:'student_id,video_id'});
   await sb.from('access_requests').update({status:'approved'}).eq('id',reqId);
+  logVideoAccessGrant(sid,vid,grantedAt);
   if(existing)existing.granted_at=grantedAt;
   else db.access.push({id:accessId,student_id:sid,video_id:vid,granted_at:grantedAt});
   const req=db.requests.find(r=>r.id===reqId);
@@ -2023,10 +2026,31 @@ async function revokeAccess(sid, vid){
   if(!confirm(`${s.name}의 "${v.title}" 시청 권한을 해제하시겠습니까?`))return;
   await sb.from('video_access').delete().eq('student_id',sid).eq('video_id',vid);
   await sb.from('access_requests').delete().eq('student_id',sid).eq('video_id',vid);
+  await markVideoAccessRevoked(sid,vid);
   db.access=db.access.filter(a=>!(a.student_id===sid&&a.video_id===vid));
   db.requests=db.requests.filter(r=>!(r.student_id===sid&&r.video_id===vid));
   notify(`${s.name}의 시청 권한이 해제되었습니다.`,'info');
   renderAccessPanel();renderDashboard();
+}
+/* ── 부여 이력 영구 기록: video_access(현재 권한)는 해제 시 삭제되고 재부여
+   시 덮어써지므로, "언제 누구한테 줬었는지" 주차별 이력은 이 로그 테이블에
+   서 따로 관리한다. 해제해도 이 로그는 지우지 않고 revoked_at만 채운다.
+   테이블이 아직 없으면(마이그레이션 전) 조용히 무시된다. */
+async function logVideoAccessGrant(sid,vid,grantedAt){
+  try{
+    const row={id:'acl_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),student_id:sid,video_id:vid,granted_at:grantedAt,revoked_at:null};
+    const res=await sb.from('video_access_log').insert(row);
+    if(!res.error)db.accessLog.unshift(row);
+  }catch(e){console.error('access log insert error',e);}
+}
+async function markVideoAccessRevoked(sid,vid){
+  try{
+    const openLog=db.accessLog.find(l=>l.student_id===sid&&l.video_id===vid&&!l.revoked_at);
+    if(!openLog)return;
+    const revokedAt=new Date().toISOString();
+    await sb.from('video_access_log').update({revoked_at:revokedAt}).eq('id',openLog.id);
+    openLog.revoked_at=revokedAt;
+  }catch(e){console.error('access log revoke error',e);}
 }
 async function grantAccessDirect(){
   const sid=document.getElementById('access-grant-student').value;
@@ -2041,6 +2065,7 @@ async function grantAccessDirect(){
   const grantedAt=new Date().toISOString();
   const res=await sb.from('video_access').upsert({id:accessId,student_id:sid,video_id:vid,granted_at:grantedAt},{onConflict:'student_id,video_id'});
   if(res.error){notify('권한 부여 실패: '+res.error.message,'error');return;}
+  logVideoAccessGrant(sid,vid,grantedAt);
   if(existing)existing.granted_at=grantedAt;
   else db.access.push({id:accessId,student_id:sid,video_id:vid,granted_at:grantedAt});
   notify(`${s.name}에게 "${v.title}" 시청 권한을 부여했습니다.`,'success');
@@ -2124,9 +2149,12 @@ function toggleAccessWeek(key){
 function renderAccessWeeklyHistory(){
   const el=document.getElementById('access-weekly-history');
   if(!el)return;
-  if(!db.access.length){el.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text2);font-size:13px">기록이 없습니다.</div>';return;}
+  // video_access_log(영구 이력)가 있으면 그걸로, 없으면(마이그레이션 전이거나
+  // 아직 기록이 없으면) 현재 살아있는 video_access로 대신 보여준다.
+  const source=(db.accessLog&&db.accessLog.length)?db.accessLog:db.access;
+  if(!source.length){el.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text2);font-size:13px">기록이 없습니다.</div>';return;}
   const groups={};
-  db.access.forEach(a=>{
+  source.forEach(a=>{
     const exp=accessExpiry(a);
     if(isNaN(exp))return;
     const key=exp.toDateString();
@@ -2148,11 +2176,12 @@ function renderAccessWeeklyHistory(){
       const p=getPct(a.student_id,a.video_id);
       const g=new Date(a.granted_at);
       const startLabel=(g.getMonth()+1)+'/'+g.getDate()+' '+String(g.getHours()).padStart(2,'0')+':'+String(g.getMinutes()).padStart(2,'0');
+      const revokedLabel=a.revoked_at?' · <span style="color:var(--text3)">해제됨</span>':'';
       return`<div style="display:flex;align-items:center;gap:10px;padding:10px 1.25rem;border-bottom:1px solid var(--border)">
         <div class="avatar student" style="width:26px;height:26px;font-size:10px;flex-shrink:0">${s.name[0]}</div>
         <div style="flex:1;min-width:0">
           <div style="font-size:13px;font-weight:600">${s.name} <span style="font-weight:400;color:var(--text2)">→</span> ${v.title}</div>
-          <div style="font-size:11px;color:var(--text2)">시작 ${startLabel} · 마감 ${expLabel}</div>
+          <div style="font-size:11px;color:var(--text2)">시작 ${startLabel} · 마감 ${expLabel}${revokedLabel}</div>
         </div>
         <span class="badge ${pctBadge(p)}">${pctLabel(p)}</span>
       </div>`;
