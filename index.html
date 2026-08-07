@@ -2559,6 +2559,9 @@ function studySeconds(list){
 }
 function studyTodaySeconds(sid){return studySeconds(studySessionsForToday(sid));}
 function studyTotalSeconds(sid){return studySeconds(studyDb.sessions.filter(function(s){return s.student_id===sid;}));}
+function studyTodayAwaySeconds(sid){
+  return studySessionsForToday(sid).reduce(function(sum,s){return sum+(s.away_seconds||0);},0);
+}
 
 function renderSStudy(){
   if(!session)return;
@@ -2601,9 +2604,13 @@ function renderSStudyLog(){
     var start=new Date(s.start_time),end=s.end_time?new Date(s.end_time):null;
     var dur=end?Math.floor((end-start)/1000):Math.floor((Date.now()-start)/1000);
     var timeLabel=start.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+(end?' ~ '+end.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}):' ~ 진행중');
+    var liveAway=!end?studyAwaySecondsTotal():0;
+    var awaySec=(s.away_seconds||0)+liveAway;
+    var awayCnt=!end?studyAwayEvents.length:(function(){try{return (JSON.parse(s.away_log||'[]')||[]).length;}catch(e){return 0;}})();
     return '<div style="padding:10px 1.25rem;border-bottom:1px solid var(--border)">'+
       '<div style="font-size:13px;font-weight:600">'+timeLabel+'</div>'+
-      '<div style="font-size:11px;color:var(--text2);margin-bottom:8px">'+fmtTime(dur)+(end?'':' (진행중)')+'</div>'+
+      '<div style="font-size:11px;color:var(--text2);margin-bottom:8px">'+fmtTime(dur)+(end?'':' (진행중)')+
+      (awaySec>0?' · <span style="color:var(--amber)">⚠️ 이탈 '+awayCnt+'회 '+fmtTime(awaySec)+'</span>':'')+'</div>'+
       '<div style="display:flex;gap:8px">'+
       (s.start_photo_url?'<a href="'+s.start_photo_url+'" target="_blank"><img src="'+s.start_photo_url+'" style="width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid var(--border)"></a>':'')+
       (s.end_photo_url?'<a href="'+s.end_photo_url+'" target="_blank"><img src="'+s.end_photo_url+'" style="width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid var(--border)"></a>':'')+
@@ -2719,24 +2726,57 @@ async function handleStudyPhotoFile(file,action){
     var url=urlRes.data?urlRes.data.publicUrl:null;
     if(action==='start'){
       var id='ss_'+Date.now();
-      var row={id:id,student_id:session.id,start_time:new Date().toISOString(),start_photo_url:url};
+      var row={id:id,student_id:session.id,start_time:new Date().toISOString(),start_photo_url:url,away_log:'[]',away_seconds:0};
       var res=await sb.from('study_sessions').insert(row);
       if(res.error){notify('시작 실패: '+res.error.message,'error');return;}
       studyDb.sessions.unshift(row);
+      studyAwayEvents=[];studyAwayStart=null;
       sendTelegram('📚 '+session.name+' 학생이 공부를 시작했어요.');
-      notify('공부를 시작했어요! 화이팅 💪','success');
+      notify('공부를 시작했어요! 화이팅 💪 (화면 벗어나면 자동으로 기록돼요)','success');
     }else{
-      var updates={end_time:new Date().toISOString(),end_photo_url:url};
+      var updates={end_time:new Date().toISOString(),end_photo_url:url,away_log:JSON.stringify(studyAwayEvents),away_seconds:studyAwaySecondsTotal()};
       var res2=await sb.from('study_sessions').update(updates).eq('id',studyActiveSession.id);
       if(res2.error){notify('종료 실패: '+res2.error.message,'error');return;}
       Object.assign(studyActiveSession,updates);
       var durSec=Math.floor((new Date(updates.end_time)-new Date(studyActiveSession.start_time))/1000);
-      sendTelegram('📚 '+session.name+' 학생이 공부를 마쳤어요 ('+fmtTime(durSec)+').');
+      var awaySec=studyAwaySecondsTotal();
+      sendTelegram('📚 '+session.name+' 학생이 공부를 마쳤어요 ('+fmtTime(durSec)+')'+(awaySec>0?' · 이탈 '+studyAwayEvents.length+'회 총 '+fmtTime(awaySec):'')+'.');
       notify('수고하셨어요! 공부가 기록됐어요 🎉','success');
+      studyAwayEvents=[];studyAwayStart=null;
     }
     renderSStudy();
   }catch(err){notify('오류: '+err.message,'error');}
 }
+
+/* ── 이탈 감지: 공부 세션 진행 중 이 화면을 벗어나면(다른 앱/탭 전환, 화면
+   잠금) 그 구간을 자동으로 기록한다. 물리적으로 못 하게 막을 수는 없지만,
+   벗어난 시간이 그대로 남는다는 걸 학생도 알기 때문에 억제 효과가 있다. */
+var studyAwayEvents=[],studyAwayStart=null;
+function studyAwaySecondsTotal(){return studyAwayEvents.reduce(function(sum,e){return sum+e.sec;},0);}
+async function persistStudyAwayLog(){
+  if(!studyActiveSession)return;
+  var away_log=JSON.stringify(studyAwayEvents),away_seconds=studyAwaySecondsTotal();
+  try{
+    await sb.from('study_sessions').update({away_log:away_log,away_seconds:away_seconds}).eq('id',studyActiveSession.id);
+    studyActiveSession.away_log=away_log;studyActiveSession.away_seconds=away_seconds;
+  }catch(e){console.error('away log save error',e);}
+}
+function onStudyVisibilityChange(){
+  if(!studyActiveSession)return;
+  if(document.hidden){
+    studyAwayStart=Date.now();
+  }else if(studyAwayStart){
+    var awaySec=Math.round((Date.now()-studyAwayStart)/1000);
+    studyAwayStart=null;
+    if(awaySec>=5){
+      studyAwayEvents.push({start:new Date(Date.now()-awaySec*1000).toISOString(),end:new Date().toISOString(),sec:awaySec});
+      persistStudyAwayLog();
+      notify('⚠️ 자리를 비운 시간 '+fmtTime(awaySec)+'이 기록됐어요.','info');
+      renderSStudyLog();
+    }
+  }
+}
+document.addEventListener('visibilitychange',onStudyVisibilityChange);
 
 function renderTStudy(){
   var sts=activeStudents();
@@ -2754,11 +2794,11 @@ function renderTStudy(){
   if(!listEl)return;
   var sorted=sts.slice().sort(function(a,b){return studyTodaySeconds(b.id)-studyTodaySeconds(a.id);});
   listEl.innerHTML=sorted.map(function(s){
-    var today=studyTodaySeconds(s.id),total=studyTotalSeconds(s.id);
+    var today=studyTodaySeconds(s.id),total=studyTotalSeconds(s.id),away=studyTodayAwaySeconds(s.id);
     return '<div style="display:flex;align-items:center;gap:10px;padding:11px 1.25rem;border-bottom:1px solid var(--border);cursor:pointer" onclick="openStudyStudentDetail(\''+s.id+'\')">'+
       '<div class="avatar student" style="width:28px;height:28px;font-size:11px">'+s.name[0]+'</div>'+
       '<div style="flex:1"><div style="font-size:13px;font-weight:600">'+s.name+'</div>'+
-      '<div style="font-size:11px;color:var(--text2)">오늘 '+fmtTime(today)+' · 누적 '+fmtTime(total)+'</div></div>'+
+      '<div style="font-size:11px;color:var(--text2)">오늘 '+fmtTime(today)+' · 누적 '+fmtTime(total)+(away>0?' · <span style="color:var(--amber)">이탈 '+fmtTime(away)+'</span>':'')+'</div></div>'+
       (today>=3600?'<span class="badge done" style="margin-right:6px">🏆</span>':'')+
       '<span style="color:var(--text3)">›</span></div>';
   }).join('')||'<div style="padding:2rem;text-align:center;color:var(--text3);font-size:13px">학생이 없습니다.</div>';
@@ -2771,10 +2811,13 @@ function openStudyStudentDetail(sid){
     var start=new Date(x.start_time),end=x.end_time?new Date(x.end_time):null;
     var dur=end?Math.floor((end-start)/1000):Math.floor((Date.now()-start)/1000);
     var dateLabel=start.toLocaleDateString('ko-KR')+' '+start.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+(end?' ~ '+end.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}):' (진행중)');
+    var awaySec=x.away_seconds||0;
+    var awayCnt=(function(){try{return (JSON.parse(x.away_log||'[]')||[]).length;}catch(e){return 0;}})();
     return '<div style="padding:12px 0;border-bottom:1px solid var(--border)">'+
       '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
       '<span style="font-size:13px;font-weight:600">'+dateLabel+'</span>'+
       '<span class="badge '+(end?'done':'partial')+'" style="margin-left:auto">'+fmtTime(dur)+'</span></div>'+
+      (awaySec>0?'<div style="font-size:12px;color:var(--amber);margin-bottom:8px">⚠️ 이탈 '+awayCnt+'회 · 총 '+fmtTime(awaySec)+'</div>':'')+
       '<div style="display:flex;gap:8px">'+
       (x.start_photo_url?'<a href="'+x.start_photo_url+'" target="_blank"><img src="'+x.start_photo_url+'" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--border)"></a>':'')+
       (x.end_photo_url?'<a href="'+x.end_photo_url+'" target="_blank"><img src="'+x.end_photo_url+'" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--border)"></a>':'')+
