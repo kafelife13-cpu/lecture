@@ -824,6 +824,7 @@ input,button{font-family:var(--font)}
         <div class="card" style="margin-bottom:1rem">
           <div class="card-head"><h3>새 과제 안내 작성</h3></div>
           <div style="padding:0 1.25rem 1.25rem">
+            <div class="form-group" style="margin-bottom:8px"><label>대상 학교</label><select class="form-select" id="an-school"><option value="">전체 (모든 학교)</option></select></div>
             <div class="form-group" style="margin-bottom:8px"><label>제목</label><input class="form-input" id="an-title" placeholder="예: 8월 1주차 과제 안내"></div>
             <div class="form-group" style="margin-bottom:8px"><label>내용</label><textarea class="form-input" id="an-content" rows="5" placeholder="과제 내용을 입력하세요"></textarea></div>
             <div class="form-group" style="margin-bottom:12px">
@@ -837,7 +838,7 @@ input,button{font-family:var(--font)}
           </div>
         </div>
         <div class="card">
-          <div class="card-head"><h3>게시된 안내</h3></div>
+          <div class="card-head"><h3>게시된 안내</h3><select class="form-select" id="an-filter-school" style="max-width:160px;font-size:12px" onchange="renderTAnnounceList()"><option value="">전체 학교</option></select></div>
           <div id="t-announce-list" style="padding:0 1.25rem 0.5rem"></div>
         </div>
       </div>
@@ -1781,7 +1782,7 @@ function renderSHome(){
 function renderHomeAnnounceBanner(){
   var el=document.getElementById('home-announce-banner');
   if(!el)return;
-  var unread=(announceDb.items||[]).filter(function(a){return !isAnnounceRead(a.id);});
+  var unread=myAnnounceItems().filter(function(a){return !isAnnounceRead(a.id);});
   if(!unread.length){el.innerHTML='';return;}
   var latest=unread[0]; // items는 최신순 정렬되어 로드됨
   el.innerHTML='<div class="card" style="margin-bottom:1rem;border-color:var(--accent);cursor:pointer" onclick="openAnnounceView(\''+latest.id+'\')">'+
@@ -2675,6 +2676,7 @@ function onAnnounceImageSelected(input){
 async function postAnnouncement(){
   var title=document.getElementById('an-title').value.trim();
   var content=document.getElementById('an-content').value.trim();
+  var schoolId=document.getElementById('an-school').value||null;
   if(!title){notify('제목을 입력해주세요.','error');return;}
   try{
     var imageUrl=null;
@@ -2687,7 +2689,7 @@ async function postAnnouncement(){
       imageUrl=sb.storage.from('qa-files').getPublicUrl(path).data.publicUrl;
     }
     var id='an_'+Date.now();
-    var row={id:id,title:title,content:content,image_url:imageUrl,created_at:new Date().toISOString()};
+    var row={id:id,title:title,content:content,image_url:imageUrl,school_id:schoolId,created_at:new Date().toISOString()};
     var res=await sb.from('announcements').insert(row);
     if(res.error){notify('게시 실패: '+res.error.message,'error');return;}
     announceDb.items.unshift(row);
@@ -2711,17 +2713,33 @@ async function deleteAnnouncement(id){
   notify('삭제됐어요.','info');
   renderTAnnounceList();
 }
+function schoolName(sid){
+  if(!sid)return'';
+  var s=(qaDb.schools||[]).find(function(x){return x.id===sid;});
+  return s?s.name:'';
+}
+function populateAnnounceSchoolSelects(){
+  var opts='<option value="">전체 (모든 학교)</option>'+(qaDb.schools||[]).map(function(s){return '<option value="'+s.id+'">'+s.name+'</option>';}).join('');
+  var mkEl=document.getElementById('an-school');
+  if(mkEl&&mkEl.dataset.filled!=='1'){mkEl.innerHTML=opts;mkEl.dataset.filled='1';}
+  var filterEl=document.getElementById('an-filter-school');
+  if(filterEl&&filterEl.dataset.filled!=='1'){filterEl.innerHTML='<option value="">전체 학교</option>'+(qaDb.schools||[]).map(function(s){return '<option value="'+s.id+'">'+s.name+'</option>';}).join('');filterEl.dataset.filled='1';}
+}
 function renderTAnnounceList(){
   var el=document.getElementById('t-announce-list');
   if(!el)return;
-  var total=activeStudents().length;
-  if(!announceDb.items.length){el.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px">게시된 안내가 없어요.</div>';return;}
-  el.innerHTML=announceDb.items.map(function(a){
+  populateAnnounceSchoolSelects();
+  var filterSchool=document.getElementById('an-filter-school')?document.getElementById('an-filter-school').value:'';
+  var items=announceDb.items.filter(function(a){return !filterSchool||a.school_id===filterSchool;});
+  if(!items.length){el.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px">게시된 안내가 없어요.</div>';return;}
+  el.innerHTML=items.map(function(a){
+    var total=a.school_id?activeStudents().filter(function(s){return s.school_id===a.school_id;}).length:activeStudents().length;
     var readCnt=announceReadCount(a.id);
     var dateLabel=new Date(a.created_at).toLocaleString('ko-KR',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
     return '<div style="padding:12px 0;border-bottom:1px solid var(--border)">'+
       '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'+
       '<span style="font-size:13px;font-weight:700">'+a.title+'</span>'+
+      '<span class="tag" style="font-size:10px">'+(a.school_id?schoolName(a.school_id):'전체')+'</span>'+
       '<span style="font-size:11px;color:var(--text2);margin-left:auto">'+dateLabel+'</span></div>'+
       (a.content?'<div style="font-size:12px;color:var(--text2);margin-bottom:6px;white-space:pre-wrap">'+a.content+'</div>':'')+
       (a.image_url?'<img src="'+a.image_url+'" style="max-width:160px;border-radius:8px;margin-bottom:6px;display:block">':'')+
@@ -2733,11 +2751,17 @@ function renderTAnnounceList(){
 }
 
 /* 학생: 목록/상세/읽음 처리 */
+function myAnnounceItems(){
+  if(!session)return announceDb.items;
+  var mySchool=session.school_id||null;
+  return announceDb.items.filter(function(a){return !a.school_id||a.school_id===mySchool;});
+}
 function renderSAnnounceList(){
   var el=document.getElementById('s-announce-list');
   if(!el)return;
-  if(!announceDb.items.length){el.innerHTML='<div style="padding:2rem;text-align:center;color:var(--text3);font-size:13px">아직 안내가 없어요.</div>';return;}
-  el.innerHTML=announceDb.items.map(function(a){
+  var items=myAnnounceItems();
+  if(!items.length){el.innerHTML='<div style="padding:2rem;text-align:center;color:var(--text3);font-size:13px">아직 안내가 없어요.</div>';return;}
+  el.innerHTML=items.map(function(a){
     var unread=!isAnnounceRead(a.id);
     var dateLabel=new Date(a.created_at).toLocaleString('ko-KR',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
     return '<div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="openAnnounceView(\''+a.id+'\')">'+
@@ -2771,7 +2795,7 @@ async function openAnnounceView(id){
 }
 function updateAnnounceBadge(){
   if(!session||session.role!=='student')return;
-  var unread=announceDb.items.filter(function(a){return !isAnnounceRead(a.id);}).length;
+  var unread=myAnnounceItems().filter(function(a){return !isAnnounceRead(a.id);}).length;
   setBadge('nav-announce-s',unread,'s');
   setBadge('mt-announce-s',unread,'s');
 }
