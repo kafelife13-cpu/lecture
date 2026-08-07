@@ -4719,14 +4719,19 @@ async function renderTVocab(){
       const students=activeStudents();
       statusEl.innerHTML=thisWeekWeeks.map(function(w){
         var unit=VOCAB_UNITS_CACHE.find(function(u){return u.week===w;});
-        var done=(resps||[]).filter(function(r){return r.unit_week===w;});
+        var done=(resps||[]).filter(function(r){return r.unit_week===w;}).sort(function(a,b){return (b.score||0)-(a.score||0);});
         var doneNames=done.map(function(r){return r.student_name;});
         var missing=students.filter(function(s){return doneNames.indexOf(s.name)<0;});
+        var doneListHtml=done.map(function(r){
+          var color=r.score>=80?'var(--green)':r.score>=60?'var(--amber)':'var(--red)';
+          return '<span style="display:inline-block;margin:2px 8px 2px 0">'+r.student_name+' <b style="color:'+color+'">'+r.score+'점</b></span>';
+        }).join('');
         return '<div style="padding:10px 0;border-bottom:1px solid var(--border)">'+
           '<div style="font-size:13px;font-weight:600;margin-bottom:4px">'+w+'강'+(unit?' — '+unit.title:'')+'</div>'+
-          '<div style="font-size:12px;color:var(--text2)">제출 '+done.length+'/'+students.length+'명'+
-          (missing.length?' · 미제출: '+missing.map(function(s){return s.name;}).join(', '):' · 전원 완료 🎉')+
-          '</div></div>';
+          '<div style="font-size:12px;color:var(--text2);margin-bottom:6px">제출 '+done.length+'/'+students.length+'명</div>'+
+          (done.length?'<div style="font-size:12px;margin-bottom:6px">✅ 제출: '+doneListHtml+'</div>':'')+
+          (missing.length?'<div style="font-size:12px;color:var(--text3)">❌ 미제출('+missing.length+'명): '+missing.map(function(s){return s.name;}).join(', ')+'</div>':'<div style="font-size:12px;color:var(--green)">전원 완료 🎉</div>')+
+          '</div>';
       }).join('');
     }
   }
