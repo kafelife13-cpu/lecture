@@ -293,6 +293,7 @@ input,button{font-family:var(--font)}
       </div>
       <nav class="sidebar-nav">
         <div class="nav-item active" onclick="tNav('dashboard')" data-p="dashboard"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>대시보드</div>
+        <div class="nav-item" onclick="tNav('announce')" data-p="announce" id="nav-announce"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>과제 안내</div>
         <div class="nav-item" onclick="tNav('videos')" data-p="videos"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의 관리</div>
         <div class="nav-item" onclick="tNav('students')" data-p="students" id="nav-students"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>학생 관리</div>
         <div class="nav-item" onclick="tNav('access')" data-p="access" id="nav-access"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습 신청 관리</div>
@@ -817,10 +818,35 @@ input,button{font-family:var(--font)}
         </div>
       </div>
 
+      <!-- 과제 안내 (교사) -->
+      <div class="panel" id="panel-announce">
+        <div class="page-header"><h1>과제 안내</h1><p>학생들이 앱을 열면 바로 보이는 공지예요 — 문자보다 눈에 잘 띕니다</p></div>
+        <div class="card" style="margin-bottom:1rem">
+          <div class="card-head"><h3>새 과제 안내 작성</h3></div>
+          <div style="padding:0 1.25rem 1.25rem">
+            <div class="form-group" style="margin-bottom:8px"><label>제목</label><input class="form-input" id="an-title" placeholder="예: 8월 1주차 과제 안내"></div>
+            <div class="form-group" style="margin-bottom:8px"><label>내용</label><textarea class="form-input" id="an-content" rows="5" placeholder="과제 내용을 입력하세요"></textarea></div>
+            <div class="form-group" style="margin-bottom:12px">
+              <label>이미지 첨부 (선택)</label><br>
+              <input type="file" id="an-image-input" accept="image/*" style="display:none" onchange="onAnnounceImageSelected(this)">
+              <button class="btn btn-sm" onclick="document.getElementById('an-image-input').click()">🖼 이미지 선택</button>
+              <span id="an-image-filename" style="font-size:12px;color:var(--text2);margin-left:6px"></span>
+              <div id="an-image-preview" style="margin-top:8px"></div>
+            </div>
+            <button class="btn blue" onclick="postAnnouncement()">📢 게시하기</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>게시된 안내</h3></div>
+          <div id="t-announce-list" style="padding:0 1.25rem 0.5rem"></div>
+        </div>
+      </div>
+
     </div></div>
   </div>
   <div class="mobile-tabbar" id="t-tabbar" style="overflow-x:auto">
     <button class="mobile-tab active" onclick="tNav('dashboard')" data-mt="dashboard" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>대시보드</button>
+    <button class="mobile-tab" onclick="tNav('announce')" data-mt="announce" id="mt-announce-t" style="position:relative;min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>과제</button>
     <button class="mobile-tab" onclick="tNav('videos')" data-mt="videos" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-02-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의</button>
     <button class="mobile-tab" onclick="tNav('access')" data-mt="access" id="mt-access" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습관리</button>
     <button class="mobile-tab" onclick="tNav('students')" data-mt="students" id="mt-students-t" style="position:relative" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>학생</button>
@@ -846,6 +872,7 @@ input,button{font-family:var(--font)}
       </div>
       <nav class="sidebar-nav">
         <div class="nav-item active" onclick="sNav('home')" data-p="home"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>홈</div>
+        <div class="nav-item" onclick="sNav('announce')" data-p="announce" id="nav-announce-s" style="position:relative"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>과제 안내</div>
         <div class="nav-item" onclick="sNav('lectures')" data-p="lectures"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의 목록</div>
         <div class="nav-item" onclick="sNav('review')" data-p="review"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습 신청</div>
         <div class="nav-item" onclick="sNav('mypage')" data-p="mypage"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>내 진도</div>
@@ -865,6 +892,7 @@ input,button{font-family:var(--font)}
     <div class="main"><div class="main-inner">
       <div class="panel active" id="panel-home">
         <div class="page-header"><h1>안녕하세요, <span id="home-greet-name">학생</span>님 👋</h1><p>오늘 할 일을 확인해보세요</p></div>
+        <div id="home-announce-banner"></div>
         <div id="home-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px"></div>
       </div>
       <div class="panel" id="panel-lectures">
@@ -1114,10 +1142,19 @@ input,button{font-family:var(--font)}
         </div>
       </div>
 
+      <!-- 과제 안내 (학생) -->
+      <div class="panel" id="panel-announce">
+        <div class="page-header"><h1>과제 안내</h1><p>선생님이 올린 과제 안내예요</p></div>
+        <div class="card">
+          <div id="s-announce-list" style="padding:0 1.25rem 0.5rem"></div>
+        </div>
+      </div>
+
     </div></div>
   </div>
   <div class="mobile-tabbar" id="s-tabbar" style="overflow-x:auto">
     <button class="mobile-tab active" onclick="sNav('home')" data-ms="home" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>홈</button>
+    <button class="mobile-tab" onclick="sNav('announce')" data-ms="announce" id="mt-announce-s" style="position:relative;min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>과제</button>
     <button class="mobile-tab" onclick="sNav('lectures')" data-ms="lectures" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의</button>
     <button class="mobile-tab" onclick="sNav('review')" data-ms="review" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습신청</button>
     <button class="mobile-tab" onclick="sNav('mypage')" data-ms="mypage" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>내 진도</button>
@@ -1399,6 +1436,18 @@ input,button{font-family:var(--font)}
     <div class="modal-footer">
       <button class="btn" id="cert-reject-btn">반려</button>
       <button class="btn green" id="cert-approve-btn">승인</button>
+    </div>
+  </div>
+</div>
+
+<!-- 과제 안내 상세 모달 (학생) -->
+<div class="modal-bg" id="modal-announce-view">
+  <div class="modal" style="max-width:500px">
+    <div class="modal-head"><h3 id="an-view-title">과제 안내</h3><button class="modal-close" onclick="document.getElementById('modal-announce-view').classList.remove('show')">×</button></div>
+    <div class="modal-body">
+      <div id="an-view-date" style="font-size:11px;color:var(--text2);margin-bottom:10px"></div>
+      <div id="an-view-image"></div>
+      <div id="an-view-content" style="font-size:14px;line-height:1.6;white-space:pre-wrap"></div>
     </div>
   </div>
 </div>
@@ -1707,6 +1756,7 @@ function renderSHome(){
   var grid=document.getElementById('home-grid');
   if(!grid)return;
   var cards=[
+    ['📢','과제 안내','공지 확인','announce'],
     ['🎬','내 강의','강의 목록·시청','lectures'],
     ['🔁','복습 신청','신청·시청','review'],
     ['📈','내 진도','시청률 확인','mypage'],
@@ -1726,6 +1776,23 @@ function renderSHome(){
         '<div style="font-size:11px;color:var(--text2);margin-top:3px">'+c[2]+'</div>'+
       '</div></div>';
   }).join('');
+  renderHomeAnnounceBanner();
+}
+function renderHomeAnnounceBanner(){
+  var el=document.getElementById('home-announce-banner');
+  if(!el)return;
+  var unread=(announceDb.items||[]).filter(function(a){return !isAnnounceRead(a.id);});
+  if(!unread.length){el.innerHTML='';return;}
+  var latest=unread[0]; // items는 최신순 정렬되어 로드됨
+  el.innerHTML='<div class="card" style="margin-bottom:1rem;border-color:var(--accent);cursor:pointer" onclick="openAnnounceView(\''+latest.id+'\')">'+
+    '<div style="padding:14px 1.25rem;display:flex;align-items:center;gap:10px">'+
+    '<div style="font-size:22px">📢</div>'+
+    '<div style="flex:1;min-width:0">'+
+      '<div style="font-size:13px;font-weight:700;color:var(--accent)">새 과제 안내'+(unread.length>1?' 외 '+(unread.length-1)+'건':'')+'</div>'+
+      '<div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+latest.title+'</div>'+
+    '</div>'+
+    '<span style="color:var(--accent);font-size:13px;font-weight:600">확인 →</span>'+
+    '</div></div>';
 }
 
 /* ===== TEACHER NAV ===== */
@@ -1744,6 +1811,7 @@ function tNav(panel){
   if(panel==='study')renderTStudy();
   if(panel==='exam')renderTExam();
   if(panel==='vocab')renderTVocab();
+  if(panel==='announce')renderTAnnounceList();
 }
 
 /* ===== DASHBOARD ===== */
@@ -2320,6 +2388,7 @@ function sNav(panel){
   if(panel==='oxreview')renderSOxReview();
   if(panel==='exam')renderSExam();
   if(panel==='vocab')renderVocabEntry();
+  if(panel==='announce')renderSAnnounceList();
   if(panel==='home')renderSHome();
 }
 
@@ -2573,6 +2642,138 @@ async function loadClinicData(){
     clinicDb.slots=s.data||[];
     clinicDb.requests=r.data||[];
   }catch(e){console.error('clinic load error',e);}
+}
+
+/* ===== 과제 안내 ===== */
+var announceDb={items:[],reads:[]};
+var announcePendingImageFile=null;
+async function loadAnnounceData(){
+  try{
+    var a=await sb.from('announcements').select('*').order('created_at',{ascending:false});
+    var r=await sb.from('announcement_reads').select('*');
+    announceDb.items=a.data||[];
+    announceDb.reads=r.data||[];
+  }catch(e){console.error('announce load error',e);}
+}
+function isAnnounceRead(id){
+  if(!session)return true;
+  return announceDb.reads.some(function(r){return r.announcement_id===id&&r.student_id===session.id;});
+}
+function announceReadCount(id){
+  return announceDb.reads.filter(function(r){return r.announcement_id===id;}).length;
+}
+
+/* 교사: 작성/목록 */
+function onAnnounceImageSelected(input){
+  var file=input.files&&input.files[0];
+  announcePendingImageFile=file||null;
+  var fnEl=document.getElementById('an-image-filename');
+  var pvEl=document.getElementById('an-image-preview');
+  if(fnEl)fnEl.textContent=file?file.name:'';
+  if(pvEl)pvEl.innerHTML=file?('<img src="'+URL.createObjectURL(file)+'" style="max-width:200px;border-radius:8px;margin-top:6px">'):'';
+}
+async function postAnnouncement(){
+  var title=document.getElementById('an-title').value.trim();
+  var content=document.getElementById('an-content').value.trim();
+  if(!title){notify('제목을 입력해주세요.','error');return;}
+  try{
+    var imageUrl=null;
+    if(announcePendingImageFile){
+      var file=announcePendingImageFile;
+      var ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
+      var path='announce/'+Date.now()+'.'+ext;
+      var up=await sb.storage.from('qa-files').upload(path,file,{upsert:true,contentType:file.type||'image/jpeg'});
+      if(up.error){notify('이미지 업로드 실패: '+up.error.message,'error');return;}
+      imageUrl=sb.storage.from('qa-files').getPublicUrl(path).data.publicUrl;
+    }
+    var id='an_'+Date.now();
+    var row={id:id,title:title,content:content,image_url:imageUrl,created_at:new Date().toISOString()};
+    var res=await sb.from('announcements').insert(row);
+    if(res.error){notify('게시 실패: '+res.error.message,'error');return;}
+    announceDb.items.unshift(row);
+    document.getElementById('an-title').value='';
+    document.getElementById('an-content').value='';
+    document.getElementById('an-image-input').value='';
+    document.getElementById('an-image-filename').textContent='';
+    document.getElementById('an-image-preview').innerHTML='';
+    announcePendingImageFile=null;
+    sendTelegram('📢 새 과제 안내: '+title);
+    notify('게시됐어요!','success');
+    renderTAnnounceList();
+  }catch(e){notify('오류: '+e.message,'error');}
+}
+async function deleteAnnouncement(id){
+  if(!confirm('이 안내를 삭제할까요?'))return;
+  await sb.from('announcements').delete().eq('id',id);
+  await sb.from('announcement_reads').delete().eq('announcement_id',id);
+  announceDb.items=announceDb.items.filter(function(a){return a.id!==id;});
+  announceDb.reads=announceDb.reads.filter(function(r){return r.announcement_id!==id;});
+  notify('삭제됐어요.','info');
+  renderTAnnounceList();
+}
+function renderTAnnounceList(){
+  var el=document.getElementById('t-announce-list');
+  if(!el)return;
+  var total=activeStudents().length;
+  if(!announceDb.items.length){el.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px">게시된 안내가 없어요.</div>';return;}
+  el.innerHTML=announceDb.items.map(function(a){
+    var readCnt=announceReadCount(a.id);
+    var dateLabel=new Date(a.created_at).toLocaleString('ko-KR',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+    return '<div style="padding:12px 0;border-bottom:1px solid var(--border)">'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'+
+      '<span style="font-size:13px;font-weight:700">'+a.title+'</span>'+
+      '<span style="font-size:11px;color:var(--text2);margin-left:auto">'+dateLabel+'</span></div>'+
+      (a.content?'<div style="font-size:12px;color:var(--text2);margin-bottom:6px;white-space:pre-wrap">'+a.content+'</div>':'')+
+      (a.image_url?'<img src="'+a.image_url+'" style="max-width:160px;border-radius:8px;margin-bottom:6px;display:block">':'')+
+      '<div style="display:flex;align-items:center;gap:8px">'+
+      '<span class="badge '+(total>0&&readCnt>=total?'done':'partial')+'" style="font-size:11px">읽음 '+readCnt+'/'+total+'명</span>'+
+      '<button class="btn btn-sm red" onclick="deleteAnnouncement(\''+a.id+'\')">삭제</button>'+
+      '</div></div>';
+  }).join('');
+}
+
+/* 학생: 목록/상세/읽음 처리 */
+function renderSAnnounceList(){
+  var el=document.getElementById('s-announce-list');
+  if(!el)return;
+  if(!announceDb.items.length){el.innerHTML='<div style="padding:2rem;text-align:center;color:var(--text3);font-size:13px">아직 안내가 없어요.</div>';return;}
+  el.innerHTML=announceDb.items.map(function(a){
+    var unread=!isAnnounceRead(a.id);
+    var dateLabel=new Date(a.created_at).toLocaleString('ko-KR',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+    return '<div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="openAnnounceView(\''+a.id+'\')">'+
+      (unread?'<span style="width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0"></span>':'<span style="width:8px;flex-shrink:0"></span>')+
+      '<div style="flex:1;min-width:0">'+
+      '<div style="font-size:13px;font-weight:'+(unread?'700':'500')+'">'+a.title+(a.image_url?' 🖼':'')+'</div>'+
+      '<div style="font-size:11px;color:var(--text2);margin-top:2px">'+dateLabel+'</div>'+
+      '</div>'+
+      (unread?'<span class="badge" style="background:var(--red-bg);color:var(--red);font-size:10px">NEW</span>':'')+
+      '</div>';
+  }).join('');
+}
+async function openAnnounceView(id){
+  var a=announceDb.items.find(function(x){return x.id===id;});
+  if(!a)return;
+  document.getElementById('an-view-title').textContent=a.title;
+  document.getElementById('an-view-date').textContent=new Date(a.created_at).toLocaleString('ko-KR');
+  document.getElementById('an-view-image').innerHTML=a.image_url?('<img src="'+a.image_url+'" style="max-width:100%;border-radius:8px;margin-bottom:10px">'):'';
+  document.getElementById('an-view-content').textContent=a.content||'';
+  document.getElementById('modal-announce-view').classList.add('show');
+  if(session&&session.role==='student'&&!isAnnounceRead(id)){
+    var row={id:'anr_'+Date.now(),announcement_id:id,student_id:session.id,read_at:new Date().toISOString()};
+    try{
+      await sb.from('announcement_reads').upsert(row,{onConflict:'announcement_id,student_id'});
+      announceDb.reads.push(row);
+      updateAnnounceBadge();
+      renderSAnnounceList();
+      renderHomeAnnounceBanner();
+    }catch(e){console.error('announce read save error',e);}
+  }
+}
+function updateAnnounceBadge(){
+  if(!session||session.role!=='student')return;
+  var unread=announceDb.items.filter(function(a){return !isAnnounceRead(a.id);}).length;
+  setBadge('nav-announce-s',unread,'s');
+  setBadge('mt-announce-s',unread,'s');
 }
 
 /* ===== 공부 타이머 ===== */
@@ -3663,6 +3864,7 @@ async function saveCertSubmission(itemId,photoUrl){
 }
 
 document.getElementById('modal-cert-photo').addEventListener('click',function(e){if(e.target===e.currentTarget)document.getElementById('modal-cert-photo').classList.remove('show');});
+document.getElementById('modal-announce-view').addEventListener('click',function(e){if(e.target===e.currentTarget)document.getElementById('modal-announce-view').classList.remove('show');});
 document.getElementById('modal-cert-week').addEventListener('click',function(e){if(e.target===e.currentTarget)closeCertWeekModal();});
 document.getElementById('modal-cert-item').addEventListener('click',function(e){if(e.target===e.currentTarget)closeCertItemModal();});
 
@@ -3680,6 +3882,7 @@ function updateAllBadges(){
     updateTRequestBadge();
   } else if(session&&session.role==='student'){
     updateSQaBadge();
+    updateAnnounceBadge();
   }
 }
 
@@ -4904,6 +5107,7 @@ async function tSaveVocabStart(){
     await loadCertData();
     await loadClinicData();
     await loadStudyData();
+    await loadAnnounceData();
     var saved=localStorage.getItem('lms_sess');
     if(saved){
       try{
