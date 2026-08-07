@@ -2579,11 +2579,33 @@ async function loadClinicData(){
 var studyDb={sessions:[]};
 var studyActiveSession=null,studyTimerInterval=null,studyPendingAction=null;
 
+/* 학생/기록이 많아져도(80명+, 수천 세션) 매번 전체 study_sessions를 다
+   불러오면 느려지고 Supabase 기본 응답 행 수 제한(보통 1000행)에 걸려
+   오래된 기록이 조용히 누락될 수 있다. 그래서 평소 불러오는 건 "어제~
+   지금"(오늘 지표 + 자정을 넘겨 진행 중인 세션까지 커버)으로만 제한하고,
+   "누적" 총합은 서버에서 미리 합산해주는 study_totals 뷰에서 따로
+   가져온다(학생 수만큼의 행만 오므로 기록이 아무리 쌓여도 가볍다).
+   과거 특정 학생의 전체 기록은 openStudyStudentDetail에서 그때그때
+   따로 불러온다. */
+var studyTotalsCache={};
 async function loadStudyData(){
   try{
-    var r=await sb.from('study_sessions').select('*').order('start_time',{ascending:false});
+    var since=new Date();since.setDate(since.getDate()-1);since.setHours(0,0,0,0);
+    var r=await sb.from('study_sessions').select('*').gte('start_time',since.toISOString()).order('start_time',{ascending:false});
     studyDb.sessions=r.data||[];
   }catch(e){console.error('study load error',e);}
+  await loadStudyTotals();
+}
+async function loadStudyTotals(){
+  try{
+    var r=await sb.from('study_totals').select('*');
+    if(r.error)throw r.error; // study_totals 뷰가 아직 없으면(마이그레이션 전) 아래 catch로
+    var map={};
+    (r.data||[]).forEach(function(row){map[row.student_id]={totalSec:Math.round(row.total_seconds||0),cnt:row.session_count||0};});
+    studyTotalsCache=map;
+  }catch(e){
+    studyTotalsCache=null; // null이면 studyTotalSeconds가 예전 방식(오늘치만이라도)으로 대체
+  }
 }
 function studyTodayStr(){return new Date().toDateString();}
 function studySessionsForToday(sid){
@@ -2598,7 +2620,12 @@ function studySeconds(list){
   return Math.floor(total);
 }
 function studyTodaySeconds(sid){return studySeconds(studySessionsForToday(sid));}
-function studyTotalSeconds(sid){return studySeconds(studyDb.sessions.filter(function(s){return s.student_id===sid;}));}
+function studyTotalSeconds(sid){
+  if(studyTotalsCache&&studyTotalsCache[sid])return studyTotalsCache[sid].totalSec;
+  if(studyTotalsCache&&!studyTotalsCache[sid])return 0; // 뷰는 있는데 이 학생은 기록이 아예 없음
+  // 뷰가 아직 없을 때(마이그레이션 전)의 대체값 — 최근 며칠치만 반영되어 실제보다 작게 보일 수 있음
+  return studySeconds(studyDb.sessions.filter(function(s){return s.student_id===sid;}));
+}
 function studyTodayAwaySeconds(sid){
   return studySessionsForToday(sid).reduce(function(sum,s){return sum+(s.away_seconds||0);},0);
 }
@@ -2941,10 +2968,15 @@ async function renderTStudyWeek(){
       '</div>';
   }).join('');
 }
-function openStudyStudentDetail(sid){
+async function openStudyStudentDetail(sid){
   var s=db.users.find(function(u){return u.id===sid;});
-  var mySessions=studyDb.sessions.filter(function(x){return x.student_id===sid;}).sort(function(a,b){return new Date(b.start_time)-new Date(a.start_time);});
   document.getElementById('detail-title').textContent=(s?s.name:sid)+' — 공부 기록';
+  document.getElementById('detail-body').innerHTML='<p style="color:var(--text2);font-size:13px">불러오는 중...</p>';
+  document.getElementById('modal-detail').classList.add('show');
+  // 학생 전체 기록은 이 학생 것만 그때그때 따로 불러온다(최근 200건) —
+  // studyDb.sessions는 "어제~오늘"만 들고 있어서 여기엔 안 쓴다.
+  var res=await sb.from('study_sessions').select('*').eq('student_id',sid).order('start_time',{ascending:false}).limit(200);
+  var mySessions=res.data||[];
   document.getElementById('detail-body').innerHTML=mySessions.length?mySessions.map(function(x){
     var start=new Date(x.start_time),end=x.end_time?new Date(x.end_time):null;
     var dur=end?Math.floor((end-start)/1000):Math.floor((Date.now()-start)/1000);
@@ -2961,7 +2993,6 @@ function openStudyStudentDetail(sid){
       (x.end_photo_url?'<a href="'+x.end_photo_url+'" target="_blank"><img src="'+x.end_photo_url+'" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--border)"></a>':'')+
       '</div></div>';
   }).join(''):'<p style="color:var(--text2);font-size:13px">기록이 없습니다.</p>';
-  document.getElementById('modal-detail').classList.add('show');
 }
 
 function openClinicSlotModal(){
