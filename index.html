@@ -536,6 +536,17 @@ input,button{font-family:var(--font)}
           <div class="card-head"><h3>학생별 공부시간</h3><span style="font-size:11px;color:var(--text2)">오늘 · 누적 (클릭하면 인증사진 확인)</span></div>
           <div id="t-study-list"></div>
         </div>
+        <div class="card" style="margin-top:1rem">
+          <div class="card-head">
+            <h3>📅 주간 정리</h3>
+            <div style="display:flex;gap:6px;align-items:center">
+              <button class="btn btn-sm" onclick="tStudyWeekNav(-1)">‹ 이전주</button>
+              <span id="t-study-week-label" style="font-size:12px;font-weight:600;min-width:110px;text-align:center"></span>
+              <button class="btn btn-sm" onclick="tStudyWeekNav(1)">다음주 ›</button>
+            </div>
+          </div>
+          <div id="t-study-week-list" style="padding:0 1.25rem 0.5rem"></div>
+        </div>
       </div>
 
       <!-- 시험 분석 (교사) -->
@@ -2880,6 +2891,55 @@ function renderTStudy(){
       (today>=3600?'<span class="badge done" style="margin-right:6px">🏆</span>':'')+
       '<span style="color:var(--text3)">›</span></div>';
   }).join('')||'<div style="padding:2rem;text-align:center;color:var(--text3);font-size:13px">학생이 없습니다.</div>';
+  renderTStudyWeek();
+}
+
+/* ── 교사: 주간 정리 ──────────────────────────────────────────────
+   학생이 많아지면(80명+) 전체 세션을 다 불러와 매번 훑는 방식은
+   느려지고, Supabase 기본 응답 행 수 제한(보통 1000행)에도 걸릴 수
+   있다. 그래서 이 주간 정리는 studyDb.sessions(전체 로드분)를 쓰지
+   않고, 선택된 주(일~토) 구간만 새로 서버에서 걸러서 가져온다. */
+var tStudyWeekOffset=0;
+function weekRangeForOffset(offset){
+  var now=new Date();
+  var start=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  start.setDate(start.getDate()-start.getDay()+offset*7); // 이번 주 일요일 00:00 기준
+  var end=new Date(start);end.setDate(start.getDate()+7);
+  return{start:start,end:end};
+}
+function tStudyWeekNav(delta){
+  tStudyWeekOffset+=delta;
+  renderTStudyWeek();
+}
+async function renderTStudyWeek(){
+  var listEl=document.getElementById('t-study-week-list');
+  var labelEl=document.getElementById('t-study-week-label');
+  if(!listEl||!labelEl)return;
+  var range=weekRangeForOffset(tStudyWeekOffset);
+  var fmtMD=function(d){return(d.getMonth()+1)+'/'+d.getDate();};
+  var lastDay=new Date(range.end);lastDay.setDate(lastDay.getDate()-1);
+  labelEl.textContent=fmtMD(range.start)+'~'+fmtMD(lastDay)+(tStudyWeekOffset===0?' (이번주)':'');
+  listEl.innerHTML='<div style="padding:1rem 0;text-align:center;color:var(--text3);font-size:12px">불러오는 중...</div>';
+  var res=await sb.from('study_sessions').select('*')
+    .gte('start_time',range.start.toISOString())
+    .lt('start_time',range.end.toISOString());
+  if(res.error){listEl.innerHTML='<div style="padding:1rem 0;text-align:center;color:var(--red);font-size:12px">불러오기 실패: '+res.error.message+'</div>';return;}
+  var sessions=res.data||[];
+  var sts=activeStudents();
+  var rows=sts.map(function(s){
+    var mine=sessions.filter(function(x){return x.student_id===s.id;});
+    var totalSec=studySeconds(mine);
+    var awaySec=mine.reduce(function(sum,x){return sum+(x.away_seconds||0);},0);
+    return{student:s,totalSec:totalSec,awaySec:awaySec,cnt:mine.length};
+  }).filter(function(r){return r.cnt>0;}).sort(function(a,b){return b.totalSec-a.totalSec;});
+  if(!rows.length){listEl.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px">이 주에 공부 기록이 없어요.</div>';return;}
+  listEl.innerHTML=rows.map(function(r){
+    return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">'+
+      '<div class="avatar student" style="width:26px;height:26px;font-size:10px;flex-shrink:0">'+r.student.name[0]+'</div>'+
+      '<div style="flex:1"><div style="font-size:13px;font-weight:600">'+r.student.name+'</div>'+
+      '<div style="font-size:11px;color:var(--text2)">'+r.cnt+'회 · '+fmtTime(r.totalSec)+(r.awaySec>0?' · <span style="color:var(--amber)">이탈 '+fmtTime(r.awaySec)+'</span>':'')+'</div></div>'+
+      '</div>';
+  }).join('');
 }
 function openStudyStudentDetail(sid){
   var s=db.users.find(function(u){return u.id===sid;});
