@@ -2566,6 +2566,7 @@ function studyTodayAwaySeconds(sid){
 function renderSStudy(){
   if(!session)return;
   studyActiveSession=studyDb.sessions.find(function(s){return s.student_id===session.id&&!s.end_time;})||null;
+  if(studyActiveSession)resolvePendingStudyAway();
   var todaySec=studyTodaySeconds(session.id);
   document.getElementById('s-study-today-time').textContent=fmtTime(todaySec);
   var goalEl=document.getElementById('s-study-goal-badge');
@@ -2604,9 +2605,8 @@ function renderSStudyLog(){
     var start=new Date(s.start_time),end=s.end_time?new Date(s.end_time):null;
     var dur=end?Math.floor((end-start)/1000):Math.floor((Date.now()-start)/1000);
     var timeLabel=start.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+(end?' ~ '+end.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}):' ~ 진행중');
-    var liveAway=!end?studyAwaySecondsTotal():0;
-    var awaySec=(s.away_seconds||0)+liveAway;
-    var awayCnt=!end?studyAwayEvents.length:(function(){try{return (JSON.parse(s.away_log||'[]')||[]).length;}catch(e){return 0;}})();
+    var awaySec=s.away_seconds||0;
+    var awayCnt=(function(){try{return (JSON.parse(s.away_log||'[]')||[]).length;}catch(e){return 0;}})();
     return '<div style="padding:10px 1.25rem;border-bottom:1px solid var(--border)">'+
       '<div style="font-size:13px;font-weight:600">'+timeLabel+'</div>'+
       '<div style="font-size:11px;color:var(--text2);margin-bottom:8px">'+fmtTime(dur)+(end?'':' (진행중)')+
@@ -2725,58 +2725,77 @@ async function handleStudyPhotoFile(file,action){
     var urlRes=sb.storage.from('exam-photos').getPublicUrl(path);
     var url=urlRes.data?urlRes.data.publicUrl:null;
     if(action==='start'){
+      try{localStorage.removeItem(STUDY_AWAY_KEY);}catch(e){}
       var id='ss_'+Date.now();
       var row={id:id,student_id:session.id,start_time:new Date().toISOString(),start_photo_url:url,away_log:'[]',away_seconds:0};
       var res=await sb.from('study_sessions').insert(row);
       if(res.error){notify('시작 실패: '+res.error.message,'error');return;}
       studyDb.sessions.unshift(row);
-      studyAwayEvents=[];studyAwayStart=null;
       sendTelegram('📚 '+session.name+' 학생이 공부를 시작했어요.');
       notify('공부를 시작했어요! 화이팅 💪 (화면 벗어나면 자동으로 기록돼요)','success');
     }else{
-      var updates={end_time:new Date().toISOString(),end_photo_url:url,away_log:JSON.stringify(studyAwayEvents),away_seconds:studyAwaySecondsTotal()};
+      await resolvePendingStudyAway();
+      var updates={end_time:new Date().toISOString(),end_photo_url:url,away_log:studyActiveSession.away_log||'[]',away_seconds:studyActiveSession.away_seconds||0};
       var res2=await sb.from('study_sessions').update(updates).eq('id',studyActiveSession.id);
       if(res2.error){notify('종료 실패: '+res2.error.message,'error');return;}
       Object.assign(studyActiveSession,updates);
       var durSec=Math.floor((new Date(updates.end_time)-new Date(studyActiveSession.start_time))/1000);
-      var awaySec=studyAwaySecondsTotal();
-      sendTelegram('📚 '+session.name+' 학생이 공부를 마쳤어요 ('+fmtTime(durSec)+')'+(awaySec>0?' · 이탈 '+studyAwayEvents.length+'회 총 '+fmtTime(awaySec):'')+'.');
+      var awaySec=updates.away_seconds;
+      var awayCnt=(function(){try{return (JSON.parse(updates.away_log||'[]')||[]).length;}catch(e){return 0;}})();
+      sendTelegram('📚 '+session.name+' 학생이 공부를 마쳤어요 ('+fmtTime(durSec)+')'+(awaySec>0?' · 이탈 '+awayCnt+'회 총 '+fmtTime(awaySec):'')+'.');
       notify('수고하셨어요! 공부가 기록됐어요 🎉','success');
-      studyAwayEvents=[];studyAwayStart=null;
     }
     renderSStudy();
   }catch(err){notify('오류: '+err.message,'error');}
 }
 
 /* ── 이탈 감지: 공부 세션 진행 중 이 화면을 벗어나면(다른 앱/탭 전환, 화면
-   잠금) 그 구간을 자동으로 기록한다. 물리적으로 못 하게 막을 수는 없지만,
-   벗어난 시간이 그대로 남는다는 걸 학생도 알기 때문에 억제 효과가 있다. */
-var studyAwayEvents=[],studyAwayStart=null;
-function studyAwaySecondsTotal(){return studyAwayEvents.reduce(function(sum,e){return sum+e.sec;},0);}
-async function persistStudyAwayLog(){
+   잠금) 그 구간을 자동으로 기록한다. 폰이 백그라운드에서 페이지를 통째로
+   꺼버려도(특히 아이폰에서 자주 그럼) 놓치지 않도록, "나간 시각"을
+   메모리가 아니라 localStorage에 저장해두고, 돌아왔을 때는 물론 페이지가
+   다시 켜져서 새로 로드됐을 때도(renderSStudy에서) 확인해서 기록한다.
+   물리적으로 못 하게 막을 수는 없지만, 벗어난 시간이 그대로 남는다는 걸
+   학생도 알기 때문에 억제 효과가 있다. */
+var STUDY_AWAY_KEY='studyAwayPending';
+function studyAwaySecondsTotal(){
+  if(!studyActiveSession)return 0;
+  try{return (JSON.parse(studyActiveSession.away_log||'[]')||[]).reduce(function(sum,e){return sum+e.sec;},0);}catch(e){return 0;}
+}
+function markStudyAwayStart(){
   if(!studyActiveSession)return;
-  var away_log=JSON.stringify(studyAwayEvents),away_seconds=studyAwaySecondsTotal();
+  try{localStorage.setItem(STUDY_AWAY_KEY,JSON.stringify({sessionId:studyActiveSession.id,start:Date.now()}));}catch(e){}
+}
+async function resolvePendingStudyAway(){
+  var raw=null;
+  try{raw=localStorage.getItem(STUDY_AWAY_KEY);}catch(e){}
+  if(!raw)return;
+  try{localStorage.removeItem(STUDY_AWAY_KEY);}catch(e){}
+  var pending;
+  try{pending=JSON.parse(raw);}catch(e){return;}
+  if(!studyActiveSession||!pending||pending.sessionId!==studyActiveSession.id)return;
+  var awaySec=Math.round((Date.now()-pending.start)/1000);
+  if(awaySec<5)return;
+  var log=[];
+  try{log=JSON.parse(studyActiveSession.away_log||'[]')||[];}catch(e){log=[];}
+  log.push({start:new Date(pending.start).toISOString(),end:new Date().toISOString(),sec:awaySec});
+  var away_seconds=log.reduce(function(sum,e){return sum+e.sec;},0);
+  var away_log=JSON.stringify(log);
   try{
     await sb.from('study_sessions').update({away_log:away_log,away_seconds:away_seconds}).eq('id',studyActiveSession.id);
-    studyActiveSession.away_log=away_log;studyActiveSession.away_seconds=away_seconds;
   }catch(e){console.error('away log save error',e);}
+  studyActiveSession.away_log=away_log;studyActiveSession.away_seconds=away_seconds;
+  var idx=studyDb.sessions.findIndex(function(s){return s.id===studyActiveSession.id;});
+  if(idx!==-1){studyDb.sessions[idx].away_log=away_log;studyDb.sessions[idx].away_seconds=away_seconds;}
+  notify('⚠️ 자리를 비운 시간 '+fmtTime(awaySec)+'이 기록됐어요.','info');
+  renderSStudyLog();
 }
 function onStudyVisibilityChange(){
   if(!studyActiveSession)return;
-  if(document.hidden){
-    studyAwayStart=Date.now();
-  }else if(studyAwayStart){
-    var awaySec=Math.round((Date.now()-studyAwayStart)/1000);
-    studyAwayStart=null;
-    if(awaySec>=5){
-      studyAwayEvents.push({start:new Date(Date.now()-awaySec*1000).toISOString(),end:new Date().toISOString(),sec:awaySec});
-      persistStudyAwayLog();
-      notify('⚠️ 자리를 비운 시간 '+fmtTime(awaySec)+'이 기록됐어요.','info');
-      renderSStudyLog();
-    }
-  }
+  if(document.hidden)markStudyAwayStart();
+  else resolvePendingStudyAway();
 }
 document.addEventListener('visibilitychange',onStudyVisibilityChange);
+window.addEventListener('pageshow',function(){if(studyActiveSession)resolvePendingStudyAway();});
 
 function renderTStudy(){
   var sts=activeStudents();
