@@ -2566,7 +2566,7 @@ function studyTodayAwaySeconds(sid){
 function renderSStudy(){
   if(!session)return;
   studyActiveSession=studyDb.sessions.find(function(s){return s.student_id===session.id&&!s.end_time;})||null;
-  if(studyActiveSession)resolvePendingStudyAway();
+  if(studyActiveSession){resolvePendingStudyAway();requestStudyWakeLock();}
   var todaySec=studyTodaySeconds(session.id);
   document.getElementById('s-study-today-time').textContent=fmtTime(todaySec);
   var goalEl=document.getElementById('s-study-goal-badge');
@@ -2731,10 +2731,12 @@ async function handleStudyPhotoFile(file,action){
       var res=await sb.from('study_sessions').insert(row);
       if(res.error){notify('시작 실패: '+res.error.message,'error');return;}
       studyDb.sessions.unshift(row);
+      requestStudyWakeLock();
       sendTelegram('📚 '+session.name+' 학생이 공부를 시작했어요.');
       notify('공부를 시작했어요! 화이팅 💪 (화면 벗어나면 자동으로 기록돼요)','success');
     }else{
       await resolvePendingStudyAway();
+      releaseStudyWakeLock();
       var updates={end_time:new Date().toISOString(),end_photo_url:url,away_log:studyActiveSession.away_log||'[]',away_seconds:studyActiveSession.away_seconds||0};
       var res2=await sb.from('study_sessions').update(updates).eq('id',studyActiveSession.id);
       if(res2.error){notify('종료 실패: '+res2.error.message,'error');return;}
@@ -2791,11 +2793,32 @@ async function resolvePendingStudyAway(){
 }
 function onStudyVisibilityChange(){
   if(!studyActiveSession)return;
-  if(document.hidden)markStudyAwayStart();
-  else resolvePendingStudyAway();
+  if(document.hidden){
+    markStudyAwayStart();
+  }else{
+    resolvePendingStudyAway();
+    requestStudyWakeLock(); // 화면이 다시 보일 때마다 재요청 (hidden되면 자동 해제되므로)
+  }
 }
 document.addEventListener('visibilitychange',onStudyVisibilityChange);
-window.addEventListener('pageshow',function(){if(studyActiveSession)resolvePendingStudyAway();});
+window.addEventListener('pageshow',function(){if(studyActiveSession){resolvePendingStudyAway();requestStudyWakeLock();}});
+
+/* ── 화면 자동 꺼짐 방지(Wake Lock): 공부 세션 중엔 안 만져도 폰이 저절로
+   잠기지 않게 붙잡아둔다. 그러면 이 상태에서 화면이 꺼지는 건 학생이
+   직접 전원버튼을 눌렀거나 다른 앱으로 나간 경우뿐이라, "그냥 자동으로
+   꺼짐"과 "진짜 이탈"을 사실상 구분할 수 있게 된다. 지원 안 하는
+   브라우저(구형 iOS 등)에서는 조용히 무시되고 기존 방식으로만 동작한다. */
+var studyWakeLock=null;
+async function requestStudyWakeLock(){
+  if(!('wakeLock' in navigator)||studyWakeLock)return;
+  try{
+    studyWakeLock=await navigator.wakeLock.request('screen');
+    studyWakeLock.addEventListener('release',function(){studyWakeLock=null;});
+  }catch(e){/* 권한 거부/미지원 — 조용히 무시, 기존 이탈 감지만으로 동작 */}
+}
+function releaseStudyWakeLock(){
+  if(studyWakeLock){try{studyWakeLock.release();}catch(e){}studyWakeLock=null;}
+}
 
 function renderTStudy(){
   var sts=activeStudents();
