@@ -2396,7 +2396,8 @@ function sNav(panel){
 /* ===== 학생: 일반 강의 ===== */
 function renderLectures(){
   const el=document.getElementById('student-lectures');
-  const vids=normalVideos();
+  // 최근에 새로 열어준 강의가 맨 위에 뜨도록 최신순 정렬
+  const vids=normalVideos().slice().sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
   if(!vids.length){el.innerHTML='<div class="empty"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg><p>강사가 등록한 강의가 없습니다.</p></div>';return;}
   el.innerHTML=vids.map(v=>{
     const p=getPct(session.id,v.id),ws=getWatchSec(session.id,v.id),lp=getLastPos(session.id,v.id);
@@ -2405,7 +2406,7 @@ function renderLectures(){
       <div class="lecture-thumb">${t?`<img src="${t}" alt="">`:
         `<div class="yt-icon" style="width:32px;height:32px"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>`}</div>
       <div class="lecture-body">
-        <h4>${v.title}</h4>
+        <h4>${v.title}${(Date.now()-new Date(v.created_at).getTime())<7*24*3600*1000?' <span class="badge" style="background:var(--red-bg);color:var(--red);font-size:10px;vertical-align:middle">NEW</span>':''}</h4>
         <div class="lmeta">${v.description||'강의 설명 없음'}${ws>0?` · <span style="color:var(--green)">${fmtTime(ws)} 시청</span>`:''}</div>
         <div style="display:flex;align-items:center;gap:8px">
           <div class="pbar" style="width:110px"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div>
