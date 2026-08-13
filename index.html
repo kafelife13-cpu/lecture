@@ -22,6 +22,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 (function(){
   var tag=document.createElement('script');
@@ -267,6 +268,7 @@ input,button{font-family:var(--font)}
       <button class="btn-primary" id="login-btn" onclick="doLogin()">로그인</button>
       <div id="login-err" class="err-msg"></div>
       <div class="login-switch">계정이 없으신가요? <a onclick="showSignup()">학생 회원가입</a></div>
+      <button id="pad-mode-btn" onclick="enterPadMode()" style="width:100%;margin-top:10px;background:transparent;border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:9px;font-size:12px;cursor:pointer;font-family:inherit">🖥️ 클리닉 패드 모드 (학생 이름 눌러서 바로 채점)</button>
     </div>
     <div class="login-card" id="form-signup" style="display:none">
       <div style="font-size:15px;font-weight:700;margin-bottom:1.25rem">학생 회원가입</div>
@@ -279,6 +281,18 @@ input,button{font-family:var(--font)}
       <div class="login-switch">이미 계정이 있으신가요? <a onclick="showLogin()">로그인</a></div>
         <button id="pwa-install-btn" onclick="installPWA()" style="display:none;width:100%;margin-top:10px;background:rgba(79,124,255,0.1);border:1px solid rgba(79,124,255,0.3);color:var(--accent);border-radius:8px;padding:10px;font-size:13px;cursor:pointer">📲 앱으로 설치하기</button>
     </div>
+  </div>
+</div>
+
+<!-- 클리닉 패드 모드: 학생이 공용 패드에서 이름만 눌러 바로 채점 화면으로 들어감 -->
+<div id="page-pad-picker" class="page">
+  <div style="max-width:600px;margin:0 auto;padding:24px 16px;min-height:100vh;display:flex;flex-direction:column">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <h2 style="margin:0;font-size:18px">본인 이름을 눌러주세요</h2>
+      <button onclick="exitPadMode()" style="background:transparent;border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer">패드 모드 종료</button>
+    </div>
+    <input id="pad-search" class="form-input" placeholder="이름 검색..." oninput="renderPadPicker()" style="margin-bottom:14px;font-size:15px;padding:12px">
+    <div id="pad-picker-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px"></div>
   </div>
 </div>
 
@@ -728,6 +742,7 @@ input,button{font-family:var(--font)}
             <div style="display:flex;gap:8px">
               <button class="btn btn-sm green" onclick="openOmrModal()">📷 OMR 채점</button>
               <button class="btn btn-sm blue" onclick="tResExportAllPDF()">📄 전체 PDF</button>
+              <button class="btn btn-sm" onclick="tResExportExcel()">📊 엑셀 내보내기</button>
             </div>
           </div>
           <!-- 탭 -->
@@ -736,6 +751,7 @@ input,button{font-family:var(--font)}
             <button class="btn btn-sm" id="tres-tab-ranking" onclick="tResTab('ranking')">🏆 순위</button>
             <button class="btn btn-sm" id="tres-tab-wrong" onclick="tResTab('wrong')">📊 오답 통계</button>
             <button class="btn btn-sm" id="tres-tab-student" onclick="tResTab('student')">학생별 상세</button>
+            <button class="btn btn-sm" id="tres-tab-notify" onclick="tResTab('notify')">📨 학부모 발송</button>
           </div>
           <!-- 전체 현황 -->
           <div id="tres-overview">
@@ -781,6 +797,19 @@ input,button{font-family:var(--font)}
               <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);margin-left:auto"><input type="checkbox" id="tres-show-rank" onchange="tResToggleShowRank(this.checked)">성적표에 전체 석차 포함</label>
             </div>
             <div id="tres-student-detail"></div>
+          </div>
+          <!-- 학부모 발송 -->
+          <div id="tres-notify" style="display:none">
+            <div class="card" style="margin-bottom:1rem;border-left:3px solid var(--accent)">
+              <div style="padding:1rem 1.25rem;font-size:12px;color:var(--text2);line-height:1.7">
+                💡 아래 표에서 학부모 연락처를 채우고, <strong>엑셀 내보내기</strong>로 저장한 뒤 알리고·문자나라 등 문자/카카오 알림톡 발송 사이트의 "엑셀 업로드 발송"에 올리면 한 번에 보낼 수 있어요.
+                개별로 보낼 땐 각 줄의 <strong>복사</strong> 버튼으로 문구를 복사해 카톡에 붙여넣으면 돼요.
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3>발송 대상</h3><button class="btn btn-sm blue" onclick="tResExportNotifyExcel()">📊 발송용 엑셀 내보내기</button></div>
+              <div id="tres-notify-list" style="padding:0 1.25rem 1rem"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -848,7 +877,7 @@ input,button{font-family:var(--font)}
       </nav>
       <div class="sidebar-footer">
         <button id="pwa-install-btn-t" onclick="installPWA()" style="display:none;width:100%;margin-bottom:6px;background:rgba(79,124,255,0.1);border:1px solid rgba(79,124,255,0.3);color:var(--accent);border-radius:var(--radius-sm);padding:8px;font-size:12px;cursor:pointer;font-family:inherit">📲 앱으로 설치</button>
-        <button class="btn-logout" onclick="doLogout()">로그아웃</button>
+        <button class="btn-logout" id="s-logout-btn" onclick="doLogout()">로그아웃</button>
       </div>
     </div>
     <div class="main"><div class="main-inner">
@@ -1117,7 +1146,7 @@ input,button{font-family:var(--font)}
     <button class="mobile-tab" onclick="sNav('oxreview')" data-ms="oxreview" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>오답재풀이</button>
     <button class="mobile-tab" onclick="sNav('exam')" data-ms="exam" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>시험</button>
     <button class="mobile-tab" onclick="sNav('vocab')" data-ms="vocab" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 13.5L4.24 12.5 2 11.15v3.7L12 20l10-5.15v-3.7l-2.24 1.35L12 16.5z"/></svg>어휘</button>
-    <button class="mobile-tab" onclick="doLogout()" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>로그아웃</button>
+    <button class="mobile-tab" id="s-logout-btn-mobile" onclick="doLogout()" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>로그아웃</button>
   </div>
 </div>
 
@@ -1211,6 +1240,7 @@ input,button{font-family:var(--font)}
           <input type="file" id="omr-batch-input" accept="image/*,application/pdf" multiple style="display:none" onchange="omrBatchStart(this.files)">
         </label>
         <div style="font-size:11px;color:var(--text3);margin-top:4px;text-align:center">답안지에 핸드폰 번호를 마킹했다면 자동으로 학생을 인식해서 한번에 채점해요</div>
+        <div style="font-size:11px;color:var(--text2);background:var(--bg2);border-radius:6px;padding:8px 10px;margin-top:10px;line-height:1.6">💡 <b>인식률을 높이려면</b>: 그늘진 곳에서 정면으로, 답안지 전체가 프레임에 꽉 차게, 흔들리지 않게 찍어주세요. 진하게 또박또박 마킹할수록 정확해요. AI가 헷갈린 문항은 🟠주황 테두리로 표시되니 그것만 원본과 대조하면 돼요.</div>
       </div>
       <div id="omr-step-batch-progress" style="display:none;text-align:center;padding:2.5rem 1rem">
         <div class="spinner" style="margin:0 auto 14px"></div>
@@ -1493,7 +1523,7 @@ function sendTelegram(text){
   }).catch(function(){});
 }
 
-let session=null,currentRole='teacher',progressView='video',progressVideoPage=1;
+let session=null,currentRole='teacher',progressView='video',progressVideoPage=1,padMode=false;
 let db={users:[],videos:[],progress:[],access:[],requests:[]};
 var sharedAISettings=null;
 let ytPlayer=null,ytApiReady=false,currentVid=null,currentStartPos=0;
@@ -1654,10 +1684,59 @@ async function doSignup(){
   finally{btn.disabled=false;btn.textContent='가입 신청';}
 }
 function doLogout(){
-  closePlay();session=null;db={users:[],videos:[],progress:[],access:[],requests:[]};
+  closePlay();
+  if(padMode){
+    // 패드 모드에서는 완전 로그아웃 대신 학생 선택 화면으로 돌아가요 (다음 학생 차례)
+    session=null;
+    showPage('page-pad-picker');
+    renderPadPicker();
+    return;
+  }
+  session=null;db={users:[],videos:[],progress:[],access:[],requests:[]};
   localStorage.removeItem('lms_sess');showPage('page-login');
   document.getElementById('login-id').value='';document.getElementById('login-pw').value='';
   document.getElementById('login-err').textContent='';
+}
+
+/* ════════════════════════════════════════════
+   클리닉 패드 모드 — 공용 패드에서 학생이 비밀번호 없이 이름만 눌러 들어가는 모드
+   (같은 Supabase 계정으로 로그인되는 것과 동일해서, 데이터는 평소처럼 그 학생 이름/아이디로 정확히 저장됨)
+   ════════════════════════════════════════════ */
+async function enterPadMode(){
+  const btn=document.getElementById('pad-mode-btn');
+  if(btn){btn.disabled=true;btn.textContent='불러오는 중...';}
+  try{
+    await loadAll();
+    padMode=true;
+    showPage('page-pad-picker');
+    renderPadPicker();
+  }catch(e){
+    alert('학생 목록을 불러오지 못했어요: '+e.message);
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent='🖥️ 클리닉 패드 모드 (학생 이름 눌러서 바로 채점)';}
+  }
+}
+function exitPadMode(){
+  padMode=false;session=null;db={users:[],videos:[],progress:[],access:[],requests:[]};
+  showPage('page-login');
+}
+function renderPadPicker(){
+  const grid=document.getElementById('pad-picker-grid');
+  if(!grid)return;
+  const q=(document.getElementById('pad-search')?.value||'').trim();
+  const list=activeStudents().filter(function(s){return !q||s.name.indexOf(q)>=0;});
+  if(!list.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text3);font-size:13px;padding:2rem 0">일치하는 학생이 없어요</div>';return;}
+  grid.innerHTML=list.map(function(s){
+    return '<button onclick="padPickStudent(\''+s.id+'\')" style="padding:16px 8px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:14px;font-weight:600;cursor:pointer">'+s.name+'</button>';
+  }).join('');
+}
+function padPickStudent(id){
+  const u=db.users.find(function(x){return x.id===id;});
+  if(!u){alert('학생 정보를 찾을 수 없어요.');return;}
+  if(!confirm(u.name+' 학생 맞나요?'))return;
+  session=u;
+  localStorage.setItem('lms_sess',JSON.stringify({id:u.id,role:u.role}));
+  launchStudent();
 }
 function launchTeacher(){
   showPage('page-teacher');
@@ -1671,6 +1750,10 @@ function launchStudent(){
   showPage('page-student');
   document.getElementById('s-name-disp').textContent=session.name;
   document.getElementById('s-avatar').textContent=session.name[0];
+  const logoutLabel=padMode?'✓ 제출 완료, 다음 학생':'로그아웃';
+  const lb1=document.getElementById('s-logout-btn'),lb2=document.getElementById('s-logout-btn-mobile');
+  if(lb1)lb1.lastChild.textContent=logoutLabel;
+  if(lb2)lb2.lastChild.textContent=logoutLabel;
   sNav('home');
   setTimeout(updateAllBadges,1000);
 }
@@ -1957,9 +2040,9 @@ function renderStudents(){
   });
   document.getElementById('student-count').textContent=`총 ${allSts.length}명`+(studentSchoolFilter?` · 표시 ${sts.length}명`:'');
   const tbl=document.getElementById('student-tbl');
-  if(!sts.length){tbl.innerHTML='<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text2)">등록된 학생이 없습니다.</td></tr>';return;}
+  if(!sts.length){tbl.innerHTML='<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text2)">등록된 학생이 없습니다.</td></tr>';return;}
   const schoolOptsHtml='<option value="">미배정</option>'+(qaDb.schools||[]).map(function(sc){return '<option value="'+sc.id+'">'+sc.name+'</option>';}).join('');
-  tbl.innerHTML=`<thead><tr><th>이름</th><th>아이디</th><th>학교</th><th>평균 진도</th><th>완료 강의</th><th></th></tr></thead><tbody>`+
+  tbl.innerHTML=`<thead><tr><th>이름</th><th>아이디</th><th>학교</th><th>평균 진도</th><th>완료 강의</th><th>학부모 연락처</th><th></th></tr></thead><tbody>`+
     sts.map(s=>{
       const vids=normalVideos();
       const progs=vids.map(v=>getPct(s.id,v.id));
@@ -1970,12 +2053,22 @@ function renderStudents(){
         <td>${schoolSel}</td>
         <td><div style="display:flex;align-items:center;gap:8px"><div class="pbar" style="width:90px"><div class="pbar-fill" style="width:${avg}%;background:${pctColor(avg)}"></div></div><span style="font-size:12px;font-weight:600;color:${pctColor(avg)}">${avg}%</span></div></td>
         <td style="font-weight:600;color:${doneC===vids.length&&vids.length>0?'var(--green)':'var(--text)'}">${doneC}/${vids.length}</td>
+        <td><input type="tel" class="form-input" placeholder="010-1234-5678" value="${s.parent_phone||''}" style="font-size:11px;padding:4px 6px;width:120px" onchange="setStudentParentPhone('${s.id}',this.value)"></td>
         <td><button class="btn btn-sm red" onclick="deleteStudent('${s.id}')">삭제</button></td></tr>`;
     }).join('')+'</tbody>';
   Array.from(tbl.querySelectorAll('tbody tr')).forEach(function(tr,i){
     const sel=tr.querySelector('select');
     if(sel)sel.value=sts[i].school_id||'';
   });
+}
+
+async function setStudentParentPhone(id,val){
+  const phone=(val||'').trim();
+  const{error}=await sb.from('users').update({parent_phone:phone||null}).eq('id',id);
+  if(error){notify('학부모 연락처 저장 실패: '+error.message,'error');return;}
+  const u=db.users.find(x=>x.id===id);
+  if(u)u.parent_phone=phone||null;
+  notify('학부모 연락처가 저장됐어요.','success');
 }
 
 /* ===== 복습 신청 관리 (강사) ===== */
@@ -5074,7 +5167,7 @@ async function viewTExamResults(examId,examName){
 }
 
 function tResTab(tab){
-  ['overview','ranking','wrong','student'].forEach(function(t){
+  ['overview','ranking','wrong','student','notify'].forEach(function(t){
     var el=document.getElementById('tres-'+t);
     if(el)el.style.display=t===tab?'block':'none';
     var btn=document.getElementById('tres-tab-'+t);
@@ -5082,6 +5175,7 @@ function tResTab(tab){
   });
   if(tab==='ranking')renderTResRanking();
   if(tab==='wrong')renderTResWrongStats();
+  if(tab==='notify')renderTResNotify();
 }
 
 function renderTResWrongStats(){
@@ -5303,6 +5397,113 @@ async function tApproveRegrade(examId,studentName,ev){
 function renderTResStudentSelect(){
   const sel=document.getElementById('tres-student-select');
   sel.innerHTML='<option value="">학생 선택</option>'+tResCurrentResponses.map(r=>`<option value="${r.student_name}">${r.student_name}</option>`).join('');
+}
+
+/* ════════════════════════════════════════════
+   학부모 발송 — 문구 생성 · 엑셀 내보내기
+   ════════════════════════════════════════════ */
+function tResWrongNums(exam,r){
+  var nums=[];
+  exam.questions.forEach(function(q,i){
+    if(repIsWrong(r,i,exam))nums.push(i+1);
+  });
+  return nums;
+}
+
+function tResBuildParentMessage(name,r,exam){
+  var wrongNums=tResWrongNums(exam,r);
+  var sc=repScore(exam,r);
+  var score=r.score!=null?r.score:sc.pct;
+  var grade=repGrade(sc.pct,exam.grade_cuts||[]);
+  var link=location.origin+location.pathname+'?report='+r.id;
+  var lines=[
+    name+' 학생 "'+exam.name+'" 결과 안내',
+    '점수: '+score+'점'+(grade?' ('+grade+'등급)':''),
+    '오답 문항: '+(wrongNums.length?wrongNums.join(', ')+'번':'없음 🎉'),
+    '상세 성적표: '+link
+  ];
+  return lines.join('\n');
+}
+
+function renderTResNotify(){
+  var exam=tResCurrentExam;
+  var responses=tResCurrentResponses;
+  var el=document.getElementById('tres-notify-list');
+  if(!responses||!responses.length){el.innerHTML='<p style="color:var(--text3);font-size:13px;padding:0.5rem 0">응답 데이터가 없어요</p>';return;}
+  el.innerHTML='<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>이름</th><th>점수</th><th>오답</th><th>학부모 연락처</th><th>발송 문구</th><th></th></tr></thead><tbody>'+
+    responses.map(function(r){
+      var u=db.users.find(function(x){return x.name===r.student_name;});
+      var phone=(u&&u.parent_phone)||'';
+      var wrongNums=tResWrongNums(exam,r);
+      var sc=repScore(exam,r);
+      var score=r.score!=null?r.score:sc.pct;
+      var msgPreview=tResBuildParentMessage(r.student_name,r,exam).replace(/\n/g,'  ·  ');
+      return '<tr><td style="font-weight:600">'+r.student_name+'</td>'+
+        '<td>'+score+'점</td>'+
+        '<td>'+(wrongNums.length?wrongNums.length+'문':'-')+'</td>'+
+        '<td><input type="tel" class="form-input" placeholder="010-1234-5678" value="'+phone+'" style="font-size:11px;padding:4px 6px;width:120px" onchange="tResSetParentPhoneInline(\''+r.student_name.replace(/'/g,"\\'")+'\',this.value)"></td>'+
+        '<td style="font-size:11px;color:var(--text2);max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+msgPreview+'</td>'+
+        '<td><button class="btn btn-sm" onclick="tResCopyParentMessage(\''+r.student_name.replace(/'/g,"\\'")+'\')">복사</button></td></tr>';
+    }).join('')+'</tbody></table></div>';
+}
+
+async function tResSetParentPhoneInline(studentName,val){
+  var u=db.users.find(function(x){return x.name===studentName;});
+  if(!u){notify('학생 계정을 찾을 수 없어요 (이름이 여러 명과 겹칠 수 있어요).','error');return;}
+  await setStudentParentPhone(u.id,val);
+}
+
+function tResCopyParentMessage(studentName){
+  var r=tResCurrentResponses.find(function(x){return x.student_name===studentName;});
+  if(!r)return;
+  var msg=tResBuildParentMessage(studentName,r,tResCurrentExam);
+  navigator.clipboard.writeText(msg).then(function(){
+    notify('문구가 복사됐어요! 카톡에 붙여넣어 학부모님께 보내주세요.','success');
+  }).catch(function(){
+    prompt('아래 문구를 복사해주세요:',msg);
+  });
+}
+
+function tResExportExcel(){
+  var exam=tResCurrentExam,responses=tResCurrentResponses;
+  if(!exam||!responses||!responses.length){alert('데이터가 없어요.');return;}
+  if(typeof XLSX==='undefined'){alert('엑셀 기능을 불러오지 못했어요. 인터넷 연결을 확인하고 새로고침 해주세요.');return;}
+  var summaryRows=responses.map(function(r){
+    var wrongNums=tResWrongNums(exam,r);
+    var sc=repScore(exam,r);
+    var score=r.score!=null?r.score:sc.pct;
+    var grade=repGrade(sc.pct,exam.grade_cuts||[]);
+    return {'이름':r.student_name,'점수':score,'등급':grade||'','정답수':exam.total_q-wrongNums.length,'오답수':wrongNums.length,'오답문항':wrongNums.join(', ')};
+  }).sort(function(a,b){return b['점수']-a['점수'];});
+  var oxRows=responses.map(function(r){
+    var row={'이름':r.student_name};
+    exam.questions.forEach(function(q,i){
+      row[(i+1)+'번']=!isObjectiveAnswer(q.answer)?'-':(repIsWrong(r,i,exam)?'X':'O');
+    });
+    return row;
+  });
+  var wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(summaryRows),'성적요약');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(oxRows),'OX표');
+  XLSX.writeFile(wb,exam.name+'_성적.xlsx');
+}
+
+function tResExportNotifyExcel(){
+  var exam=tResCurrentExam,responses=tResCurrentResponses;
+  if(!exam||!responses||!responses.length){alert('데이터가 없어요.');return;}
+  if(typeof XLSX==='undefined'){alert('엑셀 기능을 불러오지 못했어요. 인터넷 연결을 확인하고 새로고침 해주세요.');return;}
+  var rows=responses.map(function(r){
+    var u=db.users.find(function(x){return x.name===r.student_name;});
+    var phone=(u&&u.parent_phone)||'';
+    return {'학생명':r.student_name,'학부모연락처':phone,'문자내용':tResBuildParentMessage(r.student_name,r,exam)};
+  });
+  var missing=rows.filter(function(r){return !r['학부모연락처'];}).length;
+  if(missing)notify(missing+'명은 학부모 연락처가 비어 있어요. "학부모 발송" 탭에서 먼저 채워주세요.','info');
+  var wb=XLSX.utils.book_new();
+  var ws=XLSX.utils.json_to_sheet(rows);
+  ws['!cols']=[{wch:10},{wch:16},{wch:60}];
+  XLSX.utils.book_append_sheet(wb,ws,'학부모발송');
+  XLSX.writeFile(wb,exam.name+'_학부모발송.xlsx');
 }
 
 async function tResDeleteStudentResponse(){
@@ -5625,8 +5826,28 @@ function generateOmrSheet(){
 /* ════════════════════════════════════════════
    OMR 채점 — 답안지 사진을 AI가 읽어 채점
    ════════════════════════════════════════════ */
-var omrCamStream=null,omrCurrentPhoto=null,omrReadAnswers={};
-var omrBatchResults=[];
+var omrCamStream=null,omrCurrentPhoto=null,omrReadAnswers={},omrReadUncertain={};
+var omrBatchResults=[],omrBatchExpanded={};
+
+/* AI가 OMR 마킹을 더 꼼꼼히, 체계적으로 읽도록 만드는 공통 프롬프트 + 파라미터.
+   - extended thinking을 켜서 문항을 한 번에 훑지 않고 단계적으로 재확인하게 함
+   - 흐릿하거나 헷갈리는 마킹은 uncertain 배열로 따로 보고하게 해서, 선생님이 그 문항만 빠르게 재확인할 수 있게 함 */
+function omrBuildPrompt(total){
+  return '당신은 OMR(객관식 답안지) 마킹을 정확하게 판독하는 전문가입니다. 첨부된 이미지는 학생이 마킹한 OMR 답안지 사진입니다.\n'+
+    '답안지는 문항 번호 1번부터 '+total+'번까지 세로로 나열되어 있고, 각 문항 옆에 ①②③④⑤ 다섯 개의 원(마킹란)이 놓여 있습니다. 학생은 그중 하나를 검게(또는 진하게) 칠해 표시합니다.\n'+
+    '다음 순서로 신중하게 읽어주세요:\n'+
+    '1) 먼저 답안지에서 문항 번호 열과 마킹 열의 위치, 열(단) 구성을 파악하세요.\n'+
+    '2) 1번부터 '+total+'번까지 하나씩 순서대로 짚어가며 다섯 개의 원 중 실제로 진하게 채워진 것이 어느 것인지 확인하세요. 흐릿하거나 부분적으로 칠해진 것도 유효한 마킹으로 인정하되, 아무 표시가 없거나(공란) 두 개 이상 칠해진 경우만 마킹 실패로 판단하세요.\n'+
+    '3) 다 읽은 뒤 처음부터 한 번 더 훑으며 놓쳤거나 헷갈리는 문항이 없는지 재확인하세요.\n'+
+    '마킹이 없거나 두 개 이상 마킹되어 판독이 애매한 문항은 answers에 0으로 표시하세요.\n'+
+    '표시가 흐릿하거나 인접한 원과 헷갈려서 확신이 낮은 문항 번호만 uncertain 배열에 담으세요 (자신 있게 읽은 문항은 넣지 마세요).\n'+
+    '또한 답안지 상단의 "핸드폰 번호(뒤 8자리)" 칸에 학생이 손으로 적은 8자리 숫자를 읽어 phone에 담으세요. 글씨가 없거나 읽기 애매하면 빈 문자열로 두세요.\n'+
+    'JSON으로만 답하세요. 형식 예시: {"answers":{"1":3,"2":1,"3":0},"uncertain":[3],"phone":"12345678"}\n다른 설명 없이 순수 JSON 객체만 반환하세요.';
+}
+function omrApiBody(total,b64){
+  return JSON.stringify({model:'claude-sonnet-5',max_tokens:4000,thinking:{type:'enabled',budget_tokens:1800},
+    messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},{type:'text',text:omrBuildPrompt(total)}]}]});
+}
 async function openOmrModalForExam(examId){
   if(!tResCurrentExam||tResCurrentExam.id!==examId){
     const{data,error}=await sb.from('exams').select('*').eq('id',examId).single();
@@ -5653,15 +5874,15 @@ function openOmrModal(){
 function closeOmrModal(){
   if(omrCamStream){try{omrCamStream.getTracks().forEach(function(t){t.stop();});}catch(e){}omrCamStream=null;}
   document.getElementById('modal-omr').classList.remove('show');
-  omrCurrentPhoto=null;omrReadAnswers={};
-  omrBatchResults=[];
+  omrCurrentPhoto=null;omrReadAnswers={};omrReadUncertain={};
+  omrBatchResults=[];omrBatchExpanded={};
 }
 function omrManualEntry(){
   const name=document.getElementById('omr-student-select').value;
   if(!name){alert('학생을 선택해 주세요.');return;}
   const exam=tResCurrentExam;
   omrCurrentPhoto=null;
-  omrReadAnswers={};
+  omrReadAnswers={};omrReadUncertain={};
   for(let i=0;i<exam.total_q;i++)omrReadAnswers[i]='';
   document.getElementById('omr-step-student').style.display='none';
   renderOmrReview();
@@ -5720,28 +5941,23 @@ async function omrReadWithAI(){
   const total=exam.total_q;
   try{
     const b64=await new Promise(function(res){const r=new FileReader();r.onload=function(){res(r.result.split(',')[1]);};r.readAsDataURL(omrCurrentPhoto);});
-    const promptText='당신은 OMR 답안지를 읽는 전문가입니다. 첨부된 이미지는 학생이 마킹한 OMR 답안지 사진입니다.\n'+
-      '총 문항 수: '+total+'개, 각 문항은 1~5번 중 하나를 마킹합니다.\n'+
-      '사진을 보고 문항 번호 1~'+total+'번까지 각각 마킹된 번호를 읽어서 answers에 담으세요.\n'+
-      '마킹이 없거나 두 개 이상 마킹되어 읽기 애매한 문항은 0으로 표시하세요.\n'+
-      '또한 답안지 상단의 "핸드폰 번호(뒤 8자리)" 칸에 학생이 손으로 적은 8자리 숫자를 읽어 phone에 담으세요. 글씨가 없거나 읽기 애매하면 빈 문자열로 두세요.\n'+
-      'JSON으로만 답하세요. 형식 예시: {"answers":{"1":3,"2":1,"3":0},"phone":"12345678"}\n다른 설명 없이 순수 JSON 객체만 반환하세요.';
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:2000,thinking:{type:'disabled'},messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},{type:'text',text:promptText}]}]})});
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:omrApiBody(total,b64)});
     const data=await resp.json();
     if(data.error)throw new Error(data.error.message||'AI 응답 오류');
     const raw=(data.content||[]).map(function(c){return c.text||'';}).join('');
     let parsed={};
     try{parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());}catch(e){parsed={};}
     const answersObj=parsed.answers||parsed||{};
-    omrReadAnswers={};
+    omrReadAnswers={};omrReadUncertain={};
     for(let i=0;i<total;i++){
       const v=answersObj[String(i+1)];
       omrReadAnswers[i]=(v&&Number(v)>=1&&Number(v)<=9)?String(v):'';
     }
+    (parsed.uncertain||[]).forEach(function(n){omrReadUncertain[Number(n)-1]=true;});
     omrTryAutoIdentify(parsed.phone||'');
   }catch(e){
     notify('AI 읽기 실패, 직접 입력해주세요: '+e.message,'error');
-    omrReadAnswers={};
+    omrReadAnswers={};omrReadUncertain={};
     for(let i=0;i<total;i++)omrReadAnswers[i]='';
   }
   renderOmrReview();
@@ -5794,16 +6010,10 @@ async function omrBatchStart(files){
     msgEl.textContent='답안지 읽는 중... ('+(i+1)+'/'+jobs.length+')';
     const job=jobs[i];
     const previewUrl=URL.createObjectURL(job.blob);
-    const result={fileName:job.name,previewUrl:previewUrl,blob:job.blob,answers:{},matchedName:'',include:true,readError:null};
+    const result={fileName:job.name,previewUrl:previewUrl,blob:job.blob,answers:{},uncertain:{},matchedName:'',include:true,readError:null};
     try{
       const b64=await omrBlobToBase64(job.blob);
-      const promptText='당신은 OMR 답안지를 읽는 전문가입니다. 첨부된 이미지는 학생이 마킹한 OMR 답안지 사진입니다.\n'+
-        '총 문항 수: '+total+'개, 각 문항은 1~5번 중 하나를 마킹합니다.\n'+
-        '사진을 보고 문항 번호 1~'+total+'번까지 각각 마킹된 번호를 읽어서 answers에 담으세요.\n'+
-        '마킹이 없거나 두 개 이상 마킹되어 읽기 애매한 문항은 0으로 표시하세요.\n'+
-        '또한 답안지 상단의 "핸드폰 번호(뒤 8자리)" 칸에 학생이 손으로 적은 8자리 숫자를 읽어 phone에 담으세요. 글씨가 없거나 읽기 애매하면 빈 문자열로 두세요.\n'+
-        'JSON으로만 답하세요. 형식 예시: {"answers":{"1":3,"2":1,"3":0},"phone":"12345678"}\n다른 설명 없이 순수 JSON 객체만 반환하세요.';
-      const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:2000,thinking:{type:'disabled'},messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},{type:'text',text:promptText}]}]})});
+      const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:omrApiBody(total,b64)});
       const data=await resp.json();
       if(data.error)throw new Error(data.error.message||'AI 응답 오류');
       const raw=(data.content||[]).map(function(c){return c.text||'';}).join('');
@@ -5816,6 +6026,7 @@ async function omrBatchStart(files){
         answers[qi]=(v&&Number(v)>=1&&Number(v)<=9)?String(v):'';
       }
       result.answers=answers;
+      (parsed.uncertain||[]).forEach(function(n){result.uncertain[Number(n)-1]=true;});
       const digits=(parsed.phone||'').replace(/\D/g,'');
       if(digits.length===8){
         const idPart=digits.slice(0,4),pwPart=digits.slice(4,8);
@@ -5847,17 +6058,43 @@ function renderOmrBatchList(){
       return q&&isObjectiveAnswer(q.answer)&&r.answers[qi]&&String(r.answers[qi])!==String(q.answer);
     }).length;
     const answeredCount=Object.values(r.answers).filter(Boolean).length;
+    const uncertainCnt=Object.keys(r.uncertain||{}).length;
+    const expanded=!!omrBatchExpanded[idx];
     return '<div class="card" style="margin-bottom:8px'+(r.matchedName?'':';border-left:3px solid var(--red)')+'">'+
       '<div style="padding:10px 12px;display:flex;gap:10px;align-items:center">'+
         '<img src="'+r.previewUrl+'" style="width:44px;height:44px;object-fit:cover;border-radius:6px;background:var(--bg2);flex-shrink:0">'+
         '<div style="flex:1;min-width:0">'+
           '<select class="form-select" style="font-size:13px;font-weight:600;padding:4px 6px" onchange="omrBatchSetName('+idx+',this.value)">'+omrBatchStudentOptions(r.matchedName)+'</select>'+
-          '<div style="font-size:11px;color:var(--text2);margin-top:2px">'+r.fileName+' · 응답 '+answeredCount+'/'+total+' · 오답(추정) '+wrongCount+'개'+(r.readError?' · ⚠️ 읽기 실패':'')+'</div>'+
+          '<div style="font-size:11px;color:var(--text2);margin-top:2px">'+r.fileName+' · 응답 '+answeredCount+'/'+total+' · 오답(추정) '+wrongCount+'개'+(uncertainCnt?' · <span style="color:var(--amber);font-weight:600">🟠 확인필요 '+uncertainCnt+'개</span>':'')+(r.readError?' · ⚠️ 읽기 실패':'')+'</div>'+
         '</div>'+
+        '<button class="btn btn-sm" onclick="omrBatchToggleExpand('+idx+')">'+(expanded?'접기':'✏️ 답안 확인·수정')+'</button>'+
         '<label style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2);flex-shrink:0"><input type="checkbox" '+(r.include?'checked':'')+' onchange="omrBatchToggle('+idx+',this.checked)">포함</label>'+
       '</div>'+
+      (expanded?omrBatchEditGridHTML(idx,r,exam):'')+
     '</div>';
   }).join('');
+}
+function omrBatchEditGridHTML(idx,r,exam){
+  return '<div style="padding:0 12px 12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:6px">'+
+    exam.questions.map(function(q,qi){
+      const val=r.answers[qi]||'';
+      const isWrong=val&&isObjectiveAnswer(q.answer)&&String(val)!==String(q.answer);
+      const borderColor=!val?'var(--border)':(isWrong?'var(--red)':'var(--green)');
+      const shadow=(r.uncertain&&r.uncertain[qi])?'box-shadow:0 0 0 2px var(--amber);':'';
+      return '<div style="text-align:center"><div style="font-size:9px;color:var(--text2)">'+(qi+1)+'번'+((r.uncertain&&r.uncertain[qi])?' 🟠':'')+'</div>'+
+        '<input type="number" min="1" max="9" value="'+val+'" onchange="omrBatchUpdateAnswer('+idx+','+qi+',this.value)" '+
+        'style="width:100%;padding:4px 2px;text-align:center;border-radius:6px;border:1px solid '+borderColor+';color:'+borderColor+';background:var(--bg2);font-size:12px;'+shadow+'"></div>';
+    }).join('')+
+  '</div>';
+}
+function omrBatchToggleExpand(idx){
+  omrBatchExpanded[idx]=!omrBatchExpanded[idx];
+  renderOmrBatchList();
+}
+function omrBatchUpdateAnswer(idx,qi,val){
+  omrBatchResults[idx].answers[qi]=(val||'').toString().trim();
+  if(omrBatchResults[idx].uncertain)delete omrBatchResults[idx].uncertain[qi];
+  renderOmrBatchList();
 }
 function omrBatchSetName(idx,name){omrBatchResults[idx].matchedName=name;renderOmrBatchList();}
 function omrBatchToggle(idx,checked){omrBatchResults[idx].include=checked;}
@@ -5911,11 +6148,12 @@ function renderOmrReview(){
   const revSel=document.getElementById('omr-student-select-review');
   if(revSel)revSel.value=document.getElementById('omr-student-select').value;
   const hint=document.getElementById('omr-review-hint');
-  if(hint)hint.textContent=omrCurrentPhoto?'AI가 읽은 답이에요. 틀리게 읽은 문항은 숫자를 직접 고쳐주세요 (초록: 정답 일치, 빨강: 오답, 회색: 미마킹).':'문항별로 마킹된 번호를 입력하세요 (초록: 정답 일치, 빨강: 오답, 회색: 미입력).';
+  const uncertainCnt=Object.keys(omrReadUncertain).length;
+  if(hint)hint.textContent=omrCurrentPhoto?'AI가 읽은 답이에요. 틀리게 읽은 문항은 숫자를 직접 고쳐주세요 (초록: 정답 일치, 빨강: 오답, 회색: 미마킹)'+(uncertainCnt?' · 🟠 주황 테두리 '+uncertainCnt+'개는 AI가 확신 못 한 문항이니 종이 원본과 꼭 대조해주세요.':'.'):'문항별로 마킹된 번호를 입력하세요 (초록: 정답 일치, 빨강: 오답, 회색: 미입력).';
   const grid=document.getElementById('omr-review-grid');
   grid.innerHTML=exam.questions.map(function(q,i){
     const val=omrReadAnswers[i]||'';
-    return'<div style="text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:2px">'+(i+1)+'번</div>'+
+    return'<div style="text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:2px">'+(i+1)+'번'+(omrReadUncertain[i]?' 🟠':'')+'</div>'+
       '<input type="number" min="1" max="9" value="'+val+'" data-idx="'+i+'" onchange="omrUpdateAnswer('+i+',this.value)" '+
       'style="width:100%;padding:6px 2px;text-align:center;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:13px"></div>';
   }).join('');
@@ -5923,6 +6161,7 @@ function renderOmrReview(){
 }
 function omrUpdateAnswer(idx,val){
   omrReadAnswers[idx]=(val||'').toString().trim();
+  delete omrReadUncertain[idx]; // 사람이 직접 확인/수정했으니 더는 '확신 낮음' 표시 안 함
   omrColorizeGrid();
 }
 function omrColorizeGrid(){
@@ -5934,6 +6173,7 @@ function omrColorizeGrid(){
     if(!val){inp.style.borderColor='var(--border)';inp.style.color='var(--text2)';}
     else if(String(val)===String(q.answer)){inp.style.borderColor='var(--green)';inp.style.color='var(--green)';}
     else{inp.style.borderColor='var(--red)';inp.style.color='var(--red)';}
+    inp.style.boxShadow=omrReadUncertain[idx]?'0 0 0 2px var(--amber)':'';
   });
 }
 async function omrConfirmScore(){
@@ -6752,20 +6992,16 @@ async function sOmrReadWithAI(previewUrl){
   const total=exam.total_q;
   try{
     const b64=await new Promise(function(res){const r=new FileReader();r.onload=function(){res(r.result.split(',')[1]);};r.readAsDataURL(sOmrCurrentPhoto);});
-    const promptText='당신은 OMR 답안지를 읽는 전문가입니다. 첨부된 이미지는 학생이 마킹한 OMR 답안지 사진입니다.\n'+
-      '총 문항 수: '+total+'개, 각 문항은 1~5번 중 하나를 마킹합니다.\n'+
-      '사진을 보고 문항 번호 1~'+total+'번까지 각각 마킹된 번호를 읽어서 JSON으로만 답하세요.\n'+
-      '마킹이 없거나 두 개 이상 마킹되어 읽기 애매한 문항은 0으로 표시하세요.\n'+
-      '형식 예시: {"1":3,"2":1,"3":0}\n다른 설명 없이 순수 JSON 객체만 반환하세요.';
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:2000,thinking:{type:'disabled'},messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},{type:'text',text:promptText}]}]})});
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:omrApiBody(total,b64)});
     const data=await resp.json();
     if(data.error)throw new Error(data.error.message||'AI 응답 오류');
     const raw=(data.content||[]).map(function(c){return c.text||'';}).join('');
     let parsed={};
     try{parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());}catch(e){parsed={};}
+    const answersObj=parsed.answers||parsed||{};
     sExamFullAnswers={};
     for(let i=0;i<total;i++){
-      const v=parsed[String(i+1)];
+      const v=answersObj[String(i+1)];
       sExamFullAnswers[i]=(v&&Number(v)>=1&&Number(v)<=9)?String(v):'';
     }
   }catch(e){
