@@ -2667,6 +2667,7 @@ document.getElementById('modal-resume').addEventListener('click',e=>{if(e.target
 /* ===== 클리닉 ===== */
 var clinicDb={slots:[],requests:[]};
 var clinicSchool=null;
+var CLINIC_SURVEY_OPEN_AT=new Date('2026-08-15T00:00:00+09:00');
 
 function weekMonday(value){
   var d=new Date(value);d.setHours(0,0,0,0);
@@ -2674,10 +2675,22 @@ function weekMonday(value){
   return d;
 }
 function sameClinicWeek(a,b){return weekMonday(a).getTime()===weekMonday(b).getTime();}
+function clinicRequestComment(req){
+  var marker='~c~',p=(req&&req.id||'').indexOf(marker);if(p<0)return'';
+  try{var x=(req.id.slice(p+marker.length)).replace(/-/g,'+').replace(/_/g,'/');while(x.length%4)x+='=';return decodeURIComponent(escape(atob(x)));}catch(e){return'';}
+}
+function clinicCommentToken(text){
+  if(!text)return'';
+  try{return'~c~'+btoa(unescape(encodeURIComponent(text))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}catch(e){return'';}
+}
+function clinicRequestWeek(req){
+  var slot=clinicDb.slots.find(function(s){return s.id===req.slot_id;});
+  return weekMonday(slot&&slot.slot_date?slot.slot_date:req.created_at);
+}
 function effectiveClinicRequest(studentId,weekDate){
-  var end=new Date(weekMonday(weekDate));end.setDate(end.getDate()+7);
-  return clinicDb.requests.filter(function(r){return r.student_id===studentId&&r.status==='confirmed'&&new Date(r.created_at)<end;})
-    .sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at);})[0]||null;
+  var target=weekMonday(weekDate);
+  return clinicDb.requests.filter(function(r){return r.student_id===studentId&&r.status==='confirmed'&&clinicRequestWeek(r)<=target;})
+    .sort(function(a,b){var d=clinicRequestWeek(b)-clinicRequestWeek(a);return d||new Date(b.created_at)-new Date(a.created_at);})[0]||null;
 }
 function currentClinicAssignments(){
   var latest={};
@@ -3386,6 +3399,7 @@ function renderTClinicReqList(){
     return '<div style="display:flex;align-items:center;gap:10px;padding:11px 1.25rem;border-bottom:1px solid var(--border)">'+
       '<div style="flex:1"><div style="font-size:13px;font-weight:600">'+(student?student.name:req.student_id)+'</div>'+
       '<div style="font-size:12px;color:var(--text2)">'+(slot?slot.label:'')+'</div>'+
+      (clinicRequestComment(req)?'<div style="font-size:12px;color:var(--accent);margin-top:4px;white-space:pre-wrap">💬 '+clinicRequestComment(req)+'</div>':'')+
       (change?'<div style="font-size:11px;color:var(--amber);margin-top:2px">🔄 '+change.prevSlot.day_of_week+'요일 → '+change.curSlot.day_of_week+'요일 변경</div>':'')+
       '</div>'+
       (req.status==='pending'?'<span class="badge partial">승인 대기</span><button class="btn green btn-sm" onclick="approveClinicReq(\''+req.id+'\')">승인</button>':'<span class="badge done">확정</span>')+
@@ -3446,12 +3460,18 @@ async function renderSClinicList(){
   var myPending=clinicDb.requests.find(function(r){return r.student_id===session.id&&r.status==='pending'&&sameClinicWeek(r.created_at,thisMonday);});
   var myReq=myPending||effectiveClinicRequest(session.id,thisMonday);
   var clinicTop='';
-  var slots=clinicDb.slots.filter(function(s){
-    var school=qaDb.schools.find(function(sc){return sc.id===s.school_id;});
-    return true;
-  });
+  var surveyNotOpen=new Date()<CLINIC_SURVEY_OPEN_AT;
+  var slots=clinicDb.slots.filter(function(s){return !session.school_id||s.school_id===session.school_id;});
+  var datedUpcoming=slots.filter(function(s){return s.slot_date&&weekMonday(s.slot_date)>=thisMonday;});
+  if(datedUpcoming.length)slots=datedUpcoming;
   if(!slots.length){
     el.innerHTML='<div style="text-align:center;padding:3rem;color:var(--text3);font-size:13px">등록된 클리닉 시간대가 없어요.</div>';
+    return;
+  }
+  if(surveyNotOpen){
+    var existing=effectiveClinicRequest(session.id,thisMonday);
+    var existingSlot=existing?clinicDb.slots.find(function(s){return s.id===existing.slot_id;}):null;
+    el.innerHTML='<div class="card" style="border-left:4px solid var(--amber)"><div style="padding:1.5rem"><div style="font-size:16px;font-weight:800;margin-bottom:8px">📅 클리닉 시간 조사는 8월 15일(토)부터</div><div style="font-size:13px;color:var(--text2);line-height:1.7">토요일 0시부터 다음 주 클리닉 시간을 선택하고 개인 사정을 적을 수 있어요.</div>'+(existingSlot?'<div style="margin-top:12px;font-size:13px;font-weight:700">현재 시간: '+(existingSlot.day_of_week||'')+'요일 '+(existingSlot.start_time||existingSlot.label||'')+'</div>':'')+'</div></div>';
     return;
   }
   if(myReq){
@@ -3500,11 +3520,12 @@ async function renderSClinicList(){
           '<div style="flex:1"><div style="font-size:13px;font-weight:600;margin-bottom:3px">'+slot.label+'</div>'+
           '<div style="font-size:11px;color:var(--text2)">'+(timeInfo||'')+' · '+(full?'<span style="color:var(--red)">마감</span>':'잔여 '+remain+'자리')+'</div></div>'+
           (full?'<button class="btn btn-sm" disabled>마감</button>':'<button class="btn blue btn-sm" onclick="applyClinicSlot(\''+slot.id+'\',\''+sid+'\')">신청</button>')+'</div>';
-      }).join('')+'</div></div>';
+      }).join('')+'<div style="margin-top:12px"><label class="flabel">3. 개인 사정·가능 시간을 상세히 적어주세요</label><textarea id="s-clinic-comment-'+sid+'" class="form-input" rows="3" maxlength="300" placeholder="예: 수요일은 7교시라 5시 이후 가능해요. 금요일 6~8시가 가장 좋아요."></textarea></div></div></div>';
   }).join('');
 }
 
 async function applyClinicSlot(slotId,schoolId){
+  if(new Date()<CLINIC_SURVEY_OPEN_AT){notify('클리닉 시간 조사는 8월 15일(토)부터 가능해요.','info');return;}
   var slot=clinicDb.slots.find(function(s){return s.id===slotId;});
   if(!slot)return;
   var originSel=document.getElementById('s-clinic-origin-'+schoolId);
@@ -3525,7 +3546,9 @@ async function applyClinicSlot(slotId,schoolId){
       if(!pastRes.error)clinicDb.requests.push(pastReq);
     }
   }
-  var id='cr_'+now;
+  var commentEl=document.getElementById('s-clinic-comment-'+schoolId);
+  var comment=commentEl?commentEl.value.trim():'';
+  var id='cr_'+now+clinicCommentToken(comment);
   var req={id:id,slot_id:slotId,student_id:session.id,school_id:schoolId,status:'pending',created_at:new Date(now).toISOString()};
   var res=await sb.from('clinic_requests').insert(req);
   if(res.error){notify('신청 실패: '+res.error.message,'error');return;}
