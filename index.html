@@ -378,6 +378,20 @@ input,button{font-family:var(--font)}
       <!-- 학생 관리 -->
       <div class="panel" id="panel-students">
         <div class="page-header"><h1>학생 관리</h1><p>가입 신청을 승인하고 학생을 관리하세요</p></div>
+        <div class="card" style="margin-bottom:1rem">
+          <div class="card-head"><h3>📣 학생 알림 보내기</h3><span style="font-size:11px;color:var(--text2)">웹 푸시 · 학생이 "🔔 알림 받기"를 눌러둔 기기로 감</span></div>
+          <div class="card-body">
+            <div class="frow"><div style="flex:1"><label class="flabel">제목</label><input id="push-title" class="form-input" placeholder="예: 새 강의 올라왔어요!"/></div></div>
+            <div class="frow"><div style="flex:1"><label class="flabel">내용</label><input id="push-body" class="form-input" placeholder="예: 3강 문법 정리 영상 확인해보세요"/></div></div>
+            <div class="frow"><div style="flex:1">
+              <label class="flabel">받는 학생</label>
+              <select id="push-target" class="form-select" onchange="renderPushTargetPicker()"><option value="all">전체 학생</option><option value="pick">직접 선택</option></select>
+            </div></div>
+            <div id="push-target-picker" style="display:none;flex-wrap:wrap;gap:6px;padding:0 0 10px;max-height:140px;overflow-y:auto"></div>
+            <button class="btn blue" onclick="sendPushNotification()">📣 보내기</button>
+            <div style="font-size:11px;color:var(--text3);margin-top:6px">발송 요청을 저장해두면 5분 안에 GitHub Actions가 실제로 보내요 (즉시 반영 아님, 약간의 지연 있어요).</div>
+          </div>
+        </div>
         <div class="card" id="pending-card" style="margin-bottom:1rem;border-color:var(--amber)">
           <div class="card-head" style="background:var(--amber-bg)"><h3 style="color:var(--amber)">⏳ 가입 승인 대기</h3><span id="pending-count" style="font-size:11px;color:var(--amber)"></span></div>
           <div id="pending-list"></div>
@@ -917,6 +931,7 @@ input,button{font-family:var(--font)}
       </nav>
       <div class="sidebar-footer">
         <button id="pwa-install-btn-t" onclick="installPWA()" style="display:none;width:100%;margin-bottom:6px;background:rgba(79,124,255,0.1);border:1px solid rgba(79,124,255,0.3);color:var(--accent);border-radius:var(--radius-sm);padding:8px;font-size:12px;cursor:pointer;font-family:inherit">📲 앱으로 설치</button>
+        <button id="s-push-btn" onclick="subscribeToPush()" style="width:100%;margin-bottom:6px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:var(--green);border-radius:var(--radius-sm);padding:8px;font-size:12px;cursor:pointer;font-family:inherit">🔔 알림 받기</button>
         <button class="btn-logout" id="s-logout-btn" onclick="doLogout()">로그아웃</button>
       </div>
     </div>
@@ -1591,6 +1606,7 @@ const SB_KEY='sb_publishable_IbfVcXs5TmXfumrnK4Somg_7MzygCdh';
 const sb=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:false,autoRefreshToken:false}});
 const TG_BOT_TOKEN='8934694780:AAH4Bdx-Zo013w7O4lWo1xs2X5COTE5TTUE';
 const TG_CHAT_ID='8735127250';
+const VAPID_PUBLIC_KEY='BHZrIyaqw7HLsBN17c_VMQUI4T84fkL0gWaJEduzvtgvLuFuSSDbJlE7M5I5PyI7bZPChBBrMqSvXk0PLCJvKqI';
 function sendTelegram(text){
   fetch('https://api.telegram.org/bot'+TG_BOT_TOKEN+'/sendMessage',{
     method:'POST',headers:{'Content-Type':'application/json'},
@@ -1833,9 +1849,55 @@ function launchStudent(){
   if(lb2)lb2.lastChild.textContent=logoutLabel;
   sNav('home');
   setTimeout(updateAllBadges,1000);
+  setTimeout(updatePushBtnState,300);
 }
 
-async function renderSHome(){
+async /* ════════════════════════════════════════════
+   웹 푸시 알림 구독 (학생용) — 카톡 대신 무료로 즉시 쓸 수 있는 알림 채널
+   ════════════════════════════════════════════ */
+function urlBase64ToUint8Array(base64String){
+  const padding='='.repeat((4-base64String.length%4)%4);
+  const base64=(base64String+padding).replace(/-/g,'+').replace(/_/g,'/');
+  const rawData=atob(base64);
+  const outputArray=new Uint8Array(rawData.length);
+  for(let i=0;i<rawData.length;i++)outputArray[i]=rawData.charCodeAt(i);
+  return outputArray;
+}
+async function subscribeToPush(){
+  if(!session||session.role!=='student'){notify('학생 계정으로 이용해주세요.','error');return;}
+  if(!('serviceWorker' in navigator)||!('PushManager' in window)){alert('이 브라우저(기기)는 웹 알림을 지원하지 않아요. (아이폰은 홈화면에 앱 추가 후 iOS 16.4+ 에서 가능해요)');return;}
+  try{
+    const perm=await Notification.requestPermission();
+    if(perm!=='granted'){notify('알림 권한을 허용해주셔야 알림을 받을 수 있어요.','error');return;}
+    const reg=await navigator.serviceWorker.ready;
+    const sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)});
+    const j=sub.toJSON();
+    const {error}=await sb.from('push_subscriptions').upsert({
+      id:'ps_'+session.id+'_'+Date.now(),
+      student_id:session.id,
+      endpoint:j.endpoint,
+      p256dh:j.keys.p256dh,
+      auth:j.keys.auth
+    },{onConflict:'endpoint'});
+    if(error){notify('구독 저장 실패: '+error.message,'error');return;}
+    notify('🔔 알림 켜졌어요! 새 소식이 오면 바로 알려드릴게요.','success');
+    updatePushBtnState();
+  }catch(e){
+    notify('알림 설정 실패: '+e.message,'error');
+  }
+}
+async function updatePushBtnState(){
+  const btn=document.getElementById('s-push-btn');
+  if(!btn)return;
+  if(!('serviceWorker' in navigator)||!('PushManager' in window)){btn.style.display='none';return;}
+  try{
+    const reg=await navigator.serviceWorker.ready;
+    const sub=await reg.pushManager.getSubscription();
+    btn.textContent=sub?'🔔 알림 켜짐':'🔔 알림 받기';
+  }catch(e){}
+}
+
+function renderSHome(){
   var greet=document.getElementById('home-greet-name');
   if(greet)greet.textContent=session.name||'학생';
   var grid=document.getElementById('home-grid');
@@ -2210,6 +2272,43 @@ function renderStudents(){
     const sel=tr.querySelector('select');
     if(sel)sel.value=sts[i].school_id||'';
   });
+}
+
+/* ════════════════════════════════════════════
+   학생 알림 보내기 (웹 푸시) — push_queue에 요청을 넣어두면
+   GitHub Actions(scripts/push-notify.mjs)가 5분마다 읽어서 실제로 보냄
+   ════════════════════════════════════════════ */
+var pushTargetChecked={};
+function renderPushTargetPicker(){
+  const sel=document.getElementById('push-target')?.value;
+  const el=document.getElementById('push-target-picker');
+  if(!el)return;
+  if(sel!=='pick'){el.style.display='none';return;}
+  el.style.display='flex';
+  el.innerHTML=activeStudents().map(function(s){
+    const checked=!!pushTargetChecked[s.id];
+    return '<label style="display:flex;align-items:center;gap:4px;font-size:12px;background:var(--bg2);padding:4px 8px;border-radius:6px;cursor:pointer">'+
+      '<input type="checkbox" '+(checked?'checked':'')+' onchange="pushTargetChecked[\''+s.id+'\']=this.checked">'+s.name+'</label>';
+  }).join('');
+}
+async function sendPushNotification(){
+  const title=document.getElementById('push-title').value.trim();
+  const body=document.getElementById('push-body').value.trim();
+  const targetSel=document.getElementById('push-target')?.value;
+  if(!title||!body){notify('제목과 내용을 입력하세요.','error');return;}
+  let targetIds=null;
+  if(targetSel==='pick'){
+    targetIds=Object.keys(pushTargetChecked).filter(function(id){return pushTargetChecked[id];});
+    if(!targetIds.length){notify('받을 학생을 한 명 이상 선택하세요.','error');return;}
+  }
+  const {error}=await sb.from('push_queue').insert({id:'pq'+Date.now(),title,body,target_ids:targetIds});
+  if(error){notify('발송 요청 실패: '+error.message,'error');return;}
+  notify('발송 요청 저장됨! 5분 안에 전송돼요.','success');
+  document.getElementById('push-title').value='';
+  document.getElementById('push-body').value='';
+  pushTargetChecked={};
+  document.getElementById('push-target').value='all';
+  renderPushTargetPicker();
 }
 
 async function setStudentParentPhone(id,val){

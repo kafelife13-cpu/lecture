@@ -1,0 +1,19 @@
+name: 학생 웹 푸시 알림 발송
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'   # 5분마다 push_queue를 확인해서 밀린 알림을 보냄
+  workflow_dispatch: {}      # 수동으로도 실행/테스트 가능 (Actions 탭 → Run workflow)
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm install web-push --no-save
+      - run: node scripts/push-notify.mjs
+        env:
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
