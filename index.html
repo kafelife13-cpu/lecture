@@ -351,8 +351,9 @@ input,button{font-family:var(--font)}
         <div class="card" style="margin-bottom:1.5rem">
           <div class="card-head"><h3>새 강의 등록</h3></div>
           <div class="card-body">
-            <div class="frow"><div style="flex:1"><label class="flabel">강의 제목</label><input id="v-title" class="form-input" placeholder="예: 1강. 변수와 자료형"/></div></div>
-            <div class="frow"><div style="flex:1"><label class="flabel">유튜브 URL</label><input id="v-url" class="form-input" placeholder="https://www.youtube.com/watch?v=..."/></div></div>
+            <div class="frow"><div style="flex:1"><label class="flabel">유튜브 URL <span style="color:var(--text3);text-transform:none;font-weight:400">(붙여넣으면 제목 자동으로 채워요)</span></label><input id="v-url" class="form-input" placeholder="https://www.youtube.com/watch?v=..." onchange="vAutoFillFromYoutube()"/></div></div>
+            <div class="frow"><div style="flex:1"><label class="flabel">강의 제목</label><input id="v-title" class="form-input" placeholder="URL 넣으면 자동으로 채워져요 (수정 가능)"/></div></div>
+            <div class="frow" id="v-thumb-preview" style="display:none;margin-bottom:4px"></div>
             <div class="frow">
               <div style="flex:1"><label class="flabel">강의 설명 (선택)</label><input id="v-desc" class="form-input" placeholder="이 강의에서 배우는 내용"/></div>
               <div>
@@ -1985,6 +1986,28 @@ function renderDashboard(){
 }
 
 /* ===== VIDEOS ===== */
+/* 유튜브 URL을 넣으면 oEmbed로 제목·썸네일을 자동으로 가져와요 (API 키 불필요, 공개 영상 대상) */
+async function vAutoFillFromYoutube(){
+  const urlEl=document.getElementById('v-url');
+  const url=urlEl.value.trim();
+  const id=ytId(url);
+  const thumbEl=document.getElementById('v-thumb-preview');
+  if(!id){if(thumbEl)thumbEl.style.display='none';return;}
+  try{
+    const resp=await fetch('https://www.youtube.com/oembed?url='+encodeURIComponent(url)+'&format=json');
+    if(!resp.ok)throw new Error('조회 실패');
+    const data=await resp.json();
+    const titleEl=document.getElementById('v-title');
+    if(titleEl&&!titleEl.value.trim())titleEl.value=data.title||'';
+    if(thumbEl){
+      thumbEl.style.display='flex';
+      thumbEl.innerHTML='<img src="'+thumb(url)+'" style="width:120px;border-radius:6px" alt=""><div style="font-size:12px;color:var(--text2);align-self:center">✓ "'+(data.title||'')+'" · '+(data.author_name||'')+'</div>';
+    }
+  }catch(e){
+    if(thumbEl)thumbEl.style.display='none';
+    // 제목 자동조회 실패해도 직접 입력하면 되니 조용히 넘어감
+  }
+}
 async function addVideo(){
   const title=document.getElementById('v-title').value.trim();
   const url=document.getElementById('v-url').value.trim();
@@ -1997,6 +2020,7 @@ async function addVideo(){
   if(error){notify('등록 실패: '+error.message,'error');return;}
   db.videos.push({id,title,url,description:desc,category,created_at:new Date().toISOString()});
   ['v-title','v-url','v-desc'].forEach(i=>document.getElementById(i).value='');
+  const thumbEl=document.getElementById('v-thumb-preview');if(thumbEl)thumbEl.style.display='none';
   notify(`강의가 등록되었습니다. (${category==='review'?'복습 신청 영상':'일반 강의'})`, 'success');
   renderVideos();
 }
