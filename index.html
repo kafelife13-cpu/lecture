@@ -3536,11 +3536,13 @@ async function applyClinicSlot(slotId,schoolId){
   var reqs=clinicDb.requests.filter(function(r){return r.slot_id===slotId&&(r.status==='confirmed'||r.status==='pending');});
   if(reqs.length>=slot.capacity){notify('정원이 찼어요.','error');return;}
   var now=Date.now();
-  var isChange=false,originSlot=null;
+  var previousConfirmed=clinicDb.requests.filter(function(r){return r.student_id===session.id&&r.status==='confirmed';})
+    .sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at);})[0]||null;
+  var isFirst=!previousConfirmed;
+  var isChange=!isFirst,originSlot=null;
   if(originVal!=='__new__'){
     originSlot=clinicDb.slots.find(function(s){return s.school_id===schoolId&&s.day_of_week===originVal;});
-    if(originSlot&&originSlot.day_of_week!==slot.day_of_week){
-      isChange=true;
+    if(isFirst&&originSlot&&originSlot.day_of_week!==slot.day_of_week){
       var pastReq={id:'cr_'+(now-1000),slot_id:originSlot.id,student_id:session.id,school_id:schoolId,status:'cancelled',created_at:new Date(now-1000).toISOString()};
       var pastRes=await sb.from('clinic_requests').insert(pastReq);
       if(!pastRes.error)clinicDb.requests.push(pastReq);
@@ -3549,14 +3551,14 @@ async function applyClinicSlot(slotId,schoolId){
   var commentEl=document.getElementById('s-clinic-comment-'+schoolId);
   var comment=commentEl?commentEl.value.trim():'';
   var id='cr_'+now+clinicCommentToken(comment);
-  var req={id:id,slot_id:slotId,student_id:session.id,school_id:schoolId,status:'pending',created_at:new Date(now).toISOString()};
+  var req={id:id,slot_id:slotId,student_id:session.id,school_id:schoolId,status:isFirst?'confirmed':'pending',created_at:new Date(now).toISOString()};
   var res=await sb.from('clinic_requests').insert(req);
   if(res.error){notify('신청 실패: '+res.error.message,'error');return;}
   clinicDb.requests.push(req);
-  sendTelegram(isChange?
-    ('🔄 '+session.name+' 학생이 클리닉을 '+originSlot.day_of_week+'요일 → '+slot.day_of_week+'요일로 변경했어요.'):
-    ('📋 '+session.name+' 학생이 클리닉을 신청했어요: '+slot.label));
-  notify(slot.label+' 변경 신청을 보냈어요. 선생님 승인 후 확정됩니다.','success');
+  sendTelegram(isFirst?
+    ('✅ '+session.name+' 학생의 첫 클리닉 시간이 확정됐어요: '+slot.label):
+    ('🔄 '+session.name+' 학생이 클리닉 변경 승인을 요청했어요: '+slot.label));
+  notify(isFirst?(slot.label+' 첫 클리닉 시간이 바로 확정됐어요!'):(slot.label+' 변경 신청을 보냈어요. 선생님 승인 후 확정됩니다.'),'success');
   renderSClinicList();renderTClinicSlotList();renderTClinicReqList();renderTClinicChanges();
 }
 
