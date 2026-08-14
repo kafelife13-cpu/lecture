@@ -1,7 +1,7 @@
 // CACHE_NAME을 배포할 때마다 바꿔주면(v1→v2→...) 예전 캐시가 자동 폐기되고
 // 브라우저가 새 index.html을 다시 받아옵니다. 코드 수정 후에도 화면이 안
 // 바뀌어 보이면 이 버전을 한 칸 올려서 다시 배포하세요.
-const CACHE_NAME = 'kukeo-wang-v15';
+const CACHE_NAME = 'kukeo-wang-v16';
 const URLS_TO_CACHE = [
   '/lecture/index.html',
   '/lecture/manifest.json'
@@ -43,6 +43,35 @@ self.addEventListener('fetch', function(e) {
   e.respondWith(
     fetch(e.request, isDocument ? {cache:'reload'} : {}).catch(function() {
       return caches.match(e.request);
+    })
+  );
+});
+
+// ── 웹 푸시 알림: 서버(GitHub Actions)가 보낸 푸시를 받아 알림으로 띄움 ──
+self.addEventListener('push', function(e) {
+  var data = {};
+  try { data = e.data ? e.data.json() : {}; } catch (err) {}
+  var title = data.title || '국어왕 김까까';
+  var body = data.body || '';
+  e.waitUntil(
+    self.registration.showNotification(title, {
+      body: body,
+      icon: '/lecture/icon-192.png',
+      badge: '/lecture/icon-192.png',
+      data: { url: data.url || '/lecture/index.html' }
+    })
+  );
+});
+
+self.addEventListener('notificationclick', function(e) {
+  e.notification.close();
+  var url = (e.notification.data && e.notification.data.url) || '/lecture/index.html';
+  e.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(list) {
+      for (var i = 0; i < list.length; i++) {
+        if (list[i].url.indexOf('/lecture/') >= 0 && 'focus' in list[i]) return list[i].focus();
+      }
+      if (clients.openWindow) return clients.openWindow(url);
     })
   );
 });
