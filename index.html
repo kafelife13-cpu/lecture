@@ -1646,7 +1646,9 @@ function nextFridayMidnight(fromDate){
   if(target<=d)target.setDate(target.getDate()+7);
   return target;
 }
-function accessExpiry(a){return nextFridayMidnight(new Date(a.granted_at));}
+/* expires_at이 따로 지정돼 있으면(개별 학생 예외 처리용) 그걸 그대로
+   마감 시각으로 쓰고, 없으면 평소대로 금요일 밤 12시 규칙을 계산한다. */
+function accessExpiry(a){return a.expires_at?new Date(a.expires_at):nextFridayMidnight(new Date(a.granted_at));}
 function isAccessExpired(a){const exp=accessExpiry(a);return !isNaN(exp)&&new Date()>exp;}
 function hasAccess(sid,vid){return db.access.some(a=>a.student_id===sid&&a.video_id===vid&&!isAccessExpired(a));}
 function hasRequested(sid,vid){return db.requests.some(r=>r.student_id===sid&&r.video_id===vid);}
