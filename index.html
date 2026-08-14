@@ -435,6 +435,11 @@ input,button{font-family:var(--font)}
           <div class="card-head" style="background:var(--teal-bg)"><h3 style="color:var(--teal)">📬 복습 신청 대기</h3><span id="access-pending-count" style="font-size:11px;color:var(--teal)"></span></div>
           <div id="access-pending-list"></div>
         </div>
+        <!-- 미시청 학생 -->
+        <div class="card" id="access-unwatched-card" style="margin-bottom:1rem;border-color:var(--amber)">
+          <div class="card-head" style="background:var(--amber-bg)"><h3 style="color:var(--amber)">⚠️ 미시청 학생</h3><span id="access-unwatched-count" style="font-size:11px;color:var(--amber)"></span></div>
+          <div id="access-unwatched-list"></div>
+        </div>
         <!-- 직접 권한 부여 -->
         <div class="card" style="margin-bottom:1rem">
           <div class="card-head"><h3>학생에게 직접 권한 부여</h3><span style="font-size:11px;color:var(--text2)">학생 신청 없이 바로 부여</span></div>
@@ -2404,7 +2409,40 @@ async function grantAccessDirect(){
   notify(`${s.name}에게 "${v.title}" 시청 권한을 부여했습니다.`,'success');
   renderAccessPanel();renderDashboard();
 }
+/* 권한을 줬는데 아직 다 안 본(진도 100% 미만) 학생 명단 — 현재 열려있는
+   것과 이미 마감된 것 둘 다 보여주되, 마감된 건 흐리게 표시한다. */
+function renderAccessUnwatchedList(){
+  var el=document.getElementById('access-unwatched-list');
+  var countEl=document.getElementById('access-unwatched-count');
+  if(!el)return;
+  var unwatched=db.access.filter(function(a){return getPct(a.student_id,a.video_id)<100;})
+    .sort(function(a,b){return getPct(a.student_id,a.video_id)-getPct(b.student_id,b.video_id);});
+  if(countEl)countEl.textContent=unwatched.length+'명';
+  if(!unwatched.length){
+    el.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text2);font-size:13px">모두 시청했어요 🎉</div>';
+    return;
+  }
+  el.innerHTML=unwatched.map(function(a){
+    var s=db.users.find(function(u){return u.id===a.student_id;});
+    var v=db.videos.find(function(x){return x.id===a.video_id;});
+    if(!s||!v)return'';
+    var p=getPct(a.student_id,a.video_id);
+    var expired=isAccessExpired(a);
+    var exp=accessExpiry(a);
+    var expLabel=isNaN(exp)?'':(exp.getMonth()+1)+'/'+exp.getDate()+' '+String(exp.getHours()).padStart(2,'0')+':'+String(exp.getMinutes()).padStart(2,'0');
+    return '<div class="access-row" style="'+(expired?'opacity:0.55':'')+'">'+
+      '<div class="avatar student" style="width:30px;height:30px;font-size:11px;flex-shrink:0">'+s.name[0]+'</div>'+
+      '<div style="flex:1;min-width:0">'+
+      '<div style="font-size:13px;font-weight:600">'+s.name+' <span style="font-weight:400;color:var(--text2)">→</span> '+v.title+'</div>'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-top:3px">'+
+      '<div class="pbar" style="width:70px"><div class="pbar-fill" style="width:'+p+'%;background:'+pctColor(p)+'"></div></div>'+
+      '<span class="badge '+pctBadge(p)+'">'+pctLabel(p)+'</span>'+
+      (expired?'<span class="badge" style="background:var(--red-bg);color:var(--red)">마감됨</span>':(expLabel?'<span style="font-size:11px;color:var(--text2)">'+expLabel+' 마감</span>':''))+
+      '</div></div></div>';
+  }).join('');
+}
 function renderAccessPanel(){
+  renderAccessUnwatchedList();
   const gStu=document.getElementById('access-grant-student');
   const gVid=document.getElementById('access-grant-video');
   if(gStu&&gVid){
