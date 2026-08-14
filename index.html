@@ -1635,16 +1635,18 @@ function getWatchSec(sid,vid){const r=db.progress.find(p=>p.student_id===sid&&p.
 function getLastPos(sid,vid){const r=db.progress.find(p=>p.student_id===sid&&p.video_id===vid);return r?(r.last_position||0):0;}
 function getMaxRate(sid,vid){const r=db.progress.find(p=>p.student_id===sid&&p.video_id===vid);return r?(r.max_rate||1):1;}
 function fmtRate(r){return(Math.round(r*100)/100)+'x';}
-/* 복습영상 시청 권한은 부여된 시점 기준으로 그 다음 돌아오는 일요일 밤 9시에 자동 마감된다 */
-function nextSunday9pm(fromDate){
+/* 복습영상 시청 권한은 부여된 시점 기준으로 그 다음 돌아오는 금요일 밤
+   12시(=토요일 00:00)에 자동 마감된다. (2026-08-14부터 일요일 밤 9시
+   마감에서 변경) */
+function nextFridayMidnight(fromDate){
   const d=new Date(fromDate);
   const target=new Date(d);
-  target.setHours(21,0,0,0);
-  target.setDate(d.getDate()+((7-d.getDay())%7));
+  target.setHours(0,0,0,0);
+  target.setDate(d.getDate()+((6-d.getDay()+7)%7)); // 다음 토요일 00:00 = 금요일 밤 12시
   if(target<=d)target.setDate(target.getDate()+7);
   return target;
 }
-function accessExpiry(a){return nextSunday9pm(new Date(a.granted_at));}
+function accessExpiry(a){return nextFridayMidnight(new Date(a.granted_at));}
 function isAccessExpired(a){const exp=accessExpiry(a);return !isNaN(exp)&&new Date()>exp;}
 function hasAccess(sid,vid){return db.access.some(a=>a.student_id===sid&&a.video_id===vid&&!isAccessExpired(a));}
 function hasRequested(sid,vid){return db.requests.some(r=>r.student_id===sid&&r.video_id===vid);}
@@ -2538,7 +2540,8 @@ function renderAccessWeeklyHistory(){
     const key=w.exp.toDateString();
     const open=accessWeekOpen===key;
     const label=weekLabelForDate(w.exp);
-    const expLabel=(w.exp.getMonth()+1)+'/'+w.exp.getDate()+'(일) 21:00 마감';
+    const expDow=['일','월','화','수','목','금','토'][w.exp.getDay()];
+    const expLabel=(w.exp.getMonth()+1)+'/'+w.exp.getDate()+'('+expDow+') '+String(w.exp.getHours()).padStart(2,'0')+':'+String(w.exp.getMinutes()).padStart(2,'0')+' 마감';
     const doneC=w.items.filter(a=>getPct(a.student_id,a.video_id)>=100).length;
     const rows=w.items.map(a=>{
       const s=db.users.find(u=>u.id===a.student_id);
