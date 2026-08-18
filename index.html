@@ -551,6 +551,10 @@ input,button{font-family:var(--font)}
       <!-- 클리닉 관리 -->
       <div class="panel" id="panel-clinic">
         <div class="page-header"><h1>클리닉 관리</h1><p>학교별 클리닉 시간대와 정원을 설정하고 신청 현황을 확인하세요</p></div>
+        <div class="card" style="margin-bottom:1rem">
+          <div class="card-head"><h3>📋 신청 현황 한눈에 보기</h3><span style="font-size:11px;color:var(--text2)">수·목·금 / 한백·치동</span></div>
+          <div id="t-clinic-summary-table" style="overflow-x:auto"></div>
+        </div>
         <div style="display:flex;gap:8px;margin-bottom:1rem;align-items:center;flex-wrap:wrap">
           <div id="t-clinic-school-tabs" style="display:flex;gap:6px;flex-wrap:wrap;flex:1"></div>
           <button class="btn blue btn-sm" id="t-clinic-add-btn" style="display:none" onclick="openClinicSlotModal()">+ 시간대 추가</button>
@@ -3634,7 +3638,52 @@ async function deleteClinicSlot(id){
   renderTClinicSlotList();renderTClinicReqList();
 }
 
+function renderTClinicApplicationSummary(){
+  var el=document.getElementById('t-clinic-summary-table');
+  if(!el)return;
+  var days=['수','목','금'];
+  var schools=(qaDb.schools||[]).filter(function(s){
+    return (s.name||'').indexOf('한백')!==-1||(s.name||'').indexOf('치동')!==-1;
+  }).sort(function(a,b){
+    var ai=(a.name||'').indexOf('한백')!==-1?0:1;
+    var bi=(b.name||'').indexOf('한백')!==-1?0:1;
+    return ai-bi;
+  });
+  if(!schools.length){
+    el.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px">한백·치동 학교 정보가 아직 없어요.</div>';
+    return;
+  }
+  var active=currentClinicAssignments().slice();
+  clinicDb.requests.filter(function(r){return r.status==='pending';}).forEach(function(r){
+    if(!active.some(function(x){return x.id===r.id;}))active.push(r);
+  });
+  function cellHtml(schoolId,day){
+    var slots=clinicDb.slots.filter(function(s){return s.school_id===schoolId&&s.day_of_week===day;})
+      .sort(function(a,b){return (a.start_time||'').localeCompare(b.start_time||'');});
+    var rows=[];
+    slots.forEach(function(slot){
+      active.filter(function(r){return r.slot_id===slot.id;}).forEach(function(req){
+        var student=db.users.find(function(u){return u.id===req.student_id;});
+        var comment=clinicRequestComment(req);
+        rows.push('<div style="padding:7px 0;border-bottom:1px solid var(--border)">'+
+          '<div style="font-size:12px;font-weight:700">'+(slot.start_time||'시간 미정')+' · '+(student?student.name:req.student_id)+
+          (req.status==='pending'?'<span class="badge partial" style="margin-left:5px">승인 대기</span>':'<span class="badge done" style="margin-left:5px">확정</span>')+'</div>'+
+          (comment?'<div style="font-size:11px;color:var(--text2);margin-top:3px">💬 '+comment+'</div>':'')+
+          '</div>');
+      });
+    });
+    return rows.length?rows.join(''):'<span style="color:var(--text3);font-size:12px">신청 없음</span>';
+  }
+  el.innerHTML='<table class="tbl" style="min-width:680px;table-layout:fixed">'+
+    '<thead><tr><th style="width:100px">학교</th>'+days.map(function(d){return '<th>'+d+'요일</th>';}).join('')+'</tr></thead>'+
+    '<tbody>'+schools.map(function(s){
+      return '<tr><td style="font-weight:800;vertical-align:top">'+s.name+'</td>'+
+        days.map(function(d){return '<td style="vertical-align:top">'+cellHtml(s.id,d)+'</td>';}).join('')+'</tr>';
+    }).join('')+'</tbody></table>';
+}
+
 function renderTClinicSchoolTabs(){
+  renderTClinicApplicationSummary();
   var el=document.getElementById('t-clinic-school-tabs');
   if(!el)return;
   el.innerHTML=qaDb.schools.map(function(s){
@@ -3691,6 +3740,7 @@ function fmtChangeDate(iso){
 }
 
 function renderTClinicReqList(){
+  renderTClinicApplicationSummary();
   var el=document.getElementById('t-clinic-req-list');
   if(!el)return;
   var slots=clinicDb.slots.filter(function(s){return s.school_id===clinicSchool;});
