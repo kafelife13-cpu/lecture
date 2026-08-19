@@ -9020,8 +9020,12 @@ function sExamShowResult(r){
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load', function(){
-    navigator.serviceWorker.register('sw.js', {scope:'/lecture/'})
-      .then(function(reg){console.log('SW registered');})
+    var refreshing=false;
+    navigator.serviceWorker.addEventListener('controllerchange',function(){
+      if(refreshing)return;refreshing=true;location.reload();
+    });
+    navigator.serviceWorker.register('sw.js?v=31', {scope:'/lecture/',updateViaCache:'none'})
+      .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
 }
