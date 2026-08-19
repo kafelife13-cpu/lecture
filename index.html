@@ -2153,8 +2153,9 @@ async function renderWeeklyStudentDashboard(){
   var clinicSlot=clinicReq?clinicDb.slots.find(function(s){return s.id===clinicReq.slot_id;}):null;
   var weeklyStudy=studySeconds(studyDb.sessions.filter(function(s){var d=new Date(s.start_time);return s.student_id===session.id&&d>=weekStart&&d<weekEnd;}));
   var clinicLessons=clinicExplanationVideosForWeek(weekStart);
-  var assignedLessons=normalVideos().filter(function(v){return v.category!=='clinic';})
-    .concat(reviewVideos().filter(function(v){return hasAccess(session.id,v.id);}));
+  // '들어야 할 강의'는 교사가 복습 권한을 승인한 영상만 해당한다.
+  // 기본강의와 주간 클리닉 해설은 각각의 메뉴/카드에서 따로 보여준다.
+  var assignedLessons=reviewVideos().filter(function(v){return hasAccess(session.id,v.id);});
   var needed=assignedLessons.filter(function(v){return getPct(session.id,v.id)<100;});
   var clinicNeeded=clinicLessons.filter(function(v){return getPct(session.id,v.id)<100;});
   var assignments=myAnnounceItems().filter(function(a){var d=new Date(a.created_at);return d>=weekStart&&d<weekEnd;});
