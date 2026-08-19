@@ -7230,7 +7230,7 @@ function omrApiBody(total,b64OrList,readIdentity){
     content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}});
   });
   content.push({type:'text',text:omrBuildPrompt(total,readIdentity!==false)});
-  return JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,thinking:{type:'enabled',budget_tokens:1800},
+  return JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,thinking:{type:'adaptive'},output_config:{effort:'high'},
     messages:[{role:'user',content:content}]});
 }
 function omrCanvasJpegBase64(canvas,quality){
