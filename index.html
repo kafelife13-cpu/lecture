@@ -805,7 +805,8 @@ input,button{font-family:var(--font)}
               <button class="btn btn-sm green" onclick="openOmrModal()">📷 OMR 채점</button>
               <button class="btn btn-sm" style="color:var(--accent)" onclick="openManualAnswerEntry()">⌨️ 답안 직접 입력</button>
               <button class="btn btn-sm blue" onclick="tResExportAllPDF()">📄 전체 PDF</button>
-              <button class="btn btn-sm" onclick="tResExportExcel()">📊 엑셀 내보내기</button>
+              <button class="btn btn-sm" onclick="tResExportExcel()">📊 성적 엑셀</button>
+              <button class="btn btn-sm blue" onclick="tResExportNotifyExcel()">📨 맥가이 문자 엑셀</button>
             </div>
           </div>
           <!-- 탭 -->
@@ -865,12 +866,12 @@ input,button{font-family:var(--font)}
           <div id="tres-notify" style="display:none">
             <div class="card" style="margin-bottom:1rem;border-left:3px solid var(--accent)">
               <div style="padding:1rem 1.25rem;font-size:12px;color:var(--text2);line-height:1.7">
-                💡 아래 표에서 학부모 연락처를 채우고, <strong>엑셀 내보내기</strong>로 저장한 뒤 알리고·문자나라 등 문자/카카오 알림톡 발송 사이트의 "엑셀 업로드 발송"에 올리면 한 번에 보낼 수 있어요.
+                💡 아래 표에서 학부모 연락처를 확인하고, <strong>맥가이 문자 엑셀</strong>을 저장한 뒤 맥가이의 "엑셀 업로드 문자 발송"에 올리면 한 번에 보낼 수 있어요.
                 개별로 보낼 땐 각 줄의 <strong>복사</strong> 버튼으로 문구를 복사해 카톡에 붙여넣으면 돼요.
               </div>
             </div>
             <div class="card">
-              <div class="card-head"><h3>발송 대상</h3><button class="btn btn-sm blue" onclick="tResExportNotifyExcel()">📊 발송용 엑셀 내보내기</button></div>
+              <div class="card-head"><h3>발송 대상</h3><button class="btn btn-sm blue" onclick="tResExportNotifyExcel()">📨 맥가이 문자 엑셀</button></div>
               <div id="tres-notify-list" style="padding:0 1.25rem 1rem"></div>
             </div>
           </div>
@@ -6755,6 +6756,33 @@ function tResBuildParentMessage(name,r,exam){
   return lines.join('\n');
 }
 
+function tResNormalizePhone(value){
+  var digits=String(value||'').replace(/\D/g,'');
+  if(digits.length===10)return digits.replace(/(\d{3})(\d{3})(\d{4})/,'$1-$2-$3');
+  if(digits.length===11)return digits.replace(/(\d{3})(\d{4})(\d{4})/,'$1-$2-$3');
+  return String(value||'').trim();
+}
+
+function tResBuildSummaryRows(exam,responses){
+  return responses.map(function(r){
+    var wrongNums=tResWrongNums(exam,r);
+    var sc=repScore(exam,r);
+    var score=r.score!=null?r.score:sc.pct;
+    var grade=repGrade(sc.pct,exam.grade_cuts||[]);
+    return {'이름':r.student_name,'점수':score,'등급':grade||'','정답수':exam.total_q-wrongNums.length,'오답수':wrongNums.length,'오답문항':wrongNums.join(', ')};
+  }).sort(function(a,b){return b['점수']-a['점수'];});
+}
+
+function tResBuildOxRows(exam,responses){
+  return responses.map(function(r){
+    var row={'이름':r.student_name};
+    exam.questions.forEach(function(q,i){
+      row[(i+1)+'번']=!isObjectiveAnswer(q.answer)?'-':(repIsWrong(r,i,exam)?'X':'O');
+    });
+    return row;
+  });
+}
+
 function renderTResNotify(){
   var exam=tResCurrentExam;
   var responses=tResCurrentResponses;
@@ -6798,20 +6826,8 @@ function tResExportExcel(){
   var exam=tResCurrentExam,responses=tResCurrentResponses;
   if(!exam||!responses||!responses.length){alert('데이터가 없어요.');return;}
   if(typeof XLSX==='undefined'){alert('엑셀 기능을 불러오지 못했어요. 인터넷 연결을 확인하고 새로고침 해주세요.');return;}
-  var summaryRows=responses.map(function(r){
-    var wrongNums=tResWrongNums(exam,r);
-    var sc=repScore(exam,r);
-    var score=r.score!=null?r.score:sc.pct;
-    var grade=repGrade(sc.pct,exam.grade_cuts||[]);
-    return {'이름':r.student_name,'점수':score,'등급':grade||'','정답수':exam.total_q-wrongNums.length,'오답수':wrongNums.length,'오답문항':wrongNums.join(', ')};
-  }).sort(function(a,b){return b['점수']-a['점수'];});
-  var oxRows=responses.map(function(r){
-    var row={'이름':r.student_name};
-    exam.questions.forEach(function(q,i){
-      row[(i+1)+'번']=!isObjectiveAnswer(q.answer)?'-':(repIsWrong(r,i,exam)?'X':'O');
-    });
-    return row;
-  });
+  var summaryRows=tResBuildSummaryRows(exam,responses);
+  var oxRows=tResBuildOxRows(exam,responses);
   var wb=XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(summaryRows),'성적요약');
   XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(oxRows),'OX표');
@@ -6824,16 +6840,28 @@ function tResExportNotifyExcel(){
   if(typeof XLSX==='undefined'){alert('엑셀 기능을 불러오지 못했어요. 인터넷 연결을 확인하고 새로고침 해주세요.');return;}
   var rows=responses.map(function(r){
     var u=db.users.find(function(x){return x.name===r.student_name;});
-    var phone=(u&&u.parent_phone)||'';
-    return {'학생명':r.student_name,'학부모연락처':phone,'문자내용':tResBuildParentMessage(r.student_name,r,exam)};
+    var phone=tResNormalizePhone((u&&u.parent_phone)||'');
+    return {'휴대폰번호':phone,'문자내용':tResBuildParentMessage(r.student_name,r,exam),'학생명':r.student_name};
   });
-  var missing=rows.filter(function(r){return !r['학부모연락처'];}).length;
+  var missingRows=rows.filter(function(r){return !r['휴대폰번호'];});
+  var missing=missingRows.length;
   if(missing)notify(missing+'명은 학부모 연락처가 비어 있어요. "학부모 발송" 탭에서 먼저 채워주세요.','info');
   var wb=XLSX.utils.book_new();
   var ws=XLSX.utils.json_to_sheet(rows);
-  ws['!cols']=[{wch:10},{wch:16},{wch:60}];
-  XLSX.utils.book_append_sheet(wb,ws,'학부모발송');
-  XLSX.writeFile(wb,exam.name+'_학부모발송.xlsx');
+  ws['!cols']=[{wch:16},{wch:70},{wch:12}];
+  XLSX.utils.book_append_sheet(wb,ws,'맥가이문자업로드');
+  var summaryWs=XLSX.utils.json_to_sheet(tResBuildSummaryRows(exam,responses));
+  summaryWs['!cols']=[{wch:12},{wch:9},{wch:9},{wch:9},{wch:9},{wch:30}];
+  XLSX.utils.book_append_sheet(wb,summaryWs,'성적집계');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(tResBuildOxRows(exam,responses)),'OX표');
+  if(missingRows.length){
+    var missingWs=XLSX.utils.json_to_sheet(missingRows.map(function(r){return {'학생명':r['학생명'],'확인사항':'학부모 연락처 입력 필요'};}));
+    missingWs['!cols']=[{wch:12},{wch:28}];
+    XLSX.utils.book_append_sheet(wb,missingWs,'연락처누락');
+  }
+  var safeName=String(exam.name||'시험').replace(/[\\/:*?"<>|]/g,'_');
+  XLSX.writeFile(wb,safeName+'_맥가이문자_성적집계.xlsx');
+  notify('맥가이 문자 업로드용 엑셀을 만들었어요.'+(missing?' 연락처 누락 '+missing+'명도 확인해 주세요.':''),'success');
 }
 
 async function tResDeleteStudentResponse(){
