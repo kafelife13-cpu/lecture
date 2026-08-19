@@ -464,6 +464,16 @@ input,button{font-family:var(--font)}
             <button class="btn blue" onclick="saveClinicRequiredStudents()" style="width:100%;margin-top:12px">필수 시청자 저장</button>
           </div>
         </div>
+        <!-- 복습영상 수행 확인 -->
+        <div class="card" style="margin-bottom:1rem;border:2px solid var(--red)">
+          <div class="card-head"><h3>📺 복습영상 수행 확인</h3><span style="font-size:11px;color:var(--text2)">지난주·반별 미시청 학생 확인</span></div>
+          <div class="card-body">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px"><label style="font-size:12px;font-weight:700">확인할 주</label><input type="date" id="review-performance-week" class="form-input" style="width:170px" onchange="renderReviewPerformance()"><span style="font-size:11px;color:var(--text3)">선택한 날짜가 포함된 월~일 기준</span></div>
+            <div id="review-performance-class-tabs" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"></div>
+            <div id="review-performance-summary"></div>
+            <div id="review-performance-list" style="overflow-x:auto"></div>
+          </div>
+        </div>
         <!-- 직접 권한 부여 -->
         <div class="card" style="margin-bottom:1rem">
           <div class="card-head"><h3>학생에게 직접 권한 부여</h3><span style="font-size:11px;color:var(--text2)">학생 신청 없이 바로 부여</span></div>
@@ -2765,6 +2775,7 @@ function renderAccessUnwatchedList(){
 function renderAccessPanel(){
   renderAccessUnwatchedList();
   renderClinicRequiredPicker();
+  renderReviewPerformance();
   const gStu=document.getElementById('access-grant-student');
   const gVid=document.getElementById('access-grant-video');
   if(gStu&&gVid){
@@ -3043,6 +3054,37 @@ async function saveClinicRequiredStudents(){
   }
   notify('클리닉 해설 필수 시청자를 저장했어요.','success');
   renderClinicRequiredStudents();
+}
+
+var reviewPerformanceClass='';
+function reviewPerformanceSetClass(id){reviewPerformanceClass=id;renderReviewPerformance();}
+function reviewPerformanceDefaultDate(){
+  const d=weekMonday(new Date());d.setDate(d.getDate()-7);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function renderReviewPerformance(){
+  const dateEl=document.getElementById('review-performance-week'),listEl=document.getElementById('review-performance-list'),sumEl=document.getElementById('review-performance-summary');
+  if(!dateEl||!listEl||!sumEl)return;
+  if(!dateEl.value)dateEl.value=reviewPerformanceDefaultDate();
+  const start=weekMonday(new Date(dateEl.value+'T12:00:00')),end=new Date(start);end.setDate(end.getDate()+7);
+  const tabs=document.getElementById('review-performance-class-tabs');
+  const classes=[['','전체 반']].concat((STUDENT_CLASSES||[]).map(c=>[c.id,c.label]));
+  tabs.innerHTML=classes.map(c=>'<button class="btn btn-sm '+(reviewPerformanceClass===c[0]?'blue':'')+'" onclick="reviewPerformanceSetClass(\''+c[0]+'\')">'+c[1]+'</button>').join('');
+  const source=(db.accessLog&&db.accessLog.length)?db.accessLog:db.access;
+  const assignments=source.filter(a=>{
+    const granted=new Date(a.granted_at),video=db.videos.find(v=>v.id===a.video_id);
+    return video&&video.category==='review'&&!isNaN(granted)&&granted>=start&&granted<end;
+  });
+  const byStudent={};assignments.forEach(a=>{(byStudent[a.student_id]||(byStudent[a.student_id]=[])).push(a);});
+  const rows=activeStudents().filter(s=>byStudent[s.id]&&(!reviewPerformanceClass||s.group_id===reviewPerformanceClass)).map(s=>{
+    const items=byStudent[s.id].map(a=>{const v=db.videos.find(x=>x.id===a.video_id),p=getPct(s.id,a.video_id);return{title:v?v.title:'삭제된 영상',pct:p,done:p>=100};});
+    return{student:s,items:items,done:items.every(x=>x.done),avg:Math.round(items.reduce((n,x)=>n+x.pct,0)/items.length)};
+  }).sort((a,b)=>(a.done-b.done)||a.student.name.localeCompare(b.student.name,'ko'));
+  const missing=rows.filter(r=>!r.done),completed=rows.length-missing.length;
+  sumEl.innerHTML='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px"><div class="stat"><div class="stat-label">배정 학생</div><div class="stat-val blue">'+rows.length+'명</div></div><div class="stat"><div class="stat-label">모두 완료</div><div class="stat-val green">'+completed+'명</div></div><div class="stat"><div class="stat-label">미완료</div><div class="stat-val" style="color:var(--red)">'+missing.length+'명</div></div></div>'+
+    (missing.length?'<div style="padding:10px 12px;background:var(--red-bg);border-radius:8px;color:var(--red);font-size:13px;font-weight:700;margin-bottom:10px">아직 안 본 학생: '+missing.map(r=>r.student.name).join(', ')+'</div>':'');
+  if(!rows.length){listEl.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px">이 주차·반에 배정된 복습영상이 없습니다.</div>';return;}
+  listEl.innerHTML='<table class="tbl"><thead><tr><th>학생</th><th>반</th><th>배정 영상과 시청률</th><th>평균</th><th>수행</th></tr></thead><tbody>'+rows.map(r=>'<tr style="'+(r.done?'':'background:var(--red-bg)')+'"><td style="font-weight:700;white-space:nowrap">'+r.student.name+'</td><td style="white-space:nowrap">'+studentClassLabel(r.student.group_id)+'</td><td>'+r.items.map(x=>'<div style="margin:3px 0">'+(x.done?'✅':'❌')+' '+x.title+' <b style="color:'+pctColor(x.pct)+'">'+x.pct+'%</b></div>').join('')+'</td><td style="font-weight:800;color:'+pctColor(r.avg)+'">'+r.avg+'%</td><td><span class="badge '+(r.done?'done':'none')+'">'+(r.done?'완료':'미완료')+'</span></td></tr>').join('')+'</tbody></table>';
 }
 
 var sGradeExams={},sGradeResponses=[];
@@ -9185,7 +9227,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=41', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=42', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
