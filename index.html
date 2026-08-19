@@ -7217,9 +7217,56 @@ function omrBuildPrompt(total){
     '또한 답안지 상단의 "핸드폰 번호(뒤 8자리)" 칸에 학생이 손으로 적은 8자리 숫자를 읽어 phone에 담으세요. 글씨가 없거나 읽기 애매하면 빈 문자열로 두세요.\n'+
     'JSON으로만 답하세요. 형식 예시: {"answers":{"1":3,"2":1,"3":0},"uncertain":[3],"phone":"12345678"}\n다른 설명 없이 순수 JSON 객체만 반환하세요.';
 }
-function omrApiBody(total,b64){
+function omrApiBody(total,b64OrList){
+  var images=Array.isArray(b64OrList)?b64OrList:[b64OrList];
+  var content=[];
+  images.forEach(function(b64,i){
+    content.push({type:'text',text:i===0?'원본 답안지 사진입니다.':'같은 사진에서 답안표를 자동 확대·흑백 강화한 보조 이미지 '+i+'입니다.'});
+    content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}});
+  });
+  content.push({type:'text',text:omrBuildPrompt(total)});
   return JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,thinking:{type:'enabled',budget_tokens:1800},
-    messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},{type:'text',text:omrBuildPrompt(total)}]}]});
+    messages:[{role:'user',content:content}]});
+}
+function omrCanvasJpegBase64(canvas,quality){
+  return canvas.toDataURL('image/jpeg',quality||0.92).split(',')[1];
+}
+async function omrPrepareVisionImages(blob,total){
+  const original=await omrBlobToBase64(blob);
+  if(typeof createImageBitmap!=='function')return[original];
+  try{
+    const bmp=await createImageBitmap(blob);
+    const maxSide=1800,scale=Math.min(1,maxSide/Math.max(bmp.width,bmp.height));
+    const base=document.createElement('canvas');
+    base.width=Math.max(1,Math.round(bmp.width*scale));base.height=Math.max(1,Math.round(bmp.height*scale));
+    base.getContext('2d').drawImage(bmp,0,0,base.width,base.height);
+    const enhanced=document.createElement('canvas');enhanced.width=base.width;enhanced.height=base.height;
+    const ectx=enhanced.getContext('2d');ectx.drawImage(base,0,0);
+    const img=ectx.getImageData(0,0,enhanced.width,enhanced.height),d=img.data;
+    for(let i=0;i<d.length;i+=4){
+      const gray=0.299*d[i]+0.587*d[i+1]+0.114*d[i+2];
+      const v=gray<105?0:gray<190?Math.min(255,(gray-105)*3):255;
+      d[i]=d[i+1]=d[i+2]=v;
+    }
+    ectx.putImageData(img,0,0);
+    const list=[original,omrCanvasJpegBase64(enhanced,0.94)];
+    if(base.height>base.width&&total<=30){
+      // 기존 튜터 OMR 전체 사진은 세로 사진 속 종이가 90도 돌아가 있고,
+      // 답안표는 회전 방향에 따라 가로 화면의 왼쪽 또는 오른쪽 절반에 위치한다.
+      [false,true].forEach(function(clockwise){
+        const rot=document.createElement('canvas');rot.width=enhanced.height;rot.height=enhanced.width;
+        const rctx=rot.getContext('2d');
+        rctx.translate(rot.width/2,rot.height/2);rctx.rotate((clockwise?1:-1)*Math.PI/2);
+        rctx.drawImage(enhanced,-enhanced.width/2,-enhanced.height/2);
+        const crop=document.createElement('canvas');crop.width=Math.round(rot.width*0.56);crop.height=Math.round(rot.height*0.76);
+        const sx=clockwise?0:Math.round(rot.width*0.44),sy=Math.round(rot.height*0.22);
+        crop.getContext('2d').drawImage(rot,sx,sy,crop.width,crop.height,0,0,crop.width,crop.height);
+        list.push(omrCanvasJpegBase64(crop,0.95));
+      });
+    }
+    if(bmp.close)bmp.close();
+    return list;
+  }catch(e){return[original];}
 }
 async function openOmrModalForExam(examId){
   if(!tResCurrentExam||tResCurrentExam.id!==examId){
@@ -7339,8 +7386,8 @@ async function omrReadWithAI(){
   const exam=tResCurrentExam;
   const total=exam.total_q;
   try{
-    const b64=await new Promise(function(res){const r=new FileReader();r.onload=function(){res(r.result.split(',')[1]);};r.readAsDataURL(omrCurrentPhoto);});
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:omrApiBody(total,b64)});
+    const visionImages=await omrPrepareVisionImages(omrCurrentPhoto,total);
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:omrApiBody(total,visionImages)});
     const data=await resp.json();
     if(data.error)throw new Error(data.error.message||'AI 응답 오류');
     const raw=(data.content||[]).map(function(c){return c.text||'';}).join('');
@@ -7412,8 +7459,8 @@ async function omrBatchStart(files){
     const previewUrl=URL.createObjectURL(job.blob);
     const result={fileName:job.name,previewUrl:previewUrl,blob:job.blob,answers:{},uncertain:{},matchedName:'',include:true,readError:null};
     try{
-      const b64=await omrBlobToBase64(job.blob);
-      const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:omrApiBody(total,b64)});
+      const visionImages=await omrPrepareVisionImages(job.blob,total);
+      const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:omrApiBody(total,visionImages)});
       const data=await resp.json();
       if(data.error)throw new Error(data.error.message||'AI 응답 오류');
       const raw=(data.content||[]).map(function(c){return c.text||'';}).join('');
@@ -8393,8 +8440,8 @@ async function sOmrReadWithAI(previewUrl){
   const exam=sExamData;
   const total=exam.total_q;
   try{
-    const b64=await new Promise(function(res){const r=new FileReader();r.onload=function(){res(r.result.split(',')[1]);};r.readAsDataURL(sOmrCurrentPhoto);});
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:omrApiBody(total,b64)});
+    const visionImages=await omrPrepareVisionImages(sOmrCurrentPhoto,total);
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:omrApiBody(total,visionImages)});
     const data=await resp.json();
     if(data.error)throw new Error(data.error.message||'AI 응답 오류');
     const raw=(data.content||[]).map(function(c){return c.text||'';}).join('');
