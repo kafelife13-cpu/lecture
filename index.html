@@ -2258,6 +2258,33 @@ async function renderWeeklyStudentDashboard(){
     var color=r.score>=80?'var(--green)':r.score>=60?'var(--amber)':'var(--red)';
     return '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:'+(i?'6px':'2px')+' 0;'+(i?'border-top:1px solid var(--border);':'')+'"><span style="font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+dashboardSafeText(r.name)+'</span><span style="font-size:'+(i?'14px':'20px')+';font-weight:900;color:'+color+';white-space:nowrap">'+r.score+'점</span></div>';
   }).join(''):'<span style="color:var(--text2);font-size:12px">아직 등록된 성적이 없어요</span>';
+  var oxSummary='<span style="color:var(--text2);font-size:12px">클리닉 시험 제출 전이에요</span>';
+  try{
+    var currentWeekLabel=weekLabelForDate(new Date());
+    var clinicExamRes=await sb.from('exams').select('id,name,questions').eq('category','school').eq('clinic_week',currentWeekLabel);
+    var clinicExams=clinicExamRes.data||[];
+    if(clinicExams.length){
+      var clinicIds=clinicExams.map(function(e){return e.id;});
+      var oxData=await Promise.all([
+        sb.from('exam_responses').select('exam_id,answers').eq('student_name',session.name||session.id).in('exam_id',clinicIds),
+        sb.from('ox_attempts').select('exam_id').eq('student_id',session.id).in('exam_id',clinicIds)
+      ]);
+      var responseByExam={};(oxData[0].data||[]).forEach(function(r){responseByExam[r.exam_id]=r;});
+      var attempted={};(oxData[1].data||[]).forEach(function(a){attempted[a.exam_id]=true;});
+      var submitted=clinicExams.filter(function(e){return responseByExam[e.id];});
+      if(submitted.length){
+        var rows=submitted.map(function(e){
+          var response=responseByExam[e.id];
+          var hasWrong=Object.keys(response.answers||{}).some(function(idx){return repIsWrong(response,Number(idx),e);});
+          var done=!hasWrong||!!attempted[e.id];
+          return{name:e.name,done:done,noWrong:!hasWrong};
+        });
+        oxSummary=rows.map(function(r){
+          return '<div style="display:flex;justify-content:space-between;gap:8px;padding:3px 0"><span style="font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+dashboardSafeText(r.name)+'</span><span style="font-size:12px;font-weight:800;color:'+(r.done?'var(--green)':'var(--red)')+';white-space:nowrap">'+(r.noWrong?'오답 없음 · 완료':r.done?'OX 완료':'OX 미완료')+'</span></div>';
+        }).join('');
+      }
+    }
+  }catch(e){}
   var summary=[
     ['🏫','이번 주 클리닉',clinicSlot?((clinicSlot.day_of_week?clinicSlot.day_of_week+'요일 ':'')+(clinicSlot.start_time||clinicSlot.label||'')):'아직 확정된 시간이 없어요','clinic'],
     ['⏱','이번 주 학습시간',fmtTime(weeklyStudy),'study'],
@@ -2266,7 +2293,8 @@ async function renderWeeklyStudentDashboard(){
     ['🏫','이번 주 클리닉 해설',clinicAssigned.length?(clinicNeeded.length?clinicNeeded.length+'개 필수 시청':'필수 시청 완료'):(clinicLessons.length?'필수 시청 없음':'등록 대기 중'),'lectures'],
     ['📢','이번 주 과제',assignmentSummary,'announce'],
     ['🔤','이번 주 단어시험',vocabLeft.length?vocabLeft.join(', ')+'강 남음':'모두 완료했어요','vocab'],
-    ['📊','내 최근 성적표',scoreSummary,'scores']
+    ['📊','내 최근 성적표',scoreSummary,'scores'],
+    ['🔁','이번 주 클리닉 오답 OX',oxSummary,'oxreview']
   ];
   var urgent=[];
   if(!mwDone)urgent.push('월~수 국어 공부 인증 1회');
