@@ -1775,18 +1775,16 @@ function isWednesdayClinicStudent(studentId){
   var slot=clinicDb.slots.find(function(s){return s.id===latest.slot_id;});
   return !!slot&&slot.day_of_week==='수';
 }
-/* 새 마감 규칙은 2026-08-17(월) 00:00 KST 이후 부여분부터만 적용한다.
-   그 전에 부여되어 이미 만료된 권한은 기존 금요일 밤 12시 상태를 유지한다. */
-var SUNDAY_EXPIRY_RULE_START=new Date('2026-08-17T00:00:00+09:00');
+/* 2026-08-17(월) 00:00 KST 이후 부여분은 각 권한의 실제 부여 시각부터
+   정확히 8일 동안 유지한다. 이전 부여분은 당시의 주차 마감 규칙을 유지한다. */
+var EIGHT_DAY_EXPIRY_RULE_START=new Date('2026-08-17T00:00:00+09:00');
 /* expires_at이 따로 지정돼 있으면(개별 학생 예외 처리용) 그걸 그대로
    마감 시각으로 쓰고, 없으면 학생의 최신 확정 클리닉 요일에 따라 계산한다. */
 function accessExpiry(a){
   if(a.expires_at)return new Date(a.expires_at);
   var grantedAt=new Date(a.granted_at);
-  if(grantedAt<SUNDAY_EXPIRY_RULE_START)return nextFridayMidnight(grantedAt);
-  return isWednesdayClinicStudent(a.student_id)
-    ?nextFridayMidnight(grantedAt)
-    :nextSundaySixPm(grantedAt);
+  if(grantedAt>=EIGHT_DAY_EXPIRY_RULE_START)return new Date(grantedAt.getTime()+8*24*60*60*1000);
+  return nextFridayMidnight(grantedAt);
 }
 function isAccessExpired(a){const exp=accessExpiry(a);return !isNaN(exp)&&new Date()>exp;}
 function hasAccess(sid,vid){return db.access.some(a=>a.student_id===sid&&a.video_id===vid&&!isAccessExpired(a));}
@@ -9232,7 +9230,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=43', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=44', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
