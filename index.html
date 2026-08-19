@@ -525,6 +525,7 @@ input,button{font-family:var(--font)}
       <!-- 인증 관리 -->
       <div class="panel" id="panel-cert">
         <div class="page-header"><h1>인증 관리</h1><p>주차별 필기·영상 인증 대상을 지정하고 제출 현황을 확인하세요</p></div>
+        <button class="btn blue" onclick="openQuickClinicIncomplete()" style="width:100%;padding:14px;margin-bottom:1rem;font-size:15px;font-weight:800">⚡ 클리닉 미완 학생 빠른 지정</button>
         <div style="display:flex;gap:8px;margin-bottom:1rem;align-items:center;flex-wrap:wrap">
           <div id="t-cert-school-tabs" style="display:flex;gap:6px;flex-wrap:wrap;flex:1"></div>
         </div>
@@ -1468,6 +1469,24 @@ input,button{font-family:var(--font)}
     <div class="modal-footer">
       <button class="btn" onclick="closeCertWeekModal()">취소</button>
       <button class="btn blue" onclick="addCertWeek()">추가</button>
+    </div>
+  </div>
+</div>
+
+<!-- 휴대폰용 클리닉 미완 빠른 지정 -->
+<div class="modal-bg" id="modal-quick-clinic-incomplete">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-head"><h3>⚡ 클리닉 미완 빠른 지정</h3><button class="modal-close" onclick="closeQuickClinicIncomplete()">×</button></div>
+    <div class="modal-body">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px">반을 고른 뒤 미완 학생을 체크하세요. 여러 명을 한 번에 지정할 수 있어요.</div>
+      <div id="quick-clinic-class-tabs" style="display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:8px"></div>
+      <div id="quick-clinic-students" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;max-height:42vh;overflow-y:auto"></div>
+      <div class="form-group" style="margin-top:14px"><label>미완 내용</label><input id="quick-clinic-note" class="form-input" placeholder="예: 3회차 채점 및 오답 고치기"/></div>
+      <div id="quick-clinic-selected-count" style="font-size:12px;color:var(--accent);font-weight:700"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeQuickClinicIncomplete()">취소</button>
+      <button class="btn blue" id="quick-clinic-save-btn" onclick="saveQuickClinicIncomplete()">완료 인증 보내기</button>
     </div>
   </div>
 </div>
@@ -4114,6 +4133,84 @@ document.getElementById('modal-ox-quiz').addEventListener('click',function(e){if
 /* ===== 인증 ===== */
 var certDb={weeks:[],items:[],submissions:[],targets:{}};
 var certState={school:null,week:null};
+var quickClinicClass='';
+var quickClinicSelected={};
+
+function openQuickClinicIncomplete(){
+  quickClinicSelected={};
+  quickClinicClass='';
+  document.getElementById('quick-clinic-note').value='';
+  document.getElementById('modal-quick-clinic-incomplete').classList.add('show');
+  renderQuickClinicPicker();
+}
+function closeQuickClinicIncomplete(){document.getElementById('modal-quick-clinic-incomplete').classList.remove('show');}
+function selectQuickClinicClass(id){quickClinicClass=id;renderQuickClinicPicker();}
+function toggleQuickClinicStudent(id,checked){
+  if(checked)quickClinicSelected[id]=true;else delete quickClinicSelected[id];
+  updateQuickClinicCount();
+}
+function updateQuickClinicCount(){
+  var n=Object.keys(quickClinicSelected).length;
+  var el=document.getElementById('quick-clinic-selected-count');
+  if(el)el.textContent=n?'선택된 학생 '+n+'명':'학생을 선택해주세요.';
+}
+function renderQuickClinicPicker(){
+  var all=activeStudents();
+  var tabs=document.getElementById('quick-clinic-class-tabs');
+  if(tabs)tabs.innerHTML=[['','전체']].concat(STUDENT_CLASSES.map(function(c){return[c.id,c.label];})).map(function(t){
+    var count=t[0]?all.filter(function(s){return s.group_id===t[0];}).length:all.length;
+    return '<button class="btn btn-sm'+(quickClinicClass===t[0]?' blue':'')+'" style="white-space:nowrap" onclick="selectQuickClinicClass(\''+t[0]+'\')">'+t[1]+' ('+count+')</button>';
+  }).join('');
+  var students=all.filter(function(s){return !quickClinicClass||s.group_id===quickClinicClass;});
+  var el=document.getElementById('quick-clinic-students');
+  if(el)el.innerHTML=students.map(function(s){
+    var checked=!!quickClinicSelected[s.id];
+    return '<label style="display:flex;align-items:center;gap:9px;padding:12px 10px;border:1px solid '+(checked?'var(--accent)':'var(--border)')+';border-radius:9px;background:'+(checked?'rgba(79,124,255,.10)':'var(--card)')+';cursor:pointer">'+
+      '<input type="checkbox" '+(checked?'checked':'')+' onchange="toggleQuickClinicStudent(\''+s.id+'\',this.checked);renderQuickClinicPicker()" style="width:19px;height:19px;flex-shrink:0">'+
+      '<span><b style="font-size:13px">'+s.name+'</b><small style="display:block;color:var(--text3);font-size:10px;margin-top:2px">'+studentClassLabel(s.group_id)+'</small></span></label>';
+  }).join('');
+  updateQuickClinicCount();
+}
+async function saveQuickClinicIncomplete(){
+  var ids=Object.keys(quickClinicSelected);
+  var note=document.getElementById('quick-clinic-note').value.trim();
+  if(!ids.length){notify('미완 학생을 선택해주세요.','error');return;}
+  if(!note){notify('미완 내용을 입력해주세요.','error');return;}
+  var students=ids.map(function(id){return db.users.find(function(u){return u.id===id;});}).filter(Boolean);
+  var bySchool={};
+  students.forEach(function(s){
+    var cls=STUDENT_CLASSES.find(function(c){return c.id===s.group_id;});
+    var sid=s.school_id||(cls&&cls.school_id);
+    if(sid)(bySchool[sid]||(bySchool[sid]=[])).push(s.id);
+  });
+  var assigned=Object.values(bySchool).reduce(function(n,a){return n+a.length;},0);
+  if(!assigned){notify('선택한 학생의 학교 정보가 없어 지정할 수 없어요.','error');return;}
+  var btn=document.getElementById('quick-clinic-save-btn');
+  btn.disabled=true;btn.textContent='저장 중...';
+  try{
+    var monday=weekMonday(new Date());
+    var weekName=(monday.getMonth()+1)+'월 '+monday.getDate()+'일 주간';
+    var today=new Date();
+    var dateLabel=(today.getMonth()+1)+'/'+today.getDate();
+    for(var sid in bySchool){
+      var week=certDb.weeks.find(function(w){return w.school_id===sid&&w.name===weekName;});
+      if(!week){
+        week={id:'cw_'+Date.now()+'_'+sid,school_id:sid,name:weekName,created_at:new Date().toISOString()};
+        var wr=await sb.from('cert_weeks').insert(week);
+        if(wr.error)throw wr.error;
+        certDb.weeks.push(week);
+      }
+      var item={id:'ci_'+Date.now()+'_'+sid,week_id:week.id,school_id:sid,title:'[clinic]'+dateLabel+' '+note,type:'photo',targets:JSON.stringify(bySchool[sid]),form_link:null,created_at:new Date().toISOString()};
+      var ir=await sb.from('cert_items').insert(item);
+      if(ir.error)throw ir.error;
+      certDb.items.push(item);certDb.targets[item.id]=bySchool[sid];
+    }
+    closeQuickClinicIncomplete();
+    notify(assigned+'명에게 클리닉 완료 인증을 보냈어요.','success');
+    if(certState.school)renderTCertWeekList();
+  }catch(e){notify('저장 실패: '+e.message,'error');}
+  finally{btn.disabled=false;btn.textContent='완료 인증 보내기';}
+}
 
 async function loadCertData(){
   try{
