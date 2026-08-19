@@ -803,6 +803,7 @@ input,button{font-family:var(--font)}
             <button class="btn btn-sm" onclick="closeTExamResults()">← 목록으로</button>
             <div style="display:flex;gap:8px">
               <button class="btn btn-sm green" onclick="openOmrModal()">📷 OMR 채점</button>
+              <button class="btn btn-sm" style="color:var(--accent)" onclick="openManualAnswerEntry()">⌨️ 답안 직접 입력</button>
               <button class="btn btn-sm blue" onclick="tResExportAllPDF()">📄 전체 PDF</button>
               <button class="btn btn-sm" onclick="tResExportExcel()">📊 엑셀 내보내기</button>
             </div>
@@ -1343,12 +1344,12 @@ input,button{font-family:var(--font)}
 <!-- OMR 채점 -->
 <div class="modal-bg" id="modal-omr">
   <div class="modal" style="max-width:600px">
-    <div class="modal-head"><h3>📷 OMR 채점</h3><button class="modal-close" onclick="closeOmrModal()">×</button></div>
+    <div class="modal-head"><h3 id="omr-modal-title">📷 OMR 채점</h3><button class="modal-close" onclick="closeOmrModal()">×</button></div>
     <div class="modal-body">
       <div id="omr-step-student">
         <div class="form-group"><label>학생 선택</label><select id="omr-student-select" class="form-select"></select></div>
         <button class="btn blue" style="width:100%;margin-top:8px" onclick="omrStartCamera()">📷 답안지 촬영해서 AI로 읽기</button>
-        <button class="btn" style="width:100%;margin-top:8px" onclick="omrManualEntry()">⌨️ 번호 직접 입력하기</button>
+        <button class="btn" style="width:100%;margin-top:8px" onclick="omrManualEntry()">⌨️ 번호 직접 입력하기 (기존 답안 수정 가능)</button>
         <label style="display:block;cursor:pointer;background:var(--bg2);border:1.5px dashed var(--border2);border-radius:8px;padding:12px;text-align:center;font-size:13px;color:var(--accent);margin-top:10px">
           📁 여러 장 한번에 업로드 (스캔파일)
           <input type="file" id="omr-batch-input" accept="image/*,application/pdf" multiple style="display:none" onchange="omrBatchStart(this.files)">
@@ -6016,6 +6017,7 @@ function renderTExamList(elId,list,emptyMsg){
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
         <button class="btn btn-sm green" onclick="openOmrModalForExam('${e.id}')">📷 OMR 채점</button>
+        <button class="btn btn-sm" style="color:var(--accent)" onclick="openManualAnswerEntryForExam('${e.id}')">⌨️ 답안 입력</button>
         <button class="btn btn-sm blue" onclick="viewTExamResults('${e.id}','${e.name}')">결과 보기</button>
         <button class="btn btn-sm" onclick="openTExamEdit('${e.id}')">✏️ 수정</button>
         <button class="btn btn-sm" style="color:var(--red)" onclick="deleteTExam('${e.id}')">삭제</button>
@@ -7091,7 +7093,7 @@ function generateOmrSheet(){
 /* ════════════════════════════════════════════
    OMR 채점 — 답안지 사진을 AI가 읽어 채점
    ════════════════════════════════════════════ */
-var omrCamStream=null,omrCurrentPhoto=null,omrReadAnswers={},omrReadUncertain={};
+var omrCamStream=null,omrCurrentPhoto=null,omrReadAnswers={},omrReadUncertain={},omrExistingResponse=null;
 var omrBatchResults=[],omrBatchExpanded={};
 
 /* AI가 OMR 마킹을 더 꼼꼼히, 체계적으로 읽도록 만드는 공통 프롬프트 + 파라미터.
@@ -7121,8 +7123,21 @@ async function openOmrModalForExam(examId){
   }
   openOmrModal();
 }
-function openOmrModal(){
+async function openManualAnswerEntryForExam(examId){
+  if(!tResCurrentExam||tResCurrentExam.id!==examId){
+    const{data,error}=await sb.from('exams').select('*').eq('id',examId).single();
+    if(error||!data){alert('시험 정보를 불러올 수 없어요.');return;}
+    tResCurrentExam=data;
+  }
+  openManualAnswerEntry();
+}
+function openManualAnswerEntry(){
+  openOmrModal('manual');
+}
+function openOmrModal(mode){
   if(!tResCurrentExam){alert('시험 정보를 불러올 수 없어요.');return;}
+  const title=document.getElementById('omr-modal-title');
+  if(title)title.textContent=mode==='manual'?'⌨️ 학생 답안 직접 입력':'📷 OMR 채점';
   const optsHtml='<option value="">학생 선택</option>'+activeStudents().map(function(s){return`<option value="${s.name}">${s.name}</option>`;}).join('');
   document.getElementById('omr-student-select').innerHTML=optsHtml;
   const revSel=document.getElementById('omr-student-select-review');
@@ -7139,18 +7154,31 @@ function openOmrModal(){
 function closeOmrModal(){
   if(omrCamStream){try{omrCamStream.getTracks().forEach(function(t){t.stop();});}catch(e){}omrCamStream=null;}
   document.getElementById('modal-omr').classList.remove('show');
-  omrCurrentPhoto=null;omrReadAnswers={};omrReadUncertain={};
+  omrCurrentPhoto=null;omrReadAnswers={};omrReadUncertain={};omrExistingResponse=null;
   omrBatchResults=[];omrBatchExpanded={};
 }
-function omrManualEntry(){
+async function omrManualEntry(){
   const name=document.getElementById('omr-student-select').value;
   if(!name){alert('학생을 선택해 주세요.');return;}
   const exam=tResCurrentExam;
   omrCurrentPhoto=null;
   omrReadAnswers={};omrReadUncertain={};
   for(let i=0;i<exam.total_q;i++)omrReadAnswers[i]='';
+  const{data,error}=await sb.from('exam_responses').select('*').eq('exam_id',exam.id).eq('student_name',name).maybeSingle();
+  if(error){notify('기존 답안을 확인하지 못했어요: '+error.message,'error');return;}
+  omrExistingResponse=data||null;
+  if(omrExistingResponse){
+    exam.questions.forEach(function(q,i){
+      if(isObjectiveAnswer(q.answer))omrReadAnswers[i]=String(q.answer);
+    });
+    Object.keys(omrExistingResponse.answers||{}).forEach(function(i){
+      omrReadAnswers[i]=String(omrExistingResponse.answers[i]||'');
+    });
+  }
   document.getElementById('omr-step-student').style.display='none';
   renderOmrReview();
+  const hint=document.getElementById('omr-review-hint');
+  if(hint&&omrExistingResponse)hint.textContent='기존에 저장된 답안을 불러왔어요. 종이 OMR과 대조해 수정한 뒤 채점 확정을 누르세요.';
 }
 async function omrStartCamera(){
   // 학생을 미리 선택하지 않아도 됨 — 답안지에 마킹된 핸드폰 번호로 AI가 자동 인식을 시도함
@@ -7474,7 +7502,9 @@ async function omrConfirmScore(){
 
   const payload={
     exam_id:exam.id,student_name:name,
-    answers:savedAnswers,photo_urls:photoUrl?{omr:photoUrl}:{},thoughts:{},
+    answers:savedAnswers,
+    photo_urls:photoUrl?{omr:photoUrl}:((omrExistingResponse&&omrExistingResponse.photo_urls)||{}),
+    thoughts:(omrExistingResponse&&omrExistingResponse.thoughts)||{},
     score:score,correct_count:correct,total_q:total,
     points_earned:pointsEarned,points_total:pointsTotal,
     submitted_at:new Date().toISOString()
