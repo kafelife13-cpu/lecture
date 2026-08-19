@@ -433,6 +433,7 @@ input,button{font-family:var(--font)}
         <div class="card">
           <div class="card-head"><h3>승인된 학생 목록</h3><span id="student-count" style="font-size:11px;color:var(--text2)"></span></div>
           <div id="student-school-tabs" style="display:flex;gap:6px;flex-wrap:wrap;padding:0 1.25rem 1rem"></div>
+          <div id="student-class-tabs" style="display:flex;gap:6px;flex-wrap:wrap;padding:1rem 1.25rem;border-top:1px solid var(--border)"></div>
           <div style="overflow-x:auto"><table class="tbl" id="student-tbl"></table></div>
         </div>
       </div>
@@ -1680,6 +1681,8 @@ function nextSundaySixPm(fromDate){
   return target;
 }
 function isWednesdayClinicStudent(studentId){
+  var user=db.users&&db.users.find(function(u){return u.id===studentId;});
+  if(user&&user.group_id==='hanbaek_wed_1800')return true;
   if(typeof clinicDb==='undefined'||!clinicDb||!clinicDb.requests||!clinicDb.slots)return false;
   var latest=null;
   clinicDb.requests.filter(function(r){return r.student_id===studentId&&r.status==='confirmed';}).forEach(function(r){
@@ -2323,6 +2326,28 @@ async function bulkAssignSchool(){
 }
 var studentSchoolFilter='';
 function selectStudentSchoolFilter(sid){studentSchoolFilter=sid;renderStudents();}
+var studentClassFilter='';
+var STUDENT_CLASSES=[
+  {id:'chidong_sat_1800',label:'치동 토 6:00',school_id:'sc_chidong'},
+  {id:'chidong_sun_1430',label:'치동 일 2:30',school_id:'sc_chidong'},
+  {id:'hanbaek_wed_1800',label:'한백 수 6:00',school_id:'sc_hanbaek'},
+  {id:'hanbaek_sat_1030',label:'한백 토 10:30',school_id:'sc_hanbaek'},
+  {id:'hanbaek_sat_1430',label:'한백 토 2:30',school_id:'sc_hanbaek'},
+  {id:'hanbaek_sun_1030',label:'한백 일 10:30',school_id:'sc_hanbaek'}
+];
+function studentClassLabel(id){var c=STUDENT_CLASSES.find(function(x){return x.id===id;});return c?c.label:'반 미배정';}
+function selectStudentClassFilter(id){studentClassFilter=id;renderStudents();}
+async function setStudentClass(id,classId){
+  var cls=STUDENT_CLASSES.find(function(c){return c.id===classId;});
+  var patch={group_id:classId||'all'};
+  if(cls)patch.school_id=cls.school_id;
+  const{error}=await sb.from('users').update(patch).eq('id',id);
+  if(error){notify('반 변경 실패: '+error.message,'error');return;}
+  var u=db.users.find(function(x){return x.id===id;});
+  if(u){u.group_id=patch.group_id;if(cls)u.school_id=cls.school_id;}
+  notify((u?u.name:'학생')+' 반이 '+studentClassLabel(patch.group_id)+'으로 변경됐어요.','success');
+  renderStudents();
+}
 async function setStudentSchool(id,schoolId){
   const{error}=await sb.from('users').update({school_id:schoolId||null}).eq('id',id);
   if(error){notify('변경 실패: '+error.message,'error');return;}
@@ -2383,32 +2408,46 @@ function renderStudents(){
       return '<button class="btn btn-sm'+(studentSchoolFilter===t[0]?' blue':'')+'" onclick="selectStudentSchoolFilter(\''+t[0]+'\')">'+t[1]+' ('+t[2]+')</button>';
     }).join('');
   }
+  const classTabsEl=document.getElementById('student-class-tabs');
+  if(classTabsEl){
+    var noClassCount=allSts.filter(function(s){return !s.group_id||s.group_id==='all';}).length;
+    var classTabs=[['','전체 반',allSts.length]].concat(STUDENT_CLASSES.map(function(c){
+      return[c.id,c.label,allSts.filter(function(s){return s.group_id===c.id;}).length];
+    })).concat(noClassCount?[['__none','반 미배정',noClassCount]]:[]);
+    classTabsEl.innerHTML=classTabs.map(function(t){
+      return '<button class="btn btn-sm'+(studentClassFilter===t[0]?' blue':'')+'" onclick="selectStudentClassFilter(\''+t[0]+'\')">'+t[1]+' ('+t[2]+')</button>';
+    }).join('');
+  }
   const sts=allSts.filter(function(s){
-    if(!studentSchoolFilter)return true;
-    if(studentSchoolFilter==='__none')return !s.school_id;
-    return s.school_id===studentSchoolFilter;
+    var schoolOk=!studentSchoolFilter||(studentSchoolFilter==='__none'?!s.school_id:s.school_id===studentSchoolFilter);
+    var classOk=!studentClassFilter||(studentClassFilter==='__none'?(!s.group_id||s.group_id==='all'):s.group_id===studentClassFilter);
+    return schoolOk&&classOk;
   });
-  document.getElementById('student-count').textContent=`총 ${allSts.length}명`+(studentSchoolFilter?` · 표시 ${sts.length}명`:'');
+  document.getElementById('student-count').textContent=`총 ${allSts.length}명`+((studentSchoolFilter||studentClassFilter)?` · 표시 ${sts.length}명`:'');
   const tbl=document.getElementById('student-tbl');
-  if(!sts.length){tbl.innerHTML='<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text2)">등록된 학생이 없습니다.</td></tr>';return;}
+  if(!sts.length){tbl.innerHTML='<tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--text2)">등록된 학생이 없습니다.</td></tr>';return;}
   const schoolOptsHtml='<option value="">미배정</option>'+(qaDb.schools||[]).map(function(sc){return '<option value="'+sc.id+'">'+sc.name+'</option>';}).join('');
-  tbl.innerHTML=`<thead><tr><th>이름</th><th>아이디</th><th>학교</th><th>평균 진도</th><th>완료 강의</th><th>학부모 연락처</th><th></th></tr></thead><tbody>`+
+  const classOptsHtml='<option value="all">반 미배정</option>'+STUDENT_CLASSES.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');
+  tbl.innerHTML=`<thead><tr><th>이름</th><th>아이디</th><th>학교</th><th>반</th><th>평균 진도</th><th>완료 강의</th><th>학부모 연락처</th><th></th></tr></thead><tbody>`+
     sts.map(s=>{
       const vids=normalVideos();
       const progs=vids.map(v=>getPct(s.id,v.id));
       const avg=progs.length?Math.round(progs.reduce((a,b)=>a+b,0)/progs.length):0;
       const doneC=progs.filter(p=>p>=100).length;
       const schoolSel=`<select class="form-input" style="font-size:11px;padding:4px 6px" onchange="setStudentSchool('${s.id}',this.value)">${schoolOptsHtml}</select>`;
+      const classSel=`<select class="form-input" style="font-size:11px;padding:4px 6px;min-width:118px" onchange="setStudentClass('${s.id}',this.value)">${classOptsHtml}</select>`;
       return`<tr><td style="font-weight:600">${s.name}</td><td><code style="font-family:var(--mono);font-size:11px;color:var(--text2)">${s.id}</code></td>
         <td>${schoolSel}</td>
+        <td>${classSel}</td>
         <td><div style="display:flex;align-items:center;gap:8px"><div class="pbar" style="width:90px"><div class="pbar-fill" style="width:${avg}%;background:${pctColor(avg)}"></div></div><span style="font-size:12px;font-weight:600;color:${pctColor(avg)}">${avg}%</span></div></td>
         <td style="font-weight:600;color:${doneC===vids.length&&vids.length>0?'var(--green)':'var(--text)'}">${doneC}/${vids.length}</td>
         <td><input type="tel" class="form-input" placeholder="010-1234-5678" value="${s.parent_phone||''}" style="font-size:11px;padding:4px 6px;width:120px" onchange="setStudentParentPhone('${s.id}',this.value)"></td>
         <td><button class="btn btn-sm red" onclick="deleteStudent('${s.id}')">삭제</button></td></tr>`;
     }).join('')+'</tbody>';
   Array.from(tbl.querySelectorAll('tbody tr')).forEach(function(tr,i){
-    const sel=tr.querySelector('select');
-    if(sel)sel.value=sts[i].school_id||'';
+    const sels=tr.querySelectorAll('select');
+    if(sels[0])sels[0].value=sts[i].school_id||'';
+    if(sels[1])sels[1].value=sts[i].group_id||'all';
   });
 }
 
