@@ -7412,6 +7412,16 @@ async function omrPrepareVisionImages(blob,total){
       crop.width=Math.max(1,Math.round(sw*cropScale));crop.height=Math.max(1,Math.round(sh*cropScale));
       crop.getContext('2d').drawImage(base,sx,sy,sw,sh,0,0,crop.width,crop.height);
       list.push(omrCanvasJpegBase64(crop,0.96));
+    }else if(total<=20&&base.height>=base.width*1.15){
+      // 기존 튜터시스템 OMR을 세로로 촬영하면 답안 1~20번 표는 종이의
+      // 왼쪽 가운데에 길게 놓인다. 큰 빈 메모칸을 제외해 마킹 원을 확대한다.
+      const sx=Math.round(base.width*0.13),sy=Math.round(base.height*0.035);
+      const sw=Math.max(1,Math.round(base.width*0.40)),sh=Math.max(1,Math.round(base.height*0.94));
+      const crop=document.createElement('canvas');
+      const cropScale=Math.min(3,1800/sw);
+      crop.width=Math.max(1,Math.round(sw*cropScale));crop.height=Math.max(1,Math.round(sh*cropScale));
+      crop.getContext('2d').drawImage(base,sx,sy,sw,sh,0,0,crop.width,crop.height);
+      list.push(omrCanvasJpegBase64(crop,0.97));
     }
     if(bmp.close)bmp.close();
     return list;
@@ -7470,15 +7480,21 @@ function omrMergeReads(aiAnswers,aiUncertain,gridRead,total){
     const grid=(gridRead&&gridRead.answers&&gridRead.answers[i]||'').toString();
     if(ai&&grid&&ai===grid){
       answers[i]=ai;
+      if(aiUncertain&&aiUncertain[i])uncertain[i]=true;
     }else if(ai&&grid&&ai!==grid){
       // 두 판독기가 다르면 AI 값을 보여주되 반드시 원본 대조 대상으로 표시한다.
       answers[i]=ai;uncertain[i]=true;
-    }else if(ai||grid){
-      answers[i]=ai||grid;uncertain[i]=true;
+    }else if(ai){
+      // 전용 격자 판독기가 위치를 못 잡았더라도 AI가 확신하면 불필요한
+      // 전 문항 주황 표시를 만들지 않는다.
+      answers[i]=ai;
+      if(aiUncertain&&aiUncertain[i])uncertain[i]=true;
+    }else if(grid){
+      answers[i]=grid;uncertain[i]=true;
     }else{
       answers[i]='';uncertain[i]=true;
     }
-    if((aiUncertain&&aiUncertain[i])||(gridRead&&gridRead.uncertain&&gridRead.uncertain[i]))uncertain[i]=true;
+    if(aiUncertain&&aiUncertain[i])uncertain[i]=true;
   }
   return{answers:answers,uncertain:uncertain,method:gridRead?'ai-grid-consensus':'ai'};
 }
