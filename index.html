@@ -6163,6 +6163,32 @@ function texBackToStep1(){texShowStep(1);}
 
 var parsedQuestions=[];
 
+// AI가 판단한 문항 난이도/초기 배점을 유지하면서 전체가 정확히 100점이 되도록 정수 배점으로 보정한다.
+function autoAssignExamPoints(questions){
+  if(!questions||!questions.length)return questions||[];
+  const weights=questions.map(q=>{
+    const given=parseFloat(q.points);
+    if(Number.isFinite(given)&&given>0)return given;
+    const difficulty=String(q.difficulty||'').toLowerCase();
+    if(difficulty==='상'||difficulty==='hard'||difficulty==='어려움')return 6;
+    if(difficulty==='하'||difficulty==='easy'||difficulty==='쉬움')return 4;
+    return 5;
+  });
+  const weightSum=weights.reduce((sum,n)=>sum+n,0)||questions.length;
+  const raw=weights.map(w=>w/weightSum*100);
+  const assigned=raw.map(n=>Math.max(1,Math.floor(n)));
+  let remaining=100-assigned.reduce((sum,n)=>sum+n,0);
+  const order=raw.map((n,i)=>({i,fraction:n-Math.floor(n)})).sort((a,b)=>b.fraction-a.fraction||a.i-b.i);
+  for(let cursor=0;remaining>0;cursor++,remaining--)assigned[order[cursor%order.length].i]++;
+  for(let cursor=order.length-1;remaining<0&&cursor>=0;cursor--){
+    const i=order[cursor].i;
+    if(assigned[i]>1){assigned[i]--;remaining++;}
+    if(cursor===0&&remaining<0)cursor=order.length;
+  }
+  questions.forEach((q,i)=>{q.points=assigned[i];});
+  return questions;
+}
+
 async function texParseChunk(qText, aText, eText, startNum, endNum){
   const prompt=`시험지에서 ${startNum}번~${endNum}번 문항만 추출해서 JSON 배열로 반환하세요. 마크다운 없이 순수 JSON만.
 
@@ -6175,8 +6201,9 @@ ${aText}
 [해설지]
 ${eText||'없음'}
 
-반환형식: [{"num":${startNum},"passage":"이 문항이 딸린 읽기 지문(가/나/다 등) 원문 전체","text":"문제 물음(선택지 포함, 간결하게)","answer":3,"type":"추론·함축","explanation":"해설"}]
-규칙: num=${startNum}~${endNum}번만, answer=숫자1~5(①→1,②→2,③→3,④→4,⑤→5), explanation없으면"", type=사실 확인/추론·함축/어휘·어법/표현 기법/주제·요지/논증 구조/계산·풀이/개념 적용/자료 해석/빈칸 추론/순서 배열/기타
+반환형식: [{"num":${startNum},"passage":"이 문항이 딸린 읽기 지문(가/나/다 등) 원문 전체","text":"문제 물음(선택지 포함, 간결하게)","answer":3,"type":"추론·함축","domain":"문학-고전시가","difficulty":"중","points":5,"explanation":"해설"}]
+규칙: num=${startNum}~${endNum}번만, answer=숫자1~5(①→1,②→2,③→3,④→4,⑤→5), explanation없으면"", type=사실 확인/추론·함축/어휘·어법/표현 기법/주제·요지/논증 구조/계산·풀이/개념 적용/자료 해석/빈칸 추론/순서 배열/기타.
+domain은 성적표 영역별 분석에 쓸 수 있도록 구체적으로 분류하세요. difficulty는 문제의 사고 단계와 풀이 부담을 분석해 상/중/하 중 하나로 지정하고, points는 상=6점, 중=5점, 하=4점을 기본값으로 넣으세요. 전체 시험의 최종 배점은 저장 전에 자동으로 100점에 맞춰집니다.
 passage 규칙: "다음 글을 읽고 물음에 답하시오"처럼 (가)(나)(다) 등 읽기 지문에 여러 문항이 딸려 있으면, 그 지문 원문 전체를(요약하지 말고 시험지에 있는 그대로) 각 관련 문항의 passage에 동일하게 반복해서 넣으세요. (가)(나)(다) 구분이 있으면 그대로 살려서 담으세요. 지문 없이 단독으로 풀 수 있는 문법/어휘 문제는 passage를 빈 문자열로 두세요.`;
   const raw=await callTextAI(prompt,16000);
   if(!raw){
@@ -6306,7 +6333,7 @@ ${aRaw}`,200);
       allParts=allParts.concat(part);
     }
 
-    parsedQuestions=allParts.sort((a,b)=>a.num-b.num);
+    parsedQuestions=autoAssignExamPoints(allParts.sort((a,b)=>a.num-b.num));
     renderTexStep3();
     texShowStep(3);
   }catch(e){
