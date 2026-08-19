@@ -2241,6 +2241,23 @@ async function renderWeeklyStudentDashboard(){
     var done={};(result.data||[]).forEach(function(r){done[r.unit_week]=true;});
     vocabLeft=units.filter(function(w){return !done[w];});
   }catch(e){}
+  var recentScores=[];
+  try{
+    var scoreRes=await sb.from('exam_responses').select('id,exam_id,score,correct_count,total_q,submitted_at').eq('student_name',session.name||session.id).order('submitted_at',{ascending:false}).limit(3);
+    var scoreRows=scoreRes.data||[];
+    if(scoreRows.length){
+      var examIds=scoreRows.map(function(r){return r.exam_id;}).filter(Boolean);
+      var examRes=await sb.from('exams').select('id,name').in('id',examIds);
+      var examNames={};(examRes.data||[]).forEach(function(e){examNames[e.id]=e.name;});
+      recentScores=scoreRows.map(function(r){
+        return{name:examNames[r.exam_id]||'시험',score:Number(r.score)||0,correct:r.correct_count||0,total:r.total_q||0};
+      });
+    }
+  }catch(e){}
+  var scoreSummary=recentScores.length?recentScores.map(function(r,i){
+    var color=r.score>=80?'var(--green)':r.score>=60?'var(--amber)':'var(--red)';
+    return '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:'+(i?'6px':'2px')+' 0;'+(i?'border-top:1px solid var(--border);':'')+'"><span style="font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+dashboardSafeText(r.name)+'</span><span style="font-size:'+(i?'14px':'20px')+';font-weight:900;color:'+color+';white-space:nowrap">'+r.score+'점</span></div>';
+  }).join(''):'<span style="color:var(--text2);font-size:12px">아직 등록된 성적이 없어요</span>';
   var summary=[
     ['🏫','이번 주 클리닉',clinicSlot?((clinicSlot.day_of_week?clinicSlot.day_of_week+'요일 ':'')+(clinicSlot.start_time||clinicSlot.label||'')):'아직 확정된 시간이 없어요','clinic'],
     ['⏱','이번 주 학습시간',fmtTime(weeklyStudy),'study'],
@@ -2248,7 +2265,8 @@ async function renderWeeklyStudentDashboard(){
     ['🎬','들어야 할 강의',needed.length?needed.length+'개 남음':'모두 완료했어요','lectures'],
     ['🏫','이번 주 클리닉 해설',clinicAssigned.length?(clinicNeeded.length?clinicNeeded.length+'개 필수 시청':'필수 시청 완료'):(clinicLessons.length?'필수 시청 없음':'등록 대기 중'),'lectures'],
     ['📢','이번 주 과제',assignmentSummary,'announce'],
-    ['🔤','이번 주 단어시험',vocabLeft.length?vocabLeft.join(', ')+'강 남음':'모두 완료했어요','vocab']
+    ['🔤','이번 주 단어시험',vocabLeft.length?vocabLeft.join(', ')+'강 남음':'모두 완료했어요','vocab'],
+    ['📊','내 최근 성적표',scoreSummary,'scores']
   ];
   var urgent=[];
   if(!mwDone)urgent.push('월~수 국어 공부 인증 1회');
