@@ -5500,7 +5500,10 @@ async function renderStandaloneReportCard(responseId){
       sb.from('exam_responses').select('*').eq('exam_id',resp.exam_id)
     ]);
     if(!exam)throw new Error('시험 정보를 찾을 수 없어요');
-    document.getElementById('omr-share-root').innerHTML=buildReportCardHTML(resp.student_name,exam,resp,allResponses||[resp]);
+    document.getElementById('omr-share-root').innerHTML=
+      '<div style="position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid #eee;padding:10px 14px;font-family:sans-serif">'+
+        '<button onclick="location.href=location.pathname" style="padding:9px 14px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#333;font-size:13px;cursor:pointer">← 국어왕으로 돌아가기</button>'+
+      '</div>'+buildReportCardHTML(resp.student_name,exam,resp,allResponses||[resp]);
   }catch(e){
     document.getElementById('omr-share-root').innerHTML='<div style="text-align:center;padding:4rem 1rem;color:#999;font-family:sans-serif">성적표를 찾을 수 없어요. 링크를 다시 확인해주세요.</div>';
   }
@@ -6932,6 +6935,11 @@ function tResBuildPrintHTML(name,r,exam){
 
 function tResPrintHTML(html,filename){
   const w=window.open('','_blank');
+  if(!w){
+    const blob=new Blob([`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${filename}</title></head><body>${html}</body></html>`],{type:'text/html;charset=utf-8'});
+    location.href=URL.createObjectURL(blob);
+    return;
+  }
   w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${filename}</title>
     <style>@media print{button{display:none}body{margin:0}}</style>
     </head><body>${html}
@@ -8527,7 +8535,8 @@ async function sExamShowReportCard(){
   if(error){alert('성적표를 불러오지 못했어요: '+error.message);return;}
   const my=(allResponses||[]).find(r=>r.student_name===(session.name||session.id));
   if(!my){alert('내 응답을 찾을 수 없어요. 먼저 제출해 주세요.');return;}
-  tResPrintHTML(buildReportCardHTML(session.name||session.id,sExamData,my,allResponses||[my]),sExamData.name+'_성적표');
+  // 모바일·패드에서 비동기 조회 뒤 window.open을 호출하면 팝업으로 차단될 수 있어 같은 창의 공유 성적표 화면으로 이동한다.
+  location.href=location.origin+location.pathname+'?report='+encodeURIComponent(my.id);
 }
 
 function renderSExamGrid(){
