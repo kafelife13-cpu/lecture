@@ -2217,7 +2217,11 @@ async function renderWeeklyStudentDashboard(){
   var needed=assignedLessons.filter(function(v){return getPct(session.id,v.id)<100;});
   var clinicAssigned=clinicLessons.filter(function(v){return hasAccess(session.id,v.id);});
   var clinicNeeded=clinicAssigned.filter(function(v){return getPct(session.id,v.id)<100;});
-  var assignments=myAnnounceItems().filter(function(a){var d=new Date(a.created_at);return d>=weekStart&&d<weekEnd;});
+  // 주간 과제는 실제 수행 주간보다 앞선 금·토에 미리 게시될 수 있다.
+  // 게시 날짜로 이번 주를 잘라내면 월요일이 지난 뒤 과제가 사라지므로,
+  // 학생 학교에 맞는 가장 최근 과제 안내를 현재 과제로 보여준다.
+  var myAssignments=myAnnounceItems();
+  var assignments=myAssignments.length?[myAssignments[0]]:[];
   function dashboardSafeText(value){
     return String(value||'').replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});
   }
