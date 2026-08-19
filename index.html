@@ -7216,7 +7216,7 @@ function omrBuildPrompt(total,readIdentity){
     '다음 순서로 신중하게 읽어주세요:\n'+
     '1) 문항 번호 열과 ①~⑤의 열 중심을 먼저 고정하고, 한 행씩 수평으로 비교하세요.\n'+
     '2) 각 행에서 다섯 원의 내부 검정 면적을 서로 비교하여 가장 진하게 채워진 한 원만 답으로 선택하세요. 앞뒤 문항의 답 패턴을 추측하지 마세요.\n'+
-    '3) 1번부터 '+total+'번까지 읽은 뒤, 문항 번호와 행이 한 칸씩 밀리지 않았는지 끝에서 처음 방향으로 다시 대조하세요.\n'+
+    '3) 확대된 보조 이미지에서 1번부터 '+total+'번까지 먼저 읽고, 반드시 원본 이미지의 같은 문항과 다시 대조하세요. 문항 번호와 행이 한 칸씩 밀리지 않았는지 10번, 20번, 30번 경계에서 재확인하세요.\n'+
     '마킹이 없거나 두 개 이상 검게 마킹된 문항은 answers에 0으로 표시하고 반드시 uncertain에도 넣으세요. 시험 문항 수가 '+total+'이면 그보다 큰 번호는 이미지에 보여도 반환하지 마세요.\n'+
     '표시가 흐릿하거나 인접한 원과 헷갈려서 확신이 낮은 문항 번호만 uncertain 배열에 담으세요 (자신 있게 읽은 문항은 넣지 마세요).\n'+
     (readIdentity?'또한 답안지 상단의 "핸드폰 번호(뒤 8자리)" 칸에 학생이 손으로 적은 8자리 숫자를 읽어 phone에 담으세요. 글씨가 없거나 읽기 애매하면 빈 문자열로 두세요.\n':'학생은 이미 로그인되어 있습니다. 이름, 생년월일, 학교, 전화번호 등 신원 정보는 읽지 말고 오직 객관식 답안만 판독하세요. phone은 빈 문자열로 두세요.\n')+
@@ -7255,19 +7255,15 @@ async function omrPrepareVisionImages(blob,total){
     }
     ectx.putImageData(img,0,0);
     const list=[original,omrCanvasJpegBase64(enhanced,0.94)];
-    if(base.height>base.width&&total<=30){
-      // 기존 튜터 OMR 전체 사진은 세로 사진 속 종이가 90도 돌아가 있고,
-      // 답안표는 회전 방향에 따라 가로 화면의 왼쪽 또는 오른쪽 절반에 위치한다.
-      [false,true].forEach(function(clockwise){
-        const rot=document.createElement('canvas');rot.width=enhanced.height;rot.height=enhanced.width;
-        const rctx=rot.getContext('2d');
-        rctx.translate(rot.width/2,rot.height/2);rctx.rotate((clockwise?1:-1)*Math.PI/2);
-        rctx.drawImage(enhanced,-enhanced.width/2,-enhanced.height/2);
-        const crop=document.createElement('canvas');crop.width=Math.round(rot.width*0.56);crop.height=Math.round(rot.height*0.76);
-        const sx=clockwise?0:Math.round(rot.width*0.44),sy=Math.round(rot.height*0.22);
-        crop.getContext('2d').drawImage(rot,sx,sy,crop.width,crop.height,0,0,crop.width,crop.height);
-        list.push(omrCanvasJpegBase64(crop,0.95));
-      });
+    if(total<=30){
+      // 이름/생년월일/큰 연두색 빈칸은 제외하고 오른쪽 답안표 영역만 크게 확대한다.
+      const sx=Math.round(base.width*0.43),sy=Math.round(base.height*0.08);
+      const sw=Math.max(1,Math.round(base.width*0.55)),sh=Math.max(1,Math.round(base.height*0.84));
+      const crop=document.createElement('canvas');
+      const cropScale=Math.min(2.4,1800/sw);
+      crop.width=Math.max(1,Math.round(sw*cropScale));crop.height=Math.max(1,Math.round(sh*cropScale));
+      crop.getContext('2d').drawImage(base,sx,sy,sw,sh,0,0,crop.width,crop.height);
+      list.push(omrCanvasJpegBase64(crop,0.96));
     }
     if(bmp.close)bmp.close();
     return list;
@@ -9024,7 +9020,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=32', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=33', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
