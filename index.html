@@ -557,6 +557,7 @@ input,button{font-family:var(--font)}
           <div class="card-head"><h3>확인할 학생 선택</h3><span id="student-preview-count" style="font-size:11px;color:var(--text2)"></span></div>
           <div class="card-body">
             <input id="student-preview-search" class="form-input" placeholder="학생 이름 검색..." oninput="renderStudentPreviewPicker()" style="margin-bottom:14px">
+            <div id="student-preview-class-tabs" style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px"></div>
             <div id="student-preview-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px"></div>
           </div>
         </div>
@@ -1918,12 +1919,28 @@ function padPickStudent(id){
 }
 var studentPreviewMode=false;
 var studentPreviewTeacher=null;
+var studentPreviewClassFilter='';
+
+function setStudentPreviewClassFilter(id){studentPreviewClassFilter=id;renderStudentPreviewPicker();}
 
 function renderStudentPreviewPicker(){
   var grid=document.getElementById('student-preview-grid');
   if(!grid)return;
   var q=(document.getElementById('student-preview-search')?.value||'').trim();
-  var list=activeStudents().filter(function(s){return !q||s.name.indexOf(q)!==-1;});
+  var all=activeStudents();
+  var classes=STUDENT_CLASSES||[];
+  var noClassCount=all.filter(function(s){return !s.group_id||s.group_id==='all';}).length;
+  var tabs=[['','전체 반',all.length]].concat(classes.map(function(c){
+    return[c.id,c.label,all.filter(function(s){return s.group_id===c.id;}).length];
+  })).concat(noClassCount?[['__none','반 미배정',noClassCount]]:[]);
+  var tabsEl=document.getElementById('student-preview-class-tabs');
+  if(tabsEl)tabsEl.innerHTML=tabs.map(function(t){
+    return '<button class="btn btn-sm'+(studentPreviewClassFilter===t[0]?' blue':'')+'" onclick="setStudentPreviewClassFilter(\''+t[0]+'\')">'+t[1]+' ('+t[2]+')</button>';
+  }).join('');
+  var list=all.filter(function(s){
+    var classMatches=!studentPreviewClassFilter||(studentPreviewClassFilter==='__none'?(!s.group_id||s.group_id==='all'):s.group_id===studentPreviewClassFilter);
+    return classMatches&&(!q||s.name.indexOf(q)!==-1);
+  });
   var count=document.getElementById('student-preview-count');
   if(count)count.textContent=list.length+'명';
   if(!list.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text3);padding:2rem">일치하는 학생이 없어요.</div>';return;}
@@ -1931,7 +1948,8 @@ function renderStudentPreviewPicker(){
     var school=(qaDb.schools||[]).find(function(sc){return sc.id===s.school_id;});
     return '<button class="btn" onclick="openStudentPreview(\''+s.id+'\')" style="padding:13px;text-align:left">'+
       '<div style="font-size:14px;font-weight:700">'+s.name+'</div>'+
-      '<div style="font-size:11px;color:var(--text2);margin-top:2px">'+(school?school.name:'학교 미지정')+' · 화면 보기 →</div></button>';
+      '<div style="font-size:11px;color:var(--text2);margin-top:2px">'+(school?school.name:'학교 미지정')+' · '+studentClassLabel(s.group_id)+'</div>'+
+      '<div style="font-size:11px;color:var(--blue);margin-top:3px">화면 보기 →</div></button>';
   }).join('');
 }
 function openStudentPreview(studentId){
