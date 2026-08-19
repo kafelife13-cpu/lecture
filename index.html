@@ -1185,7 +1185,7 @@ input,button{font-family:var(--font)}
         <div id="s-exam-result" style="display:none">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
             <div id="s-res-header"></div>
-            <div style="display:flex;gap:6px">
+            <div id="s-exam-result-actions" style="display:flex;gap:6px">
               <button class="btn btn-sm blue" onclick="sExamRenderInlineReport(true)">📊 성적표 보기</button>
               <button class="btn btn-sm green" onclick="openOxQuizFromResult()">🔁 오답 OX 재시험</button>
               <button class="btn btn-sm" onclick="sExamBack()">다시 입력</button>
@@ -1893,6 +1893,7 @@ function doLogout(){
   if(padMode){
     // 패드 모드에서는 완전 로그아웃 대신 학생 선택 화면으로 돌아가요 (다음 학생 차례)
     session=null;
+    localStorage.removeItem('lms_sess');
     showPage('page-pad-picker');
     renderPadPicker();
     return;
@@ -1925,6 +1926,7 @@ async function enterPadMode(){
 }
 function exitPadMode(){
   padMode=false;session=null;db={users:[],videos:[],progress:[],access:[],requests:[],accessLog:[]};
+  localStorage.removeItem('lms_sess');
   showPage('page-login');
 }
 function setPadDay(day){
@@ -2044,7 +2046,8 @@ function launchStudent(){
   const lb1=document.getElementById('s-logout-btn'),lb2=document.getElementById('s-logout-btn-mobile');
   if(lb1)lb1.lastChild.textContent=logoutLabel;
   if(lb2)lb2.lastChild.textContent=logoutLabel;
-  sNav('home');
+  // 공용 학원 패드에서는 이름 선택 후 다른 메뉴를 거치지 않고 바로 답안 입력 화면으로 보낸다.
+  sNav(padMode?'exam':'home');
   setTimeout(updateAllBadges,1000);
   setTimeout(updatePushBtnState,300);
 }
@@ -8561,6 +8564,12 @@ async function sExamSubmitScore(){
 }
 
 function renderSExamResultView(score,correct,wrong,total){
+  const actions=document.getElementById('s-exam-result-actions');
+  if(actions){
+    actions.innerHTML=padMode
+      ?'<button class="btn btn-sm blue" onclick="padFinishExamAndNext()">✓ 제출 완료 · 다음 학생</button>'
+      :'<button class="btn btn-sm blue" onclick="sExamRenderInlineReport(true)">📊 성적표 보기</button><button class="btn btn-sm green" onclick="openOxQuizFromResult()">🔁 오답 OX 재시험</button><button class="btn btn-sm" onclick="sExamBack()">다시 입력</button>';
+  }
   document.getElementById('s-res-header').innerHTML=
     '<div style="font-size:17px;font-weight:600">'+sExamData.name+'</div>'+
     '<div style="font-size:12px;color:var(--text2);margin-top:2px">'+(session.name||'')+'</div>';
@@ -8584,7 +8593,21 @@ function renderSExamResultView(score,correct,wrong,total){
           '</div>';
       }).join('')+'</div>';
   }
-  sExamRenderInlineReport(false);
+  const reportEl=document.getElementById('s-res-report-card');
+  if(padMode){
+    if(reportEl)reportEl.innerHTML='<div class="card" style="padding:1.25rem;text-align:center;border-color:var(--green);color:var(--green);font-size:15px;font-weight:800">✓ 답안과 성적이 저장됐어요.<br><span style="font-size:12px;font-weight:500;color:var(--text2)">잠시 후 다음 학생 선택 화면으로 돌아갑니다.</span></div>';
+    clearTimeout(padExamReturnTimer);
+    padExamReturnTimer=setTimeout(padFinishExamAndNext,5000);
+  }else{
+    sExamRenderInlineReport(false);
+  }
+}
+
+var padExamReturnTimer=null;
+function padFinishExamAndNext(){
+  clearTimeout(padExamReturnTimer);padExamReturnTimer=null;
+  if(!padMode)return;
+  doLogout();
 }
 
 async function sExamRenderInlineReport(scrollToReport){
