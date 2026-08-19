@@ -971,6 +971,7 @@ input,button{font-family:var(--font)}
     <div class="main"><div class="main-inner">
       <div class="panel active" id="panel-home">
         <div class="page-header"><h1>안녕하세요, <span id="home-greet-name">학생</span>님 👋</h1><p>오늘 할 일을 확인해보세요</p></div>
+        <div id="home-cert-alert"></div>
         <div id="home-announce-banner"></div>
         <div id="home-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px"></div>
       </div>
@@ -2081,8 +2082,32 @@ function renderSHome(){
         '<div style="font-size:11px;color:var(--text2);margin-top:3px">'+c[2]+'</div>'+
       '</div></div>';
   }).join('');
+  renderStudentCertAlert();
   renderHomeAnnounceBanner();
   renderWeeklyStudentDashboard();
+}
+
+function renderStudentCertAlert(){
+  var el=document.getElementById('home-cert-alert');
+  if(!el||!session)return;
+  var assigned=certDb.items.filter(function(item){
+    return (certDb.targets[item.id]||[]).indexOf(session.id)!==-1;
+  });
+  var missing=assigned.filter(function(item){
+    var sub=certDb.submissions.find(function(s){return s.item_id===item.id&&s.student_id===session.id;});
+    return !sub||sub.status==='rejected';
+  });
+  if(!missing.length){el.innerHTML='';return;}
+  var rejectedCount=missing.filter(function(item){
+    return certDb.submissions.some(function(s){return s.item_id===item.id&&s.student_id===session.id&&s.status==='rejected';});
+  }).length;
+  el.innerHTML='<div class="card" onclick="sNav(\'cert\')" style="margin-bottom:1rem;border:2px solid var(--amber);background:rgba(245,158,11,.10);cursor:pointer">'+
+    '<div style="padding:16px;display:flex;align-items:center;gap:12px">'+
+      '<div style="font-size:28px;flex-shrink:0">⚠️</div>'+
+      '<div style="flex:1"><div style="font-size:15px;font-weight:800;color:var(--amber)">인증이 필요해요</div>'+
+      '<div style="font-size:12px;color:var(--text2);margin-top:4px">인증 대상자로 지정되었지만 아직 완료하지 않은 항목이 '+missing.length+'개 있어요.'+(rejectedCount?' (다시 제출 '+rejectedCount+'개)':'')+'</div></div>'+
+      '<button class="btn btn-sm" style="border-color:var(--amber);color:var(--amber);white-space:nowrap">인증하러 가기 →</button>'+
+    '</div></div>';
 }
 
 async function renderWeeklyStudentDashboard(){
