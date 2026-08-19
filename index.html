@@ -3040,10 +3040,24 @@ async function sShowMyGradeReport(responseId){
 /* ===== 학생: 일반 강의 ===== */
 function renderLectures(){
   const el=document.getElementById('student-lectures');
+  const approved=reviewVideos().filter(v=>hasAccess(session.id,v.id)).sort((a,b)=>{
+    const pa=getPct(session.id,a.id),pb=getPct(session.id,b.id);
+    if((pa>=100)!==(pb>=100))return pa>=100?1:-1;
+    const ga=db.access.find(x=>x.student_id===session.id&&x.video_id===a.id);
+    const gb=db.access.find(x=>x.student_id===session.id&&x.video_id===b.id);
+    return new Date((gb&&gb.granted_at)||0)-new Date((ga&&ga.granted_at)||0);
+  });
   // 최근에 새로 열어준 강의가 맨 위에 뜨도록 최신순 정렬
   const vids=normalVideos().slice().sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
-  if(!vids.length){el.innerHTML='<div class="empty"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg><p>강사가 등록한 강의가 없습니다.</p></div>';return;}
-  el.innerHTML=vids.map(v=>{
+  if(!vids.length&&!approved.length){el.innerHTML='<div class="empty"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg><p>강사가 등록한 강의가 없습니다.</p></div>';return;}
+  const approvedHtml=approved.length?'<div class="card" style="margin-bottom:16px;border:2px solid var(--amber);background:rgba(245,158,11,.06)"><div class="card-head"><h3>⭐ 지금 봐야 할 승인 영상</h3><span style="font-size:11px;color:var(--amber);font-weight:700">선생님이 열어준 영상</span></div><div style="padding:0 12px 8px">'+approved.map(v=>{
+    const p=getPct(session.id,v.id),lp=getLastPos(session.id,v.id),t=thumb(v.url);
+    return`<div class="lecture-item" style="border-color:${p>=100?'var(--green)':'var(--amber)'}">
+      <div class="lecture-thumb">${t?`<img src="${t}" alt="">`:'▶'}</div>
+      <div class="lecture-body"><h4>${v.title} <span class="badge ${p>=100?'done':'partial'}">${p>=100?'시청 완료':'승인 영상'}</span></h4><div class="lmeta">${v.description||'선생님이 시청하도록 승인한 영상입니다'}</div><div style="display:flex;align-items:center;gap:8px"><div class="pbar" style="width:110px"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div><span class="badge ${pctBadge(p)}">${pctLabel(p)}</span></div></div>
+      <button class="btn amber btn-sm" onclick="openPlay('${v.id}')">▶ ${lp>0&&p<100?'이어보기':'바로 보기'}</button></div>`;
+  }).join('')+'</div></div>':'';
+  const normalHtml=vids.map(v=>{
     const p=getPct(session.id,v.id),ws=getWatchSec(session.id,v.id),lp=getLastPos(session.id,v.id);
     const t=thumb(v.url);
     return`<div class="lecture-item">
@@ -3061,6 +3075,7 @@ function renderLectures(){
       <button class="btn blue btn-sm" onclick="openPlay('${v.id}')">▶ ${lp>0&&p<100?'이어보기':'시청하기'}</button>
     </div>`;
   }).join('');
+  el.innerHTML=approvedHtml+normalHtml;
 }
 
 /* ===== 학생: 복습 신청 ===== */
@@ -9109,7 +9124,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=38', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=39', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
