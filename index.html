@@ -1180,7 +1180,7 @@ input,button{font-family:var(--font)}
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
             <div id="s-res-header"></div>
             <div style="display:flex;gap:6px">
-              <button class="btn btn-sm blue" onclick="sExamShowReportCard()">📊 성적표 보기</button>
+              <button class="btn btn-sm blue" onclick="sExamRenderInlineReport(true)">📊 성적표 보기</button>
               <button class="btn btn-sm green" onclick="openOxQuizFromResult()">🔁 오답 OX 재시험</button>
               <button class="btn btn-sm" onclick="sExamBack()">다시 입력</button>
             </div>
@@ -1190,6 +1190,8 @@ input,button{font-family:var(--font)}
           </div>
           <!-- 틀린 문제 목록 -->
           <div class="card" id="s-res-wrong-list"></div>
+          <!-- 모바일·패드에서도 팝업 없이 항상 보이는 성적표 -->
+          <div id="s-res-report-card" style="margin-top:1rem"></div>
         </div>
         <!-- 기존 AI 분석 뷰 (숨김) -->
         <div id="s-exam-loading" style="display:none;text-align:center;padding:3rem 1rem">
@@ -8527,6 +8529,19 @@ function renderSExamResultView(score,correct,wrong,total){
           '</div>';
       }).join('')+'</div>';
   }
+  sExamRenderInlineReport(false);
+}
+
+async function sExamRenderInlineReport(scrollToReport){
+  const el=document.getElementById('s-res-report-card');
+  if(!el||!sExamData||!session)return;
+  el.innerHTML='<div class="card" style="padding:1.25rem;text-align:center;color:var(--text2);font-size:13px">성적표 불러오는 중...</div>';
+  const {data:allResponses,error}=await sb.from('exam_responses').select('*').eq('exam_id',sExamData.id);
+  if(error){el.innerHTML='<div class="card" style="padding:1.25rem;color:var(--red);font-size:13px">성적표를 불러오지 못했어요: '+escHtml(error.message)+'</div>';return;}
+  const my=(allResponses||[]).find(function(r){return r.student_name===(session.name||session.id);});
+  if(!my){el.innerHTML='<div class="card" style="padding:1.25rem;color:var(--text2);font-size:13px">제출 기록을 찾지 못했어요. 선생님께 알려주세요.</div>';return;}
+  el.innerHTML='<div class="card" style="overflow-x:auto;background:#fff">'+buildReportCardHTML(session.name||session.id,sExamData,my,allResponses||[my])+'</div>';
+  if(scrollToReport)el.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 async function sExamShowReportCard(){
