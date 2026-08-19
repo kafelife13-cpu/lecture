@@ -455,6 +455,15 @@ input,button{font-family:var(--font)}
           <div class="card-head" style="background:var(--amber-bg)"><h3 style="color:var(--amber)">⚠️ 미시청 학생</h3><span id="access-unwatched-count" style="font-size:11px;color:var(--amber)"></span></div>
           <div id="access-unwatched-list"></div>
         </div>
+        <!-- 클리닉 해설 필수 시청 지정 -->
+        <div class="card" style="margin-bottom:1rem;border-color:var(--amber)">
+          <div class="card-head"><h3>🏫 클리닉 해설 필수 시청자</h3><span style="font-size:11px;color:var(--text2)">영상마다 학생을 체크하세요</span></div>
+          <div class="card-body">
+            <select id="clinic-required-video" class="form-select" onchange="renderClinicRequiredStudents()" style="margin-bottom:12px"></select>
+            <div id="clinic-required-students" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;max-height:320px;overflow-y:auto"></div>
+            <button class="btn blue" onclick="saveClinicRequiredStudents()" style="width:100%;margin-top:12px">필수 시청자 저장</button>
+          </div>
+        </div>
         <!-- 직접 권한 부여 -->
         <div class="card" style="margin-bottom:1rem">
           <div class="card-head"><h3>학생에게 직접 권한 부여</h3><span style="font-size:11px;color:var(--text2)">학생 신청 없이 바로 부여</span></div>
@@ -2193,7 +2202,8 @@ async function renderWeeklyStudentDashboard(){
   // 기본강의와 주간 클리닉 해설은 각각의 메뉴/카드에서 따로 보여준다.
   var assignedLessons=reviewVideos().filter(function(v){return hasAccess(session.id,v.id);});
   var needed=assignedLessons.filter(function(v){return getPct(session.id,v.id)<100;});
-  var clinicNeeded=clinicLessons.filter(function(v){return getPct(session.id,v.id)<100;});
+  var clinicAssigned=clinicLessons.filter(function(v){return hasAccess(session.id,v.id);});
+  var clinicNeeded=clinicAssigned.filter(function(v){return getPct(session.id,v.id)<100;});
   var assignments=myAnnounceItems().filter(function(a){var d=new Date(a.created_at);return d>=weekStart&&d<weekEnd;});
   function dashboardSafeText(value){
     return String(value||'').replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});
@@ -2223,7 +2233,7 @@ async function renderWeeklyStudentDashboard(){
     ['⏱','이번 주 학습시간',fmtTime(weeklyStudy),'study'],
     ['✅','공부 인증',('월~수 '+(mwDone?'완료':'필요'))+' · '+('목~금 '+(tfDone?'완료':'필요')),'study'],
     ['🎬','들어야 할 강의',needed.length?needed.length+'개 남음':'모두 완료했어요','lectures'],
-    ['🏫','이번 주 클리닉 해설',clinicLessons.length?(clinicNeeded.length?clinicNeeded.length+'개 시청 필요':'시청 완료'):'등록 대기 중','lectures'],
+    ['🏫','이번 주 클리닉 해설',clinicAssigned.length?(clinicNeeded.length?clinicNeeded.length+'개 필수 시청':'필수 시청 완료'):(clinicLessons.length?'필수 시청 없음':'등록 대기 중'),'lectures'],
     ['📢','이번 주 과제',assignmentSummary,'announce'],
     ['🔤','이번 주 단어시험',vocabLeft.length?vocabLeft.join(', ')+'강 남음':'모두 완료했어요','vocab']
   ];
@@ -2754,6 +2764,7 @@ function renderAccessUnwatchedList(){
 }
 function renderAccessPanel(){
   renderAccessUnwatchedList();
+  renderClinicRequiredPicker();
   const gStu=document.getElementById('access-grant-student');
   const gVid=document.getElementById('access-grant-video');
   if(gStu&&gVid){
@@ -2997,6 +3008,43 @@ function sNav(panel){
   if(panel==='home')renderSHome();
 }
 
+function renderClinicRequiredPicker(){
+  const sel=document.getElementById('clinic-required-video');
+  if(!sel)return;
+  const current=sel.value;
+  const vids=clinicVideos().slice().sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  sel.innerHTML='<option value="">클리닉 해설 영상 선택</option>'+vids.map(v=>`<option value="${v.id}">${v.title}</option>`).join('');
+  if(current&&vids.some(v=>v.id===current))sel.value=current;
+  renderClinicRequiredStudents();
+}
+function renderClinicRequiredStudents(){
+  const vid=document.getElementById('clinic-required-video')?.value;
+  const el=document.getElementById('clinic-required-students');
+  if(!el)return;
+  if(!vid){el.innerHTML='<div style="grid-column:1/-1;color:var(--text3);font-size:13px;text-align:center;padding:18px">먼저 클리닉 해설 영상을 선택하세요.</div>';return;}
+  el.innerHTML=activeStudents().map(s=>'<label style="display:flex;align-items:center;gap:7px;padding:9px;border:1px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer"><input type="checkbox" class="clinic-required-check" value="'+s.id+'" '+(hasAccess(s.id,vid)?'checked':'')+'>'+s.name+'</label>').join('');
+}
+async function saveClinicRequiredStudents(){
+  const vid=document.getElementById('clinic-required-video')?.value;
+  if(!vid){notify('클리닉 해설 영상을 먼저 선택하세요.','error');return;}
+  const selected=Array.from(document.querySelectorAll('.clinic-required-check:checked')).map(x=>x.value);
+  const students=activeStudents();
+  for(const s of students){
+    const existing=db.access.find(a=>a.student_id===s.id&&a.video_id===vid);
+    const should=selected.includes(s.id);
+    if(should&&(!existing||isAccessExpired(existing))){
+      const row={id:existing?existing.id:'ac'+Date.now()+'_'+Math.random().toString(36).slice(2,6),student_id:s.id,video_id:vid,granted_at:new Date().toISOString()};
+      const res=await sb.from('video_access').upsert(row,{onConflict:'student_id,video_id'});
+      if(!res.error){if(existing)existing.granted_at=row.granted_at;else db.access.push(row);}
+    }else if(!should&&existing){
+      await sb.from('video_access').delete().eq('student_id',s.id).eq('video_id',vid);
+      db.access=db.access.filter(a=>!(a.student_id===s.id&&a.video_id===vid));
+    }
+  }
+  notify('클리닉 해설 필수 시청자를 저장했어요.','success');
+  renderClinicRequiredStudents();
+}
+
 var sGradeExams={},sGradeResponses=[];
 async function renderSGrades(){
   const listEl=document.getElementById('s-score-list');
@@ -3066,7 +3114,8 @@ function renderLectures(){
   }).join('')+'</div></div>':'';
   const clinicHtml=clinicVids.length?'<div style="font-size:16px;font-weight:800;margin:18px 0 8px">🏫 클리닉 해설</div>'+clinicVids.map(v=>{
     const p=getPct(session.id,v.id),ws=getWatchSec(session.id,v.id),lp=getLastPos(session.id,v.id),t=thumb(v.url);
-    return`<div class="lecture-item"><div class="lecture-thumb">${t?`<img src="${t}" alt="">`:'▶'}</div><div class="lecture-body"><h4>${v.title} <span class="badge partial">클리닉 해설</span></h4><div class="lmeta">${v.description||'이번 주 클리닉 해설 강의'}${ws>0?` · <span style="color:var(--green)">${fmtTime(ws)} 시청</span>`:''}</div><div style="display:flex;align-items:center;gap:8px"><div class="pbar" style="width:110px"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div><span class="badge ${pctBadge(p)}">${pctLabel(p)}</span></div></div><button class="btn blue btn-sm" onclick="openPlay('${v.id}')">▶ ${lp>0&&p<100?'이어보기':'시청하기'}</button></div>`;
+    const required=hasAccess(session.id,v.id);
+    return`<div class="lecture-item" style="${required?'border-color:var(--amber)':''}"><div class="lecture-thumb">${t?`<img src="${t}" alt="">`:'▶'}</div><div class="lecture-body"><h4>${v.title} <span class="badge ${required?'partial':'none'}">${required?'필수 시청':'클리닉 해설'}</span></h4><div class="lmeta">${v.description||'이번 주 클리닉 해설 강의'}${ws>0?` · <span style="color:var(--green)">${fmtTime(ws)} 시청</span>`:''}</div><div style="display:flex;align-items:center;gap:8px"><div class="pbar" style="width:110px"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div><span class="badge ${pctBadge(p)}">${pctLabel(p)}</span></div></div><button class="btn blue btn-sm" onclick="openPlay('${v.id}')">▶ ${lp>0&&p<100?'이어보기':'시청하기'}</button></div>`;
   }).join(''):'';
   const normalTitle=vids.length?'<div style="font-size:16px;font-weight:800;margin:18px 0 8px">📚 일반 강의</div>':'';
   const normalHtml=vids.map(v=>{
@@ -9136,7 +9185,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=40', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=41', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
