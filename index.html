@@ -870,6 +870,13 @@ input,button{font-family:var(--font)}
                 개별로 보낼 땐 각 줄의 <strong>복사</strong> 버튼으로 문구를 복사해 카톡에 붙여넣으면 돼요.
               </div>
             </div>
+            <div class="card" style="margin-bottom:1rem">
+              <div class="card-head"><h3>✍️ 공통 안내문</h3><button class="btn btn-sm blue" onclick="tResSaveCommonNote()">저장·문자 반영</button></div>
+              <div style="padding:0 1.25rem 1rem">
+                <textarea id="tres-common-note" class="form-input" rows="5" placeholder="예: 이번 시험은 중세국어 핵심 개념을 확인하는 시험이었으며, 난이도는 중상 수준이었습니다. 틀린 문항은 해설을 확인하고 다음 클리닉까지 다시 풀어오세요." style="resize:vertical;line-height:1.6"></textarea>
+                <div style="font-size:11px;color:var(--text3);margin-top:5px">한 번 작성하면 모든 학생 문자에 공통으로 들어가고, 점수·오답·개별 성적표 링크는 학생마다 자동으로 달라집니다.</div>
+              </div>
+            </div>
             <div class="card">
               <div class="card-head"><h3>발송 대상</h3><button class="btn btn-sm blue" onclick="tResExportNotifyExcel()">📨 맥가이 문자 엑셀</button></div>
               <div id="tres-notify-list" style="padding:0 1.25rem 1rem"></div>
@@ -6756,13 +6763,25 @@ function tResBuildParentMessage(name,r,exam){
   var score=r.score!=null?r.score:sc.pct;
   var grade=repGrade(sc.pct,exam.grade_cuts||[]);
   var link=tResBuildReportLink(r);
-  var lines=[
-    name+' 학생 "'+exam.name+'" 결과 안내',
+  var common=tResGetCommonNote(exam);
+  var lines=[name+' 학생 "'+exam.name+'" 결과 안내'];
+  if(common)lines.push('',common,'');
+  lines.push(
     '점수: '+score+'점'+(grade?' ('+grade+'등급)':''),
     '오답 문항: '+(wrongNums.length?wrongNums.join(', ')+'번':'없음 🎉'),
     '상세 성적표: '+link
-  ];
+  );
   return lines.join('\n');
+}
+
+function tResCommonNoteKey(exam){return'exam_parent_common_note_'+(exam&&exam.id||'');}
+function tResGetCommonNote(exam){return localStorage.getItem(tResCommonNoteKey(exam))||'';}
+function tResSaveCommonNote(){
+  if(!tResCurrentExam)return;
+  var el=document.getElementById('tres-common-note');
+  localStorage.setItem(tResCommonNoteKey(tResCurrentExam),(el&&el.value||'').trim());
+  notify('공통 안내문을 저장하고 모든 학생 문자에 반영했어요.','success');
+  renderTResNotify();
 }
 
 function tResBuildReportLink(response){
@@ -6800,6 +6819,8 @@ function renderTResNotify(){
   var exam=tResCurrentExam;
   var responses=tResCurrentResponses;
   var el=document.getElementById('tres-notify-list');
+  var noteEl=document.getElementById('tres-common-note');
+  if(noteEl)noteEl.value=tResGetCommonNote(exam);
   if(!responses||!responses.length){el.innerHTML='<p style="color:var(--text3);font-size:13px;padding:0.5rem 0">응답 데이터가 없어요</p>';return;}
   el.innerHTML='<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>이름</th><th>점수</th><th>오답</th><th>학부모 연락처</th><th>발송 문구</th><th></th></tr></thead><tbody>'+
     responses.map(function(r){
@@ -9087,7 +9108,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=36', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=37', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
