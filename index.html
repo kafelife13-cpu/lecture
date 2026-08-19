@@ -370,6 +370,7 @@ input,button{font-family:var(--font)}
                 <label class="flabel">카테고리</label>
                 <select id="v-category" class="form-select" style="width:140px">
                   <option value="normal">📚 일반 강의</option>
+                  <option value="clinic">🏫 주간 클리닉 해설</option>
                   <option value="review">🔁 복습 신청 영상</option>
                 </select>
               </div>
@@ -1743,6 +1744,14 @@ function activeStudents(){return db.users.filter(u=>u.role==='student'&&u.status
 function pendingStudents(){return db.users.filter(u=>u.role==='student'&&u.status==='pending').sort((a,b)=>a.name.localeCompare(b.name,'ko'));}
 function normalVideos(){return db.videos.filter(v=>v.category!=='review');}
 function reviewVideos(){return db.videos.filter(v=>v.category==='review');}
+function clinicExplanationVideosForWeek(date){
+  var start=weekMonday(date||new Date()),end=new Date(start);end.setDate(end.getDate()+7);
+  return db.videos.filter(function(v){
+    if(v.category!=='clinic')return false;
+    var created=new Date(v.created_at);
+    return !isNaN(created)&&created>=start&&created<end;
+  });
+}
 function fmtTime(sec){if(!sec||isNaN(sec)||sec<=0)return '0초';const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=Math.floor(sec%60);if(h>0)return`${h}시간 ${m}분 ${s}초`;if(m>0)return`${m}분 ${s}초`;return`${s}초`;}
 function notify(msg,type='info'){const n=document.getElementById('notif');n.textContent=msg;n.className=`notif show ${type}`;setTimeout(()=>n.classList.remove('show'),3000);}
 function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');}
@@ -2143,8 +2152,18 @@ async function renderWeeklyStudentDashboard(){
   var clinicReq=effectiveClinicRequest(session.id,weekStart);
   var clinicSlot=clinicReq?clinicDb.slots.find(function(s){return s.id===clinicReq.slot_id;}):null;
   var weeklyStudy=studySeconds(studyDb.sessions.filter(function(s){var d=new Date(s.start_time);return s.student_id===session.id&&d>=weekStart&&d<weekEnd;}));
-  var needed=normalVideos().filter(function(v){return getPct(session.id,v.id)<100;});
+  var clinicLessons=clinicExplanationVideosForWeek(weekStart);
+  var assignedLessons=normalVideos().filter(function(v){return v.category!=='clinic';})
+    .concat(reviewVideos().filter(function(v){return hasAccess(session.id,v.id);}));
+  var needed=assignedLessons.filter(function(v){return getPct(session.id,v.id)<100;});
+  var clinicNeeded=clinicLessons.filter(function(v){return getPct(session.id,v.id)<100;});
   var assignments=myAnnounceItems().filter(function(a){var d=new Date(a.created_at);return d>=weekStart&&d<weekEnd;});
+  var completedStudy=studyDb.sessions.filter(function(s){
+    var d=new Date(s.start_time);
+    return s.student_id===session.id&&d>=weekStart&&d<weekEnd&&s.end_time&&s.start_photo_url&&s.end_photo_url;
+  });
+  var mwDone=completedStudy.some(function(s){var day=new Date(s.start_time).getDay();return day>=1&&day<=3;});
+  var tfDone=completedStudy.some(function(s){var day=new Date(s.start_time).getDay();return day>=4&&day<=5;});
   var vocabLeft=[];
   try{
     await ensureVocabUnitsLoaded();
@@ -2156,13 +2175,23 @@ async function renderWeeklyStudentDashboard(){
   var summary=[
     ['🏫','이번 주 클리닉',clinicSlot?((clinicSlot.day_of_week?clinicSlot.day_of_week+'요일 ':'')+(clinicSlot.start_time||clinicSlot.label||'')):'아직 확정된 시간이 없어요','clinic'],
     ['⏱','이번 주 학습시간',fmtTime(weeklyStudy),'study'],
+    ['✅','공부 인증',('월~수 '+(mwDone?'완료':'필요'))+' · '+('목~금 '+(tfDone?'완료':'필요')),'study'],
     ['🎬','들어야 할 강의',needed.length?needed.length+'개 남음':'모두 완료했어요','lectures'],
+    ['🏫','이번 주 클리닉 해설',clinicLessons.length?(clinicNeeded.length?clinicNeeded.length+'개 시청 필요':'시청 완료'):'등록 대기 중','lectures'],
     ['📢','이번 주 과제',assignments.length?assignments.length+'개 확인':'등록된 과제가 없어요','announce'],
     ['🔤','이번 주 단어시험',vocabLeft.length?vocabLeft.join(', ')+'강 남음':'모두 완료했어요','vocab']
   ];
-  grid.innerHTML='<div style="grid-column:1/-1;font-size:15px;font-weight:800;margin:4px 0">📅 이번 주 한눈에 보기</div>'+summary.map(function(c){
-    return '<div class="card" style="cursor:pointer;border-left:3px solid var(--accent)" onclick="sNav(\''+c[3]+'\')"><div style="padding:1rem"><div style="font-size:12px;color:var(--text2);margin-bottom:5px">'+c[0]+' '+c[1]+'</div><div style="font-size:14px;font-weight:700">'+c[2]+'</div></div></div>';
-  }).join('')+'<div style="grid-column:1/-1;font-size:15px;font-weight:800;margin:12px 0 0">전체 메뉴</div>'+menuHtml;
+  var urgent=[];
+  if(!mwDone)urgent.push('월~수 국어 공부 인증 1회');
+  if(!tfDone)urgent.push('목~금 국어 공부 인증 1회');
+  if(needed.length)urgent.push('영상강의 '+needed.length+'개');
+  if(clinicNeeded.length)urgent.push('클리닉 해설 '+clinicNeeded.length+'개');
+  if(vocabLeft.length)urgent.push('단어시험 '+vocabLeft.join(', ')+'강');
+  grid.innerHTML='<div style="grid-column:1/-1;font-size:17px;font-weight:800;margin:4px 0">📅 이번 주 한눈에 보기</div>'+summary.map(function(c){
+    return '<div class="card" style="cursor:pointer;border-left:4px solid var(--accent);box-shadow:0 3px 12px rgba(0,0,0,.05)" onclick="sNav(\''+c[3]+'\')"><div style="padding:1rem"><div style="font-size:12px;color:var(--text2);margin-bottom:6px">'+c[0]+' '+c[1]+'</div><div style="font-size:14px;font-weight:800;line-height:1.45">'+c[2]+'</div></div></div>';
+  }).join('')+
+  '<div class="card" style="grid-column:1/-1;border-color:'+(urgent.length?'var(--amber)':'var(--green)')+'"><div style="padding:1rem 1.15rem"><div style="font-size:14px;font-weight:800;margin-bottom:7px">'+(urgent.length?'⚠️ 이번 주 남은 할 일':'🎉 이번 주 필수 항목 완료')+'</div><div style="font-size:13px;line-height:1.7;color:var(--text2)">'+(urgent.length?urgent.map(function(x){return '• '+x;}).join('<br>'):'현재 남은 필수 항목이 없어요.')+'</div></div></div>'+
+  '<div style="grid-column:1/-1;font-size:15px;font-weight:800;margin:12px 0 0">전체 메뉴</div>'+menuHtml;
 }
 function renderHomeAnnounceBanner(){
   var el=document.getElementById('home-announce-banner');
@@ -3733,7 +3762,8 @@ var tStudyWeekOffset=0;
 function weekRangeForOffset(offset){
   var now=new Date();
   var start=new Date(now.getFullYear(),now.getMonth(),now.getDate());
-  start.setDate(start.getDate()-start.getDay()+offset*7); // 이번 주 일요일 00:00 기준
+  var day=start.getDay();
+  start.setDate(start.getDate()+(day===0?-6:1-day)+offset*7); // 이번 주 월요일 00:00 기준
   var end=new Date(start);end.setDate(start.getDate()+7);
   return{start:start,end:end};
 }
@@ -3758,16 +3788,26 @@ async function renderTStudyWeek(){
   var sts=activeStudents();
   var rows=sts.map(function(s){
     var mine=sessions.filter(function(x){return x.student_id===s.id;});
+    var verified=mine.filter(function(x){return x.end_time&&x.start_photo_url&&x.end_photo_url;});
+    var mwCount=verified.filter(function(x){var day=new Date(x.start_time).getDay();return day>=1&&day<=3;}).length;
+    var tfCount=verified.filter(function(x){var day=new Date(x.start_time).getDay();return day>=4&&day<=5;}).length;
     var totalSec=studySeconds(mine);
     var awaySec=mine.reduce(function(sum,x){return sum+(x.away_seconds||0);},0);
-    return{student:s,totalSec:totalSec,awaySec:awaySec,cnt:mine.length};
-  }).filter(function(r){return r.cnt>0;}).sort(function(a,b){return b.totalSec-a.totalSec;});
-  if(!rows.length){listEl.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px">이 주에 공부 기록이 없어요.</div>';return;}
-  listEl.innerHTML=rows.map(function(r){
+    return{student:s,totalSec:totalSec,awaySec:awaySec,cnt:verified.length,mwCount:mwCount,tfCount:tfCount,complete:mwCount>0&&tfCount>0};
+  }).sort(function(a,b){return Number(a.complete)-Number(b.complete)||b.totalSec-a.totalSec;});
+  var completeCount=rows.filter(function(r){return r.complete;}).length;
+  var mwCount=rows.filter(function(r){return r.mwCount>0;}).length;
+  var tfCount=rows.filter(function(r){return r.tfCount>0;}).length;
+  listEl.innerHTML='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px 0">'+
+    '<div style="padding:10px;background:var(--bg2);border-radius:8px;text-align:center"><b style="font-size:18px">'+mwCount+'</b><div style="font-size:10px;color:var(--text2)">월~수 인증</div></div>'+
+    '<div style="padding:10px;background:var(--bg2);border-radius:8px;text-align:center"><b style="font-size:18px">'+tfCount+'</b><div style="font-size:10px;color:var(--text2)">목~금 인증</div></div>'+
+    '<div style="padding:10px;background:var(--bg2);border-radius:8px;text-align:center"><b style="font-size:18px;color:var(--green)">'+completeCount+'</b><div style="font-size:10px;color:var(--text2)">주간 완료</div></div></div>'+rows.map(function(r){
     return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">'+
       '<div class="avatar student" style="width:26px;height:26px;font-size:10px;flex-shrink:0">'+r.student.name[0]+'</div>'+
       '<div style="flex:1"><div style="font-size:13px;font-weight:600">'+r.student.name+'</div>'+
-      '<div style="font-size:11px;color:var(--text2)">'+r.cnt+'회 · '+fmtTime(r.totalSec)+(r.awaySec>0?' · <span style="color:var(--amber)">이탈 '+fmtTime(r.awaySec)+'</span>':'')+'</div></div>'+
+      '<div style="font-size:11px;color:var(--text2)">인증 '+r.cnt+'회 · '+fmtTime(r.totalSec)+(r.awaySec>0?' · <span style="color:var(--amber)">이탈 '+fmtTime(r.awaySec)+'</span>':'')+'</div></div>'+
+      '<span class="badge '+(r.mwCount?'done':'none')+'">월~수 '+(r.mwCount?'완료':'미인증')+'</span>'+
+      '<span class="badge '+(r.tfCount?'done':'none')+'">목~금 '+(r.tfCount?'완료':'미인증')+'</span>'+
       '</div>';
   }).join('');
 }
