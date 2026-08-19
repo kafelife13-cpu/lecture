@@ -7270,6 +7270,52 @@ async function omrPrepareVisionImages(blob,total){
     return list;
   }catch(e){return[original];}
 }
+async function omrReadLegacyGrid(blob,total){
+  if(typeof createImageBitmap!=='function'||total>30)return null;
+  try{
+    const bmp=await createImageBitmap(blob),maxSide=1500,scale=Math.min(1,maxSide/Math.max(bmp.width,bmp.height));
+    const c=document.createElement('canvas');c.width=Math.round(bmp.width*scale);c.height=Math.round(bmp.height*scale);
+    const ctx=c.getContext('2d');ctx.drawImage(bmp,0,0,c.width,c.height);if(bmp.close)bmp.close();
+    const data=ctx.getImageData(0,0,c.width,c.height).data,w=c.width,h=c.height;
+    const dark=function(x,y,limit){const i=(Math.max(0,Math.min(h-1,y))*w+Math.max(0,Math.min(w-1,x)))*4;return(0.299*data[i]+0.587*data[i+1]+0.114*data[i+2])<(limit||75);};
+    const v=[];
+    for(let x=1;x<w-1;x+=2){let n=0;for(let y=0;y<h;y+=3)if(dark(x,y,105))n++;if(n>h/3*0.16)v.push(x);}
+    const groups=[];v.forEach(function(x){const g=groups[groups.length-1];if(g&&x-g[g.length-1]<=5)g.push(x);else groups.push([x]);});
+    const lines=groups.filter(function(g){return g.length>=1;}).map(function(g){return Math.round(g.reduce((a,b)=>a+b,0)/g.length);});
+    let box=null;
+    for(let a=0;a<lines.length;a++)for(let b=a+1;b<lines.length;b++){
+      const left=lines[a],right=lines[b],bw=right-left;
+      if(bw<w*0.18||bw>w*0.42||left>w*0.62)continue;
+      const sep=lines.find(function(x){return x>left+bw*0.12&&x<left+bw*0.30;});
+      if(!sep)continue;
+      const score=bw-(left*0.05);if(!box||score>box.score)box={left:left,right:right,sep:sep,score:score};
+    }
+    if(!box)return null;
+    const hp=[];
+    for(let y=1;y<h-1;y+=2){let n=0;for(let x=box.left;x<=box.right;x+=2)if(dark(x,y,110))n++;if(n>(box.right-box.left)/2*0.25)hp.push(y);}
+    const hgroups=[];hp.forEach(function(y){const g=hgroups[hgroups.length-1];if(g&&y-g[g.length-1]<=5)g.push(y);else hgroups.push([y]);});
+    const hlines=hgroups.map(function(g){return Math.round(g.reduce((a,b)=>a+b,0)/g.length);}).filter(function(y){return y<h*0.98;});
+    if(hlines.length<3)return null;
+    const top=hlines[0],header=hlines[1],bottom=hlines[hlines.length-1];
+    if(bottom-header<h*0.45)return null;
+    const rowH=(bottom-header)/20,answerW=box.right-box.sep;
+    const answers={},uncertain={};let confident=0;
+    for(let qi=0;qi<Math.min(total,20);qi++){
+      const cy=header+(qi+0.5)*rowH,scores=[];
+      for(let choice=0;choice<5;choice++){
+        const cx=box.sep+answerW*(0.20+choice*0.17),rx=Math.max(5,answerW*0.045),ry=Math.max(6,rowH*0.28);
+        let hit=0,all=0;for(let yy=Math.round(cy-ry);yy<=cy+ry;yy+=2)for(let xx=Math.round(cx-rx);xx<=cx+rx;xx+=2){all++;if(dark(xx,yy,72))hit++;}
+        scores.push(hit/Math.max(1,all));
+      }
+      const order=[0,1,2,3,4].sort(function(a,b){return scores[b]-scores[a];}),best=order[0],second=order[1];
+      if(scores[best]>0.16&&scores[second]>0.14){answers[qi]='';uncertain[qi]=true;}
+      else if(scores[best]>0.16&&scores[best]>scores[second]*1.35){answers[qi]=String(best+1);confident++;}
+      else{answers[qi]='';uncertain[qi]=true;}
+    }
+    if(confident<Math.min(total,20)*0.65)return null;
+    return{answers:answers,uncertain:uncertain,method:'legacy-grid'};
+  }catch(e){return null;}
+}
 async function openOmrModalForExam(examId){
   if(!tResCurrentExam||tResCurrentExam.id!==examId){
     const{data,error}=await sb.from('exams').select('*').eq('id',examId).single();
@@ -7388,6 +7434,12 @@ async function omrReadWithAI(){
   const exam=tResCurrentExam;
   const total=exam.total_q;
   try{
+    const gridRead=await omrReadLegacyGrid(omrCurrentPhoto,total);
+    if(gridRead){
+      omrReadAnswers=gridRead.answers;omrReadUncertain=gridRead.uncertain;
+      notify('기존 OMR 전용 판독기로 답안을 읽었어요.','success');
+      renderOmrReview();return;
+    }
     const visionImages=await omrPrepareVisionImages(omrCurrentPhoto,total);
     const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:omrApiBody(total,visionImages)});
     const data=await resp.json();
@@ -7476,6 +7528,8 @@ async function omrBatchStart(files){
       }
       result.answers=answers;
       (parsed.uncertain||[]).forEach(function(n){result.uncertain[Number(n)-1]=true;});
+      const gridRead=await omrReadLegacyGrid(job.blob,total);
+      if(gridRead){result.answers=gridRead.answers;result.uncertain=gridRead.uncertain;}
       const digits=(parsed.phone||'').replace(/\D/g,'');
       if(digits.length===8){
         const idPart=digits.slice(0,4),pwPart=digits.slice(4,8);
@@ -8442,6 +8496,14 @@ async function sOmrReadWithAI(previewUrl){
   const exam=sExamData;
   const total=exam.total_q;
   try{
+    const gridRead=await omrReadLegacyGrid(sOmrCurrentPhoto,total);
+    if(gridRead){
+      sExamFullAnswers=gridRead.answers;
+      document.getElementById('s-exam-full-loading').style.display='none';
+      document.getElementById('s-exam-full-grid-wrap').style.display='block';
+      document.getElementById('s-omr-photo-preview').innerHTML=previewUrl?'<img src="'+previewUrl+'" style="width:100%;border-radius:8px;margin-bottom:6px;max-height:200px;object-fit:contain;background:var(--bg2)"><div style="font-size:12px;color:var(--text2);margin-bottom:10px">기존 OMR 전용 판독 결과예요. 주황색 문항만 확인해 주세요.</div>':'';
+      renderSExamFullGrid();return;
+    }
     const visionImages=await omrPrepareVisionImages(sOmrCurrentPhoto,total);
     const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:omrApiBody(total,visionImages,false)});
     const data=await resp.json();
@@ -9021,7 +9083,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=34', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=35', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
