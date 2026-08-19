@@ -6755,7 +6755,7 @@ function tResBuildParentMessage(name,r,exam){
   var sc=repScore(exam,r);
   var score=r.score!=null?r.score:sc.pct;
   var grade=repGrade(sc.pct,exam.grade_cuts||[]);
-  var link=location.origin+location.pathname+'?report='+r.id;
+  var link=tResBuildReportLink(r);
   var lines=[
     name+' 학생 "'+exam.name+'" 결과 안내',
     '점수: '+score+'점'+(grade?' ('+grade+'등급)':''),
@@ -6763,6 +6763,10 @@ function tResBuildParentMessage(name,r,exam){
     '상세 성적표: '+link
   ];
   return lines.join('\n');
+}
+
+function tResBuildReportLink(response){
+  return location.origin+location.pathname+'?report='+encodeURIComponent(response.id);
 }
 
 function tResNormalizePhone(value){
@@ -6850,14 +6854,14 @@ function tResExportNotifyExcel(){
   var rows=responses.map(function(r){
     var u=db.users.find(function(x){return x.name===r.student_name;});
     var phone=tResNormalizePhone((u&&u.parent_phone)||'');
-    return {'휴대폰번호':phone,'문자내용':tResBuildParentMessage(r.student_name,r,exam),'학생명':r.student_name};
+    return {'휴대폰번호':phone,'문자내용':tResBuildParentMessage(r.student_name,r,exam),'학생명':r.student_name,'성적표링크':tResBuildReportLink(r)};
   });
   var missingRows=rows.filter(function(r){return !r['휴대폰번호'];});
   var missing=missingRows.length;
   if(missing)notify(missing+'명은 학부모 연락처가 비어 있어요. "학부모 발송" 탭에서 먼저 채워주세요.','info');
   var wb=XLSX.utils.book_new();
   var ws=XLSX.utils.json_to_sheet(rows);
-  ws['!cols']=[{wch:16},{wch:70},{wch:12}];
+  ws['!cols']=[{wch:16},{wch:70},{wch:12},{wch:55}];
   XLSX.utils.book_append_sheet(wb,ws,'맥가이문자업로드');
   var summaryWs=XLSX.utils.json_to_sheet(tResBuildSummaryRows(exam,responses));
   summaryWs['!cols']=[{wch:12},{wch:9},{wch:9},{wch:9},{wch:9},{wch:30}];
@@ -9083,7 +9087,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=35', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=36', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
