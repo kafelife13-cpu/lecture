@@ -1359,6 +1359,10 @@ input,button{font-family:var(--font)}
       <div id="omr-step-student">
         <div class="form-group"><label>학생 선택</label><select id="omr-student-select" class="form-select"></select></div>
         <button class="btn blue" style="width:100%;margin-top:8px" onclick="omrStartCamera()">📷 답안지 촬영해서 AI로 읽기</button>
+        <label class="btn" style="display:block;width:100%;margin-top:8px;text-align:center;box-sizing:border-box;cursor:pointer">
+          🖼️ 찍어둔 사진 선택해서 읽기
+          <input type="file" id="omr-single-input" accept="image/*" style="display:none" onchange="omrReadSelectedPhoto(this.files)">
+        </label>
         <button class="btn" style="width:100%;margin-top:8px" onclick="omrManualEntry()">⌨️ 번호 직접 입력하기 (기존 답안 수정 가능)</button>
         <label style="display:block;cursor:pointer;background:var(--bg2);border:1.5px dashed var(--border2);border-radius:8px;padding:12px;text-align:center;font-size:13px;color:var(--accent);margin-top:10px">
           📁 여러 장 한번에 업로드 (스캔파일)
@@ -7175,10 +7179,11 @@ function generateOmrSheet(){
       '.omr-col-head{display:flex;background:#333;color:#fff;font-size:11px;font-weight:600}'+
       '.omr-col-head span:first-child{width:32px;text-align:center;padding:4px 0;border-right:1px solid #555}'+
       '.omr-col-head span:last-child{flex:1;text-align:center;padding:4px 0}'+
-      '.omr-row{display:flex;align-items:center;border-top:1px solid #ccc}'+
-      '.omr-qnum{width:32px;text-align:center;font-size:11px;font-weight:600;border-right:1px solid #ccc;padding:3px 0}'+
+      '.omr-row{display:flex;align-items:center;border-top:1px solid #aaa;min-height:24px}'+
+      '.omr-row:nth-child(even){background:#f5f5f5}'+
+      '.omr-qnum{width:32px;text-align:center;font-size:12px;font-weight:700;border-right:1px solid #aaa;padding:4px 0}'+
       '.omr-choices{flex:1;display:flex;justify-content:space-around;padding:3px 2px}'+
-      '.omr-bubble{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border:1.2px solid #333;border-radius:50%;font-size:8px;color:#333}'+
+      '.omr-bubble{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border:1.5px solid #111;border-radius:50%;font-size:9px;font-weight:700;color:#222;box-sizing:border-box}'+
     '</style>';
   const w=window.open('','_blank');
   w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+title+' OMR</title>'+style+'</head><body>'+bodyHtml+'<br><button onclick="window.print()" style="padding:10px 24px;background:#1a1612;color:white;border:none;border-radius:6px;font-size:14px;cursor:pointer;margin:10px">🖨️ 인쇄(가로) / PDF로 저장</button></body></html>');
@@ -7197,11 +7202,13 @@ var omrBatchResults=[],omrBatchExpanded={};
    - 흐릿하거나 헷갈리는 마킹은 uncertain 배열로 따로 보고하게 해서, 선생님이 그 문항만 빠르게 재확인할 수 있게 함 */
 function omrBuildPrompt(total){
   return '당신은 OMR(객관식 답안지) 마킹을 정확하게 판독하는 전문가입니다. 첨부된 이미지는 학생이 마킹한 OMR 답안지 사진입니다.\n'+
-    '답안지는 문항 번호 1번부터 '+total+'번까지 세로로 나열되어 있고, 각 문항 옆에 ①②③④⑤ 다섯 개의 원(마킹란)이 놓여 있습니다. 학생은 그중 하나를 검게(또는 진하게) 칠해 표시합니다.\n'+
+    '사진은 0도, 90도, 180도, 270도로 돌아가 있을 수 있습니다. 먼저 글자와 문항 번호가 정상 방향이 되도록 머릿속으로 회전하고, 종이의 네 모서리와 답안 표 전체를 찾으세요.\n'+
+    '답안 표는 문항 번호 1번부터 '+total+'번까지이며, 20문항마다 다음 세로 단으로 이어질 수 있습니다. 각 문항의 같은 행에는 왼쪽부터 ①②③④⑤ 다섯 원이 있습니다.\n'+
+    '인쇄된 빈 원은 가는 테두리와 가운데 숫자가 보이고, 학생이 고른 원은 내부 대부분이 검고 진하게 채워져 있습니다. 빈 원의 테두리나 숫자, 표의 선, 그림자, 종이 밖의 물체를 마킹으로 오인하지 마세요.\n'+
     '다음 순서로 신중하게 읽어주세요:\n'+
-    '1) 먼저 답안지에서 문항 번호 열과 마킹 열의 위치, 열(단) 구성을 파악하세요.\n'+
-    '2) 1번부터 '+total+'번까지 하나씩 순서대로 짚어가며 다섯 개의 원 중 실제로 진하게 채워진 것이 어느 것인지 확인하세요. 흐릿하거나 부분적으로 칠해진 것도 유효한 마킹으로 인정하되, 아무 표시가 없거나(공란) 두 개 이상 칠해진 경우만 마킹 실패로 판단하세요.\n'+
-    '3) 다 읽은 뒤 처음부터 한 번 더 훑으며 놓쳤거나 헷갈리는 문항이 없는지 재확인하세요.\n'+
+    '1) 문항 번호 열과 ①~⑤의 열 중심을 먼저 고정하고, 한 행씩 수평으로 비교하세요.\n'+
+    '2) 각 행에서 다섯 원의 내부 검정 면적을 서로 비교하여 가장 진하게 채워진 한 원만 답으로 선택하세요. 앞뒤 문항의 답 패턴을 추측하지 마세요.\n'+
+    '3) 1번부터 '+total+'번까지 읽은 뒤, 문항 번호와 행이 한 칸씩 밀리지 않았는지 끝에서 처음 방향으로 다시 대조하세요.\n'+
     '마킹이 없거나 두 개 이상 마킹되어 판독이 애매한 문항은 answers에 0으로 표시하세요.\n'+
     '표시가 흐릿하거나 인접한 원과 헷갈려서 확신이 낮은 문항 번호만 uncertain 배열에 담으세요 (자신 있게 읽은 문항은 넣지 마세요).\n'+
     '또한 답안지 상단의 "핸드폰 번호(뒤 8자리)" 칸에 학생이 손으로 적은 8자리 숫자를 읽어 phone에 담으세요. 글씨가 없거나 읽기 애매하면 빈 문자열로 두세요.\n'+
@@ -8629,6 +8636,18 @@ function renderSExamResultView(score,correct,wrong,total){
   }else{
     sExamRenderInlineReport(false);
   }
+}
+async function omrReadSelectedPhoto(files){
+  const file=files&&files[0];
+  if(!file)return;
+  if(!/^image\//.test(file.type||'')){notify('사진 파일을 선택해 주세요.','error');return;}
+  omrCurrentPhoto=file;
+  document.getElementById('omr-step-student').style.display='none';
+  document.getElementById('omr-step-loading').style.display='';
+  document.getElementById('omr-review-img').src=URL.createObjectURL(file);
+  await omrReadWithAI();
+  const input=document.getElementById('omr-single-input');
+  if(input)input.value='';
 }
 
 var padExamReturnTimer=null;
