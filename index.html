@@ -2159,6 +2159,15 @@ async function renderWeeklyStudentDashboard(){
   var needed=assignedLessons.filter(function(v){return getPct(session.id,v.id)<100;});
   var clinicNeeded=clinicLessons.filter(function(v){return getPct(session.id,v.id)<100;});
   var assignments=myAnnounceItems().filter(function(a){var d=new Date(a.created_at);return d>=weekStart&&d<weekEnd;});
+  function dashboardSafeText(value){
+    return String(value||'').replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});
+  }
+  var assignmentSummary=assignments.length?assignments.map(function(a){
+    var content=String(a.content||'').replace(/\s+/g,' ').trim();
+    if(content.length>100)content=content.slice(0,100)+'…';
+    return '<div style="padding:5px 0;border-bottom:1px solid var(--border)"><div style="font-weight:800">'+dashboardSafeText(a.title)+'</div>'+
+      (content?'<div style="font-size:12px;font-weight:500;color:var(--text2);margin-top:3px;line-height:1.5">'+dashboardSafeText(content)+'</div>':'')+'</div>';
+  }).join(''):'등록된 과제가 없어요';
   var completedStudy=studyDb.sessions.filter(function(s){
     var d=new Date(s.start_time);
     return s.student_id===session.id&&d>=weekStart&&d<weekEnd&&s.end_time&&s.start_photo_url&&s.end_photo_url;
@@ -2179,7 +2188,7 @@ async function renderWeeklyStudentDashboard(){
     ['✅','공부 인증',('월~수 '+(mwDone?'완료':'필요'))+' · '+('목~금 '+(tfDone?'완료':'필요')),'study'],
     ['🎬','들어야 할 강의',needed.length?needed.length+'개 남음':'모두 완료했어요','lectures'],
     ['🏫','이번 주 클리닉 해설',clinicLessons.length?(clinicNeeded.length?clinicNeeded.length+'개 시청 필요':'시청 완료'):'등록 대기 중','lectures'],
-    ['📢','이번 주 과제',assignments.length?assignments.length+'개 확인':'등록된 과제가 없어요','announce'],
+    ['📢','이번 주 과제',assignmentSummary,'announce'],
     ['🔤','이번 주 단어시험',vocabLeft.length?vocabLeft.join(', ')+'강 남음':'모두 완료했어요','vocab']
   ];
   var urgent=[];
