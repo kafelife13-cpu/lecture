@@ -1477,6 +1477,12 @@ input,button{font-family:var(--font)}
   <div class="modal" style="max-width:480px">
     <div class="modal-head"><h3>인증 항목 추가</h3><button class="modal-close" onclick="closeCertItemModal()">×</button></div>
     <div class="modal-body">
+      <div class="form-group"><label>인증 구분</label><select id="ci-category" class="form-select">
+        <option value="clinic">클리닉 미완 → 완료 인증</option>
+        <option value="recall">백지인출 인증</option>
+        <option value="writing">필기쓰기 인증</option>
+        <option value="etc">기타 인증</option>
+      </select></div>
       <div class="form-group"><label>항목 이름</label><input id="ci-title" class="form-input" placeholder="예: 복습 영상 필기 인증"/></div>
       <div class="form-group">
         <label>인증 방식</label>
@@ -4157,6 +4163,7 @@ function certSelectAll(checked){
 function openCertItemModal(){
   if(!certState.week){notify('주차를 먼저 선택하세요.','error');return;}
   document.getElementById('ci-title').value='';
+  document.getElementById('ci-category').value='clinic';
   document.getElementById('ci-type').value='photo';
   document.getElementById('ci-form-link').value='';
   document.getElementById('ci-form-link-group').style.display='none';
@@ -4180,6 +4187,7 @@ function closeCertItemModal(){document.getElementById('modal-cert-item').classLi
 
 async function addCertItem(){
   var title=document.getElementById('ci-title').value.trim();
+  var category=document.getElementById('ci-category').value;
   var type=document.getElementById('ci-type').value;
   var formLink=document.getElementById('ci-form-link').value.trim();
   if(!title){notify('항목 이름을 입력하세요.','error');return;}
@@ -4187,7 +4195,7 @@ async function addCertItem(){
   var checked=Array.from(document.querySelectorAll('#ci-student-list input:checked')).map(function(el){return el.value;});
   if(!checked.length){notify('대상 학생을 한 명 이상 선택하세요.','error');return;}
   var id='ci_'+Date.now();
-  var item={id:id,week_id:certState.week,school_id:certState.school,title:title,type:type,targets:JSON.stringify(checked),form_link:formLink||null,created_at:new Date().toISOString()};
+  var item={id:id,week_id:certState.week,school_id:certState.school,title:'['+category+']'+title,type:type,targets:JSON.stringify(checked),form_link:formLink||null,created_at:new Date().toISOString()};
   var res=await sb.from('cert_items').insert(item);
   if(res.error){notify('등록 실패: '+res.error.message,'error');return;}
   certDb.items.push(item);
@@ -4272,21 +4280,38 @@ function selectTCertWeek(wid){
   renderTCertItemList();renderTCertSubmitList();
 }
 
+var CERT_CATEGORIES=[
+  {id:'clinic',label:'클리닉 미완 → 완료 인증',icon:'🏫'},
+  {id:'recall',label:'백지인출 인증',icon:'🧠'},
+  {id:'writing',label:'필기쓰기 인증',icon:'✍️'},
+  {id:'etc',label:'기타 인증',icon:'✅'}
+];
+function certCategory(item){
+  var m=(item.title||'').match(/^\[(clinic|recall|writing|etc)\]/);
+  return m?m[1]:'etc';
+}
+function certDisplayTitle(item){return (item.title||'').replace(/^\[(clinic|recall|writing|etc)\]/,'');}
+function certCategoryInfo(id){return CERT_CATEGORIES.find(function(c){return c.id===id;})||CERT_CATEGORIES[3];}
+
 function renderTCertItemList(){
   var el=document.getElementById('t-cert-item-list');
   if(!el)return;
   var items=certDb.items.filter(function(i){return i.week_id===certState.week;});
   if(!items.length){el.innerHTML='<div style="padding:1rem 0;font-size:13px;color:var(--text3)">인증 항목이 없어요. + 인증 항목 추가 버튼으로 추가하세요.</div>';return;}
-  el.innerHTML=items.map(function(item){
+  el.innerHTML=CERT_CATEGORIES.map(function(cat){
+    var categoryItems=items.filter(function(item){return certCategory(item)===cat.id;});
+    if(!categoryItems.length)return '';
+    return '<div style="font-size:13px;font-weight:800;margin-top:14px;padding:8px 10px;background:var(--bg2);border-radius:8px">'+cat.icon+' '+cat.label+' ('+categoryItems.length+')</div>'+categoryItems.map(function(item){
     var targets=certDb.targets[item.id]||[];
     var targetNames=targets.map(function(tid){var u=db.users.find(function(u){return u.id===tid;});return u?u.name:tid;});
     var typeLabel=item.type==='photo'?'사진':item.type==='check'?'체크':item.type==='both'?'사진+체크':'';
     return '<div style="padding:10px 0;border-bottom:1px solid var(--border)">'+
       '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'+
-      '<span style="font-size:13px;font-weight:600">'+item.title+'</span>'+
+      '<span style="font-size:13px;font-weight:600">'+certDisplayTitle(item)+'</span>'+
       '<span class="tag" style="font-size:10px">'+typeLabel+'</span></div>'+
       '<div style="font-size:11px;color:var(--text2);margin-bottom:6px">대상: '+(targetNames.length?targetNames.join(', '):'없음')+'</div>'+
       '<button class="btn red btn-sm" onclick="deleteCertItem(\''+item.id+'\')">삭제</button></div>';
+    }).join('');
   }).join('');
 }
 
@@ -4305,7 +4330,7 @@ function renderTCertSubmitList(){
     var statusBadge=sub.status==='approved'?'<span class="badge done">승인</span>':sub.status==='rejected'?'<span class="badge" style="background:var(--red-bg);color:var(--red)">반려</span>':'<span class="badge partial">검토중</span>';
     return '<div style="display:flex;align-items:center;gap:10px;padding:12px 1.25rem;border-bottom:1px solid var(--border)">'+
       '<div style="flex:1"><div style="font-size:13px;font-weight:600;margin-bottom:2px">'+(student?student.name:sub.student_id)+'</div>'+
-      '<div style="font-size:12px;color:var(--text2)">'+(item?item.title:'')+' · '+new Date(sub.submitted_at).toLocaleDateString('ko-KR')+'</div></div>'+
+      '<div style="font-size:12px;color:var(--text2)">'+(item?certCategoryInfo(certCategory(item)).label+' · '+certDisplayTitle(item):'')+' · '+new Date(sub.submitted_at).toLocaleDateString('ko-KR')+'</div></div>'+
       statusBadge+
       (sub.photo_url?'<button class="btn btn-sm" onclick="viewCertPhoto(\''+sub.id+'\')">사진보기</button>':'')+
       (sub.status==='pending'?'<button class="btn green btn-sm" onclick="approveCert(\''+sub.id+'\')">승인</button><button class="btn red btn-sm" onclick="rejectCert(\''+sub.id+'\')">반려</button>':'')+'</div>';
@@ -4374,15 +4399,19 @@ async function renderSCertList(){
     return '<div class="card" style="margin-bottom:1rem">'+
       '<div class="card-head"><h3>'+(week?week.name:'')+'</h3></div>'+
       '<div style="padding:0 1.25rem 0.5rem">'+
-      items.map(function(item){
+      CERT_CATEGORIES.map(function(cat){
+        var categoryItems=items.filter(function(item){return certCategory(item)===cat.id;});
+        if(!categoryItems.length)return '';
+        return '<div style="font-size:13px;font-weight:800;margin-top:14px;padding:8px 10px;background:var(--bg2);border-radius:8px">'+cat.icon+' '+cat.label+'</div>'+categoryItems.map(function(item){
         var sub=certDb.submissions.find(function(s){return s.item_id===item.id&&s.student_id===session.id;});
         var status=sub?sub.status:'none';
         var statusHtml=status==='approved'?'<span class="badge done">✓ 승인완료</span>':status==='rejected'?'<span class="badge" style="background:var(--red-bg);color:var(--red)">반려됨 — 다시 제출해주세요</span>':status==='pending'?'<span class="badge partial">검토중</span>':'';
         var canSubmit=status==='none'||status==='rejected';
         return '<div style="padding:12px 0;border-bottom:1px solid var(--border)">'+
           '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
-          '<span style="font-size:13px;font-weight:600">'+item.title+'</span>'+statusHtml+'</div>'+
+          '<span style="font-size:13px;font-weight:600">'+certDisplayTitle(item)+'</span>'+statusHtml+'</div>'+
           (canSubmit?renderCertSubmitUI(item):'')+'</div>';
+        }).join('');
       }).join('')+'</div></div>';
   }).join('');
 }
