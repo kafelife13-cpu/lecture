@@ -2562,7 +2562,7 @@ function dashRenderPerformance(){
     if(dashPerformanceFilter==='all')return true;
     if(dashPerformanceFilter==='needs')return dashNeedsAction(r);
     return r[dashPerformanceFilter]&&r[dashPerformanceFilter].state==='miss';
-  }).sort(function(a,b){return Number(dashNeedsAction(b))-Number(dashNeedsAction(a))||a.student.name.localeCompare(b.student.name,'ko');});
+  }).sort(function(a,b){return Number(dashNeedsAction(b))-Number(dashNeedsAction(a))||String(a.student.name||'').localeCompare(String(b.student.name||''),'ko');});
   table.innerHTML='<thead><tr><th style="position:sticky;left:0;background:var(--bg2);z-index:1">학생</th><th>클리닉 출석</th><th>클리닉 시험·OX</th><th>필수 영상</th><th>단어시험</th><th>공부 인증</th></tr></thead><tbody>'+
     (rows.length?rows.map(function(r){return'<tr><td style="font-weight:700;position:sticky;left:0;background:var(--bg2);z-index:1;white-space:nowrap">'+dashSafeText(r.student.name)+'</td><td>'+dashStatusCell(r.attendance)+'</td><td>'+dashStatusCell(r.ox)+'</td><td>'+dashStatusCell(r.video)+'</td><td>'+dashStatusCell(r.vocab)+'</td><td>'+dashStatusCell(r.study)+'</td></tr>';}).join(''):'<tr><td colspan="6" style="padding:2rem;text-align:center;color:var(--green)">해당하는 학생이 없어요.</td></tr>')+'</tbody>';
   dashRenderSummary();
@@ -2594,14 +2594,19 @@ function dashSetColumnError(key,message,run){
 function dashBuildImmediateRows(){
   var now=new Date(),day=now.getDay();
   return activeStudents().map(function(student){
-    var activeAccess=db.access.filter(function(a){return a.student_id===student.id&&!isAccessExpired(a);});
-    var missingVideos=activeAccess.map(function(a){var v=db.videos.find(function(x){return x.id===a.video_id;});return v&&getPct(student.id,a.video_id)<100?{title:v.title,pct:getPct(student.id,a.video_id)}:null;}).filter(Boolean);
-    var videoStatus=!activeAccess.length?dashStatus('na','배정 없음'):missingVideos.length?dashStatus('miss',missingVideos.length+'개 미시청',missingVideos.map(function(v){return v.title+(v.pct?' '+v.pct+'%':'');}).join(', ')):dashStatus('ok','시청 완료');
-    var verified=studyDb.sessions.filter(function(s){return s.student_id===student.id&&s.end_time&&s.start_photo_url&&s.end_photo_url;});
-    var mw=verified.some(function(s){var d=new Date(s.start_time).getDay();return d>=1&&d<=3;});
-    var tf=verified.some(function(s){var d=new Date(s.start_time).getDay();return d>=4&&d<=5;});
-    var studyMissing=[];if(!mw)studyMissing.push('월~수');if(!tf&&day>=4)studyMissing.push('목~금');
-    var studyStatus=studyMissing.length?dashStatus('miss','미인증',studyMissing.join(', ')):dashStatus('ok',day<4?'월~수 완료':'주간 완료');
+    var videoStatus,studyStatus;
+    try{
+      var activeAccess=(db.access||[]).filter(function(a){return a.student_id===student.id&&!isAccessExpired(a);});
+      var missingVideos=activeAccess.map(function(a){var v=(db.videos||[]).find(function(x){return x.id===a.video_id;});return v&&getPct(student.id,a.video_id)<100?{title:v.title||'제목 없음',pct:getPct(student.id,a.video_id)}:null;}).filter(Boolean);
+      videoStatus=!activeAccess.length?dashStatus('na','배정 없음'):missingVideos.length?dashStatus('miss',missingVideos.length+'개 미시청',missingVideos.map(function(v){return v.title+(v.pct?' '+v.pct+'%':'');}).join(', ')):dashStatus('ok','시청 완료');
+    }catch(e){videoStatus=dashStatus('error','확인 필요','영상 기록');}
+    try{
+      var verified=((studyDb&&studyDb.sessions)||[]).filter(function(s){return s.student_id===student.id&&s.end_time&&s.start_photo_url&&s.end_photo_url;});
+      var mw=verified.some(function(s){var d=new Date(s.start_time).getDay();return d>=1&&d<=3;});
+      var tf=verified.some(function(s){var d=new Date(s.start_time).getDay();return d>=4&&d<=5;});
+      var studyMissing=[];if(!mw)studyMissing.push('월~수');if(!tf&&day>=4)studyMissing.push('목~금');
+      studyStatus=studyMissing.length?dashStatus('miss','미인증',studyMissing.join(', ')):dashStatus('ok',day<4?'월~수 완료':'주간 완료');
+    }catch(e){studyStatus=dashStatus('error','확인 필요','공부 인증 기록');}
     return{student:student,attendance:dashStatus('loading','조회중'),ox:dashStatus('loading','조회중'),video:videoStatus,vocab:dashStatus('loading','조회중'),study:studyStatus};
   });
 }
@@ -2663,11 +2668,17 @@ async function dashLoadVocab(run){
 
 function renderDashboard(){
   var run=++dashPerformanceRun;
-  dashPerformanceRows=dashBuildImmediateRows();
-  dashRenderPerformance();
-  dashLoadAttendance(run);
-  dashLoadOx(run);
-  dashLoadVocab(run);
+  try{
+    dashPerformanceRows=dashBuildImmediateRows();
+    dashRenderPerformance();
+    dashLoadAttendance(run);
+    dashLoadOx(run);
+    dashLoadVocab(run);
+  }catch(e){
+    console.error('dashboard initial render error',e);
+    var loading=document.getElementById('dash-action-loading');
+    if(loading){loading.style.display='block';loading.innerHTML='<span style="color:var(--red)">대시보드 표시 오류: '+dashSafeText(e&&e.message||'기록 확인 필요')+'</span>';}
+  }
 }
 
 /* ===== VIDEOS ===== */
