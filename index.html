@@ -2618,11 +2618,20 @@ function dashRenderPerformance(){
     });
     rows.sort(function(a,b){var dc={'수':1,'목':2,'금':3,'토':4,'일':5};return (dc[a.clinicDay]||9)-(dc[b.clinicDay]||9)||String(a.student&&a.student.name||'').localeCompare(String(b.student&&b.student.name||''),'ko');});
     function rowHtml(r){return'<tr class="dash-student-row"><td data-label="학생" style="font-weight:700;position:sticky;left:0;background:var(--bg2);z-index:1;white-space:nowrap">'+dashSafeText(r.student&&r.student.name||'이름 없음')+'</td><td data-label="클리닉 요일"><span class="badge partial">'+dashSafeText((r.clinicDay||'미지정')+'요일')+'</span></td><td data-label="출석">'+dashStatusCell(r.attendance)+'</td><td data-label="시험·OX">'+dashStatusCell(r.ox)+'</td><td data-label="필수 영상">'+dashStatusCell(r.video)+'</td><td data-label="단어시험">'+dashStatusCell(r.vocab)+'</td><td data-label="지정 인증">'+dashStatusCell(r.cert)+'</td><td data-label="공부 인증">'+dashStatusCell(r.study)+'</td></tr>';}
+    function certRowHtml(r){
+      var detail=r.cert&&r.cert.detail?r.cert.detail:(r.cert&&r.cert.label||'미제출 인증');
+      return'<tr class="dash-student-row"><td data-label="학생" style="font-weight:800;position:sticky;left:0;background:var(--bg2);z-index:1;white-space:nowrap">'+dashSafeText(r.student&&r.student.name||'이름 없음')+'</td><td data-label="안 한 지정 인증"><div style="font-size:14px;font-weight:700;color:var(--red);line-height:1.6">'+dashSafeText(detail)+'</div></td></tr>';
+    }
     var body='';
     if(dashPerformanceFilter==='ox'){
       ['수','목','금','기타'].forEach(function(day){var group=rows.filter(function(r){return day==='기타'?['수','목','금'].indexOf(r.clinicDay)<0:r.clinicDay===day;});if(group.length)body+='<tr class="dash-day-heading"><td colspan="8" style="padding:10px 12px;background:rgba(79,124,255,.12);font-weight:800;color:var(--accent)">'+day+(day==='기타'?'':'요일')+' 클리닉 · '+group.length+'명</td></tr>'+group.map(rowHtml).join('');});
-    }else body=rows.map(rowHtml).join('');
-    table.innerHTML='<thead><tr><th style="position:sticky;left:0;background:var(--bg2);z-index:1">학생</th><th>클리닉 요일</th><th>출석</th><th>시험·OX</th><th>필수 영상</th><th>단어시험</th><th>지정 인증</th><th>공부 인증</th></tr></thead><tbody>'+(body||'<tr><td colspan="8" style="padding:2rem;text-align:center;color:var(--text2)">해당하는 학생이 없어요.</td></tr>')+'</tbody>';
+    }else if(dashPerformanceFilter==='cert')body=rows.map(certRowHtml).join('');
+    else body=rows.map(rowHtml).join('');
+    if(dashPerformanceFilter==='cert'){
+      table.innerHTML='<thead><tr><th style="width:150px">학생</th><th>안 한 지정 인증</th></tr></thead><tbody>'+(body||'<tr><td colspan="2" style="padding:2rem;text-align:center;color:var(--green)">지정 인증 미제출 학생이 없어요.</td></tr>')+'</tbody>';
+    }else{
+      table.innerHTML='<thead><tr><th style="position:sticky;left:0;background:var(--bg2);z-index:1">학생</th><th>클리닉 요일</th><th>출석</th><th>시험·OX</th><th>필수 영상</th><th>단어시험</th><th>지정 인증</th><th>공부 인증</th></tr></thead><tbody>'+(body||'<tr><td colspan="8" style="padding:2rem;text-align:center;color:var(--text2)">해당하는 학생이 없어요.</td></tr>')+'</tbody>';
+    }
     dashRenderOxSummary();
     if(stats){
       var cols=[['attendance','미출석'],['ox','시험·OX'],['video','미시청'],['vocab','단어 미응시'],['cert','지정 인증 미제출'],['study','공부 미인증']];
