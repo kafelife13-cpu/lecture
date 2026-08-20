@@ -2083,7 +2083,8 @@ function launchTeacher(){
   showPage('page-teacher');
   document.getElementById('t-name').textContent=session.name;
   document.getElementById('t-avatar').textContent=session.name[0];
-  document.getElementById('dash-date').textContent=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});
+  var dashDate=document.getElementById('dash-date');
+  if(dashDate)dashDate.textContent=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});
   tNav('dashboard');
   setTimeout(updateAllBadges,1000);
 }
