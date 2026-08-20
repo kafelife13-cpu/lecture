@@ -1853,7 +1853,9 @@ function clinicVideoSchool(v){
 }
 function clinicVideoDescription(v){return String(v.description||'').replace(/\s*\[학교:(?:sc_hanbaek|sc_chidong|all)\]\s*/g,' ').trim();}
 function clinicExplanationVideosForWeek(date){
-  var start=weekMonday(date||new Date()),end=new Date(start);end.setDate(end.getDate()+7);
+  var base=new Date(date||new Date());
+  var start=new Date(base);start.setHours(0,0,0,0);start.setDate(start.getDate()-start.getDay());
+  var end=new Date(start);end.setDate(end.getDate()+7);
   return db.videos.filter(function(v){
     if(v.category!=='clinic')return false;
     var created=new Date(v.created_at);
@@ -2273,7 +2275,7 @@ async function renderWeeklyStudentDashboard(){
   var clinicReq=effectiveClinicRequest(session.id,weekStart);
   var clinicSlot=clinicReq?clinicDb.slots.find(function(s){return s.id===clinicReq.slot_id;}):null;
   var weeklyStudy=studySeconds(studyDb.sessions.filter(function(s){var d=new Date(s.start_time);return s.student_id===session.id&&d>=weekStart&&d<weekEnd;}));
-  var clinicLessons=studentClinicVideosForWeek(session,weekStart);
+  var clinicLessons=studentClinicVideosForWeek(session,new Date());
   // '들어야 할 강의'는 교사가 복습 권한을 승인한 영상만 해당한다.
   // 기본강의와 주간 클리닉 해설은 각각의 메뉴/카드에서 따로 보여준다.
   var assignedLessons=reviewVideos().filter(function(v){return hasAccess(session.id,v.id);});
