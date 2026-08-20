@@ -833,6 +833,7 @@ input,button{font-family:var(--font)}
               <button class="btn btn-sm blue" onclick="tResExportAllPDF()">📄 전체 PDF</button>
               <button class="btn btn-sm" onclick="tResExportExcel()">📊 성적 엑셀</button>
               <button class="btn btn-sm blue" onclick="tResExportNotifyExcel()">📨 맥가이 문자 엑셀</button>
+              <button class="btn btn-sm" onclick="tResExportAcaExcel()">📨 아카 문자 엑셀</button>
             </div>
           </div>
           <!-- 탭 -->
@@ -904,7 +905,7 @@ input,button{font-family:var(--font)}
               </div>
             </div>
             <div class="card">
-              <div class="card-head"><h3>발송 대상</h3><button class="btn btn-sm blue" onclick="tResExportNotifyExcel()">📨 맥가이 문자 엑셀</button></div>
+              <div class="card-head"><h3>발송 대상</h3><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-sm blue" onclick="tResExportNotifyExcel()">📨 맥가이 문자 엑셀</button><button class="btn btn-sm" onclick="tResExportAcaExcel()">📨 아카 문자 엑셀</button></div></div>
               <div id="tres-notify-list" style="padding:0 1.25rem 1rem"></div>
             </div>
           </div>
@@ -7068,6 +7069,35 @@ function tResExportNotifyExcel(){
   var safeName=String(exam.name||'시험').replace(/[\\/:*?"<>|]/g,'_');
   XLSX.writeFile(wb,safeName+'_맥가이문자_성적집계.xlsx');
   notify('맥가이 문자 업로드용 엑셀을 만들었어요.'+(missing?' 연락처 누락 '+missing+'명도 확인해 주세요.':''),'success');
+}
+
+function tResExportAcaExcel(){
+  var exam=tResCurrentExam,responses=tResCurrentResponses;
+  if(!exam||!responses||!responses.length){alert('데이터가 없어요.');return;}
+  if(typeof XLSX==='undefined'){alert('엑셀 기능을 불러오지 못했어요. 인터넷 연결을 확인하고 새로고침 해주세요.');return;}
+  var rows=responses.map(function(r){
+    var u=db.users.find(function(x){return x.name===r.student_name;})||{};
+    return [
+      r.student_name,
+      tResNormalizePhone(u.parent_phone||''),
+      tResNormalizePhone(u.student_phone||u.phone||u.phone_number||''),
+      '',
+      tResBuildParentMessage(r.student_name,r,exam),
+      '',
+      ''
+    ];
+  });
+  var missing=rows.filter(function(row){return !row[1]&&!row[2];}).length;
+  var aoa=[
+    ['성명(필수)','부모핸드폰','학생핸드폰','집전화','카드문자 개별내용','', '* 부모핸드폰과 학생핸드폰 중 하나는 필히 입력하셔야 합니다. *카드문자 개별내용은 카드문자를 전송 할때 개별내용에 입력되는 내용입니다.( SMS 만 발송할 경우는 입력할 필요없음)']
+  ].concat(rows);
+  var wb=XLSX.utils.book_new();
+  var ws=XLSX.utils.aoa_to_sheet(aoa);
+  ws['!cols']=[{wch:14},{wch:16},{wch:16},{wch:14},{wch:80},{wch:3},{wch:95}];
+  XLSX.utils.book_append_sheet(wb,ws,'SMS');
+  var safeName=String(exam.name||'시험').replace(/[\\/:*?"<>|]/g,'_');
+  XLSX.writeFile(wb,safeName+'_아카문자.xls',{bookType:'biff8'});
+  notify('아카 문자 업로드용 엑셀을 만들었어요.'+(missing?' 연락처 누락 '+missing+'명도 확인해 주세요.':''),'success');
 }
 
 async function tResDeleteStudentResponse(){
