@@ -2406,12 +2406,16 @@ function renderDashboardLegacy(){
     }).join('')+'</tbody>';
 }
 
+function dashSafeText(value){
+  return String(value||'').replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});
+}
+
 function dashStudentNames(items){
   if(!items.length)return'<div style="padding:1rem 1.25rem;color:var(--green);font-size:13px">✓ 현재 확인할 학생이 없어요.</div>';
   return'<div style="max-height:310px;overflow:auto">'+items.map(function(item){
     return'<div style="padding:10px 1.25rem;border-bottom:1px solid var(--border)">'+
-      '<div style="font-size:13px;font-weight:700">'+dashboardSafeText(item.name)+'</div>'+
-      (item.detail?'<div style="font-size:11px;color:var(--text2);line-height:1.5;margin-top:3px">'+dashboardSafeText(item.detail)+'</div>':'')+
+      '<div style="font-size:13px;font-weight:700">'+dashSafeText(item.name)+'</div>'+
+      (item.detail?'<div style="font-size:11px;color:var(--text2);line-height:1.5;margin-top:3px">'+dashSafeText(item.detail)+'</div>':'')+
       '</div>';
   }).join('')+'</div>';
 }
