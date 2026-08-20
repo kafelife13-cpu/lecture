@@ -1869,6 +1869,13 @@ function studentClinicVideosForWeek(student,date){
     return target==='all'||target===schoolId;
   });
 }
+function allStudentClinicVideos(student){
+  var schoolId=student&&student.school_id||'';
+  return clinicVideos().filter(function(v){
+    var target=clinicVideoSchool(v);
+    return target==='all'||target===schoolId;
+  });
+}
 function fmtTime(sec){if(!sec||isNaN(sec)||sec<=0)return '0초';const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=Math.floor(sec%60);if(h>0)return`${h}시간 ${m}분 ${s}초`;if(m>0)return`${m}분 ${s}초`;return`${s}초`;}
 function notify(msg,type='info'){const n=document.getElementById('notif');n.textContent=msg;n.className=`notif show ${type}`;setTimeout(()=>n.classList.remove('show'),3000);}
 function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');}
@@ -3684,7 +3691,10 @@ function renderLectures(){
 
 function renderClinicLectures(){
   const el=document.getElementById('student-clinic-lectures');
-  const vids=studentClinicVideosForWeek(session,new Date()).slice().sort((a,b)=>{
+  const currentIds=new Set(studentClinicVideosForWeek(session,new Date()).map(v=>v.id));
+  const vids=allStudentClinicVideos(session).slice().sort((a,b)=>{
+    const ac=currentIds.has(a.id),bc=currentIds.has(b.id);
+    if(ac!==bc)return ac?-1:1;
     const ar=hasAccess(session.id,a.id),br=hasAccess(session.id,b.id);
     if(ar!==br)return ar?-1:1;
     return new Date(b.created_at)-new Date(a.created_at);
@@ -3693,7 +3703,8 @@ function renderClinicLectures(){
   el.innerHTML=vids.map(v=>{
     const p=getPct(session.id,v.id),ws=getWatchSec(session.id,v.id),lp=getLastPos(session.id,v.id),t=thumb(v.url);
     const required=hasAccess(session.id,v.id);
-    return`<div class="lecture-item" style="${required?'border:2px solid var(--amber);background:rgba(245,158,11,.05)':''}"><div class="lecture-thumb">${t?`<img src="${t}" alt="">`:'▶'}</div><div class="lecture-body"><h4>${v.title} <span class="badge ${required?'partial':'none'}">${required?'필수 시청':'자유 시청'}</span></h4><div class="lmeta">${clinicVideoDescription(v)||'클리닉 해설 강의'}${ws>0?` · <span style="color:var(--green)">${fmtTime(ws)} 시청</span>`:''}</div><div style="display:flex;align-items:center;gap:8px"><div class="pbar" style="width:110px"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div><span class="badge ${pctBadge(p)}">${pctLabel(p)}</span></div></div><button class="btn ${required?'amber':'blue'} btn-sm" onclick="openPlay('${v.id}')">▶ ${lp>0&&p<100?'이어보기':'시청하기'}</button></div>`;
+    const current=currentIds.has(v.id);
+    return`<div class="lecture-item" style="${required?'border:2px solid var(--amber);background:rgba(245,158,11,.05)':''}"><div class="lecture-thumb">${t?`<img src="${t}" alt="">`:'▶'}</div><div class="lecture-body"><h4>${v.title} <span class="badge ${required?'partial':'none'}">${required?'필수 시청':current?'이번 주':'지난 강의'}</span></h4><div class="lmeta">${clinicVideoDescription(v)||'클리닉 해설 강의'}${ws>0?` · <span style="color:var(--green)">${fmtTime(ws)} 시청</span>`:''}</div><div style="display:flex;align-items:center;gap:8px"><div class="pbar" style="width:110px"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div><span class="badge ${pctBadge(p)}">${pctLabel(p)}</span></div></div><button class="btn ${required?'amber':'blue'} btn-sm" onclick="openPlay('${v.id}')">▶ ${lp>0&&p<100?'이어보기':'시청하기'}</button></div>`;
   }).join('');
 }
 
