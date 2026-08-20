@@ -1724,6 +1724,9 @@ input,button{font-family:var(--font)}
 const SB_URL='https://zniwzwanlvvmzkkcmikh.supabase.co';
 const SB_KEY='sb_publishable_IbfVcXs5TmXfumrnK4Somg_7MzygCdh';
 const sb=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:false,autoRefreshToken:false}});
+const ATTENDANCE_SB_URL='https://vpucowvjgkppdbotxjxd.supabase.co';
+const ATTENDANCE_SB_KEY='sb_publishable_9iZiIDhEakwNmSMYSg11Cg_hfGZk8Hx';
+const attendanceSb=supabase.createClient(ATTENDANCE_SB_URL,ATTENDANCE_SB_KEY,{auth:{persistSession:false,autoRefreshToken:false}});
 const TG_BOT_TOKEN='8934694780:AAH4Bdx-Zo013w7O4lWo1xs2X5COTE5TTUE';
 const TG_CHAT_ID='8735127250';
 const VAPID_PUBLIC_KEY='BHZrIyaqw7HLsBN17c_VMQUI4T84fkL0gWaJEduzvtgvLuFuSSDbJlE7M5I5PyI7bZPChBBrMqSvXk0PLCJvKqI';
@@ -2678,7 +2681,7 @@ async function dashLoadAttendance(run){
       r.attendance=dashStatus('loading','출석 확인중',d+'요일 '+(slot.start_time||''));
     });
     dashRenderPerformance();
-    var res=await sb.from('clinic_attendance').select('student_id,student_name,checked_in_at').gte('checked_in_at',start.toISOString()).lt('checked_in_at',end.toISOString());
+    var res=await attendanceSb.from('clinic_attendance').select('student_id,student_name,checked_in_at').gte('checked_in_at',start.toISOString()).lt('checked_in_at',end.toISOString());
     if(res.error)throw res.error;if(run!==dashPerformanceRun)return;
     var checked={};(res.data||[]).forEach(function(a){if(a.student_id)checked[a.student_id]=a;if(a.student_name)checked[a.student_name]=a;});
     dashPerformanceRows.forEach(function(r){if(r.attendance.state==='loading'){var a=checked[r.student.id]||checked[r.student.name];r.attendance=a?dashStatus('ok','출석',new Date(a.checked_in_at).toLocaleDateString('ko-KR',{month:'numeric',day:'numeric'})+' '+new Date(a.checked_in_at).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})):dashStatus('miss','미출석',r.attendance.detail);}});
