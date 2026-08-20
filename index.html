@@ -340,7 +340,7 @@ input,button{font-family:var(--font)}
       <!-- 대시보드 -->
       <div class="panel active" id="panel-dashboard">
         <div class="page-header"><h1>대시보드</h1><p>오늘과 이번 주에 확인해야 할 학생을 한눈에 보세요</p></div>
-        <div class="stats-row" style="grid-template-columns:repeat(4,1fr)" id="t-stats"></div>
+        <div class="stats-row" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))" id="t-stats"></div>
         <!-- Q&A 미답변 알림 -->
         <div id="dash-qa-alert" style="display:none;margin-bottom:1rem">
           <div style="background:linear-gradient(135deg,rgba(239,68,68,0.1),rgba(239,68,68,0.05));border:1.5px solid rgba(239,68,68,0.3);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:14px;cursor:pointer" onclick="tNav('qa')">
@@ -354,6 +354,10 @@ input,button{font-family:var(--font)}
         </div>
         <div id="dash-action-loading" class="card" style="padding:1.5rem;text-align:center;color:var(--text2)">확인할 학생 현황을 불러오는 중...</div>
         <div id="dash-action-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px"></div>
+        <div class="card" style="margin-top:14px">
+          <div class="card-head" style="flex-wrap:wrap;gap:8px"><div><h3>학생별 주간 수행 통합표</h3><div style="font-size:11px;color:var(--text3);margin-top:3px">느린 항목은 각각 완료되는 대로 표에 반영됩니다.</div></div><div id="dash-performance-filters" style="display:flex;gap:5px;flex-wrap:wrap"></div></div>
+          <div style="overflow:auto"><table class="tbl" id="dash-performance-table"></table></div>
+        </div>
       </div>
 
       <!-- 강의 관리 -->
@@ -2434,7 +2438,7 @@ function dashWait(promise,fallback,ms){
   ]);
 }
 
-async function renderDashboard(){
+async function renderDashboardFastLegacy(){
   const sts=activeStudents();
   const pending=pendingStudents();
   const accessPending=db.requests.filter(function(r){return r.status==='pending';});
@@ -2533,6 +2537,137 @@ async function renderDashboard(){
   }finally{
     if(loading)loading.style.display='none';
   }
+}
+
+var dashPerformanceRows=[];
+var dashPerformanceFilter='needs';
+var dashPerformanceRun=0;
+
+function dashStatus(state,label,detail){return{state:state,label:label,detail:detail||''};}
+function dashNeedsAction(row){return['attendance','ox','video','vocab','study'].some(function(k){return row[k]&&row[k].state==='miss';});}
+function dashStatusCell(status){
+  if(!status)return'<span class="badge partial">조회중</span>';
+  var cls=status.state==='ok'?'done':status.state==='miss'?'none':'partial';
+  var color=status.state==='error'?'color:var(--red);border:1px solid var(--red);':'';
+  return'<div><span class="badge '+cls+'" style="'+color+'">'+dashSafeText(status.label)+'</span>'+
+    (status.detail?'<div style="font-size:10px;color:var(--text3);margin-top:3px;max-width:180px;white-space:normal;line-height:1.4">'+dashSafeText(status.detail)+'</div>':'')+'</div>';
+}
+function dashSetPerformanceFilter(filter){dashPerformanceFilter=filter;dashRenderPerformance();}
+function dashRenderPerformance(){
+  var table=document.getElementById('dash-performance-table'),filters=document.getElementById('dash-performance-filters');
+  if(!table||!filters)return;
+  var defs=[['all','전체'],['needs','확인 필요'],['attendance','미출석'],['ox','시험·OX'],['video','미시청'],['vocab','단어'],['study','공부인증']];
+  filters.innerHTML=defs.map(function(d){return'<button class="btn btn-sm'+(dashPerformanceFilter===d[0]?' blue':'')+'" onclick="dashSetPerformanceFilter(\''+d[0]+'\')">'+d[1]+'</button>';}).join('');
+  var rows=dashPerformanceRows.filter(function(r){
+    if(dashPerformanceFilter==='all')return true;
+    if(dashPerformanceFilter==='needs')return dashNeedsAction(r);
+    return r[dashPerformanceFilter]&&r[dashPerformanceFilter].state==='miss';
+  }).sort(function(a,b){return Number(dashNeedsAction(b))-Number(dashNeedsAction(a))||a.student.name.localeCompare(b.student.name,'ko');});
+  table.innerHTML='<thead><tr><th style="position:sticky;left:0;background:var(--bg2);z-index:1">학생</th><th>클리닉 출석</th><th>클리닉 시험·OX</th><th>필수 영상</th><th>단어시험</th><th>공부 인증</th></tr></thead><tbody>'+
+    (rows.length?rows.map(function(r){return'<tr><td style="font-weight:700;position:sticky;left:0;background:var(--bg2);z-index:1;white-space:nowrap">'+dashSafeText(r.student.name)+'</td><td>'+dashStatusCell(r.attendance)+'</td><td>'+dashStatusCell(r.ox)+'</td><td>'+dashStatusCell(r.video)+'</td><td>'+dashStatusCell(r.vocab)+'</td><td>'+dashStatusCell(r.study)+'</td></tr>';}).join(''):'<tr><td colspan="6" style="padding:2rem;text-align:center;color:var(--green)">해당하는 학생이 없어요.</td></tr>')+'</tbody>';
+  dashRenderSummary();
+}
+function dashMissingItems(key){
+  return dashPerformanceRows.filter(function(r){return r[key]&&r[key].state==='miss';}).map(function(r){return{name:r.student.name,detail:r[key].detail||r[key].label};});
+}
+function dashColumnReady(key){return dashPerformanceRows.every(function(r){return r[key]&&r[key].state!=='loading';});}
+function dashRenderSummary(){
+  var stats=document.getElementById('t-stats'),grid=document.getElementById('dash-action-grid'),loading=document.getElementById('dash-action-loading');
+  if(!stats||!grid)return;
+  var defs=[
+    ['ox','OX·시험','🔁','var(--amber)','exam'],
+    ['attendance','오늘 미출석','🏫','var(--red)','clinic'],
+    ['video','필수 영상 미시청','🎬','var(--purple)','review-performance'],
+    ['vocab','단어시험 미응시','🔤','var(--teal)','vocab'],
+    ['study','공부 인증 미수행','⏱️','var(--blue)','study']
+  ];
+  stats.innerHTML=defs.map(function(d){var ready=dashColumnReady(d[0]),n=dashMissingItems(d[0]).length;return'<div class="stat"><div class="stat-label">'+d[1]+'</div><div class="stat-val '+(!ready?'blue':n?'amber':'green')+'">'+(ready?n+'명':'···')+'</div></div>';}).join('');
+  grid.innerHTML=defs.map(function(d){var ready=dashColumnReady(d[0]);return dashActionCard(d[2],d[1],dashMissingItems(d[0]),d[3],d[4],ready?'이번 주 기준':'기록 확인 중...');}).join('');
+  if(loading)loading.style.display='none';
+}
+function dashSetColumnError(key,message,run){
+  if(run!==dashPerformanceRun)return;
+  dashPerformanceRows.forEach(function(r){if(r[key]&&r[key].state==='loading')r[key]=dashStatus('error','조회 오류',message);});
+  dashRenderPerformance();
+}
+
+function dashBuildImmediateRows(){
+  var now=new Date(),day=now.getDay();
+  return activeStudents().map(function(student){
+    var activeAccess=db.access.filter(function(a){return a.student_id===student.id&&!isAccessExpired(a);});
+    var missingVideos=activeAccess.map(function(a){var v=db.videos.find(function(x){return x.id===a.video_id;});return v&&getPct(student.id,a.video_id)<100?{title:v.title,pct:getPct(student.id,a.video_id)}:null;}).filter(Boolean);
+    var videoStatus=!activeAccess.length?dashStatus('na','배정 없음'):missingVideos.length?dashStatus('miss',missingVideos.length+'개 미시청',missingVideos.map(function(v){return v.title+(v.pct?' '+v.pct+'%':'');}).join(', ')):dashStatus('ok','시청 완료');
+    var verified=studyDb.sessions.filter(function(s){return s.student_id===student.id&&s.end_time&&s.start_photo_url&&s.end_photo_url;});
+    var mw=verified.some(function(s){var d=new Date(s.start_time).getDay();return d>=1&&d<=3;});
+    var tf=verified.some(function(s){var d=new Date(s.start_time).getDay();return d>=4&&d<=5;});
+    var studyMissing=[];if(!mw)studyMissing.push('월~수');if(!tf&&day>=4)studyMissing.push('목~금');
+    var studyStatus=studyMissing.length?dashStatus('miss','미인증',studyMissing.join(', ')):dashStatus('ok',day<4?'월~수 완료':'주간 완료');
+    return{student:student,attendance:dashStatus('loading','조회중'),ox:dashStatus('loading','조회중'),video:videoStatus,vocab:dashStatus('loading','조회중'),study:studyStatus};
+  });
+}
+
+async function dashLoadAttendance(run){
+  try{
+    var now=new Date(),start=new Date(now);start.setHours(0,0,0,0);var end=new Date(start);end.setDate(end.getDate()+1);
+    var dayChar=['일','월','화','수','목','금','토'][now.getDay()];
+    dashPerformanceRows.forEach(function(r){
+      var req=effectiveClinicRequest(r.student.id,now),slot=req?clinicDb.slots.find(function(s){return s.id===req.slot_id;}):null;
+      if(!slot||String(slot.day_of_week||'').indexOf(dayChar)<0){r.attendance=dashStatus('na','오늘 없음');return;}
+      if(slot.start_time){var p=String(slot.start_time).split(':'),at=new Date(start);at.setHours(Number(p[0])||0,Number(p[1])||0,0,0);if(now<at){r.attendance=dashStatus('na','예정',slot.label||slot.start_time);return;}}
+      r.attendance=dashStatus('loading','출석 확인중',slot.label||slot.start_time||'');
+    });
+    dashRenderPerformance();
+    var res=await sb.from('clinic_attendance').select('student_id,student_name,checked_in_at').gte('checked_in_at',start.toISOString()).lt('checked_in_at',end.toISOString());
+    if(res.error)throw res.error;if(run!==dashPerformanceRun)return;
+    var checked={};(res.data||[]).forEach(function(a){if(a.student_id)checked[a.student_id]=a;if(a.student_name)checked[a.student_name]=a;});
+    dashPerformanceRows.forEach(function(r){if(r.attendance.state==='loading'){var a=checked[r.student.id]||checked[r.student.name];r.attendance=a?dashStatus('ok','출석',new Date(a.checked_in_at).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})):dashStatus('miss','미출석',r.attendance.detail);}});
+    dashRenderPerformance();
+  }catch(e){dashSetColumnError('attendance','출결 기록 연결 확인',run);}
+}
+
+async function dashLoadOx(run){
+  try{
+    var week=weekLabelForDate(new Date());
+    var examRes=await sb.from('exams').select('id,name,questions,clinic_school').eq('category','school').eq('clinic_week',week);
+    if(examRes.error)throw examRes.error;if(run!==dashPerformanceRun)return;
+    var exams=examRes.data||[];
+    if(!exams.length){dashPerformanceRows.forEach(function(r){r.ox=dashStatus('na','시험 없음');});dashRenderPerformance();return;}
+    var ids=exams.map(function(e){return e.id;});
+    var result=await Promise.all([sb.from('exam_responses').select('exam_id,student_name,answers').in('exam_id',ids),sb.from('ox_attempts').select('exam_id,student_id').in('exam_id',ids)]);
+    if(result[0].error)throw result[0].error;if(result[1].error)throw result[1].error;if(run!==dashPerformanceRun)return;
+    var responses=result[0].data||[],attempted={};(result[1].data||[]).forEach(function(a){attempted[a.student_id+'|'+a.exam_id]=true;});
+    dashPerformanceRows.forEach(function(row){
+      var mySchool=schoolName(row.student.school_id||'');
+      var myExams=exams.filter(function(exam){return !exam.clinic_school||!mySchool||exam.clinic_school===mySchool;});
+      if(!myExams.length){row.ox=dashStatus('na','시험 없음');return;}
+      var issues=[],done=0;
+      myExams.forEach(function(exam){var response=responses.find(function(r){return r.exam_id===exam.id&&r.student_name===row.student.name;});if(!response){issues.push(exam.name+' 미응시');return;}var wrong=Object.keys(response.answers||{}).some(function(i){return repIsWrong(response,Number(i),exam);});if(wrong&&!attempted[row.student.id+'|'+exam.id])issues.push(exam.name+' OX 미완료');else done++;});
+      row.ox=issues.length?dashStatus('miss',issues.length+'건 확인',issues.join(', ')):dashStatus('ok','완료',done+'개 시험');
+    });
+    dashRenderPerformance();
+  }catch(e){dashSetColumnError('ox','시험·OX 기록 연결 확인',run);}
+}
+
+async function dashLoadVocab(run){
+  try{
+    await ensureVocabUnitsLoaded();if(run!==dashPerformanceRun)return;
+    var units=vocabCurrentWeekUnits();
+    if(!units.length){dashPerformanceRows.forEach(function(r){r.vocab=dashStatus('na','배정 없음');});dashRenderPerformance();return;}
+    var res=await sb.from('vocab_responses').select('unit_week,student_name').in('unit_week',units);
+    if(res.error)throw res.error;if(run!==dashPerformanceRun)return;
+    var done={};(res.data||[]).forEach(function(x){done[x.student_name+'|'+x.unit_week]=true;});
+    dashPerformanceRows.forEach(function(r){var missing=units.filter(function(w){return !done[r.student.name+'|'+w];});r.vocab=missing.length?dashStatus('miss',missing.length+'강 미응시',missing.join(', ')+'강'):dashStatus('ok','응시 완료',units.join(', ')+'강');});
+    dashRenderPerformance();
+  }catch(e){dashSetColumnError('vocab','단어시험 기록 연결 확인',run);}
+}
+
+function renderDashboard(){
+  var run=++dashPerformanceRun;
+  dashPerformanceRows=dashBuildImmediateRows();
+  dashRenderPerformance();
+  dashLoadAttendance(run);
+  dashLoadOx(run);
+  dashLoadVocab(run);
 }
 
 /* ===== VIDEOS ===== */
