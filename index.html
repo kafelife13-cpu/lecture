@@ -331,6 +331,7 @@ input,button{font-family:var(--font)}
         <div class="nav-item active" onclick="tNav('dashboard')" data-p="dashboard"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>대시보드</div>
         <div class="nav-item" onclick="tNav('announce')" data-p="announce" id="nav-announce"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>과제 안내</div>
         <div class="nav-item" onclick="tNav('videos')" data-p="videos"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의 관리</div>
+        <div class="nav-item" onclick="tNav('clinic-videos')" data-p="clinic-videos"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4V4zm6 3v10l7-5-7-5z"/></svg>클리닉 영상</div>
         <div class="nav-item" onclick="tNav('students')" data-p="students" id="nav-students"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>학생 관리</div>
         <div class="nav-item" onclick="tNav('student-preview')" data-p="student-preview"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5C21.27 7.61 17 4.5 12 4.5zm0 12.5a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-2a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>학생 화면 확인</div>
         <div class="nav-item" onclick="tNav('access')" data-p="access" id="nav-access"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습 신청 관리</div>
@@ -389,7 +390,6 @@ input,button{font-family:var(--font)}
                 <label class="flabel">카테고리</label>
                 <select id="v-category" class="form-select" style="width:140px">
                   <option value="normal">📚 일반 강의</option>
-                  <option value="clinic">🏫 주간 클리닉 해설</option>
                   <option value="review">🔁 복습 신청 영상</option>
                 </select>
               </div>
@@ -400,12 +400,27 @@ input,button{font-family:var(--font)}
         <!-- 일반 강의 목록 -->
         <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📚</span> 일반 강의</div><div class="section-divider-line"></div></div>
         <div id="video-list-normal"></div>
-        <!-- 클리닉 해설 목록 -->
-        <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>🏫</span> 클리닉 해설</div><div class="section-divider-line"></div></div>
-        <div id="video-list-clinic"></div>
         <!-- 복습 신청 영상 목록 -->
         <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>🔁</span> 복습 신청 영상</div><div class="section-divider-line"></div></div>
         <div id="video-list-review"></div>
+      </div>
+
+      <!-- 클리닉 영상 -->
+      <div class="panel" id="panel-clinic-videos">
+        <div class="page-header"><h1>클리닉 영상</h1><p>매주 모든 학생에게 보여줄 클리닉 해설 영상을 등록하고 관리하세요</p></div>
+        <div class="card" style="margin-bottom:1.5rem">
+          <div class="card-head"><h3>새 클리닉 영상 등록</h3></div>
+          <div class="card-body">
+            <div class="frow"><div style="flex:1"><label class="flabel">유튜브 URL</label><input id="cv-url" class="form-input" placeholder="https://www.youtube.com/watch?v=..."/></div></div>
+            <div class="frow"><div style="flex:1"><label class="flabel">영상 제목</label><input id="cv-title" class="form-input" placeholder="예: 8월 3주 클리닉 해설"/></div></div>
+            <div class="frow">
+              <div style="flex:1"><label class="flabel">영상 설명 (선택)</label><input id="cv-desc" class="form-input" placeholder="이번 주 클리닉 해설 내용"/></div>
+              <div style="display:flex;align-items:flex-end"><button class="btn blue" onclick="addClinicVideo()" style="height:40px;white-space:nowrap">클리닉 영상 등록</button></div>
+            </div>
+          </div>
+        </div>
+        <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>🏫</span> 등록된 클리닉 영상</div><div class="section-divider-line"></div></div>
+        <div id="video-list-clinic"></div>
       </div>
 
       <!-- 학생 관리 -->
@@ -982,6 +997,7 @@ input,button{font-family:var(--font)}
     <button class="mobile-tab active" onclick="tNav('dashboard')" data-mt="dashboard" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>대시보드</button>
     <button class="mobile-tab" onclick="tNav('announce')" data-mt="announce" id="mt-announce-t" style="position:relative;min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>과제</button>
     <button class="mobile-tab" onclick="tNav('videos')" data-mt="videos" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-02-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의</button>
+    <button class="mobile-tab" onclick="tNav('clinic-videos')" data-mt="clinic-videos" style="min-width:68px"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4V4zm6 3v10l7-5-7-5z"/></svg>클리닉영상</button>
     <button class="mobile-tab" onclick="tNav('access')" data-mt="access" id="mt-access" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습관리</button>
     <button class="mobile-tab" onclick="tNav('review-performance')" data-mt="review-performance" style="min-width:62px"><svg viewBox="0 0 24 24"><path d="M3 3h18v2H3V3zm0 4h18v14H3V7zm4 3v2h10v-2H7zm0 4v2h7v-2H7z"/></svg>복습수행</button>
     <button class="mobile-tab" onclick="tNav('students')" data-mt="students" id="mt-students-t" style="position:relative" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>학생</button>
@@ -2359,6 +2375,7 @@ function tNav(panel){
   document.querySelectorAll('#t-tabbar .mobile-tab').forEach(b=>b.classList.toggle('active',b.dataset.mt===panel));
   if(panel==='dashboard'){renderDashboard();if(session&&session.role==='teacher')updateTQaBadge();}
   if(panel==='videos')renderVideos();
+  if(panel==='clinic-videos')renderClinicVideos();
   if(panel==='students')renderStudents();
   if(panel==='student-preview')renderStudentPreviewPicker();
   if(panel==='access')renderAccessPanel();
@@ -2834,6 +2851,22 @@ async function addVideo(){
   renderVideos();
 }
 
+async function addClinicVideo(){
+  const title=document.getElementById('cv-title').value.trim();
+  const url=document.getElementById('cv-url').value.trim();
+  const desc=document.getElementById('cv-desc').value.trim();
+  if(!title||!url){notify('영상 제목과 URL을 입력하세요.','error');return;}
+  if(!ytId(url)){notify('유효한 유튜브 URL을 입력하세요.','error');return;}
+  const id='v'+Date.now();
+  const category='clinic';
+  const{error}=await sb.from('videos').insert({id,title,url,description:desc,category});
+  if(error){notify('등록 실패: '+error.message,'error');return;}
+  db.videos.push({id,title,url,description:desc,category,created_at:new Date().toISOString()});
+  ['cv-title','cv-url','cv-desc'].forEach(i=>document.getElementById(i).value='');
+  notify('클리닉 영상이 등록되었습니다.','success');
+  renderClinicVideos();
+}
+
 async function deleteVideo(id){
   if(!confirm('정말 삭제하시겠습니까?'))return;
   await sb.from('progress').delete().eq('video_id',id);
@@ -2844,7 +2877,7 @@ async function deleteVideo(id){
   db.progress=db.progress.filter(p=>p.video_id!==id);
   db.access=db.access.filter(a=>a.video_id!==id);
   db.requests=db.requests.filter(r=>r.video_id!==id);
-  notify('강의가 삭제되었습니다.','info');renderVideos();
+  notify('강의가 삭제되었습니다.','info');renderVideos();renderClinicVideos();
 }
 
 function renderVideoGrid(videos, containerId){
@@ -2857,11 +2890,12 @@ function renderVideoGrid(videos, containerId){
     const avgP=sts.length?Math.round(progs.reduce((a,b)=>a+b,0)/sts.length):0;
     const doneC=progs.filter(p=>p>=100).length;
     const isReview=v.category==='review';
+    const isClinic=v.category==='clinic';
     return`<div class="video-card ${isReview?'review-card':''}">
       <div class="video-thumb">${t?`<img src="${t}" onerror="this.style.display='none'">`:''}<div class="thumb-fb"><div class="yt-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
       <div style="padding:12px 14px">
         <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
-          <span class="badge ${isReview?'review':'normal'}">${isReview?'🔁 복습':'📚 일반'}</span>
+          <span class="badge ${isReview?'review':'normal'}">${isReview?'🔁 복습':isClinic?'🏫 클리닉':'📚 일반'}</span>
         </div>
         <div style="font-size:13px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${v.title}</div>
         <div style="font-size:11px;color:var(--text2);margin-bottom:8px">${v.description||'설명 없음'}</div>
@@ -2880,8 +2914,11 @@ function renderVideoGrid(videos, containerId){
 
 function renderVideos(){
   renderVideoGrid(normalVideos(),'video-list-normal');
-  renderVideoGrid(clinicVideos(),'video-list-clinic');
   renderVideoGrid(reviewVideos(),'video-list-review');
+}
+
+function renderClinicVideos(){
+  renderVideoGrid(clinicVideos(),'video-list-clinic');
 }
 
 /* ===== STUDENTS ===== */
