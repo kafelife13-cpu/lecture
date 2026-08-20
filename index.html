@@ -228,6 +228,19 @@ input,button{font-family:var(--font)}
   .video-grid{grid-template-columns:1fr}
   .main-inner{padding:1rem 1rem 80px}
   .mobile-tabbar{display:flex!important}
+  .dash-ox-summary{padding:12px!important}
+  .dash-ox-day{display:block!important;padding:12px!important}
+  .dash-ox-names{font-size:15px!important;line-height:1.8!important;margin-top:7px!important}
+  #dash-performance-table.mobile-cards thead{display:none}
+  #dash-performance-table.mobile-cards,#dash-performance-table.mobile-cards tbody{display:block;width:100%}
+  #dash-performance-table.mobile-cards tr.dash-student-row{display:block;margin:10px;border:1px solid var(--border);border-radius:12px;background:var(--bg2);overflow:hidden}
+  #dash-performance-table.mobile-cards tr.dash-student-row td{display:grid;grid-template-columns:90px minmax(0,1fr);align-items:start;gap:10px;width:auto!important;min-width:0!important;padding:9px 12px;border-bottom:1px solid var(--border);white-space:normal!important;position:static!important;background:transparent!important}
+  #dash-performance-table.mobile-cards tr.dash-student-row td:last-child{border-bottom:0}
+  #dash-performance-table.mobile-cards tr.dash-student-row td:before{content:attr(data-label);font-size:11px;font-weight:700;color:var(--text3)}
+  #dash-performance-table.mobile-cards tr.dash-student-row td:first-child{display:block;font-size:16px;color:var(--text);background:rgba(79,124,255,.08)!important}
+  #dash-performance-table.mobile-cards tr.dash-student-row td:first-child:before{content:'';display:none}
+  #dash-performance-table.mobile-cards tr.dash-day-heading{display:block;margin-top:14px}
+  #dash-performance-table.mobile-cards tr.dash-day-heading td{display:block!important;position:static!important}
 }
 .mobile-tabbar{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);z-index:500;height:60px}
 .mobile-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--text2);font-size:10px;font-weight:500;transition:color .15s;padding:8px 0;border:none;background:transparent;font-family:var(--font)}
@@ -356,6 +369,7 @@ input,button{font-family:var(--font)}
         <div id="dash-action-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px"></div>
         <div class="card" style="margin-top:14px">
           <div class="card-head" style="flex-wrap:wrap;gap:8px"><div><h3>학생별 주간 수행 통합표</h3><div style="font-size:11px;color:var(--text3);margin-top:3px">느린 항목은 각각 완료되는 대로 표에 반영됩니다.</div></div><div id="dash-performance-filters" style="display:flex;gap:5px;flex-wrap:wrap"></div></div>
+          <div id="dash-ox-summary" class="dash-ox-summary" style="display:none;padding:14px 16px;border-top:1px solid var(--border)"></div>
           <div style="overflow:auto"><table class="tbl" id="dash-performance-table"></table></div>
         </div>
       </div>
@@ -2557,6 +2571,20 @@ function dashStatusCell(status){
     (status.detail?'<div style="font-size:10px;color:var(--text3);margin-top:3px;max-width:180px;white-space:normal;line-height:1.4">'+dashSafeText(status.detail)+'</div>':'')+'</div>';
 }
 function dashSetPerformanceFilter(filter){dashPerformanceFilter=filter;dashRenderPerformance();}
+function dashRenderOxSummary(){
+  var el=document.getElementById('dash-ox-summary');
+  if(!el)return;
+  if(dashPerformanceFilter!=='ox'){el.style.display='none';el.innerHTML='';return;}
+  var missing=(dashPerformanceRows||[]).filter(function(r){return r.ox&&r.ox.state==='miss';});
+  var days=['수','목','금','기타'];
+  var html='<div style="font-size:14px;font-weight:800;margin-bottom:10px">시험·OX 미응시자 요일별 이름</div>';
+  days.forEach(function(day){
+    var group=missing.filter(function(r){return day==='기타'?['수','목','금'].indexOf(r.clinicDay)<0:r.clinicDay===day;});
+    var names=group.map(function(r){return dashSafeText(r.student&&r.student.name||'이름 없음');});
+    html+='<div class="dash-ox-day" style="display:grid;grid-template-columns:92px 1fr;gap:10px;padding:9px 11px;margin-top:7px;border-radius:10px;background:'+(day==='수'?'rgba(245,158,11,.13)':'var(--bg3)')+';border:1px solid '+(day==='수'?'rgba(245,158,11,.35)':'var(--border)')+'"><div style="font-weight:800;color:'+(day==='수'?'var(--amber)':'var(--text2)')+'">'+day+(day==='기타'?'':'요일')+' · '+group.length+'명</div><div class="dash-ox-names" style="font-size:14px;font-weight:700;line-height:1.6">'+(names.length?names.join(' · '):'<span style="color:var(--green)">없음</span>')+'</div></div>';
+  });
+  el.style.display='block';el.innerHTML=html;
+}
 function dashRenderPerformanceOld(){
   var table=document.getElementById('dash-performance-table'),filters=document.getElementById('dash-performance-filters');
   if(!table||!filters)return;
@@ -2580,6 +2608,7 @@ function dashRenderPerformance(){
     if(loading)loading.style.display='none';
     if(actionGrid)actionGrid.style.display='none';
     if(!table||!filters)return;
+    table.classList.add('mobile-cards');
     var defs=[['all','전체'],['needs','확인 필요'],['attendance','미출석'],['ox','시험·OX'],['video','미시청'],['vocab','단어'],['cert','인증'],['study','공부인증']];
     filters.innerHTML=defs.map(function(d){return'<button class="btn btn-sm'+(dashPerformanceFilter===d[0]?' blue':'')+'" onclick="dashSetPerformanceFilter(\''+d[0]+'\')">'+d[1]+'</button>';}).join('');
     var rows=(dashPerformanceRows||[]).filter(function(r){
@@ -2588,12 +2617,13 @@ function dashRenderPerformance(){
       return r[dashPerformanceFilter]&&r[dashPerformanceFilter].state==='miss';
     });
     rows.sort(function(a,b){var dc={'수':1,'목':2,'금':3,'토':4,'일':5};return (dc[a.clinicDay]||9)-(dc[b.clinicDay]||9)||String(a.student&&a.student.name||'').localeCompare(String(b.student&&b.student.name||''),'ko');});
-    function rowHtml(r){return'<tr><td style="font-weight:700;position:sticky;left:0;background:var(--bg2);z-index:1;white-space:nowrap">'+dashSafeText(r.student&&r.student.name||'이름 없음')+'</td><td><span class="badge partial">'+dashSafeText((r.clinicDay||'미지정')+'요일')+'</span></td><td>'+dashStatusCell(r.attendance)+'</td><td>'+dashStatusCell(r.ox)+'</td><td>'+dashStatusCell(r.video)+'</td><td>'+dashStatusCell(r.vocab)+'</td><td>'+dashStatusCell(r.cert)+'</td><td>'+dashStatusCell(r.study)+'</td></tr>';}
+    function rowHtml(r){return'<tr class="dash-student-row"><td data-label="학생" style="font-weight:700;position:sticky;left:0;background:var(--bg2);z-index:1;white-space:nowrap">'+dashSafeText(r.student&&r.student.name||'이름 없음')+'</td><td data-label="클리닉 요일"><span class="badge partial">'+dashSafeText((r.clinicDay||'미지정')+'요일')+'</span></td><td data-label="출석">'+dashStatusCell(r.attendance)+'</td><td data-label="시험·OX">'+dashStatusCell(r.ox)+'</td><td data-label="필수 영상">'+dashStatusCell(r.video)+'</td><td data-label="단어시험">'+dashStatusCell(r.vocab)+'</td><td data-label="지정 인증">'+dashStatusCell(r.cert)+'</td><td data-label="공부 인증">'+dashStatusCell(r.study)+'</td></tr>';}
     var body='';
     if(dashPerformanceFilter==='ox'){
-      ['수','목','금','기타'].forEach(function(day){var group=rows.filter(function(r){return day==='기타'?['수','목','금'].indexOf(r.clinicDay)<0:r.clinicDay===day;});if(group.length)body+='<tr><td colspan="8" style="padding:10px 12px;background:rgba(79,124,255,.12);font-weight:800;color:var(--accent)">'+day+(day==='기타'?'':'요일')+' 클리닉 · '+group.length+'명</td></tr>'+group.map(rowHtml).join('');});
+      ['수','목','금','기타'].forEach(function(day){var group=rows.filter(function(r){return day==='기타'?['수','목','금'].indexOf(r.clinicDay)<0:r.clinicDay===day;});if(group.length)body+='<tr class="dash-day-heading"><td colspan="8" style="padding:10px 12px;background:rgba(79,124,255,.12);font-weight:800;color:var(--accent)">'+day+(day==='기타'?'':'요일')+' 클리닉 · '+group.length+'명</td></tr>'+group.map(rowHtml).join('');});
     }else body=rows.map(rowHtml).join('');
     table.innerHTML='<thead><tr><th style="position:sticky;left:0;background:var(--bg2);z-index:1">학생</th><th>클리닉 요일</th><th>출석</th><th>시험·OX</th><th>필수 영상</th><th>단어시험</th><th>지정 인증</th><th>공부 인증</th></tr></thead><tbody>'+(body||'<tr><td colspan="8" style="padding:2rem;text-align:center;color:var(--text2)">해당하는 학생이 없어요.</td></tr>')+'</tbody>';
+    dashRenderOxSummary();
     if(stats){
       var cols=[['attendance','미출석'],['ox','시험·OX'],['video','미시청'],['vocab','단어 미응시'],['cert','지정 인증 미제출'],['study','공부 미인증']];
       stats.innerHTML=cols.map(function(c){var pending=(dashPerformanceRows||[]).some(function(r){return !r[c[0]]||r[c[0]].state==='loading';});var count=(dashPerformanceRows||[]).filter(function(r){return r[c[0]]&&r[c[0]].state==='miss';}).length;return'<div class="stat"><div class="stat-label">'+c[1]+'</div><div class="stat-val '+(pending?'blue':count?'amber':'green')+'">'+(pending?'···':count+'명')+'</div></div>';}).join('');
