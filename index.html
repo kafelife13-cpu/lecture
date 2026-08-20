@@ -2297,6 +2297,10 @@ async function renderWeeklyStudentDashboard(){
   function dashboardSafeText(value){
     return String(value||'').replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});
   }
+  var clinicSummary=clinicLessons.length?clinicLessons.map(function(v){
+    var required=hasAccess(session.id,v.id),done=getPct(session.id,v.id)>=100;
+    return '<div style="padding:4px 0;'+(clinicLessons.length>1?'border-bottom:1px solid var(--border);':'')+'"><div style="font-weight:800">'+dashboardSafeText(v.title)+'</div><div style="font-size:11px;margin-top:2px;color:'+(required&&!done?'var(--amber)':'var(--text2)')+'">'+(required?(done?'필수 시청 완료':'필수 시청'):'자유 시청')+'</div></div>';
+  }).join(''):'등록 대기 중';
   var assignmentSummary=assignments.length?assignments.map(function(a){
     var content=String(a.content||'').replace(/\s+/g,' ').trim();
     if(content.length>100)content=content.slice(0,100)+'…';
@@ -2366,7 +2370,7 @@ async function renderWeeklyStudentDashboard(){
     ['⏱','이번 주 학습시간',fmtTime(weeklyStudy),'study'],
     ['✅','공부 인증',('월~수 '+(mwDone?'완료':'필요'))+' · '+('목~금 '+(tfDone?'완료':'필요')),'study'],
     ['🎬','들어야 할 강의',needed.length?needed.length+'개 남음':'모두 완료했어요','lectures'],
-    ['🏫','이번 주 클리닉 해설',clinicAssigned.length?(clinicNeeded.length?clinicNeeded.length+'개 필수 시청':'필수 시청 완료'):(clinicLessons.length?'자유 시청 가능':'등록 대기 중'),'clinic-lectures'],
+    ['🏫','이번 주 클리닉 해설',clinicSummary,'clinic-lectures'],
     ['📢','이번 주 과제',assignmentSummary,'announce'],
     ['🔤','이번 주 단어시험',vocabLeft.length?vocabLeft.join(', ')+'강 남음':'모두 완료했어요','vocab'],
     ['📊','내 최근 성적표',scoreSummary,'scores'],
