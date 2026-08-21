@@ -682,6 +682,10 @@ input,button{font-family:var(--font)}
           <div class="card" style="margin-bottom:1rem">
             <div class="card-head"><h3>새 시험 등록</h3><div style="display:flex;gap:6px"><button class="btn btn-sm" onclick="openOmrSheetModal()">🖨️ OMR 답안지 생성</button><button class="btn blue btn-sm" onclick="openTExamCreate()">+ 등록</button></div></div>
           </div>
+          <div class="card" style="margin-bottom:1rem;border-color:var(--accent)">
+            <div class="card-head" style="flex-wrap:wrap;gap:8px"><div><h3>📊 주간 성적·응시 현황</h3><div style="font-size:11px;color:var(--text2);margin-top:3px">학교별 점수 순위와 응시·미응시 학생을 확인하세요</div></div><select id="weekly-exam-week" class="form-select" onchange="renderWeeklyExamStatus()" style="width:150px"></select></div>
+            <div id="weekly-exam-status" style="padding:0 1.25rem 1.25rem"><div style="color:var(--text3);font-size:13px">현황을 불러오는 중...</div></div>
+          </div>
           <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>🏫</span> 클리닉</div><div class="section-divider-line"></div></div>
           <div class="card" style="margin-bottom:1rem">
             <div id="t-exam-list" style="padding:0 1.25rem 0.5rem"><p style="color:var(--text3);font-size:13px;padding:1rem 0">등록된 클리닉이 없습니다</p></div>
@@ -6722,6 +6726,7 @@ async function renderTExam(){
     renderTExamList('t-exam-list',[],'등록된 클리닉이 없습니다');
     renderTExamList('t-exam-list-mock',[],'등록된 모의고사가 없습니다');
     renderTExamList('t-exam-list-naeshin',[],'등록된 내신시험지가 없습니다');
+    renderWeeklyExamStatus([]);
     return;
   }
   const school=data.filter(e=>(e.category||'school')==='school');
@@ -6730,6 +6735,50 @@ async function renderTExam(){
   renderTExamList('t-exam-list',school,'등록된 클리닉이 없습니다');
   renderTExamList('t-exam-list-mock',mock,'등록된 모의고사가 없습니다');
   renderTExamList('t-exam-list-naeshin',naeshin,'등록된 내신시험지가 없습니다');
+  renderWeeklyExamStatus(data);
+}
+
+var weeklyExamCache={exams:[],responses:[],copy:{}};
+function weeklyExamSafe(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function weeklyExamSchoolId(label){return String(label||'').indexOf('치동')!==-1?'sc_chidong':String(label||'').indexOf('한백')!==-1?'sc_hanbaek':'';}
+async function renderWeeklyExamStatus(examData){
+  var select=document.getElementById('weekly-exam-week'),el=document.getElementById('weekly-exam-status');
+  if(!select||!el)return;
+  if(Array.isArray(examData))weeklyExamCache.exams=examData.filter(function(e){return (e.category||'school')==='school'&&e.clinic_week;});
+  if(!weeklyExamCache.exams.length&&examData===undefined){
+    var er=await sb.from('exams').select('*').eq('category','school').order('created_at',{ascending:false});weeklyExamCache.exams=er.data||[];
+  }
+  var weeks=[];weeklyExamCache.exams.forEach(function(e){if(e.clinic_week&&weeks.indexOf(e.clinic_week)===-1)weeks.push(e.clinic_week);});
+  if(!weeks.length){select.innerHTML='<option>등록 없음</option>';el.innerHTML='<div style="color:var(--text3);font-size:13px">주차가 지정된 클리닉 시험이 없습니다.</div>';return;}
+  var previous=select.value;select.innerHTML=weeks.map(function(w){return'<option value="'+weeklyExamSafe(w)+'">'+weeklyExamSafe(w)+'</option>';}).join('');
+  if(weeks.indexOf(previous)!==-1)select.value=previous;
+  var week=select.value,exams=weeklyExamCache.exams.filter(function(e){return e.clinic_week===week;});
+  el.innerHTML='<div style="color:var(--text2);font-size:13px">성적과 명단을 불러오는 중...</div>';
+  var ids=exams.map(function(e){return e.id;});
+  var rr=ids.length?await sb.from('exam_responses').select('*').in('exam_id',ids):{data:[]};
+  weeklyExamCache.responses=rr.data||[];weeklyExamCache.copy={};
+  var schools=['한백고','치동고'];
+  el.innerHTML=schools.map(function(school){
+    var schoolId=weeklyExamSchoolId(school),students=activeStudents().filter(function(s){return s.school_id===schoolId;});
+    var schoolExams=exams.filter(function(e){return weeklyExamSchoolId(e.clinic_school)===schoolId;});
+    if(!schoolExams.length)return'<div style="margin-top:14px"><div style="font-size:16px;font-weight:800">'+school+'</div><div style="padding:14px 0;color:var(--text3);font-size:13px">이 주차에 등록된 시험이 없습니다.</div></div>';
+    return'<div style="margin-top:14px"><div style="font-size:17px;font-weight:900;margin-bottom:8px">'+school+'</div>'+schoolExams.map(function(exam){
+      var responses=weeklyExamCache.responses.filter(function(r){return r.exam_id===exam.id;});
+      var latest={};responses.forEach(function(r){var n=r.student_name||'';if(!latest[n]||new Date(r.submitted_at||r.created_at)>new Date(latest[n].submitted_at||latest[n].created_at))latest[n]=r;});
+      var ranked=Object.keys(latest).map(function(n){return{name:n,score:Number(latest[n].score)||0};}).sort(function(a,b){return b.score-a.score||a.name.localeCompare(b.name,'ko');});
+      ranked.forEach(function(r,i){r.rank=i&&ranked[i-1].score===r.score?ranked[i-1].rank:i+1;});
+      var done={};ranked.forEach(function(r){done[r.name]=true;});
+      var missing=students.filter(function(s){return !done[s.name];}).map(function(s){return s.name;}).sort(function(a,b){return a.localeCompare(b,'ko');});
+      var key=exam.id;weeklyExamCache.copy[key]={missing:missing,exam:exam.name,week:week,school:school};
+      var ranking=ranked.length?ranked.map(function(r){return'<tr><td style="padding:7px;border-bottom:1px solid var(--border);width:55px">'+r.rank+'위</td><td style="padding:7px;border-bottom:1px solid var(--border);font-weight:700">'+weeklyExamSafe(r.name)+'</td><td style="padding:7px;border-bottom:1px solid var(--border);text-align:right;font-weight:900;color:'+(r.score>=80?'var(--green)':r.score>=60?'var(--amber)':'var(--red)')+'">'+r.score+'점</td></tr>';}).join(''):'<tr><td style="padding:12px;color:var(--text3)">응시자가 없습니다.</td></tr>';
+      return'<div style="border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:12px"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:8px"><div><b>'+weeklyExamSafe(exam.name)+'</b><div style="font-size:11px;color:var(--text2);margin-top:2px">응시 '+ranked.length+'명 · 미응시 '+missing.length+'명</div></div><div style="display:flex;gap:5px;flex-wrap:wrap"><button class="btn btn-sm" onclick="copyWeeklyExamMissing(\''+key+'\',false)">미응시 이름 복사</button><button class="btn btn-sm" onclick="copyWeeklyExamMissing(\''+key+'\',true)">안내문 복사</button></div></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px"><div><div style="font-size:12px;font-weight:800;margin-bottom:5px">🏆 점수 높은 순</div><table style="width:100%;border-collapse:collapse">'+ranking+'</table></div><div><div style="font-size:12px;font-weight:800;color:var(--red);margin-bottom:5px">⚠️ 미응시자</div><div style="font-size:13px;line-height:1.8;color:'+(missing.length?'var(--red)':'var(--green)')+'">'+(missing.length?missing.map(weeklyExamSafe).join(', '):'전원 응시 완료')+'</div></div></div></div>';
+    }).join('')+'</div>';
+  }).join('');
+}
+function copyWeeklyExamMissing(key,withMessage){
+  var d=weeklyExamCache.copy[key];if(!d||!d.missing.length){notify('미응시자가 없습니다.','info');return;}
+  var text=withMessage?d.missing.map(function(n){return n+' 학생, '+d.week+' '+d.school+' '+d.exam+' 시험이 아직 미응시 상태입니다. 확인 후 응시해 주세요.';}).join('\n'):d.missing.join(', ');
+  navigator.clipboard.writeText(text).then(function(){notify(withMessage?'미응시 안내문을 복사했어요.':'미응시자 이름을 복사했어요.','success');}).catch(function(){prompt('아래 내용을 복사하세요.',text);});
 }
 
 function renderTExamList(elId,list,emptyMsg){
