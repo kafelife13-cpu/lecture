@@ -7652,29 +7652,47 @@ function tResExportAcaExcel(){
   var exam=tResCurrentExam,responses=tResCurrentResponses;
   if(!exam||!responses||!responses.length){alert('데이터가 없어요.');return;}
   if(typeof XLSX==='undefined'){alert('엑셀 기능을 불러오지 못했어요. 인터넷 연결을 확인하고 새로고침 해주세요.');return;}
+  var missingNames=[];
   var rows=responses.map(function(r){
     var u=db.users.find(function(x){return x.name===r.student_name;})||{};
+    var parentPhone=tResNormalizePhone(u.parent_phone||'');
+    var studentPhone=tResNormalizePhone(u.student_phone||u.phone||u.phone_number||'');
+    if(!parentPhone&&!studentPhone){missingNames.push(r.student_name);return null;}
     return [
-      r.student_name,
-      tResNormalizePhone(u.parent_phone||''),
-      tResNormalizePhone(u.student_phone||u.phone||u.phone_number||''),
+      String(r.student_name||''),
+      String(parentPhone),
+      String(studentPhone),
       '',
-      tResBuildParentMessage(r.student_name,r,exam),
+      String(tResBuildParentMessage(r.student_name,r,exam)||''),
       '',
       ''
     ];
-  });
-  var missing=rows.filter(function(row){return !row[1]&&!row[2];}).length;
+  }).filter(Boolean);
+  if(!rows.length){alert('학부모 또는 학생 전화번호가 등록된 응시자가 없어요. 학생 관리에서 연락처를 먼저 입력해 주세요.');return;}
   var aoa=[
     ['성명(필수)','부모핸드폰','학생핸드폰','집전화','카드문자 개별내용','', '* 부모핸드폰과 학생핸드폰 중 하나는 필히 입력하셔야 합니다. *카드문자 개별내용은 카드문자를 전송 할때 개별내용에 입력되는 내용입니다.( SMS 만 발송할 경우는 입력할 필요없음)']
   ].concat(rows);
   var wb=XLSX.utils.book_new();
   var ws=XLSX.utils.aoa_to_sheet(aoa);
+  // 아카 샘플처럼 전화번호와 문자는 반드시 문자열로 저장합니다.
+  for(var rowNo=2;rowNo<=rows.length+1;rowNo++){
+    ['A','B','C','D','E'].forEach(function(col){
+      var cell=ws[col+rowNo];if(cell){cell.t='s';cell.z='@';}
+    });
+  }
   ws['!cols']=[{wch:14},{wch:16},{wch:16},{wch:14},{wch:80},{wch:3},{wch:95}];
   XLSX.utils.book_append_sheet(wb,ws,'SMS');
   var safeName=String(exam.name||'시험').replace(/[\\/:*?"<>|]/g,'_');
-  XLSX.writeFile(wb,safeName+'_아카문자.xls',{bookType:'biff8'});
-  notify('아카 문자 업로드용 엑셀을 만들었어요.'+(missing?' 연락처 누락 '+missing+'명도 확인해 주세요.':''),'success');
+  try{
+    var bytes=XLSX.write(wb,{bookType:'biff8',type:'array'});
+    var blob=new Blob([bytes],{type:'application/vnd.ms-excel'});
+    var link=document.createElement('a');
+    link.href=URL.createObjectURL(blob);
+    link.download=safeName+'_아카업로드_성적표문자.xls';
+    document.body.appendChild(link);link.click();link.remove();
+    setTimeout(function(){URL.revokeObjectURL(link.href);},1500);
+  }catch(e){alert('아카 엑셀 생성 실패: '+e.message);return;}
+  notify('아카 원본 형식으로 '+rows.length+'명의 성적표 문자 파일을 만들었어요.'+(missingNames.length?' 연락처 없는 '+missingNames.length+'명은 파일에서 제외했어요: '+missingNames.join(', '):''),'success');
 }
 
 async function tResDeleteStudentResponse(){
