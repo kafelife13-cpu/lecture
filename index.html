@@ -7707,7 +7707,8 @@ function tResExportAcaExcel(){
     });
   }
   ws['!cols']=[{wch:14},{wch:18},{wch:90},{wch:12},{wch:30},{wch:60}];
-  XLSX.utils.book_append_sheet(wb,ws,'SMS');
+  // ACA2000 사용자 정의 문자 샘플의 시트명까지 정확히 맞춥니다.
+  XLSX.utils.book_append_sheet(wb,ws,'사용자');
   var safeName=String(exam.name||'시험').replace(/[\\/:*?"<>|]/g,'_');
   try{
     var bytes=XLSX.write(wb,{bookType:'biff8',type:'array'});
