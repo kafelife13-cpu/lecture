@@ -7660,7 +7660,16 @@ async function tResSendSolapi(){
   if(btn){btn.disabled=true;btn.textContent='발송 중...';}
   try{
     var result=await sb.functions.invoke('send-solapi',{body:{sendPin:String(sendPin).trim(),messages:messages}});
-    if(result.error)throw result.error;
+    if(result.error){
+      var serverMessage='';
+      try{
+        if(result.error.context&&typeof result.error.context.json==='function'){
+          var errorBody=await result.error.context.json();
+          serverMessage=errorBody&&(errorBody.error||errorBody.message)||'';
+        }
+      }catch(ignore){}
+      throw new Error(serverMessage||result.error.message||'문자 발송 서버 오류');
+    }
     if(result.data&&result.data.error)throw new Error(result.data.error);
     notify(messages.length+'명에게 솔라피 문자 발송을 요청했어요.','success');
   }catch(e){
@@ -10063,7 +10072,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=58', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=59', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
