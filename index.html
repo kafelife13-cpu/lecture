@@ -903,7 +903,7 @@ input,button{font-family:var(--font)}
               <button class="btn btn-sm blue" onclick="tResExportAllPDF()">📄 전체 PDF</button>
               <button class="btn btn-sm" onclick="tResExportExcel()">📊 성적 엑셀</button>
               <button class="btn btn-sm blue" onclick="tResExportNotifyExcel()">📨 맥가이 문자 엑셀</button>
-              <button class="btn btn-sm" onclick="tResExportAcaExcel()">📨 아카 문자 엑셀</button>
+              <button class="btn btn-sm" onclick="tResExportAcaExcel()">📨 아카 사용자정의 엑셀</button>
             </div>
           </div>
           <!-- 탭 -->
@@ -975,7 +975,7 @@ input,button{font-family:var(--font)}
               </div>
             </div>
             <div class="card">
-              <div class="card-head"><h3>발송 대상</h3><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-sm blue" onclick="tResExportNotifyExcel()">📨 맥가이 문자 엑셀</button><button class="btn btn-sm" onclick="tResExportAcaExcel()">📨 아카 문자 엑셀</button></div></div>
+              <div class="card-head"><h3>발송 대상</h3><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-sm blue" onclick="tResExportNotifyExcel()">📨 맥가이 문자 엑셀</button><button class="btn btn-sm" onclick="tResExportAcaExcel()">📨 아카 사용자정의 엑셀</button></div></div>
               <div id="tres-notify-list" style="padding:0 1.25rem 1rem"></div>
             </div>
           </div>
@@ -7680,30 +7680,33 @@ function tResExportAcaExcel(){
     var u=db.users.find(function(x){return x.name===r.student_name;})||{};
     var parentPhone=tResNormalizePhone(u.parent_phone||'');
     var studentPhone=tResStudentPhone(u);
-    if(!parentPhone&&!studentPhone){missingNames.push(r.student_name);return null;}
+    var sendPhone=parentPhone||studentPhone;
+    if(!sendPhone){missingNames.push(r.student_name);return null;}
+    var wrongNums=tResWrongNums(exam,r);
+    var sc=repScore(exam,r);
+    var score=r.score!=null?r.score:sc.pct;
     return [
       String(r.student_name||''),
-      String(parentPhone),
-      String(studentPhone),
-      '',
+      String(sendPhone),
       String(tResBuildParentMessage(r.student_name,r,exam)||''),
-      '',
-      ''
+      String(score)+'점',
+      wrongNums.length?wrongNums.join(', ')+'번':'오답 없음',
+      String(tResBuildReportLink(r)||'')
     ];
   }).filter(Boolean);
   if(!rows.length){alert('학부모 또는 학생 전화번호가 등록된 응시자가 없어요. 학생 관리에서 연락처를 먼저 입력해 주세요.');return;}
   var aoa=[
-    ['성명(필수)','부모핸드폰','학생핸드폰','집전화','카드문자 개별내용','', '* 부모핸드폰과 학생핸드폰 중 하나는 필히 입력하셔야 합니다. *카드문자 개별내용은 카드문자를 전송 할때 개별내용에 입력되는 내용입니다.( SMS 만 발송할 경우는 입력할 필요없음)']
+    ['성명(필수)','핸드폰번호(필수)','문구1','문구2','문구3','문구4']
   ].concat(rows);
   var wb=XLSX.utils.book_new();
   var ws=XLSX.utils.aoa_to_sheet(aoa);
-  // 아카 샘플처럼 전화번호와 문자는 반드시 문자열로 저장합니다.
+  // 아카 사용자 정의 문자 샘플처럼 모든 값은 문자열로 저장합니다.
   for(var rowNo=2;rowNo<=rows.length+1;rowNo++){
-    ['A','B','C','D','E'].forEach(function(col){
+    ['A','B','C','D','E','F'].forEach(function(col){
       var cell=ws[col+rowNo];if(cell){cell.t='s';cell.z='@';}
     });
   }
-  ws['!cols']=[{wch:14},{wch:16},{wch:16},{wch:14},{wch:80},{wch:3},{wch:95}];
+  ws['!cols']=[{wch:14},{wch:18},{wch:90},{wch:12},{wch:30},{wch:60}];
   XLSX.utils.book_append_sheet(wb,ws,'SMS');
   var safeName=String(exam.name||'시험').replace(/[\\/:*?"<>|]/g,'_');
   try{
@@ -7711,11 +7714,11 @@ function tResExportAcaExcel(){
     var blob=new Blob([bytes],{type:'application/vnd.ms-excel'});
     var link=document.createElement('a');
     link.href=URL.createObjectURL(blob);
-    link.download=safeName+'_아카업로드_성적표문자.xls';
+    link.download=safeName+'_아카_사용자정의문자.xls';
     document.body.appendChild(link);link.click();link.remove();
     setTimeout(function(){URL.revokeObjectURL(link.href);},1500);
   }catch(e){alert('아카 엑셀 생성 실패: '+e.message);return;}
-  notify('아카 원본 형식으로 '+rows.length+'명의 성적표 문자 파일을 만들었어요.'+(missingNames.length?' 연락처 없는 '+missingNames.length+'명은 파일에서 제외했어요: '+missingNames.join(', '):''),'success');
+  notify('아카 사용자 정의 문자 형식으로 '+rows.length+'명의 파일을 만들었어요. 아카 문자창에는 [문구1]을 넣으면 완성된 개별 문자가 발송됩니다.'+(missingNames.length?' 연락처 없는 '+missingNames.length+'명은 제외했어요: '+missingNames.join(', '):''),'success');
 }
 
 async function tResDeleteStudentResponse(){
