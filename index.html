@@ -487,8 +487,11 @@ input,button{font-family:var(--font)}
         </div>
         <!-- 미시청 학생 -->
         <div class="card" id="access-unwatched-card" style="margin-bottom:1rem;border-color:var(--amber)">
-          <div class="card-head" style="background:var(--amber-bg)"><h3 style="color:var(--amber)">⚠️ 미시청 학생</h3><span id="access-unwatched-count" style="font-size:11px;color:var(--amber)"></span></div>
-          <div id="access-unwatched-list"></div>
+          <div class="card-head" style="background:var(--amber-bg);gap:10px;flex-wrap:wrap">
+            <h3 style="color:var(--amber)">⚠️ 미시청 학생 <span id="access-unwatched-count" style="font-size:11px;color:var(--amber);font-weight:600"></span></h3>
+            <button class="btn btn-sm" id="access-unwatched-toggle" type="button" onclick="toggleAccessUnwatched()" aria-expanded="false">명단 열어보기 ▼</button>
+          </div>
+          <div id="access-unwatched-list" style="display:none"></div>
         </div>
         <!-- 클리닉 해설 필수 시청 지정 -->
         <div class="card" style="margin-bottom:1rem;border-color:var(--amber)">
@@ -3264,13 +3267,25 @@ async function grantAccessDirect(){
 }
 /* 권한을 줬는데 아직 다 안 본(진도 100% 미만) 학생 명단 — 현재 열려있는
    것과 이미 마감된 것 둘 다 보여주되, 마감된 건 흐리게 표시한다. */
+var accessUnwatchedOpen=false;
+function toggleAccessUnwatched(){
+  accessUnwatchedOpen=!accessUnwatchedOpen;
+  var el=document.getElementById('access-unwatched-list');
+  var btn=document.getElementById('access-unwatched-toggle');
+  if(el)el.style.display=accessUnwatchedOpen?'block':'none';
+  if(btn){
+    btn.textContent=accessUnwatchedOpen?'명단 접기 ▲':'명단 열어보기 ▼';
+    btn.setAttribute('aria-expanded',accessUnwatchedOpen?'true':'false');
+  }
+}
 function renderAccessUnwatchedList(){
   var el=document.getElementById('access-unwatched-list');
   var countEl=document.getElementById('access-unwatched-count');
   if(!el)return;
   var unwatched=db.access.filter(function(a){return getPct(a.student_id,a.video_id)<100;})
     .sort(function(a,b){return getPct(a.student_id,a.video_id)-getPct(b.student_id,b.video_id);});
-  if(countEl)countEl.textContent=unwatched.length+'명';
+  if(countEl)countEl.textContent='('+unwatched.length+'명)';
+  el.style.display=accessUnwatchedOpen?'block':'none';
   if(!unwatched.length){
     el.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text2);font-size:13px">모두 시청했어요 🎉</div>';
     return;
