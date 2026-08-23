@@ -3702,7 +3702,8 @@ async function sShowMyGradeReport(responseId){
   reportEl.innerHTML='<div class="card" style="padding:1.25rem;text-align:center;color:var(--text2)">성적표 불러오는 중...</div>';
   const{data:allResponses,error}=await sb.from('exam_responses').select('*').eq('exam_id',exam.id);
   if(error){reportEl.innerHTML='<div class="card" style="padding:1.25rem;color:var(--red)">성적표를 불러오지 못했어요.</div>';return;}
-  reportEl.innerHTML='<div class="card" style="overflow-x:auto;background:#fff">'+buildReportCardHTML(session.name||session.id,exam,response,allResponses||[response])+'</div>';
+  const history=repBuildScoreHistory(session.name||session.id,exam,sGradeResponses,Object.keys(sGradeExams).map(function(id){return sGradeExams[id];}));
+  reportEl.innerHTML='<div class="card" style="overflow-x:auto;background:#fff">'+buildReportCardHTML(session.name||session.id,exam,response,allResponses||[response],null,history)+'</div>';
   reportEl.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
@@ -6312,15 +6313,18 @@ async function renderStandaloneReportCard(responseId){
   try{
     const{data:resp,error}=await sb.from('exam_responses').select('*').eq('id',responseId).single();
     if(error||!resp)throw new Error('응답을 찾을 수 없어요');
-    const[{data:exam},{data:allResponses}]=await Promise.all([
+    const[{data:exam},{data:allResponses},{data:studentResponses},{data:historyExams}]=await Promise.all([
       sb.from('exams').select('*').eq('id',resp.exam_id).single(),
-      sb.from('exam_responses').select('*').eq('exam_id',resp.exam_id)
+      sb.from('exam_responses').select('*').eq('exam_id',resp.exam_id),
+      sb.from('exam_responses').select('*').eq('student_name',resp.student_name).limit(500),
+      sb.from('exams').select('*').eq('category','school').limit(500)
     ]);
     if(!exam)throw new Error('시험 정보를 찾을 수 없어요');
+    const history=repBuildScoreHistory(resp.student_name,exam,studentResponses||[resp],historyExams||[exam]);
     document.getElementById('omr-share-root').innerHTML=
       '<div style="position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid #eee;padding:10px 14px;font-family:sans-serif">'+
         '<button onclick="location.href=location.pathname" style="padding:9px 14px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#333;font-size:13px;cursor:pointer">← 국어왕으로 돌아가기</button>'+
-      '</div>'+buildReportCardHTML(resp.student_name,exam,resp,allResponses||[resp]);
+      '</div>'+buildReportCardHTML(resp.student_name,exam,resp,allResponses||[resp],null,history);
   }catch(e){
     document.getElementById('omr-share-root').innerHTML='<div style="text-align:center;padding:4rem 1rem;color:#999;font-family:sans-serif">성적표를 찾을 수 없어요. 링크를 다시 확인해주세요.</div>';
   }
@@ -7926,12 +7930,17 @@ function tResExportStudentPDF(){
   tResPrintHTML(tResBuildPrintHTML(name,r,tResCurrentExam),name+'_오답분석');
 }
 
-function tResExportStudentReportCard(){
+async function tResExportStudentReportCard(){
   const name=document.getElementById('tres-student-select').value;
   if(!name){alert('학생을 선택해 주세요.');return;}
   const r=tResCurrentResponses.find(r=>r.student_name===name);
   if(!r){alert('응답 데이터를 찾을 수 없어요.');return;}
-  tResPrintHTML(buildReportCardHTML(name,tResCurrentExam,r,tResCurrentResponses),name+'_성적표');
+  const [{data:studentResponses},{data:historyExams}]=await Promise.all([
+    sb.from('exam_responses').select('*').eq('student_name',name).limit(500),
+    sb.from('exams').select('*').eq('category','school').limit(500)
+  ]);
+  const history=repBuildScoreHistory(name,tResCurrentExam,studentResponses||[r],historyExams||[tResCurrentExam]);
+  tResPrintHTML(buildReportCardHTML(name,tResCurrentExam,r,tResCurrentResponses,null,history),name+'_성적표');
 }
 function tResCopyReportLink(){
   const name=document.getElementById('tres-student-select').value;
@@ -9123,7 +9132,55 @@ function repRadarSVG(labels,myPct,avgPct){
     '</svg>';
 }
 
-function buildReportCardHTML(studentName,exam,response,allResponses,academyName){
+function repBuildScoreHistory(studentName,currentExam,responses,exams){
+  var examMap={};
+  (exams||[]).forEach(function(e){examMap[e.id]=e;});
+  var latest={};
+  (responses||[]).filter(function(r){return r.student_name===studentName;}).forEach(function(r){
+    var e=examMap[r.exam_id];
+    if(!e||(e.category||'school')!=='school')return;
+    if(currentExam&&currentExam.clinic_school&&e.clinic_school&&e.clinic_school!==currentExam.clinic_school)return;
+    var old=latest[r.exam_id];
+    if(!old||new Date(r.submitted_at||r.created_at||0)>new Date(old.submitted_at||old.created_at||0))latest[r.exam_id]=r;
+  });
+  return Object.keys(latest).map(function(examId){
+    var r=latest[examId],e=examMap[examId];
+    var score=r.score!=null?Number(r.score):(e&&e.questions?repScore(e,r).pct:0);
+    return {examId:examId,label:e.clinic_week||e.name||'시험',name:e.name||'',score:score,date:r.submitted_at||r.created_at||e.created_at||''};
+  }).sort(function(a,b){return new Date(a.date)-new Date(b.date);});
+}
+
+function repScoreHistoryHTML(history,currentExam,response){
+  var items=(history||[]).slice(-8);
+  if(!items.length){items=[{examId:currentExam.id,label:currentExam.clinic_week||currentExam.name,score:response.score!=null?Number(response.score):repScore(currentExam,response).pct}];}
+  var scores=items.map(function(x){return Number(x.score)||0;});
+  var avg=Math.round(scores.reduce(function(a,b){return a+b;},0)/scores.length*10)/10;
+  var best=Math.max.apply(null,scores);
+  var change=scores.length>1?Math.round((scores[scores.length-1]-scores[scores.length-2])*10)/10:null;
+  var chart='';
+  if(items.length===1){
+    chart='<div style="padding:18px;text-align:center;color:#666;font-size:13px">이번 주가 첫 성적입니다. 다음 시험부터 점수 추이가 자동으로 이어집니다.</div>';
+  }else{
+    var w=680,h=150,padX=34,padY=24,step=(w-padX*2)/(items.length-1);
+    var pts=items.map(function(x,i){return{x:padX+i*step,y:padY+(100-Math.max(0,Math.min(100,Number(x.score)||0)))*(h-padY*2)/100};});
+    chart='<svg viewBox="0 0 '+w+' '+h+'" style="width:100%;height:auto;display:block">'+
+      '<line x1="'+padX+'" y1="'+(h-padY)+'" x2="'+(w-padX)+'" y2="'+(h-padY)+'" stroke="#ddd"/>'+
+      '<line x1="'+padX+'" y1="'+padY+'" x2="'+padX+'" y2="'+(h-padY)+'" stroke="#ddd"/>'+
+      '<polyline points="'+pts.map(function(p){return p.x+','+p.y;}).join(' ')+'" fill="none" stroke="#2d5fa6" stroke-width="3"/>'+
+      pts.map(function(p,i){return'<circle cx="'+p.x+'" cy="'+p.y+'" r="5" fill="'+(items[i].examId===currentExam.id?'#c0392b':'#2d5fa6')+'"/><text x="'+p.x+'" y="'+(p.y-10)+'" text-anchor="middle" font-size="11" font-weight="700" fill="#333">'+scores[i]+'</text><text x="'+p.x+'" y="'+(h-5)+'" text-anchor="middle" font-size="9" fill="#666">'+String(items[i].label).slice(0,10)+'</text>';}).join('')+
+      '</svg>';
+  }
+  return '<div style="border:1px solid #dfe6f1;border-radius:10px;padding:14px 16px;margin-bottom:20px;page-break-inside:avoid">'+
+    '<div style="font-size:14px;font-weight:800;color:#2d5fa6;margin-bottom:10px">📈 누적 성적 추이</div>'+chart+
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px;text-align:center;font-size:12px">'+
+      '<div style="background:#f5f7fb;padding:9px;border-radius:7px"><b>'+items.length+'회</b><br><span style="color:#777">누적 응시</span></div>'+
+      '<div style="background:#f5f7fb;padding:9px;border-radius:7px"><b>'+avg+'점</b><br><span style="color:#777">누적 평균</span></div>'+
+      '<div style="background:#f5f7fb;padding:9px;border-radius:7px"><b>'+best+'점</b><br><span style="color:#777">최고점</span></div>'+
+      '<div style="background:#f5f7fb;padding:9px;border-radius:7px"><b>'+(change===null?'첫 성적':(change>0?'+':'')+change+'점')+'</b><br><span style="color:#777">지난 시험 대비</span></div>'+
+    '</div></div>';
+}
+
+function buildReportCardHTML(studentName,exam,response,allResponses,academyName,scoreHistory){
   var stats=repClassStats(exam,allResponses||[response]);
   var my=repScore(exam,response);
   var grade=repGrade(my.pct,exam.grade_cuts||[]);
@@ -9138,6 +9195,7 @@ function buildReportCardHTML(studentName,exam,response,allResponses,academyName)
     myRank=higherCount+1;
   }
   var analysisText=repAnalysisText(domainStats,my.pct);
+  var historyHTML=repScoreHistoryHTML(scoreHistory,exam,response);
 
   var noticeHTML=(exam.grade_cuts&&exam.grade_cuts.length)?
     exam.grade_cuts.map(function(c){return '&nbsp;* '+c.grade+'등급 : '+c.cut+'점';}).join('<br>'):'등급컷 정보 없음';
@@ -9195,6 +9253,7 @@ function buildReportCardHTML(studentName,exam,response,allResponses,academyName)
       '<tr style="background:#2d5fa6;color:#fff"><th style="padding:8px">내점수/만점</th><th style="padding:8px">전체 평균</th><th style="padding:8px">표준편차</th><th style="padding:8px">상위 30%</th><th style="padding:8px">최고점</th>'+(showRank?'<th style="padding:8px">전체 석차</th>':'')+'</tr>'+
       '<tr><td style="padding:8px;font-weight:700;font-size:16px">'+my.earned+'/'+my.total+'</td><td style="padding:8px">'+stats.avg+'</td><td style="padding:8px">'+stats.stddev+'</td><td style="padding:8px">'+stats.top30+'</td><td style="padding:8px">'+stats.max+'</td>'+(showRank?'<td style="padding:8px;font-weight:700">'+myRank+' / '+stats.n+'</td>':'')+'</tr>'+
     '</table>'+
+    historyHTML+
     (analysisText?'<div style="background:#eef6f1;border:1px solid #cfe8db;border-radius:8px;padding:12px 16px;margin-bottom:20px">'+
       '<div style="font-size:12px;font-weight:700;color:#2a7a52;margin-bottom:4px">📋 학습 분석 및 제안</div>'+
       '<div style="font-size:13px;line-height:1.7;color:#333">'+analysisText+'</div>'+
@@ -9822,11 +9881,16 @@ async function sExamRenderInlineReport(scrollToReport){
   const el=document.getElementById('s-res-report-card');
   if(!el||!sExamData||!session)return;
   el.innerHTML='<div class="card" style="padding:1.25rem;text-align:center;color:var(--text2);font-size:13px">성적표 불러오는 중...</div>';
-  const {data:allResponses,error}=await sb.from('exam_responses').select('*').eq('exam_id',sExamData.id);
+  const [{data:allResponses,error},{data:studentResponses},{data:historyExams}]=await Promise.all([
+    sb.from('exam_responses').select('*').eq('exam_id',sExamData.id),
+    sb.from('exam_responses').select('*').eq('student_name',session.name||session.id).limit(500),
+    sb.from('exams').select('*').eq('category','school').limit(500)
+  ]);
   if(error){el.innerHTML='<div class="card" style="padding:1.25rem;color:var(--red);font-size:13px">성적표를 불러오지 못했어요: '+escHtml(error.message)+'</div>';return;}
   const my=(allResponses||[]).find(function(r){return r.student_name===(session.name||session.id);});
   if(!my){el.innerHTML='<div class="card" style="padding:1.25rem;color:var(--text2);font-size:13px">제출 기록을 찾지 못했어요. 선생님께 알려주세요.</div>';return;}
-  el.innerHTML='<div class="card" style="overflow-x:auto;background:#fff">'+buildReportCardHTML(session.name||session.id,sExamData,my,allResponses||[my])+'</div>';
+  const history=repBuildScoreHistory(session.name||session.id,sExamData,studentResponses||[my],historyExams||[sExamData]);
+  el.innerHTML='<div class="card" style="overflow-x:auto;background:#fff">'+buildReportCardHTML(session.name||session.id,sExamData,my,allResponses||[my],null,history)+'</div>';
   if(scrollToReport)el.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
@@ -10103,7 +10167,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=59', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=60', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
