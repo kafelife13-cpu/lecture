@@ -969,7 +969,7 @@ input,button{font-family:var(--font)}
               <div class="card-head"><h3>✍️ 공통 안내문</h3><button class="btn btn-sm blue" onclick="tResSaveCommonNote()">저장·문자 반영</button></div>
               <div style="padding:0 1.25rem 1rem">
                 <textarea id="tres-common-note" class="form-input" rows="5" placeholder="예: 이번 시험은 중세국어 핵심 개념을 확인하는 시험이었으며, 난이도는 중상 수준이었습니다. 틀린 문항은 해설을 확인하고 다음 클리닉까지 다시 풀어오세요." style="resize:vertical;line-height:1.6"></textarea>
-                <div style="font-size:11px;color:var(--text3);margin-top:5px">한 번 작성하면 모든 학생 문자에 공통으로 들어가고, 점수·오답·개별 성적표 링크는 학생마다 자동으로 달라집니다.</div>
+                <div style="font-size:11px;color:var(--text3);margin-top:5px">작성 후 반드시 <strong>저장·문자 반영</strong>을 눌러야 발송 문구에 들어갑니다. 점수·오답·개별 성적표 링크는 학생마다 자동으로 달라집니다.</div>
               </div>
             </div>
             <div class="card">
@@ -7600,10 +7600,6 @@ function tResToggleNotifyAll(checked){
 async function tResSendSolapi(){
   var checks=Array.from(document.querySelectorAll('.tres-notify-check:checked'));
   if(!checks.length){alert('문자를 보낼 학생을 한 명 이상 선택해 주세요.');return;}
-  var commonNoteEl=document.getElementById('tres-common-note');
-  if(commonNoteEl&&tResCurrentExam){
-    localStorage.setItem(tResCommonNoteKey(tResCurrentExam),String(commonNoteEl.value||'').trim());
-  }
   var messages=[];
   checks.forEach(function(check){
     var r=tResCurrentResponses[Number(check.dataset.responseIndex)];
@@ -10025,7 +10021,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=55', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=56', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
