@@ -7587,7 +7587,7 @@ function renderTResNotify(){
       return '<tr><td><input type="checkbox" class="tres-notify-check" data-response-index="'+responseIndex+'" '+(phone?'checked':'disabled title="학부모 연락처가 없습니다"')+'></td><td style="font-weight:600">'+r.student_name+'</td>'+
         '<td>'+score+'점</td>'+
         '<td>'+(wrongNums.length?wrongNums.length+'문':'-')+'</td>'+
-        '<td><input type="tel" class="form-input" placeholder="010-1234-5678" value="'+phone+'" style="font-size:11px;padding:4px 6px;width:120px" onchange="tResSetParentPhoneInline(\''+r.student_name.replace(/'/g,"\\'")+'\',this.value)"></td>'+
+        '<td><input type="tel" class="form-input" placeholder="010-1234-5678" value="'+phone+'" style="font-size:11px;padding:4px 6px;width:120px" onchange="tResSetParentPhoneInline(\''+r.student_name.replace(/'/g,"\\'")+'\',this.value,this)"></td>'+
         '<td style="font-size:11px;color:var(--text2);max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+msgPreview+'</td>'+
         '<td><button class="btn btn-sm" onclick="tResCopyParentMessage(\''+r.student_name.replace(/'/g,"\\'")+'\')">복사</button></td></tr>';
     }).join('')+'</tbody></table></div>';
@@ -7628,10 +7628,17 @@ async function tResSendSolapi(){
   }
 }
 
-async function tResSetParentPhoneInline(studentName,val){
+async function tResSetParentPhoneInline(studentName,val,inputEl){
   var u=db.users.find(function(x){return x.name===studentName;});
   if(!u){notify('학생 계정을 찾을 수 없어요 (이름이 여러 명과 겹칠 수 있어요).','error');return;}
   await setStudentParentPhone(u.id,val);
+  var checkbox=inputEl&&inputEl.closest('tr')&&inputEl.closest('tr').querySelector('.tres-notify-check');
+  if(checkbox){
+    var valid=/^01\d{8,9}$/.test(tResNormalizePhone(val));
+    checkbox.disabled=!valid;
+    checkbox.checked=valid;
+    checkbox.title=valid?'':'학부모 연락처가 없습니다';
+  }
 }
 
 function tResCopyParentMessage(studentName){
@@ -10014,7 +10021,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=53', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=54', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
