@@ -7600,6 +7600,10 @@ function tResToggleNotifyAll(checked){
 async function tResSendSolapi(){
   var checks=Array.from(document.querySelectorAll('.tres-notify-check:checked'));
   if(!checks.length){alert('문자를 보낼 학생을 한 명 이상 선택해 주세요.');return;}
+  var commonNoteEl=document.getElementById('tres-common-note');
+  if(commonNoteEl&&tResCurrentExam){
+    localStorage.setItem(tResCommonNoteKey(tResCurrentExam),String(commonNoteEl.value||'').trim());
+  }
   var messages=[];
   checks.forEach(function(check){
     var r=tResCurrentResponses[Number(check.dataset.responseIndex)];
@@ -10021,7 +10025,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=54', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=55', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
