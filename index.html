@@ -1710,7 +1710,7 @@ input,button{font-family:var(--font)}
 <!-- Q&A 주차 추가 모달 -->
 <div class="modal-bg" id="modal-qa-week">
   <div class="modal" style="max-width:480px">
-    <div class="modal-head"><h3>주차 추가</h3><button class="modal-close" onclick="closeQaWeekModal()">×</button></div>
+    <div class="modal-head"><h3 id="qw-modal-title">주차 추가</h3><button class="modal-close" onclick="closeQaWeekModal()">×</button></div>
     <div class="modal-body">
       <div class="frow" style="gap:10px">
         <div style="flex:1"><label class="flabel">주차 이름</label><input id="qw-name" class="form-input" placeholder="예: 1주차"/></div>
@@ -5727,13 +5727,32 @@ async function addQaSchool(){
   renderTQaSchoolTabs();renderSQaSchoolList();
 }
 
+var qwEditingId=null;
 function openQaWeekModal(){
+  qwEditingId=null;
+  document.getElementById('qw-modal-title').textContent='주차 추가';
+  document.getElementById('qw-add-btn').textContent='추가';
   document.getElementById('qw-name').value='';
   document.getElementById('qw-count').value='100';
   document.getElementById('qw-sol-name').textContent='';
   document.getElementById('qw-extract-status').textContent='';
   document.getElementById('qw-sol-upload').style.borderColor='';
   document.getElementById('qw-sol-text-input').value='';
+  qwSolFile=null;qwSolText='';
+  document.getElementById('modal-qa-week').classList.add('show');
+}
+function openQaWeekEditModal(id){
+  var w=qaDb.weeks.find(function(x){return x.id===id;});
+  if(!w)return;
+  qwEditingId=id;
+  document.getElementById('qw-modal-title').textContent='주차 수정';
+  document.getElementById('qw-add-btn').textContent='저장';
+  document.getElementById('qw-name').value=w.name||'';
+  document.getElementById('qw-count').value=w.prob_count||100;
+  document.getElementById('qw-sol-name').textContent=w.pdf_url?'✓ 기존 PDF 있음 (새로 올리면 교체됩니다)':'';
+  document.getElementById('qw-extract-status').textContent='';
+  document.getElementById('qw-sol-upload').style.borderColor=w.pdf_url?'var(--green)':'';
+  document.getElementById('qw-sol-text-input').value=w.sol_text||'';
   qwSolFile=null;qwSolText='';
   document.getElementById('modal-qa-week').classList.add('show');
 }
@@ -5756,12 +5775,14 @@ async function addQaWeek(){
   var count=parseInt(document.getElementById('qw-count').value)||100;
   if(!name){notify('주차 이름을 입력하세요.','error');return;}
   if(!qaState.school){notify('학교를 먼저 선택하세요.','error');return;}
+  var editing=qwEditingId;
   var btn=document.getElementById('qw-add-btn');
-  btn.disabled=true;btn.textContent='추가 중...';
+  btn.disabled=true;btn.textContent=editing?'저장 중...':'추가 중...';
   try{
-    var id='w_'+Date.now();
-    var pdfUrl='';
-    // PDF를 Storage에 업로드
+    var id=editing||('w_'+Date.now());
+    var existing=editing?qaDb.weeks.find(function(w){return w.id===editing;}):null;
+    var pdfUrl=existing?(existing.pdf_url||''):'';
+    // PDF를 Storage에 업로드 (새로 올린 파일이 있을 때만 — 수정 시 안 올리면 기존 PDF 유지)
     if(qwSolFile){
       btn.textContent='PDF 업로드 중...';
       var path='qa-pdfs/'+qaState.school+'/'+id+'.pdf';
@@ -5771,18 +5792,27 @@ async function addQaWeek(){
         pdfUrl=urlRes.data?.publicUrl||'';
       }
     }
-    // 직접 붙여넣은 텍스트가 있으면 PDF 추출 텍스트보다 우선 적용
+    // 직접 붙여넣은 텍스트(칸에 남아있는 값)를 그대로 사용 — 수정 시엔 기존 값이 이미
+    // 채워져 있으므로 지우지 않는 한 유지되고, 새로 PDF만 올렸다면 그 추출 텍스트를 씀
     var pastedText=(document.getElementById('qw-sol-text-input').value||'').trim();
-    var finalSolText=pastedText||qwSolText;
-    var item={id:id,school_id:qaState.school,name:name,prob_count:count,sol_text:finalSolText,pdf_url:pdfUrl,created_at:new Date().toISOString()};
-    var res=await sb.from('qa_weeks').insert(item);
-    if(res.error){notify('등록 실패: '+res.error.message,'error');return;}
-    qaDb.weeks.push(item);
+    var finalSolText=pastedText||qwSolText||(existing?existing.sol_text:'');
+    var item={id:id,school_id:qaState.school,name:name,prob_count:count,sol_text:finalSolText,pdf_url:pdfUrl};
+    if(editing){
+      var res=await sb.from('qa_weeks').update({name:name,prob_count:count,sol_text:finalSolText,pdf_url:pdfUrl}).eq('id',id);
+      if(res.error){notify('저장 실패: '+res.error.message,'error');return;}
+      if(existing)Object.assign(existing,item);
+      notify(name+' 수정됐습니다.','success');
+    }else{
+      item.created_at=new Date().toISOString();
+      var res2=await sb.from('qa_weeks').insert(item);
+      if(res2.error){notify('등록 실패: '+res2.error.message,'error');return;}
+      qaDb.weeks.push(item);
+      notify(name+' 추가됐습니다.','success');
+    }
     closeQaWeekModal();
-    notify(name+' 추가됐습니다.','success');
     renderTQaWeekList();renderSQaWeekList();
   }catch(e){notify('오류: '+e.message,'error');}
-  finally{btn.disabled=false;btn.textContent='추가';}
+  finally{btn.disabled=false;btn.textContent=editing?'저장':'추가';}
 }
 
 async function deleteQaWeek(id){
@@ -5880,6 +5910,7 @@ function renderTQaWeekList(){
       (qCount?' · 질문 '+qCount+'건':'')+
       (pCount?' · <span style="color:var(--amber)">대기 '+pCount+'</span>':'')+
       '</div></div>'+
+      '<button class="btn btn-sm" onclick="openQaWeekEditModal(\''+w.id+'\')">✏️ 수정</button>'+
       '<button class="btn red btn-sm" onclick="deleteQaWeek(\''+w.id+'\')">삭제</button></div>';
   }).join('');
 }
