@@ -973,7 +973,7 @@ input,button{font-family:var(--font)}
               </div>
             </div>
             <div class="card">
-              <div class="card-head"><h3>발송 대상</h3><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"><select id="tres-notify-group" class="form-select" style="width:auto;min-width:145px;padding:6px 28px 6px 9px;font-size:12px" onchange="renderTResNotify()"><option value="">전체 반</option></select><button class="btn btn-sm" onclick="tResSelectNotifyType('missing')">미응시자만 선택</button><button class="btn btn-sm" onclick="tResToggleNotifyAll(true)">전체 선택</button><button class="btn btn-sm" onclick="tResToggleNotifyAll(false)">선택 해제</button><button class="btn btn-sm blue" id="tres-solapi-send" onclick="tResSendSolapi()">📨 솔라피 문자 발송</button></div></div>
+              <div class="card-head"><h3>발송 대상</h3><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"><select id="tres-notify-group" class="form-select" style="width:auto;min-width:145px;padding:6px 28px 6px 9px;font-size:12px" onchange="renderTResNotify()"><option value="">전체 반</option></select><button class="btn btn-sm" onclick="tResSelectNotifyType('taken')">응시 완료자만 선택</button><button class="btn btn-sm" onclick="tResSelectNotifyType('missing')">미응시자만 선택</button><button class="btn btn-sm" onclick="tResToggleNotifyAll(true)">전체 선택</button><button class="btn btn-sm" onclick="tResToggleNotifyAll(false)">선택 해제</button><button class="btn btn-sm blue" id="tres-solapi-send" onclick="tResSendSolapi()">📨 솔라피 문자 발송</button></div></div>
               <div id="tres-notify-list" style="padding:0 1.25rem 1rem"></div>
             </div>
           </div>
@@ -10181,7 +10181,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=61', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=62', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
