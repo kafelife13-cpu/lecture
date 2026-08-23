@@ -701,6 +701,10 @@ input,button{font-family:var(--font)}
           <div class="card" style="margin-bottom:1rem">
             <div id="t-exam-list-naeshin" style="padding:0 1.25rem 0.5rem"><p style="color:var(--text3);font-size:13px;padding:1rem 0">등록된 내신시험지가 없습니다</p></div>
           </div>
+          <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📖</span> 과제 인증</div><div class="section-divider-line"></div></div>
+          <div class="card" style="margin-bottom:1rem">
+            <div id="t-exam-list-homework" style="padding:0 1.25rem 0.5rem"><p style="color:var(--text3);font-size:13px;padding:1rem 0">등록된 과제가 없습니다</p></div>
+          </div>
         </div>
         <!-- 시험 생성 폼 -->
         <div id="t-exam-create" style="display:none">
@@ -714,6 +718,7 @@ input,button{font-family:var(--font)}
                     <option value="school">🏫 클리닉</option>
                     <option value="mock">📝 모의고사</option>
                     <option value="naeshin">📚 내신시험지 분석</option>
+                    <option value="homework">📖 과제 인증</option>
                   </select>
                 </div>
                 <div id="tex-clinic-fields" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
@@ -1202,6 +1207,8 @@ input,button{font-family:var(--font)}
           <div id="s-exam-list-mock" style="margin-bottom:1rem"></div>
           <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📚</span> 내신시험지 분석</div><div class="section-divider-line"></div></div>
           <div id="s-exam-list-naeshin" style="margin-bottom:1rem"></div>
+          <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📖</span> 과제 인증</div><div class="section-divider-line"></div></div>
+          <div id="s-exam-list-homework" style="margin-bottom:1rem"></div>
         </div>
         <!-- 채점 화면 -->
         <div id="s-exam-check" style="display:none">
@@ -6741,15 +6748,18 @@ async function renderTExam(){
     renderTExamList('t-exam-list',[],'등록된 클리닉이 없습니다');
     renderTExamList('t-exam-list-mock',[],'등록된 모의고사가 없습니다');
     renderTExamList('t-exam-list-naeshin',[],'등록된 내신시험지가 없습니다');
+    renderTExamList('t-exam-list-homework',[],'등록된 과제가 없습니다');
     renderWeeklyExamStatus([]);
     return;
   }
   const school=data.filter(e=>(e.category||'school')==='school');
   const mock=data.filter(e=>e.category==='mock');
   const naeshin=data.filter(e=>e.category==='naeshin');
+  const homework=data.filter(e=>e.category==='homework');
   renderTExamList('t-exam-list',school,'등록된 클리닉이 없습니다');
   renderTExamList('t-exam-list-mock',mock,'등록된 모의고사가 없습니다');
   renderTExamList('t-exam-list-naeshin',naeshin,'등록된 내신시험지가 없습니다');
+  renderTExamList('t-exam-list-homework',homework,'등록된 과제가 없습니다');
   renderWeeklyExamStatus(data);
 }
 
@@ -9028,9 +9038,11 @@ async function renderSExam(){
   const clinicEl=document.getElementById('s-exam-clinic-groups');
   const mockEl=document.getElementById('s-exam-list-mock');
   const naeshinEl=document.getElementById('s-exam-list-naeshin');
+  const homeworkEl=document.getElementById('s-exam-list-homework');
   if(clinicEl)clinicEl.innerHTML='<div style="padding:1rem;text-align:center;color:var(--text3);font-size:13px">불러오는 중...</div>';
   if(mockEl)mockEl.innerHTML='';
   if(naeshinEl)naeshinEl.innerHTML='';
+  if(homeworkEl)homeworkEl.innerHTML='';
   const myName=session.name||session.id;
   const [{data:exams},{data:myResponses}]=await Promise.all([
     sb.from('exams').select('*').order('created_at',{ascending:false}),
@@ -9042,9 +9054,11 @@ async function renderSExam(){
   sExamClinicCache=list.filter(function(e){return (e.category||'school')==='school';});
   const mock=list.filter(function(e){return e.category==='mock';});
   const naeshin=list.filter(function(e){return e.category==='naeshin';});
+  const homework=list.filter(function(e){return e.category==='homework';});
   renderSExamClinicGroups();
   if(mockEl)mockEl.innerHTML=renderSExamListCards(mock,sExamRespCache,'등록된 모의고사가 없어요');
   if(naeshinEl)naeshinEl.innerHTML=renderSExamListCards(naeshin,sExamRespCache,'등록된 내신시험지가 없어요');
+  if(homeworkEl)homeworkEl.innerHTML=renderSExamListCards(homework,sExamRespCache,'등록된 과제가 없어요');
 }
 
 function renderSExamClinicGroups(){
@@ -9143,8 +9157,8 @@ async function sExamOpenForGrading(examId){
   }
   sExamData=found;sExamPriorResponse=resp||null;
   sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;sWrongChecked={};sExamFullAnswers={};
-  sExamCheckMode=found.category==='naeshin'?'wrongonly':'full';
-  const icon=found.category==='mock'?'📝 ':found.category==='naeshin'?'📚 ':'🏫 ';
+  sExamCheckMode=(found.category==='naeshin'||found.category==='homework')?'wrongonly':'full';
+  const icon=found.category==='mock'?'📝 ':found.category==='naeshin'?'📚 ':found.category==='homework'?'📖 ':'🏫 ';
   document.getElementById('s-exam-check-title').textContent=icon+found.name;
   const fullEl=document.getElementById('s-exam-check-full');
   const wrongEl=document.getElementById('s-exam-check-wrong');
