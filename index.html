@@ -342,6 +342,7 @@ input,button{font-family:var(--font)}
         <div class="nav-item" onclick="tNav('clinic')" data-p="clinic"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉 관리</div>
         <div class="nav-item" onclick="tNav('study')" data-p="study"><svg viewBox="0 0 24 24"><path d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>공부 타이머</div>
         <div class="nav-item" onclick="tNav('exam')" data-p="exam"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>온라인 채점</div>
+        <div class="nav-item" onclick="tNav('weakness')" data-p="weakness"><svg viewBox="0 0 24 24"><path d="M3 13h2v8H3v-8zm4-6h2v14H7V7zm4 3h2v11h-2V10zm4-6h2v17h-2V4zm4 5h2v12h-2V9z"/></svg>약점 분석</div>
         <div class="nav-item" onclick="tNav('vocab')" data-p="vocab"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 13.5L4.24 12.5 2 11.15v3.7L12 20l10-5.15v-3.7l-2.24 1.35L12 16.5z"/></svg>오늘의 어휘</div>
       </nav>
       <div class="sidebar-footer">
@@ -678,6 +679,29 @@ input,button{font-family:var(--font)}
       </div>
 
       <!-- 시험 분석 (교사) -->
+      <div class="panel" id="panel-weakness">
+        <div class="page-header"><h1>학생별 약점 분석</h1><p>최근 4주 클리닉·과제 오답을 유형별로 모아 확인하세요</p></div>
+        <div class="card" style="margin-bottom:1rem">
+          <div style="padding:1rem 1.25rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;align-items:end">
+            <div class="form-group" style="margin:0"><label>시작일</label><input class="form-input" type="date" id="weak-start"></div>
+            <div class="form-group" style="margin:0"><label>종료일</label><input class="form-input" type="date" id="weak-end"></div>
+            <div class="form-group" style="margin:0"><label>학교</label><select class="form-select" id="weak-school" onchange="renderWeaknessTable()"><option value="">전체 학교</option><option value="한백고">한백고</option><option value="치동고">치동고</option></select></div>
+            <div class="form-group" style="margin:0"><label>학생 검색</label><input class="form-input" id="weak-search" placeholder="이름 입력" oninput="renderWeaknessTable()"></div>
+            <button class="btn blue" onclick="loadWeaknessAnalysis(true)">다시 분석</button>
+          </div>
+          <div style="padding:0 1.25rem 1rem;font-size:12px;color:var(--text2)">분석 대상: 클리닉 시험 + 과제 인증 · 오답률은 해당 유형 문항을 실제로 푼 기록을 기준으로 계산합니다.</div>
+        </div>
+        <div id="weak-loading" class="card" style="padding:1.5rem;text-align:center;color:var(--text2)">약점 분석을 준비하고 있어요.</div>
+        <div id="weak-content" style="display:none">
+          <div class="stats-row" id="weak-stats" style="grid-template-columns:repeat(auto-fit,minmax(145px,1fr))"></div>
+          <div id="weak-warning" style="display:none;margin-bottom:12px;padding:12px 14px;border:1px solid var(--amber);border-radius:10px;background:var(--amber-bg);font-size:12px;color:var(--text2)"></div>
+          <div class="card">
+            <div class="card-head" style="flex-wrap:wrap;gap:8px"><div><h3>학생별 최근 4주 분석</h3><div id="weak-period-label" style="font-size:11px;color:var(--text3);margin-top:3px"></div></div><button class="btn btn-sm" onclick="window.print()">🖨️ 인쇄</button></div>
+            <div id="weak-list"></div>
+          </div>
+        </div>
+      </div>
+
       <div class="panel" id="panel-exam">
         <div class="page-header"><h1>온라인 채점</h1><p>시험을 등록하고 학생들의 오답 경향을 분석하세요</p></div>
         <!-- 시험 목록 / 등록 -->
@@ -1021,6 +1045,7 @@ input,button{font-family:var(--font)}
     <button class="mobile-tab" onclick="tNav('clinic')" data-mt="clinic" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉</button>
     <button class="mobile-tab" onclick="tNav('study')" data-mt="study" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>타이머</button>
     <button class="mobile-tab" onclick="tNav('exam')" data-mt="exam" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>시험</button>
+    <button class="mobile-tab" onclick="tNav('weakness')" data-mt="weakness" style="min-width:58px"><svg viewBox="0 0 24 24"><path d="M3 13h2v8H3v-8zm4-6h2v14H7V7zm4 3h2v11h-2V10zm4-6h2v17h-2V4zm4 5h2v12h-2V9z"/></svg>약점</button>
     <button class="mobile-tab" onclick="tNav('vocab')" data-mt="vocab" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 13.5L4.24 12.5 2 11.15v3.7L12 20l10-5.15v-3.7l-2.24 1.35L12 16.5z"/></svg>어휘</button>
     <button class="mobile-tab" onclick="doLogout()" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>로그아웃</button>
   </div>
@@ -2437,6 +2462,7 @@ function tNav(panel){
   if(panel==='clinic')renderTClinicSchoolTabs();
   if(panel==='study')renderTStudy();
   if(panel==='exam')renderTExam();
+  if(panel==='weakness')loadWeaknessAnalysis(false);
   if(panel==='vocab')renderTVocab();
   if(panel==='announce')renderTAnnounceList();
 }
@@ -8795,6 +8821,120 @@ function repIsWrong(response,idx,exam){
   if(!q)return true; // 문항 정보를 알 수 없으면(구 형식) 키 존재만으로 오답 처리
   if(!isObjectiveAnswer(q.answer))return false; // 서술형 등은 자동 오답 판정하지 않음
   return String(response.answers[idx])!==String(q.answer);
+}
+
+// ════════════════════════════════════════════
+// 최근 4주 학생별 약점 분석
+// ════════════════════════════════════════════
+var weaknessAnalysisRows=[];
+var weaknessAnalysisMeta={responses:0,exams:0,wrong:0,start:'',end:'',truncated:false};
+
+function weaknessDateValue(d){
+  var y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+  return y+'-'+m+'-'+day;
+}
+function initWeaknessDates(){
+  var startEl=document.getElementById('weak-start'),endEl=document.getElementById('weak-end');
+  if(!startEl||!endEl)return;
+  var end=new Date(),start=new Date();start.setDate(end.getDate()-27);
+  if(!startEl.value)startEl.value=weaknessDateValue(start);
+  if(!endEl.value)endEl.value=weaknessDateValue(end);
+}
+function normalizeWeaknessType(type){
+  var raw=String(type||'').trim();
+  var map={
+    '내용 이해':'사실 확인','내용 확인':'사실 확인','세부 내용':'사실 확인',
+    '시어 이해':'어휘·어법','어휘':'어휘·어법','문법':'어휘·어법',
+    '표현 효과':'표현 기법','표현법':'표현 기법',
+    '작품 비교':'추론·함축','화자 태도':'추론·함축','태도 판단':'추론·함축',
+    '규정 적용':'개념 적용'
+  };
+  if(map[raw])return map[raw];
+  return EXAM_TYPES.indexOf(raw)>=0?raw:'기타';
+}
+function weaknessStudentSchool(name){
+  var matches=activeStudents().filter(function(s){return s.name===name;});
+  return {school:(matches[0]&&matches[0].school)||'미분류',duplicate:matches.length>1};
+}
+async function loadWeaknessAnalysis(force){
+  initWeaknessDates();
+  if(!force&&weaknessAnalysisRows.length){renderWeaknessTable();return;}
+  var loading=document.getElementById('weak-loading'),content=document.getElementById('weak-content');
+  if(loading){loading.style.display='block';loading.textContent='최근 4주 채점 기록을 분석하는 중...';}
+  if(content)content.style.display='none';
+  try{
+    var results=await Promise.all([
+      sb.from('exams').select('id,name,category,questions,clinic_school,created_at').in('category',['school','homework']).limit(500),
+      sb.from('exam_responses').select('exam_id,student_name,answers,total_q,submitted_at,created_at').order('submitted_at',{ascending:false}).limit(2000)
+    ]);
+    if(results[0].error)throw results[0].error;
+    if(results[1].error)throw results[1].error;
+    var exams=results[0].data||[],examMap={};exams.forEach(function(e){examMap[String(e.id)]=e;});
+    var start=document.getElementById('weak-start').value,end=document.getElementById('weak-end').value;
+    var startTime=new Date(start+'T00:00:00').getTime(),endTime=new Date(end+'T23:59:59.999').getTime();
+    var responses=(results[1].data||[]).filter(function(r){
+      var t=new Date(r.submitted_at||r.created_at||0).getTime();
+      return !!examMap[String(r.exam_id)]&&t>=startTime&&t<=endTime;
+    });
+    var students={},usedExams={};
+    responses.forEach(function(r){
+      var exam=examMap[String(r.exam_id)],name=String(r.student_name||'이름 없음').trim();
+      if(!exam||!name)return;
+      usedExams[String(exam.id)]=true;
+      if(!students[name]){
+        var info=weaknessStudentSchool(name);
+        students[name]={name:name,school:info.school,duplicate:info.duplicate,attempts:0,totalSeen:0,wrong:0,types:{},examNames:{}};
+      }
+      var row=students[name];row.attempts++;row.examNames[exam.name||'시험']=true;
+      (exam.questions||[]).forEach(function(q,idx){
+        if(!isObjectiveAnswer(q.answer))return;
+        var type=normalizeWeaknessType(q.type||q.domain),bucket=row.types[type]||(row.types[type]={type:type,total:0,wrong:0,items:[]});
+        bucket.total++;row.totalSeen++;
+        if(repIsWrong(r,idx,exam)){
+          bucket.wrong++;row.wrong++;
+          bucket.items.push({exam:exam.name||'시험',num:idx+1,text:q.text||'',answer:q.answer||''});
+        }
+      });
+    });
+    weaknessAnalysisRows=Object.keys(students).map(function(k){
+      var s=students[k];
+      s.typeList=Object.keys(s.types).map(function(t){var b=s.types[t];b.rate=b.total?Math.round(b.wrong/b.total*100):0;return b;})
+        .filter(function(b){return b.wrong>0;}).sort(function(a,b){return b.rate-a.rate||b.wrong-a.wrong;});
+      s.rate=s.totalSeen?Math.round(s.wrong/s.totalSeen*100):0;
+      return s;
+    }).sort(function(a,b){return b.rate-a.rate||b.wrong-a.wrong||a.name.localeCompare(b.name,'ko');});
+    weaknessAnalysisMeta={responses:responses.length,exams:Object.keys(usedExams).length,wrong:weaknessAnalysisRows.reduce(function(n,s){return n+s.wrong;},0),start:start,end:end,truncated:(results[1].data||[]).length>=2000};
+    if(loading)loading.style.display='none';if(content)content.style.display='block';
+    renderWeaknessTable();
+  }catch(err){
+    if(loading){loading.style.display='block';loading.innerHTML='<span style="color:var(--red)">약점 분석을 불러오지 못했어요. 잠시 후 다시 눌러주세요.<br><small>'+escHtml(err.message||String(err))+'</small></span>';}
+  }
+}
+function renderWeaknessTable(){
+  if(!document.getElementById('weak-list'))return;
+  var school=(document.getElementById('weak-school')||{}).value||'',search=((document.getElementById('weak-search')||{}).value||'').trim();
+  var rows=weaknessAnalysisRows.filter(function(s){return (!school||s.school===school)&&(!search||s.name.indexOf(search)>=0);});
+  var risky=rows.filter(function(s){return s.typeList[0]&&s.typeList[0].wrong>=3&&s.typeList[0].rate>=40;}).length;
+  document.getElementById('weak-stats').innerHTML=
+    '<div class="stat"><div class="stat-label">분석 학생</div><div class="stat-val blue">'+rows.length+'명</div></div>'+
+    '<div class="stat"><div class="stat-label">채점 기록</div><div class="stat-val">'+weaknessAnalysisMeta.responses+'건</div></div>'+
+    '<div class="stat"><div class="stat-label">분석 시험</div><div class="stat-val">'+weaknessAnalysisMeta.exams+'개</div></div>'+
+    '<div class="stat"><div class="stat-label">주의 학생</div><div class="stat-val amber">'+risky+'명</div></div>';
+  document.getElementById('weak-period-label').textContent=weaknessAnalysisMeta.start+' ~ '+weaknessAnalysisMeta.end+' · 총 오답 '+weaknessAnalysisMeta.wrong+'개';
+  var duplicates=rows.filter(function(s){return s.duplicate;}).map(function(s){return s.name;});
+  var warning=document.getElementById('weak-warning');
+  if(duplicates.length||weaknessAnalysisMeta.truncated){warning.style.display='block';warning.innerHTML=(duplicates.length?'⚠️ 동명이인 '+duplicates.join(', ')+' 학생은 현재 이름 기준 기록이 합쳐질 수 있습니다. ':'')+(weaknessAnalysisMeta.truncated?'조회 한도에 도달해 일부 오래된 기록이 제외될 수 있습니다.':'');}else warning.style.display='none';
+  if(!rows.length){document.getElementById('weak-list').innerHTML='<div style="padding:2rem;text-align:center;color:var(--text3)">선택한 기간에 채점 기록이 없습니다.</div>';return;}
+  document.getElementById('weak-list').innerHTML=rows.map(function(s){
+    var top=s.typeList.slice(0,3).map(function(t){return '<span style="display:inline-block;margin:2px;padding:4px 7px;border-radius:100px;background:'+(t.rate>=50?'var(--red-bg)':'var(--amber-bg)')+';color:'+(t.rate>=50?'var(--red)':'var(--amber)')+';font-size:11px;font-weight:700">'+escHtml(t.type)+' '+t.wrong+'/'+t.total+' ('+t.rate+'%)</span>';}).join(' ')||'<span style="color:var(--green);font-size:12px">오답 없음</span>';
+    var details=s.typeList.map(function(t){
+      var items=t.items.map(function(i){return '<div style="font-size:12px;color:var(--text2);padding:4px 0">• '+escHtml(i.exam)+' '+i.num+'번'+(i.text?' · '+escHtml(i.text).slice(0,80):'')+'</div>';}).join('');
+      return '<div style="padding:10px 0;border-top:1px solid var(--border)"><div style="font-size:13px;font-weight:700">'+escHtml(t.type)+' — '+t.wrong+'개 오답 / '+t.total+'문항 ('+t.rate+'%)</div>'+items+'</div>';
+    }).join('')||'<div style="padding:10px 0;color:var(--green);font-size:13px">분석 기간 오답이 없습니다.</div>';
+    return '<details style="border-top:1px solid var(--border);padding:0 1.25rem"><summary style="list-style:none;cursor:pointer;padding:14px 0;display:grid;grid-template-columns:minmax(90px,1fr) minmax(85px,.8fr) minmax(120px,2.4fr);gap:10px;align-items:center">'+
+      '<div><strong style="font-size:14px">'+escHtml(s.name)+'</strong><div style="font-size:11px;color:var(--text3);margin-top:2px">'+escHtml(s.school)+' · '+s.attempts+'회 응시</div></div>'+
+      '<div><strong style="color:'+(s.rate>=30?'var(--red)':'var(--text)')+'">'+s.wrong+'/'+s.totalSeen+'</strong><div style="font-size:11px;color:var(--text3)">전체 오답 '+s.rate+'%</div></div><div>'+top+'</div></summary><div style="padding:0 0 14px">'+details+'</div></details>';
+  }).join('');
 }
 
 function repScore(exam,response){
