@@ -902,8 +902,6 @@ input,button{font-family:var(--font)}
               <button class="btn btn-sm" style="color:var(--accent)" onclick="openManualAnswerEntry()">⌨️ 답안 직접 입력</button>
               <button class="btn btn-sm blue" onclick="tResExportAllPDF()">📄 전체 PDF</button>
               <button class="btn btn-sm" onclick="tResExportExcel()">📊 성적 엑셀</button>
-              <button class="btn btn-sm blue" onclick="tResExportNotifyExcel()">📨 맥가이 문자 엑셀</button>
-              <button class="btn btn-sm" onclick="tResExportAcaExcel()">📨 아카 사용자정의 엑셀</button>
             </div>
           </div>
           <!-- 탭 -->
@@ -963,8 +961,8 @@ input,button{font-family:var(--font)}
           <div id="tres-notify" style="display:none">
             <div class="card" style="margin-bottom:1rem;border-left:3px solid var(--accent)">
               <div style="padding:1rem 1.25rem;font-size:12px;color:var(--text2);line-height:1.7">
-                💡 아래 표에서 학부모 연락처를 확인하고, <strong>맥가이 문자 엑셀</strong>을 저장한 뒤 맥가이의 "엑셀 업로드 문자 발송"에 올리면 한 번에 보낼 수 있어요.
-                개별로 보낼 땐 각 줄의 <strong>복사</strong> 버튼으로 문구를 복사해 카톡에 붙여넣으면 돼요.
+                💡 아래 표에서 학부모 연락처와 발송 문구를 확인하세요. 솔라피 연결이 끝나면 이 화면에서 선택한 학생에게 바로 문자를 보낼 수 있어요.
+                연결 전에는 각 줄의 <strong>복사</strong> 버튼으로 문구를 복사해 사용할 수 있습니다.
               </div>
             </div>
             <div class="card" style="margin-bottom:1rem">
@@ -975,7 +973,7 @@ input,button{font-family:var(--font)}
               </div>
             </div>
             <div class="card">
-              <div class="card-head"><h3>발송 대상</h3><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-sm blue" onclick="tResExportNotifyExcel()">📨 맥가이 문자 엑셀</button><button class="btn btn-sm" onclick="tResExportAcaExcel()">📨 아카 사용자정의 엑셀</button></div></div>
+              <div class="card-head"><h3>발송 대상</h3></div>
               <div id="tres-notify-list" style="padding:0 1.25rem 1rem"></div>
             </div>
           </div>
@@ -7547,27 +7545,6 @@ function tResBuildReportLink(response){
   return location.origin+location.pathname+'?report='+encodeURIComponent(response.id);
 }
 
-function tResNormalizePhone(value){
-  var digits=String(value||'').replace(/\D/g,'');
-  if(digits.length===10)return digits.replace(/(\d{3})(\d{3})(\d{4})/,'$1-$2-$3');
-  if(digits.length===11)return digits.replace(/(\d{3})(\d{4})(\d{4})/,'$1-$2-$3');
-  return String(value||'').trim();
-}
-
-// 기존 학생 계정은 아이디=휴대폰 가운데 4자리, 비밀번호=뒤 4자리로 저장됩니다.
-// 별도 학생 전화번호 열이 없어도 아카 엑셀에서는 전체 번호로 복원합니다.
-function tResStudentPhone(user){
-  user=user||{};
-  var saved=user.student_phone||user.phone||user.phone_number||'';
-  if(saved)return tResNormalizePhone(saved);
-  var id=String(user.id||'').replace(/\D/g,''),pw=String(user.pw||'').replace(/\D/g,'');
-  if(pw.length!==4)return'';
-  if(id.length===4)return'010-'+id+'-'+pw;
-  // 아이디 충돌로 끝에 구분 숫자를 붙인 계정(예: 59101)은 앞 4자리가 가운데 번호입니다.
-  if(id.length===5&&/\d$/.test(String(user.name||'')))return'010-'+id.slice(0,4)+'-'+pw;
-  return'';
-}
-
 function tResBuildSummaryRows(exam,responses){
   return responses.map(function(r){
     var wrongNums=tResWrongNums(exam,r);
@@ -7639,87 +7616,6 @@ function tResExportExcel(){
   XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(summaryRows),'성적요약');
   XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(oxRows),'OX표');
   XLSX.writeFile(wb,exam.name+'_성적.xlsx');
-}
-
-function tResExportNotifyExcel(){
-  var exam=tResCurrentExam,responses=tResCurrentResponses;
-  if(!exam||!responses||!responses.length){alert('데이터가 없어요.');return;}
-  if(typeof XLSX==='undefined'){alert('엑셀 기능을 불러오지 못했어요. 인터넷 연결을 확인하고 새로고침 해주세요.');return;}
-  var rows=responses.map(function(r){
-    var u=db.users.find(function(x){return x.name===r.student_name;});
-    var phone=tResNormalizePhone((u&&u.parent_phone)||'');
-    return {'휴대폰번호':phone,'문자내용':tResBuildParentMessage(r.student_name,r,exam),'학생명':r.student_name,'성적표링크':tResBuildReportLink(r)};
-  });
-  var missingRows=rows.filter(function(r){return !r['휴대폰번호'];});
-  var missing=missingRows.length;
-  if(missing)notify(missing+'명은 학부모 연락처가 비어 있어요. "학부모 발송" 탭에서 먼저 채워주세요.','info');
-  var wb=XLSX.utils.book_new();
-  var ws=XLSX.utils.json_to_sheet(rows);
-  ws['!cols']=[{wch:16},{wch:70},{wch:12},{wch:55}];
-  XLSX.utils.book_append_sheet(wb,ws,'맥가이문자업로드');
-  var summaryWs=XLSX.utils.json_to_sheet(tResBuildSummaryRows(exam,responses));
-  summaryWs['!cols']=[{wch:12},{wch:9},{wch:9},{wch:9},{wch:9},{wch:30}];
-  XLSX.utils.book_append_sheet(wb,summaryWs,'성적집계');
-  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(tResBuildOxRows(exam,responses)),'OX표');
-  if(missingRows.length){
-    var missingWs=XLSX.utils.json_to_sheet(missingRows.map(function(r){return {'학생명':r['학생명'],'확인사항':'학부모 연락처 입력 필요'};}));
-    missingWs['!cols']=[{wch:12},{wch:28}];
-    XLSX.utils.book_append_sheet(wb,missingWs,'연락처누락');
-  }
-  var safeName=String(exam.name||'시험').replace(/[\\/:*?"<>|]/g,'_');
-  XLSX.writeFile(wb,safeName+'_맥가이문자_성적집계.xlsx');
-  notify('맥가이 문자 업로드용 엑셀을 만들었어요.'+(missing?' 연락처 누락 '+missing+'명도 확인해 주세요.':''),'success');
-}
-
-function tResExportAcaExcel(){
-  var exam=tResCurrentExam,responses=tResCurrentResponses;
-  if(!exam||!responses||!responses.length){alert('데이터가 없어요.');return;}
-  if(typeof XLSX==='undefined'){alert('엑셀 기능을 불러오지 못했어요. 인터넷 연결을 확인하고 새로고침 해주세요.');return;}
-  var missingNames=[];
-  var rows=responses.map(function(r){
-    var u=db.users.find(function(x){return x.name===r.student_name;})||{};
-    var parentPhone=tResNormalizePhone(u.parent_phone||'');
-    var studentPhone=tResStudentPhone(u);
-    var sendPhone=parentPhone||studentPhone;
-    if(!sendPhone){missingNames.push(r.student_name);return null;}
-    var wrongNums=tResWrongNums(exam,r);
-    var sc=repScore(exam,r);
-    var score=r.score!=null?r.score:sc.pct;
-    return [
-      String(r.student_name||''),
-      String(sendPhone),
-      String(tResBuildParentMessage(r.student_name,r,exam)||''),
-      String(score)+'점',
-      wrongNums.length?wrongNums.join(', ')+'번':'오답 없음',
-      String(tResBuildReportLink(r)||'')
-    ];
-  }).filter(Boolean);
-  if(!rows.length){alert('학부모 또는 학생 전화번호가 등록된 응시자가 없어요. 학생 관리에서 연락처를 먼저 입력해 주세요.');return;}
-  var aoa=[
-    ['성명(필수)','핸드폰번호(필수)','문구1','문구2','문구3','문구4']
-  ].concat(rows);
-  var wb=XLSX.utils.book_new();
-  var ws=XLSX.utils.aoa_to_sheet(aoa);
-  // 아카 사용자 정의 문자 샘플처럼 모든 값은 문자열로 저장합니다.
-  for(var rowNo=2;rowNo<=rows.length+1;rowNo++){
-    ['A','B','C','D','E','F'].forEach(function(col){
-      var cell=ws[col+rowNo];if(cell){cell.t='s';cell.z='@';}
-    });
-  }
-  ws['!cols']=[{wch:14},{wch:18},{wch:90},{wch:12},{wch:30},{wch:60}];
-  // ACA2000 사용자 정의 문자 샘플의 시트명까지 정확히 맞춥니다.
-  XLSX.utils.book_append_sheet(wb,ws,'사용자');
-  var safeName=String(exam.name||'시험').replace(/[\\/:*?"<>|]/g,'_');
-  try{
-    var bytes=XLSX.write(wb,{bookType:'biff8',type:'array'});
-    var blob=new Blob([bytes],{type:'application/vnd.ms-excel'});
-    var link=document.createElement('a');
-    link.href=URL.createObjectURL(blob);
-    link.download=safeName+'_아카_사용자정의문자.xls';
-    document.body.appendChild(link);link.click();link.remove();
-    setTimeout(function(){URL.revokeObjectURL(link.href);},1500);
-  }catch(e){alert('아카 엑셀 생성 실패: '+e.message);return;}
-  notify('아카 사용자 정의 문자 형식으로 '+rows.length+'명의 파일을 만들었어요. 아카 문자창에는 [문구1]을 넣으면 완성된 개별 문자가 발송됩니다.'+(missingNames.length?' 연락처 없는 '+missingNames.length+'명은 제외했어요: '+missingNames.join(', '):''),'success');
 }
 
 async function tResDeleteStudentResponse(){
@@ -10079,7 +9975,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=44', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=52', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
