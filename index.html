@@ -7554,6 +7554,20 @@ function tResNormalizePhone(value){
   return String(value||'').trim();
 }
 
+// 기존 학생 계정은 아이디=휴대폰 가운데 4자리, 비밀번호=뒤 4자리로 저장됩니다.
+// 별도 학생 전화번호 열이 없어도 아카 엑셀에서는 전체 번호로 복원합니다.
+function tResStudentPhone(user){
+  user=user||{};
+  var saved=user.student_phone||user.phone||user.phone_number||'';
+  if(saved)return tResNormalizePhone(saved);
+  var id=String(user.id||'').replace(/\D/g,''),pw=String(user.pw||'').replace(/\D/g,'');
+  if(pw.length!==4)return'';
+  if(id.length===4)return'010-'+id+'-'+pw;
+  // 아이디 충돌로 끝에 구분 숫자를 붙인 계정(예: 59101)은 앞 4자리가 가운데 번호입니다.
+  if(id.length===5&&/\d$/.test(String(user.name||'')))return'010-'+id.slice(0,4)+'-'+pw;
+  return'';
+}
+
 function tResBuildSummaryRows(exam,responses){
   return responses.map(function(r){
     var wrongNums=tResWrongNums(exam,r);
@@ -7665,7 +7679,7 @@ function tResExportAcaExcel(){
   var rows=responses.map(function(r){
     var u=db.users.find(function(x){return x.name===r.student_name;})||{};
     var parentPhone=tResNormalizePhone(u.parent_phone||'');
-    var studentPhone=tResNormalizePhone(u.student_phone||u.phone||u.phone_number||'');
+    var studentPhone=tResStudentPhone(u);
     if(!parentPhone&&!studentPhone){missingNames.push(r.student_name);return null;}
     return [
       String(r.student_name||''),
