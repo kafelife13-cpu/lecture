@@ -973,7 +973,7 @@ input,button{font-family:var(--font)}
               </div>
             </div>
             <div class="card">
-              <div class="card-head"><h3>발송 대상</h3><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-sm" onclick="tResSelectNotifyType('missing')">미응시자만 선택</button><button class="btn btn-sm" onclick="tResToggleNotifyAll(true)">전체 선택</button><button class="btn btn-sm" onclick="tResToggleNotifyAll(false)">선택 해제</button><button class="btn btn-sm blue" id="tres-solapi-send" onclick="tResSendSolapi()">📨 솔라피 문자 발송</button></div></div>
+              <div class="card-head"><h3>발송 대상</h3><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"><select id="tres-notify-group" class="form-select" style="width:auto;min-width:145px;padding:6px 28px 6px 9px;font-size:12px" onchange="renderTResNotify()"><option value="">전체 반</option></select><button class="btn btn-sm" onclick="tResSelectNotifyType('missing')">미응시자만 선택</button><button class="btn btn-sm" onclick="tResToggleNotifyAll(true)">전체 선택</button><button class="btn btn-sm" onclick="tResToggleNotifyAll(false)">선택 해제</button><button class="btn btn-sm blue" id="tres-solapi-send" onclick="tResSendSolapi()">📨 솔라피 문자 발송</button></div></div>
               <div id="tres-notify-list" style="padding:0 1.25rem 1rem"></div>
             </div>
           </div>
@@ -7301,6 +7301,8 @@ async function viewTExamResults(examId,examName){
   ]);
   tResCurrentExam=exam;
   tResCurrentResponses=responses||[];
+  var commonNoteEl=document.getElementById('tres-common-note');
+  if(commonNoteEl)commonNoteEl.value=tResGetCommonNote(exam);
   tResTab('overview');
   renderTResOverview();
   renderTResStudentSelect();
@@ -7642,12 +7644,23 @@ function renderTResNotify(){
   var exam=tResCurrentExam;
   var responses=tResCurrentResponses;
   var el=document.getElementById('tres-notify-list');
-  var noteEl=document.getElementById('tres-common-note');
-  if(noteEl)noteEl.value=tResGetCommonNote(exam);
-  tResNotifyRows=tResBuildNotifyRows(exam,responses);
+  var allNotifyRows=tResBuildNotifyRows(exam,responses);
+  var groupSelect=document.getElementById('tres-notify-group');
+  var selectedGroup=groupSelect?groupSelect.value:'';
+  if(groupSelect){
+    var groupIds=[];
+    allNotifyRows.forEach(function(row){var id=row.student&&row.student.group_id||'all';if(groupIds.indexOf(id)===-1)groupIds.push(id);});
+    groupIds.sort(function(a,b){return studentClassLabel(a).localeCompare(studentClassLabel(b),'ko');});
+    groupSelect.innerHTML='<option value="">전체 반 ('+allNotifyRows.length+'명)</option>'+groupIds.map(function(id){
+      var count=allNotifyRows.filter(function(row){return (row.student.group_id||'all')===id;}).length;
+      return '<option value="'+id+'">'+studentClassLabel(id)+' ('+count+'명)</option>';
+    }).join('');
+    if(groupIds.indexOf(selectedGroup)!==-1)groupSelect.value=selectedGroup;else selectedGroup='';
+  }
+  tResNotifyRows=selectedGroup?allNotifyRows.filter(function(row){return (row.student.group_id||'all')===selectedGroup;}):allNotifyRows;
   if(!tResNotifyRows.length){el.innerHTML='<p style="color:var(--text3);font-size:13px;padding:0.5rem 0">발송 대상 학생이 없어요</p>';return;}
   var missingCount=tResNotifyRows.filter(function(row){return row.missing;}).length;
-  el.innerHTML='<div style="font-size:12px;color:var(--text2);margin-bottom:8px">응시 '+(tResNotifyRows.length-missingCount)+'명 · <strong style="color:var(--red)">미응시 '+missingCount+'명</strong> · 연락처가 없는 학생은 선택할 수 없습니다.</div><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>선택</th><th>이름</th><th>상태</th><th>점수</th><th>오답</th><th>학부모 연락처</th><th>발송 문구</th><th></th></tr></thead><tbody>'+
+  el.innerHTML='<div style="font-size:12px;color:var(--text2);margin-bottom:8px">'+(selectedGroup?'<strong>'+studentClassLabel(selectedGroup)+'</strong> · ':'')+'응시 '+(tResNotifyRows.length-missingCount)+'명 · <strong style="color:var(--red)">미응시 '+missingCount+'명</strong> · 연락처가 없는 학생은 선택할 수 없습니다.</div><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>선택</th><th>이름</th><th>반</th><th>상태</th><th>점수</th><th>오답</th><th>학부모 연락처</th><th>발송 문구</th><th></th></tr></thead><tbody>'+
     tResNotifyRows.map(function(row,rowIndex){
       var r=row.response,u=row.student||{};
       var phone=u.parent_phone||'';
@@ -7657,6 +7670,7 @@ function renderTResNotify(){
       var msg=row.missing?tResBuildMissingMessage(u.name,exam):tResBuildParentMessage(u.name,r,exam);
       var msgPreview=msg.replace(/\n/g,'  ·  ');
       return '<tr><td><input type="checkbox" class="tres-notify-check" data-notify-index="'+rowIndex+'" data-notify-type="'+(row.missing?'missing':'taken')+'" '+(phone?'':'disabled title="학부모 연락처가 없습니다"')+'></td><td style="font-weight:600">'+u.name+'</td>'+
+        '<td style="font-size:11px;color:var(--text2);white-space:nowrap">'+studentClassLabel(u.group_id||'all')+'</td>'+
         '<td><span class="tag" style="font-size:10px;color:'+(row.missing?'var(--red)':'var(--green)')+'">'+(row.missing?'미응시/성적 누락':'응시')+'</span></td>'+
         '<td>'+score+'</td>'+
         '<td>'+(r?(wrongNums.length?wrongNums.length+'문':'-'):'-')+'</td>'+
@@ -10167,7 +10181,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=60', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=61', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
