@@ -1725,6 +1725,11 @@ input,button{font-family:var(--font)}
         <div id="qw-sol-name" style="font-size:12px;color:var(--green);margin-top:4px"></div>
       </div>
       <div id="qw-extract-status" style="font-size:12px;color:var(--text2);min-height:18px"></div>
+      <div style="margin:6px 0 10px;font-size:11px;color:var(--text3);text-align:center">— 또는 —</div>
+      <div style="margin-bottom:10px">
+        <label class="flabel">해설·정답 텍스트 붙여넣기 <span style="color:var(--text3);text-transform:none;font-weight:400">(PDF 추출이 깨질 때 이쪽이 더 정확해요, 입력하면 PDF보다 우선 적용)</span></label>
+        <textarea id="qw-sol-text-input" class="form-input" rows="6" placeholder="문제·해설 텍스트를 여기에 붙여넣으세요" style="font-family:var(--mono);font-size:12px"></textarea>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn" onclick="closeQaWeekModal()">취소</button>
@@ -5730,6 +5735,7 @@ function openQaWeekModal(){
   document.getElementById('qw-sol-name').textContent='';
   document.getElementById('qw-extract-status').textContent='';
   document.getElementById('qw-sol-upload').style.borderColor='';
+  document.getElementById('qw-sol-text-input').value='';
   qwSolFile=null;qwSolText='';
   document.getElementById('modal-qa-week').classList.add('show');
 }
@@ -5767,7 +5773,10 @@ async function addQaWeek(){
         pdfUrl=urlRes.data?.publicUrl||'';
       }
     }
-    var item={id:id,school_id:qaState.school,name:name,prob_count:count,sol_text:qwSolText,pdf_url:pdfUrl,created_at:new Date().toISOString()};
+    // 직접 붙여넣은 텍스트가 있으면 PDF 추출 텍스트보다 우선 적용
+    var pastedText=(document.getElementById('qw-sol-text-input').value||'').trim();
+    var finalSolText=pastedText||qwSolText;
+    var item={id:id,school_id:qaState.school,name:name,prob_count:count,sol_text:finalSolText,pdf_url:pdfUrl,created_at:new Date().toISOString()};
     var res=await sb.from('qa_weeks').insert(item);
     if(res.error){notify('등록 실패: '+res.error.message,'error');return;}
     qaDb.weeks.push(item);
