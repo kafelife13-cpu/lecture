@@ -973,7 +973,7 @@ input,button{font-family:var(--font)}
               </div>
             </div>
             <div class="card">
-              <div class="card-head"><h3>발송 대상</h3><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-sm" onclick="tResToggleNotifyAll(true)">전체 선택</button><button class="btn btn-sm" onclick="tResToggleNotifyAll(false)">선택 해제</button><button class="btn btn-sm blue" id="tres-solapi-send" onclick="tResSendSolapi()">📨 솔라피 문자 발송</button></div></div>
+              <div class="card-head"><h3>발송 대상</h3><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-sm" onclick="tResSelectNotifyType('missing')">미응시자만 선택</button><button class="btn btn-sm" onclick="tResToggleNotifyAll(true)">전체 선택</button><button class="btn btn-sm" onclick="tResToggleNotifyAll(false)">선택 해제</button><button class="btn btn-sm blue" id="tres-solapi-send" onclick="tResSendSolapi()">📨 솔라피 문자 발송</button></div></div>
               <div id="tres-notify-list" style="padding:0 1.25rem 1rem"></div>
             </div>
           </div>
@@ -7255,6 +7255,7 @@ async function saveTExam(){
 
 var tResCurrentExam=null;
 var tResCurrentResponses=[];
+var tResNotifyRows=[];
 
 async function viewTExamResults(examId,examName){
   showTExamView('t-exam-results');
@@ -7549,6 +7550,35 @@ function tResNormalizePhone(value){
   return String(value||'').replace(/\D/g,'');
 }
 
+function tResBuildMissingMessage(studentName,exam){
+  var common=tResGetCommonNote(exam);
+  var lines=[studentName+' 학생 "'+exam.name+'" 미응시 안내'];
+  if(common)lines.push('',common,'');
+  lines.push('현재 시험 응시 기록(성적표)이 확인되지 않습니다.','응시 여부를 확인해 주세요.');
+  return lines.join('\n');
+}
+
+function tResBuildNotifyRows(exam,responses){
+  var latest={};
+  (responses||[]).forEach(function(r){
+    var name=r.student_name||'';
+    var old=latest[name];
+    if(!old||new Date(r.submitted_at||r.created_at||0)>new Date(old.submitted_at||old.created_at||0))latest[name]=r;
+  });
+  var schoolId=weeklyExamSchoolId(exam&&exam.clinic_school);
+  var students=schoolId?activeStudents().filter(function(s){return s.school_id===schoolId;}):[];
+  var rows=[];
+  if(students.length){
+    students.forEach(function(student){rows.push({student:student,response:latest[student.name]||null,missing:!latest[student.name]});});
+  }else{
+    Object.keys(latest).forEach(function(name){
+      var student=db.users.find(function(u){return u.role==='student'&&u.name===name;})||{id:'',name:name,parent_phone:''};
+      rows.push({student:student,response:latest[name],missing:false});
+    });
+  }
+  return rows.sort(function(a,b){return Number(a.missing)-Number(b.missing)||a.student.name.localeCompare(b.student.name,'ko');});
+}
+
 function tResBuildSummaryRows(exam,responses){
   return responses.map(function(r){
     var wrongNums=tResWrongNums(exam,r);
@@ -7575,21 +7605,25 @@ function renderTResNotify(){
   var el=document.getElementById('tres-notify-list');
   var noteEl=document.getElementById('tres-common-note');
   if(noteEl)noteEl.value=tResGetCommonNote(exam);
-  if(!responses||!responses.length){el.innerHTML='<p style="color:var(--text3);font-size:13px;padding:0.5rem 0">응답 데이터가 없어요</p>';return;}
-  el.innerHTML='<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>선택</th><th>이름</th><th>점수</th><th>오답</th><th>학부모 연락처</th><th>발송 문구</th><th></th></tr></thead><tbody>'+
-    responses.map(function(r,responseIndex){
-      var u=db.users.find(function(x){return x.name===r.student_name;});
-      var phone=(u&&u.parent_phone)||'';
-      var wrongNums=tResWrongNums(exam,r);
-      var sc=repScore(exam,r);
-      var score=r.score!=null?r.score:sc.pct;
-      var msgPreview=tResBuildParentMessage(r.student_name,r,exam).replace(/\n/g,'  ·  ');
-      return '<tr><td><input type="checkbox" class="tres-notify-check" data-response-index="'+responseIndex+'" '+(phone?'checked':'disabled title="학부모 연락처가 없습니다"')+'></td><td style="font-weight:600">'+r.student_name+'</td>'+
-        '<td>'+score+'점</td>'+
-        '<td>'+(wrongNums.length?wrongNums.length+'문':'-')+'</td>'+
-        '<td><input type="tel" class="form-input" placeholder="010-1234-5678" value="'+phone+'" style="font-size:11px;padding:4px 6px;width:120px" onchange="tResSetParentPhoneInline(\''+r.student_name.replace(/'/g,"\\'")+'\',this.value,this)"></td>'+
+  tResNotifyRows=tResBuildNotifyRows(exam,responses);
+  if(!tResNotifyRows.length){el.innerHTML='<p style="color:var(--text3);font-size:13px;padding:0.5rem 0">발송 대상 학생이 없어요</p>';return;}
+  var missingCount=tResNotifyRows.filter(function(row){return row.missing;}).length;
+  el.innerHTML='<div style="font-size:12px;color:var(--text2);margin-bottom:8px">응시 '+(tResNotifyRows.length-missingCount)+'명 · <strong style="color:var(--red)">미응시 '+missingCount+'명</strong> · 연락처가 없는 학생은 선택할 수 없습니다.</div><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>선택</th><th>이름</th><th>상태</th><th>점수</th><th>오답</th><th>학부모 연락처</th><th>발송 문구</th><th></th></tr></thead><tbody>'+
+    tResNotifyRows.map(function(row,rowIndex){
+      var r=row.response,u=row.student||{};
+      var phone=u.parent_phone||'';
+      var wrongNums=r?tResWrongNums(exam,r):[];
+      var score='-';
+      if(r){var sc=repScore(exam,r);score=(r.score!=null?r.score:sc.pct)+'점';}
+      var msg=row.missing?tResBuildMissingMessage(u.name,exam):tResBuildParentMessage(u.name,r,exam);
+      var msgPreview=msg.replace(/\n/g,'  ·  ');
+      return '<tr><td><input type="checkbox" class="tres-notify-check" data-notify-index="'+rowIndex+'" data-notify-type="'+(row.missing?'missing':'taken')+'" '+(phone?'':'disabled title="학부모 연락처가 없습니다"')+'></td><td style="font-weight:600">'+u.name+'</td>'+
+        '<td><span class="tag" style="font-size:10px;color:'+(row.missing?'var(--red)':'var(--green)')+'">'+(row.missing?'미응시':'응시')+'</span></td>'+
+        '<td>'+score+'</td>'+
+        '<td>'+(r?(wrongNums.length?wrongNums.length+'문':'-'):'-')+'</td>'+
+        '<td><input type="tel" class="form-input" placeholder="010-1234-5678" value="'+phone+'" style="font-size:11px;padding:4px 6px;width:120px" onchange="tResSetParentPhoneInline(\''+String(u.id||'').replace(/'/g,"\\'")+'\',this.value,this)"></td>'+
         '<td style="font-size:11px;color:var(--text2);max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+msgPreview+'</td>'+
-        '<td><button class="btn btn-sm" onclick="tResCopyParentMessage(\''+r.student_name.replace(/'/g,"\\'")+'\')">복사</button></td></tr>';
+        '<td><button class="btn btn-sm" onclick="tResCopyNotifyMessage('+rowIndex+')">복사</button></td></tr>';
     }).join('')+'</tbody></table></div>';
 }
 
@@ -7597,17 +7631,21 @@ function tResToggleNotifyAll(checked){
   document.querySelectorAll('.tres-notify-check:not(:disabled)').forEach(function(el){el.checked=checked;});
 }
 
+function tResSelectNotifyType(type){
+  document.querySelectorAll('.tres-notify-check').forEach(function(el){el.checked=!el.disabled&&el.dataset.notifyType===type;});
+}
+
 async function tResSendSolapi(){
   var checks=Array.from(document.querySelectorAll('.tres-notify-check:checked'));
   if(!checks.length){alert('문자를 보낼 학생을 한 명 이상 선택해 주세요.');return;}
   var messages=[];
   checks.forEach(function(check){
-    var r=tResCurrentResponses[Number(check.dataset.responseIndex)];
-    if(!r)return;
-    var u=db.users.find(function(x){return x.name===r.student_name;});
-    var phone=tResNormalizePhone(u&&u.parent_phone);
+    var row=tResNotifyRows[Number(check.dataset.notifyIndex)];
+    if(!row)return;
+    var u=row.student||{},r=row.response;
+    var phone=tResNormalizePhone(u.parent_phone);
     if(!/^01\d{8,9}$/.test(phone))return;
-    messages.push({to:phone,text:tResBuildParentMessage(r.student_name,r,tResCurrentExam)});
+    messages.push({to:phone,text:row.missing?tResBuildMissingMessage(u.name,tResCurrentExam):tResBuildParentMessage(u.name,r,tResCurrentExam)});
   });
   if(!messages.length){alert('선택한 학생의 학부모 연락처를 확인해 주세요.');return;}
   if(!confirm(messages.length+'명에게 성적 안내 문자를 발송할까요?\n\n솔라피 잔액이 차감되며, 발송 후에는 취소할 수 없습니다.'))return;
@@ -7628,9 +7666,9 @@ async function tResSendSolapi(){
   }
 }
 
-async function tResSetParentPhoneInline(studentName,val,inputEl){
-  var u=db.users.find(function(x){return x.name===studentName;});
-  if(!u){notify('학생 계정을 찾을 수 없어요 (이름이 여러 명과 겹칠 수 있어요).','error');return;}
+async function tResSetParentPhoneInline(studentId,val,inputEl){
+  var u=db.users.find(function(x){return String(x.id)===String(studentId);});
+  if(!u){notify('학생 계정을 찾을 수 없어요.','error');return;}
   await setStudentParentPhone(u.id,val);
   var checkbox=inputEl&&inputEl.closest('tr')&&inputEl.closest('tr').querySelector('.tres-notify-check');
   if(checkbox){
@@ -7641,10 +7679,10 @@ async function tResSetParentPhoneInline(studentName,val,inputEl){
   }
 }
 
-function tResCopyParentMessage(studentName){
-  var r=tResCurrentResponses.find(function(x){return x.student_name===studentName;});
-  if(!r)return;
-  var msg=tResBuildParentMessage(studentName,r,tResCurrentExam);
+function tResCopyNotifyMessage(rowIndex){
+  var row=tResNotifyRows[Number(rowIndex)];
+  if(!row)return;
+  var msg=row.missing?tResBuildMissingMessage(row.student.name,tResCurrentExam):tResBuildParentMessage(row.student.name,row.response,tResCurrentExam);
   navigator.clipboard.writeText(msg).then(function(){
     notify('문구가 복사됐어요! 카톡에 붙여넣어 학부모님께 보내주세요.','success');
   }).catch(function(){
@@ -10021,7 +10059,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=56', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=57', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
