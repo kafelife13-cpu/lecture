@@ -7552,9 +7552,13 @@ function tResNormalizePhone(value){
 
 function tResBuildMissingMessage(studentName,exam){
   var common=tResGetCommonNote(exam);
-  var lines=[studentName+' 학생 "'+exam.name+'" 미응시 안내'];
+  var lines=[studentName+' 학생 "'+exam.name+'" 미응시 및 성적 누락 안내'];
   if(common)lines.push('',common,'');
-  lines.push('현재 시험 응시 기록(성적표)이 확인되지 않습니다.','응시 여부를 확인해 주세요.');
+  lines.push(
+    '현재 시험 성적표가 확인되지 않습니다.',
+    '시험에 응시하지 않았거나, 응시 후 답안 제출·채점 기록이 누락된 경우일 수 있습니다.',
+    '응시 여부를 확인해 주시고, 이미 응시했다면 선생님께 알려주시기 바랍니다.'
+  );
   return lines.join('\n');
 }
 
@@ -7618,7 +7622,7 @@ function renderTResNotify(){
       var msg=row.missing?tResBuildMissingMessage(u.name,exam):tResBuildParentMessage(u.name,r,exam);
       var msgPreview=msg.replace(/\n/g,'  ·  ');
       return '<tr><td><input type="checkbox" class="tres-notify-check" data-notify-index="'+rowIndex+'" data-notify-type="'+(row.missing?'missing':'taken')+'" '+(phone?'':'disabled title="학부모 연락처가 없습니다"')+'></td><td style="font-weight:600">'+u.name+'</td>'+
-        '<td><span class="tag" style="font-size:10px;color:'+(row.missing?'var(--red)':'var(--green)')+'">'+(row.missing?'미응시':'응시')+'</span></td>'+
+        '<td><span class="tag" style="font-size:10px;color:'+(row.missing?'var(--red)':'var(--green)')+'">'+(row.missing?'미응시/성적 누락':'응시')+'</span></td>'+
         '<td>'+score+'</td>'+
         '<td>'+(r?(wrongNums.length?wrongNums.length+'문':'-'):'-')+'</td>'+
         '<td><input type="tel" class="form-input" placeholder="010-1234-5678" value="'+phone+'" style="font-size:11px;padding:4px 6px;width:120px" onchange="tResSetParentPhoneInline(\''+String(u.id||'').replace(/'/g,"\\'")+'\',this.value,this)"></td>'+
@@ -10059,7 +10063,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=57', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=58', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
