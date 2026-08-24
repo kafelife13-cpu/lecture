@@ -1243,10 +1243,11 @@ input,button{font-family:var(--font)}
         <div id="s-exam-check" style="display:none">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-wrap:wrap">
             <button class="btn btn-sm" onclick="sExamBack()">← 돌아가기</button>
-            <div>
+            <div style="flex:1;min-width:180px">
               <div id="s-exam-check-title" style="font-size:16px;font-weight:600"></div>
               <div id="s-exam-check-sub" style="font-size:12px;color:var(--text2)"></div>
             </div>
+            <div id="s-exam-timer" style="display:none;min-width:112px;padding:9px 12px;border-radius:10px;background:var(--red-bg);color:var(--red);font-size:20px;font-weight:900;text-align:center;font-variant-numeric:tabular-nums;box-shadow:0 0 0 1px rgba(239,68,68,.2)">80:00</div>
           </div>
 
           <!-- FULL 모드 (클리닉/모의고사): 온라인 시험 — 문항별 답 선택 -->
@@ -9350,6 +9351,33 @@ var sExamClinicWeekOpen={};
 var sExamCheckMode='full'; // 'full'(클리닉/모의고사: 문항별 답 선택) | 'wrongonly'(내신시험지 분석: 오답만 체크)
 var sExamFullAnswers={};
 var sOmrCamStream=null,sOmrCurrentPhoto=null;
+var sExamTimerInterval=null,sExamTimerDeadline=0,sExamTimerSubmitting=false;
+
+function sExamIsTimedMock(exam){return !!exam&&exam.category==='mock'&&Number(exam.total_q)===45;}
+function sExamTimerKey(exam){return 'mock_timer_'+(session?session.id:'student')+'_'+exam.id;}
+function sExamAnswerKey(exam){return 'mock_answers_'+(session?session.id:'student')+'_'+exam.id;}
+function sExamTimerStop(clearSaved){
+  if(sExamTimerInterval){clearInterval(sExamTimerInterval);sExamTimerInterval=null;}
+  const el=document.getElementById('s-exam-timer');if(el)el.style.display='none';
+  if(clearSaved&&sExamData){sessionStorage.removeItem(sExamTimerKey(sExamData));sessionStorage.removeItem(sExamAnswerKey(sExamData));}
+  sExamTimerDeadline=0;sExamTimerSubmitting=false;
+}
+function sExamTimerStart(exam){
+  sExamTimerStop(false);
+  const el=document.getElementById('s-exam-timer');
+  if(!sExamIsTimedMock(exam)){if(el)el.style.display='none';return;}
+  const key=sExamTimerKey(exam),saved=Number(sessionStorage.getItem(key)||0);
+  sExamTimerDeadline=saved>Date.now()?saved:Date.now()+80*60*1000;
+  sessionStorage.setItem(key,String(sExamTimerDeadline));
+  try{sExamFullAnswers=JSON.parse(sessionStorage.getItem(sExamAnswerKey(exam))||'{}')||{};}catch(e){sExamFullAnswers={};}
+  if(el)el.style.display='block';
+  function tick(){
+    const left=Math.max(0,sExamTimerDeadline-Date.now()),sec=Math.ceil(left/1000),m=Math.floor(sec/60),s=sec%60;
+    if(el){el.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');el.style.background=sec<=600?'rgba(239,68,68,.18)':'var(--red-bg)';}
+    if(left<=0&&!sExamTimerSubmitting){sExamTimerSubmitting=true;clearInterval(sExamTimerInterval);sExamTimerInterval=null;alert('80분이 종료되어 지금까지 입력한 답안으로 자동 제출합니다.');sExamSubmitFull(true);}
+  }
+  tick();sExamTimerInterval=setInterval(tick,1000);
+}
 
 function sExamVisibleForStudent(exam){
   if(!exam||!exam.clinic_school)return true;
@@ -9502,12 +9530,12 @@ async function sExamOpenForGrading(examId){
     document.getElementById('s-exam-check-sub').textContent='총 '+found.total_q+'문항 · 틀린 번호를 클릭하세요';
     renderSExamAnswerGrid();
   }
+  sExamTimerStart(found);
   showSExamView('check');
 }
 
 /* ── FULL 모드: 문항별 답 선택 온라인 시험 (직접 체크 또는 OMR 사진) ── */
 function sExamFullManualStart(){
-  sExamFullAnswers={};
   document.getElementById('s-exam-full-choice').style.display='none';
   document.getElementById('s-exam-full-grid-wrap').style.display='block';
   document.getElementById('s-omr-photo-preview').innerHTML='';
@@ -9544,16 +9572,17 @@ function renderSExamFullGrid(){
 
 function sExamPickFullAnswer(idx,n){
   sExamFullAnswers[idx]=String(n);
+  if(sExamIsTimedMock(sExamData))sessionStorage.setItem(sExamAnswerKey(sExamData),JSON.stringify(sExamFullAnswers));
   renderSExamFullGrid();
 }
 
-async function sExamSubmitFull(){
+async function sExamSubmitFull(forceSubmit){
   if(!sExamData||!session)return;
   const total=sExamData.total_q;
   const objIdxs=[];
   sExamData.questions.forEach(function(q,i){if(isObjectiveAnswer(q.answer))objIdxs.push(i);});
   const unanswered=objIdxs.filter(function(i){return !sExamFullAnswers[i];}).map(function(i){return i+1;});
-  if(unanswered.length){
+  if(unanswered.length&&!forceSubmit){
     if(!confirm(unanswered.length+'문항 답을 아직 선택 안 했어요 ('+unanswered.slice(0,8).join(',')+(unanswered.length>8?'...':'')+'). 그래도 제출할까요?'))return;
   }
   const savedAnswers={};
@@ -9594,6 +9623,7 @@ async function sExamSubmitFull(){
     submitted_at:new Date().toISOString()
   },{onConflict:'exam_id,student_name'});
   if(saveRes.error){alert('채점 결과 저장에 실패했어요: '+saveRes.error.message+'\n선생님께 알려주세요.');return;}
+  sExamTimerStop(true);
   sExamPriorResponse=null;sOmrCurrentPhoto=null;
   showSExamView('result');
   renderSExamResultView(score,correct,wrong,objIdxs.length);
@@ -10060,6 +10090,7 @@ function sExamUploadPhoto(idx,input){
 }
 
 function sExamBack(){
+  sExamTimerStop(false);
   sOmrStopCamera();
   sOmrCurrentPhoto=null;
   renderSExam();
@@ -10227,7 +10258,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=66', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=67', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
