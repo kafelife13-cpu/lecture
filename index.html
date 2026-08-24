@@ -267,17 +267,6 @@ input,button{font-family:var(--font)}
       </div>
       <div class="form-group"><label>아이디</label><input id="login-id" class="form-input" type="text" placeholder="아이디 입력" onkeydown="if(event.key==='Enter')doLogin()"/></div>
       <div class="form-group"><label>비밀번호</label><input id="login-pw" class="form-input" type="password" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter')doLogin()"/></div>
-      <div class="form-group" id="api-key-group" style="display:none">
-        <label>AI 제공사 <span style="color:var(--text3);text-transform:none;font-weight:400">(시험 등록 AI 분석에 사용)</span></label>
-        <select id="login-ai-provider" class="form-select" onchange="onLoginAIProviderChange()" style="margin-bottom:8px">
-          <option value="claude">Claude</option>
-          <option value="openai">GPT (OpenAI)</option>
-          <option value="gemini">Gemini (Google)</option>
-        </select>
-        <label>API 키 <span style="color:var(--text3);text-transform:none;font-weight:400">(브라우저에 저장됩니다)</span></label>
-        <input id="login-apikey" class="form-input" type="password" placeholder="sk-ant-api03-..."/>
-        <div style="font-size:11px;color:var(--text3);margin-top:4px" id="api-key-hint"></div>
-      </div>
       <button class="btn-primary" id="login-btn" onclick="doLogin()">로그인</button>
       <div id="login-err" class="err-msg"></div>
       <div class="login-switch">계정이 없으신가요? <a onclick="showSignup()">학생 회원가입</a></div>
@@ -1973,25 +1962,6 @@ async function upsertProgress(sid,vid,pct,watchSec,lastPosition,maxRate){
 function selectRole(r){
   currentRole=r;
   document.querySelectorAll('.role-tab').forEach((b,i)=>b.classList.toggle('active',(i===0&&r==='teacher')||(i===1&&r==='student')));
-  var apiGroup=document.getElementById('api-key-group');
-  if(r==='teacher'){
-    apiGroup.style.display='block';
-    var providerSel=document.getElementById('login-ai-provider');
-    if(providerSel)providerSel.value=sessionStorage.getItem('ai_provider')||'claude';
-    onLoginAIProviderChange();
-  }else{
-    apiGroup.style.display='none';
-  }
-}
-function onLoginAIProviderChange(){
-  var provider=document.getElementById('login-ai-provider')?.value||'claude';
-    var saved=sessionStorage.getItem(provider+'_api_key');
-  var placeholders={claude:'sk-ant-api03-...',openai:'sk-...',gemini:'AIza...'};
-  var apEl=document.getElementById('login-apikey');
-  var hint=document.getElementById('api-key-hint');
-  if(apEl)apEl.placeholder=saved?'저장된 키 있음 (변경 시에만 입력)':(placeholders[provider]||'');
-  if(hint)hint.textContent=saved?'API 키가 저장되어 있어요. 변경하려면 새 키를 입력하세요.':'';
-  if(apEl)apEl.value='';
 }
 async function doLogin(){
   const id=document.getElementById('login-id').value.trim();
@@ -2002,14 +1972,6 @@ async function doLogin(){
   if(!id||!pw){err.textContent='아이디와 비밀번호를 입력하세요.';return;}
   const lockUntil=Number(sessionStorage.getItem('login_lock_until')||0);
   if(lockUntil>Date.now()){err.textContent='로그인 시도가 잠겼습니다. '+Math.ceil((lockUntil-Date.now())/60000)+'분 뒤 다시 시도해 주세요.';return;}
-  if(currentRole==='teacher'){
-    const provider=document.getElementById('login-ai-provider')?.value||'claude';
-    sessionStorage.setItem('ai_provider',provider);
-    const inputKey=document.getElementById('login-apikey').value.trim();
-    if(inputKey)sessionStorage.setItem(provider+'_api_key',inputKey);
-    ['claude','openai','gemini'].forEach(function(p){localStorage.removeItem(p+'_api_key');});
-    CLAUDE_API_KEY=sessionStorage.getItem('claude_api_key')||'';
-  }
   btn.disabled=true;btn.textContent='로그인 중...';
   try{
     const result=await sb.rpc('authenticate_user',{p_id:id,p_password:pw,p_role:currentRole});
@@ -10357,7 +10319,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=71', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=72', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
