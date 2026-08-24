@@ -717,6 +717,14 @@ input,button{font-family:var(--font)}
           <div class="card" style="margin-bottom:1rem">
             <div id="t-exam-list" style="padding:0 1.25rem 0.5rem"><p style="color:var(--text3);font-size:13px;padding:1rem 0">등록된 클리닉이 없습니다</p></div>
           </div>
+          <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📒</span> 과제 채점</div><div class="section-divider-line"></div></div>
+          <div class="card" style="margin-bottom:1rem">
+            <div id="t-exam-list-homework" style="padding:0 1.25rem 0.5rem"><p style="color:var(--text3);font-size:13px;padding:1rem 0">등록된 과제가 없습니다</p></div>
+          </div>
+          <div class="card" style="margin-bottom:1rem">
+            <div class="card-head"><h3>📈 과제 수행 누적 분석</h3><span style="font-size:11px;color:var(--text2)">학생별 평균·누적 오답 경향</span></div>
+            <div id="t-homework-cumulative" style="padding:0 1.25rem 1rem"></div>
+          </div>
           <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📝</span> 모의고사</div><div class="section-divider-line"></div></div>
           <div class="card" style="margin-bottom:1rem">
             <div id="t-exam-list-mock" style="padding:0 1.25rem 0.5rem"><p style="color:var(--text3);font-size:13px;padding:1rem 0">등록된 모의고사가 없습니다</p></div>
@@ -724,10 +732,6 @@ input,button{font-family:var(--font)}
           <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📚</span> 내신시험지 분석</div><div class="section-divider-line"></div></div>
           <div class="card" style="margin-bottom:1rem">
             <div id="t-exam-list-naeshin" style="padding:0 1.25rem 0.5rem"><p style="color:var(--text3);font-size:13px;padding:1rem 0">등록된 내신시험지가 없습니다</p></div>
-          </div>
-          <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📖</span> 과제 인증</div><div class="section-divider-line"></div></div>
-          <div class="card" style="margin-bottom:1rem">
-            <div id="t-exam-list-homework" style="padding:0 1.25rem 0.5rem"><p style="color:var(--text3);font-size:13px;padding:1rem 0">등록된 과제가 없습니다</p></div>
           </div>
         </div>
         <!-- 시험 생성 폼 -->
@@ -740,9 +744,9 @@ input,button{font-family:var(--font)}
                 <div class="form-group" style="margin-bottom:12px"><label>구분</label>
                   <select class="form-select" id="tex-category" onchange="texToggleClinicFields()">
                     <option value="school">🏫 클리닉</option>
+                    <option value="homework">📒 과제 채점 (30문항)</option>
                     <option value="mock">📝 모의고사</option>
                     <option value="naeshin">📚 내신시험지 분석</option>
-                    <option value="homework">📖 과제 인증</option>
                   </select>
                 </div>
                 <div id="tex-clinic-fields" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
@@ -953,7 +957,7 @@ input,button{font-family:var(--font)}
               <button class="btn btn-sm green" onclick="tResPrintOxForStudent()">🖨️ OX 재시험지</button>
               <button class="btn btn-sm" onclick="tResGenerateAiComment()">🤖 AI 오답 코멘트 생성</button>
               <button class="btn btn-sm" style="color:var(--red)" onclick="tResDeleteStudentResponse()">🗑️ 결과 삭제</button>
-              <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);margin-left:auto"><input type="checkbox" id="tres-show-rank" onchange="tResToggleShowRank(this.checked)">성적표에 전체 석차 포함</label>
+              <label id="tres-show-rank-wrap" style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);margin-left:auto"><input type="checkbox" id="tres-show-rank" onchange="tResToggleShowRank(this.checked)">성적표에 전체 석차 포함</label>
             </div>
             <div id="tres-student-detail"></div>
           </div>
@@ -1226,12 +1230,12 @@ input,button{font-family:var(--font)}
         <div id="s-exam-entry">
           <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>🏫</span> 클리닉 채점</div><div class="section-divider-line"></div></div>
           <div id="s-exam-clinic-groups" style="margin-bottom:1rem"></div>
+          <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📒</span> 과제 채점</div><div class="section-divider-line"></div></div>
+          <div id="s-exam-list-homework" style="margin-bottom:1rem"></div>
           <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📝</span> 모의고사 채점</div><div class="section-divider-line"></div></div>
           <div id="s-exam-list-mock" style="margin-bottom:1rem"></div>
           <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📚</span> 내신시험지 분석</div><div class="section-divider-line"></div></div>
           <div id="s-exam-list-naeshin" style="margin-bottom:1rem"></div>
-          <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📖</span> 과제 인증</div><div class="section-divider-line"></div></div>
-          <div id="s-exam-list-homework" style="margin-bottom:1rem"></div>
         </div>
         <!-- 채점 화면 -->
         <div id="s-exam-check" style="display:none">
@@ -6806,7 +6810,7 @@ async function tSaveVocabStart(){
 const EXAM_TYPES=['사실 확인','추론·함축','어휘·어법','표현 기법','주제·요지','논증 구조','계산·풀이','개념 적용','자료 해석','빈칸 추론','순서 배열','기타'];
 
 // ── Supabase 테이블: exams, exam_responses ──
-// exams: id, name, total_q, questions(json: num,type,domain,points,answer,text,explanation), next_exam, next_range, teacher_id, created_at, category('school'|'mock'), grade_cuts(json: [{grade,cut}])
+// exams: id, name, total_q, questions(json: num,type,domain,points,answer,text,explanation), next_exam, next_range, teacher_id, created_at, category('school'|'homework'|'mock'|'naeshin'), grade_cuts(json: [{grade,cut}])
 // exam_responses: id, exam_id, student_name, answers(json: 오답 문항 idx만 키로 존재), photo_urls(json), score, correct_count, total_q, points_earned, points_total, created_at
 
 // ── 교사: 시험 목록 렌더 ──
@@ -6814,9 +6818,9 @@ async function renderTExam(){
   const {data,error}=await sb.from('exams').select('*').order('created_at',{ascending:false});
   if(error||!data){
     renderTExamList('t-exam-list',[],'등록된 클리닉이 없습니다');
+    renderTExamList('t-exam-list-homework',[],'등록된 과제가 없습니다');
     renderTExamList('t-exam-list-mock',[],'등록된 모의고사가 없습니다');
     renderTExamList('t-exam-list-naeshin',[],'등록된 내신시험지가 없습니다');
-    renderTExamList('t-exam-list-homework',[],'등록된 과제가 없습니다');
     renderWeeklyExamStatus([]);
     return;
   }
@@ -6825,10 +6829,11 @@ async function renderTExam(){
   const naeshin=data.filter(e=>e.category==='naeshin');
   const homework=data.filter(e=>e.category==='homework');
   renderTExamList('t-exam-list',school,'등록된 클리닉이 없습니다');
+  renderTExamList('t-exam-list-homework',homework,'등록된 과제가 없습니다');
   renderTExamList('t-exam-list-mock',mock,'등록된 모의고사가 없습니다');
   renderTExamList('t-exam-list-naeshin',naeshin,'등록된 내신시험지가 없습니다');
-  renderTExamList('t-exam-list-homework',homework,'등록된 과제가 없습니다');
   renderWeeklyExamStatus(data);
+  renderTHomeworkCumulative(homework);
 }
 
 var weeklyExamCache={exams:[],responses:[],copy:{}};
@@ -6872,6 +6877,32 @@ function copyWeeklyExamMissing(key,withMessage){
   var d=weeklyExamCache.copy[key];if(!d||!d.missing.length){notify('미응시자가 없습니다.','info');return;}
   var text=withMessage?d.missing.map(function(n){return n+' 학생, '+d.week+' '+d.school+' '+d.exam+' 시험이 아직 미응시 상태입니다. 확인 후 응시해 주세요.';}).join('\n'):d.missing.join(', ');
   navigator.clipboard.writeText(text).then(function(){notify(withMessage?'미응시 안내문을 복사했어요.':'미응시자 이름을 복사했어요.','success');}).catch(function(){prompt('아래 내용을 복사하세요.',text);});
+}
+
+async function renderTHomeworkCumulative(homeworkExams){
+  const el=document.getElementById('t-homework-cumulative');
+  if(!el)return;
+  if(!homeworkExams.length){el.innerHTML='<div style="color:var(--text3);font-size:13px;padding:1rem 0">과제를 등록하면 학생별 누적 데이터가 여기에 쌓여요.</div>';return;}
+  const ids=homeworkExams.map(e=>e.id);
+  const {data:responses,error}=await sb.from('exam_responses').select('*').in('exam_id',ids);
+  if(error){el.innerHTML='<div style="color:var(--red);font-size:13px">누적 데이터를 불러오지 못했어요.</div>';return;}
+  const byStudent={};
+  (responses||[]).forEach(function(r){
+    const exam=homeworkExams.find(e=>e.id===r.exam_id);if(!exam)return;
+    const row=byStudent[r.student_name]||(byStudent[r.student_name]={name:r.student_name,tests:0,scoreSum:0,wrong:0,domains:{},latest:null});
+    const sc=repScore(exam,r);row.tests++;row.scoreSum+=sc.pct;
+    exam.questions.forEach(function(q,i){if(repIsWrong(r,i,exam)){row.wrong++;const d=q.domain||q.type||'미분류';row.domains[d]=(row.domains[d]||0)+1;}});
+    if(!row.latest||new Date(r.submitted_at||r.created_at)>new Date(row.latest.submitted_at||row.latest.created_at))row.latest=r;
+  });
+  const rows=Object.values(byStudent).map(function(r){
+    r.avg=Math.round(r.scoreSum/r.tests*10)/10;
+    r.weak=Object.keys(r.domains).sort(function(a,b){return r.domains[b]-r.domains[a];}).slice(0,2).join(', ')||'없음';
+    return r;
+  }).sort(function(a,b){return b.avg-a.avg||a.name.localeCompare(b.name,'ko');});
+  if(!rows.length){el.innerHTML='<div style="color:var(--text3);font-size:13px;padding:1rem 0">아직 제출한 학생이 없어요.</div>';return;}
+  el.innerHTML='<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>학생</th><th>제출</th><th>평균</th><th>누적 오답</th><th>반복 약점 영역</th></tr></thead><tbody>'+rows.map(function(r){
+    return '<tr><td><b>'+r.name+'</b></td><td>'+r.tests+'/'+homeworkExams.length+'회</td><td><b>'+r.avg+'점</b></td><td>'+r.wrong+'문항</td><td>'+r.weak+'</td></tr>';
+  }).join('')+'</tbody></table></div>';
 }
 
 function renderTExamList(elId,list,emptyMsg){
@@ -6926,7 +6957,7 @@ function openTExamCreate(){
 function texToggleClinicFields(){
   const cat=document.getElementById('tex-category')?.value;
   const el=document.getElementById('tex-clinic-fields');
-  if(el)el.style.display=cat==='school'?'grid':'none';
+  if(el)el.style.display=(cat==='school'||cat==='homework')?'grid':'none';
 }
 
 async function texPdfUpload(inputEl,targetId,statusId){
@@ -7272,11 +7303,12 @@ async function saveTExam(){
   }));
   if(!questions.some(q=>q.answer)){alert('정답이 설정된 문항이 없어요. 정답을 확인해 주세요.');return;}
   const category=document.getElementById('tex-category')?.value||'school';
+  if(category==='homework'&&questions.length!==30){alert('과제 채점은 정확히 30문항으로 등록해 주세요. 현재 '+questions.length+'문항입니다.');return;}
   const {error}=await sb.from('exams').insert({
     name,total_q:questions.length,questions,
     category,
-    clinic_school:category==='school'?(document.getElementById('tex-clinic-school')?.value||null):null,
-    clinic_week:category==='school'?(document.getElementById('tex-clinic-week')?.value.trim()||null):null,
+    clinic_school:(category==='school'||category==='homework')?(document.getElementById('tex-clinic-school')?.value||null):null,
+    clinic_week:(category==='school'||category==='homework')?(document.getElementById('tex-clinic-week')?.value.trim()||null):null,
     next_exam:document.getElementById('tex-next').value,
     next_range:document.getElementById('tex-range').value,
     grade_cuts:parseGradeCuts(document.getElementById('tex-gradecuts')?.value||''),
@@ -7303,6 +7335,8 @@ async function viewTExamResults(examId,examName){
   tResCurrentResponses=responses||[];
   var commonNoteEl=document.getElementById('tres-common-note');
   if(commonNoteEl)commonNoteEl.value=tResGetCommonNote(exam);
+  const rankWrap=document.getElementById('tres-show-rank-wrap');
+  if(rankWrap)rankWrap.style.display=exam&&exam.category==='homework'?'none':'flex';
   tResTab('overview');
   renderTResOverview();
   renderTResStudentSelect();
@@ -7336,15 +7370,9 @@ function renderTResWrongStats(){
   var wrongCount={};
   var totalAnswered={};
   responses.forEach(function(r){
-    if(!r.answers)return;
     exam.questions.forEach(function(q,i){
-      var my=r.answers[i];
-      if(my){
-        totalAnswered[i]=(totalAnswered[i]||0)+1;
-        if(String(my)!==String(q.answer)){
-          wrongCount[i]=(wrongCount[i]||0)+1;
-        }
-      }
+      totalAnswered[i]=(totalAnswered[i]||0)+1;
+      if(repIsWrong(r,i,exam))wrongCount[i]=(wrongCount[i]||0)+1;
     });
   });
 
@@ -7401,14 +7429,9 @@ function renderTResRanking(){
   if(!responses||!responses.length){el.innerHTML='<div style="padding:2rem;text-align:center;color:var(--text3);font-size:13px">제출한 학생이 없어요</div>';return;}
   // 점수 계산 후 정렬
   var ranked=responses.map(function(r){
-    var correct=0,total=exam.total_q;
-    if(r.answers){
-      exam.questions.forEach(function(q,i){
-        var my=r.answers[i];
-        if(my&&String(my)===String(q.answer))correct++;
-      });
-    }
-    var score=r.score!=null?r.score:Math.round(correct/total*100);
+    var total=r.total_q||exam.total_q;
+    var correct=r.correct_count!=null?r.correct_count:exam.questions.filter(function(q,i){return !repIsWrong(r,i,exam);}).length;
+    var score=r.score!=null?r.score:Math.round(correct/Math.max(1,total)*100);
     return {name:r.student_name,score:score,correct:correct,total:total,wrongCnt:total-correct};
   }).sort(function(a,b){return b.score-a.score||a.wrongCnt-b.wrongCnt;});
   // 동점 처리
@@ -7418,6 +7441,7 @@ function renderTResRanking(){
     else r.rank=rank;
     rank=i+2;
   });
+  ranked.forEach(function(r){r.percentile=Math.round((ranked.length-r.rank+1)/ranked.length*100);});
   el.innerHTML=ranked.map(function(r){
     var medal=r.rank===1?'🥇':r.rank===2?'🥈':r.rank===3?'🥉':'';
     var rankColor=r.rank===1?'var(--amber)':r.rank===2?'var(--text2)':r.rank===3?'#cd7f32':'var(--text3)';
@@ -7425,7 +7449,7 @@ function renderTResRanking(){
       '<div style="min-width:36px;text-align:center;font-size:15px;font-weight:700;color:'+rankColor+'">'+medal+(medal?'':r.rank+'위')+'</div>'+
       '<div style="width:36px;height:36px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--accent);flex-shrink:0">'+r.name[0]+'</div>'+
       '<div style="flex:1"><div style="font-size:14px;font-weight:500">'+r.name+'</div>'+
-      '<div style="font-size:11px;color:var(--text3)">정답 '+r.correct+'/'+r.total+'문 · 오답 '+r.wrongCnt+'문</div></div>'+
+      '<div style="font-size:11px;color:var(--text3)">정답 '+r.correct+'/'+r.total+'문 · 오답 '+r.wrongCnt+'문 · 백분위 '+r.percentile+'</div></div>'+
       '<div style="font-size:18px;font-weight:700;color:'+(r.score>=80?'var(--green)':r.score>=60?'var(--amber)':'var(--red)')+'">'+r.score+'점</div>'+
       '</div>';
   }).join('');
@@ -7436,10 +7460,10 @@ function tResExportRankingPDF(){
   var responses=tResCurrentResponses;
   if(!responses||!responses.length){alert('데이터가 없어요.');return;}
   var ranked=responses.map(function(r){
-    var correct=0;
-    if(r.answers){exam.questions.forEach(function(q,i){var my=r.answers[i];if(my&&String(my)===String(q.answer))correct++;});}
-    var score=r.score!=null?r.score:Math.round(correct/exam.total_q*100);
-    return {name:r.student_name,score:score,correct:correct,wrongCnt:exam.total_q-correct};
+    var total=r.total_q||exam.total_q;
+    var correct=r.correct_count!=null?r.correct_count:exam.questions.filter(function(q,i){return !repIsWrong(r,i,exam);}).length;
+    var score=r.score!=null?r.score:Math.round(correct/Math.max(1,total)*100);
+    return {name:r.student_name,score:score,correct:correct,wrongCnt:total-correct};
   }).sort(function(a,b){return b.score-a.score;});
   var html='<div style="font-family:sans-serif;padding:20px;max-width:600px;margin:0 auto">'+
     '<h2 style="margin-bottom:4px">'+exam.name+' — 점수 순위</h2>'+
@@ -7781,6 +7805,7 @@ async function tResDeleteStudentResponse(){
 async function tResToggleShowRank(checked){
   const name=document.getElementById('tres-student-select').value;
   if(!name||!tResCurrentExam)return;
+  if(tResCurrentExam.category==='homework'){document.getElementById('tres-show-rank').checked=false;return;}
   const r=tResCurrentResponses.find(function(r){return r.student_name===name;});
   if(!r)return;
   const {error}=await sb.from('exam_responses').update({show_rank:checked}).eq('id',r.id);
@@ -7833,7 +7858,7 @@ function tResLoadStudent(name){
   if(rankCb)rankCb.checked=!!r.show_rank;
   const wrongs=exam.questions.reduce((acc,q,i)=>{
     const my=r.answers?.[i];
-    if(my&&my!==String(q.answer))acc.push({idx:i,q,my});
+    if(repIsWrong(r,i,exam))acc.push({idx:i,q,my:my||'미입력'});
     return acc;
   },[]);
   const wrongCnt=wrongs.length;
@@ -9202,7 +9227,8 @@ function buildReportCardHTML(studentName,exam,response,allResponses,academyName,
   var domainLabels=Object.keys(domainStats);
   var myPct=domainLabels.map(function(d){var s=domainStats[d];return s.maxPoints?Math.round(s.earnedPoints/s.maxPoints*1000)/10:0;});
   var avgPct=domainLabels.map(function(d){return stats.domainClassAvgPct[d]||0;});
-  var showRank=!!response.show_rank;
+  // 과제 채점은 학생·학부모 성적표에 석차를 절대 노출하지 않는다.
+  var showRank=exam.category!=='homework'&&!!response.show_rank;
   var myRank=0;
   if(showRank&&allResponses&&allResponses.length){
     var higherCount=allResponses.filter(function(r){return repScore(exam,r).pct>my.pct;}).length;
@@ -9318,9 +9344,9 @@ async function renderSExam(){
   sExamData=null;sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;sWrongChecked={};sExamPriorResponse=null;
   showSExamView('entry');
   const clinicEl=document.getElementById('s-exam-clinic-groups');
+  const homeworkEl=document.getElementById('s-exam-list-homework');
   const mockEl=document.getElementById('s-exam-list-mock');
   const naeshinEl=document.getElementById('s-exam-list-naeshin');
-  const homeworkEl=document.getElementById('s-exam-list-homework');
   if(clinicEl)clinicEl.innerHTML='<div style="padding:1rem;text-align:center;color:var(--text3);font-size:13px">불러오는 중...</div>';
   if(mockEl)mockEl.innerHTML='';
   if(naeshinEl)naeshinEl.innerHTML='';
