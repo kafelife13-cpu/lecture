@@ -725,6 +725,10 @@ input,button{font-family:var(--font)}
             <div class="card-head"><h3>📈 과제 수행 누적 분석</h3><span style="font-size:11px;color:var(--text2)">학생별 평균·누적 오답 경향</span></div>
             <div id="t-homework-cumulative" style="padding:0 1.25rem 1rem"></div>
           </div>
+          <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>🧩</span> 미니모의고사</div><div class="section-divider-line"></div></div>
+          <div class="card" style="margin-bottom:1rem">
+            <div id="t-exam-list-mini-mock" style="padding:0 1.25rem 0.5rem"><p style="color:var(--text3);font-size:13px;padding:1rem 0">등록된 미니모의고사가 없습니다</p></div>
+          </div>
           <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📝</span> 모의고사</div><div class="section-divider-line"></div></div>
           <div class="card" style="margin-bottom:1rem">
             <div id="t-exam-list-mock" style="padding:0 1.25rem 0.5rem"><p style="color:var(--text3);font-size:13px;padding:1rem 0">등록된 모의고사가 없습니다</p></div>
@@ -744,14 +748,16 @@ input,button{font-family:var(--font)}
                 <div class="form-group" style="margin-bottom:12px"><label>구분</label>
                   <select class="form-select" id="tex-category" onchange="texToggleClinicFields()">
                     <option value="school">🏫 클리닉</option>
-                    <option value="homework">📒 과제 채점 (30문항)</option>
+                    <option value="homework">📒 과제 대표문제 채점 (30문항)</option>
+                    <option value="mini_mock">🧩 미니모의고사 채점</option>
                     <option value="mock">📝 모의고사</option>
                     <option value="naeshin">📚 내신시험지 분석</option>
                   </select>
                 </div>
                 <div id="tex-clinic-fields" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-                  <div class="form-group" style="margin-bottom:0"><label>학교</label>
+                  <div class="form-group" style="margin-bottom:0"><label>대상 학교</label>
                     <select class="form-select" id="tex-clinic-school">
+                      <option value="">전체 학교</option>
                       <option value="한백고">한백고</option>
                       <option value="치동고">치동고</option>
                     </select>
@@ -1228,14 +1234,10 @@ input,button{font-family:var(--font)}
         <div class="page-header"><h1>온라인 채점</h1><p>목록에서 시험을 선택하면 바로 채점할 수 있어요</p></div>
         <!-- 시험 목록 -->
         <div id="s-exam-entry">
-          <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>🏫</span> 클리닉 채점</div><div class="section-divider-line"></div></div>
-          <div id="s-exam-clinic-groups" style="margin-bottom:1rem"></div>
-          <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📒</span> 과제 채점</div><div class="section-divider-line"></div></div>
-          <div id="s-exam-list-homework" style="margin-bottom:1rem"></div>
-          <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📝</span> 모의고사 채점</div><div class="section-divider-line"></div></div>
-          <div id="s-exam-list-mock" style="margin-bottom:1rem"></div>
-          <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>📚</span> 내신시험지 분석</div><div class="section-divider-line"></div></div>
-          <div id="s-exam-list-naeshin" style="margin-bottom:1rem"></div>
+          <div class="card" style="margin-bottom:12px;border-left:4px solid #6366f1"><div class="card-head"><h3>🏫 클리닉 채점</h3></div><div id="s-exam-clinic-groups" style="padding:0 12px 12px"></div></div>
+          <div class="card" style="margin-bottom:12px;border-left:4px solid #f59e0b"><div class="card-head"><h3>📒 과제 대표문제 채점</h3></div><div id="s-exam-list-homework" style="padding:0 12px 12px"></div></div>
+          <div class="card" style="margin-bottom:12px;border-left:4px solid #10b981"><div class="card-head"><h3>🧩 미니모의고사 채점</h3></div><div id="s-exam-list-mini-mock" style="padding:0 12px 12px"></div></div>
+          <div class="card" style="margin-bottom:12px;border-left:4px solid #ec4899"><div class="card-head"><h3>📝 모의고사 채점</h3></div><div id="s-exam-list-mock" style="padding:0 12px 12px"></div></div>
         </div>
         <!-- 채점 화면 -->
         <div id="s-exam-check" style="display:none">
@@ -6810,7 +6812,7 @@ async function tSaveVocabStart(){
 const EXAM_TYPES=['사실 확인','추론·함축','어휘·어법','표현 기법','주제·요지','논증 구조','계산·풀이','개념 적용','자료 해석','빈칸 추론','순서 배열','기타'];
 
 // ── Supabase 테이블: exams, exam_responses ──
-// exams: id, name, total_q, questions(json: num,type,domain,points,answer,text,explanation), next_exam, next_range, teacher_id, created_at, category('school'|'homework'|'mock'|'naeshin'), grade_cuts(json: [{grade,cut}])
+// exams: id, name, total_q, questions(json: num,type,domain,points,answer,text,explanation), next_exam, next_range, teacher_id, created_at, category('school'|'homework'|'mini_mock'|'mock'|'naeshin'), grade_cuts(json: [{grade,cut}])
 // exam_responses: id, exam_id, student_name, answers(json: 오답 문항 idx만 키로 존재), photo_urls(json), score, correct_count, total_q, points_earned, points_total, created_at
 
 // ── 교사: 시험 목록 렌더 ──
@@ -6819,6 +6821,7 @@ async function renderTExam(){
   if(error||!data){
     renderTExamList('t-exam-list',[],'등록된 클리닉이 없습니다');
     renderTExamList('t-exam-list-homework',[],'등록된 과제가 없습니다');
+    renderTExamList('t-exam-list-mini-mock',[],'등록된 미니모의고사가 없습니다');
     renderTExamList('t-exam-list-mock',[],'등록된 모의고사가 없습니다');
     renderTExamList('t-exam-list-naeshin',[],'등록된 내신시험지가 없습니다');
     renderWeeklyExamStatus([]);
@@ -6828,8 +6831,10 @@ async function renderTExam(){
   const mock=data.filter(e=>e.category==='mock');
   const naeshin=data.filter(e=>e.category==='naeshin');
   const homework=data.filter(e=>e.category==='homework');
+  const miniMock=data.filter(e=>e.category==='mini_mock');
   renderTExamList('t-exam-list',school,'등록된 클리닉이 없습니다');
   renderTExamList('t-exam-list-homework',homework,'등록된 과제가 없습니다');
+  renderTExamList('t-exam-list-mini-mock',miniMock,'등록된 미니모의고사가 없습니다');
   renderTExamList('t-exam-list-mock',mock,'등록된 모의고사가 없습니다');
   renderTExamList('t-exam-list-naeshin',naeshin,'등록된 내신시험지가 없습니다');
   renderWeeklyExamStatus(data);
@@ -6955,9 +6960,8 @@ function openTExamCreate(){
 }
 
 function texToggleClinicFields(){
-  const cat=document.getElementById('tex-category')?.value;
   const el=document.getElementById('tex-clinic-fields');
-  if(el)el.style.display=(cat==='school'||cat==='homework')?'grid':'none';
+  if(el)el.style.display='grid';
 }
 
 async function texPdfUpload(inputEl,targetId,statusId){
@@ -7307,8 +7311,8 @@ async function saveTExam(){
   const {error}=await sb.from('exams').insert({
     name,total_q:questions.length,questions,
     category,
-    clinic_school:(category==='school'||category==='homework')?(document.getElementById('tex-clinic-school')?.value||null):null,
-    clinic_week:(category==='school'||category==='homework')?(document.getElementById('tex-clinic-week')?.value.trim()||null):null,
+    clinic_school:document.getElementById('tex-clinic-school')?.value||null,
+    clinic_week:document.getElementById('tex-clinic-week')?.value.trim()||null,
     next_exam:document.getElementById('tex-next').value,
     next_range:document.getElementById('tex-range').value,
     grade_cuts:parseGradeCuts(document.getElementById('tex-gradecuts')?.value||''),
@@ -9340,16 +9344,24 @@ var sExamCheckMode='full'; // 'full'(클리닉/모의고사: 문항별 답 선�
 var sExamFullAnswers={};
 var sOmrCamStream=null,sOmrCurrentPhoto=null;
 
+function sExamVisibleForStudent(exam){
+  if(!exam||!exam.clinic_school)return true;
+  const taggedSchoolId=weeklyExamSchoolId(exam.clinic_school);
+  if(taggedSchoolId&&session.school_id)return taggedSchoolId===session.school_id;
+  const mySchool=((qaDb.schools||[]).find(function(s){return s.id===session.school_id;})||{}).name||'';
+  return !mySchool||exam.clinic_school===mySchool;
+}
+
 async function renderSExam(){
   sExamData=null;sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;sWrongChecked={};sExamPriorResponse=null;
   showSExamView('entry');
   const clinicEl=document.getElementById('s-exam-clinic-groups');
   const homeworkEl=document.getElementById('s-exam-list-homework');
+  const miniMockEl=document.getElementById('s-exam-list-mini-mock');
   const mockEl=document.getElementById('s-exam-list-mock');
-  const naeshinEl=document.getElementById('s-exam-list-naeshin');
   if(clinicEl)clinicEl.innerHTML='<div style="padding:1rem;text-align:center;color:var(--text3);font-size:13px">불러오는 중...</div>';
   if(mockEl)mockEl.innerHTML='';
-  if(naeshinEl)naeshinEl.innerHTML='';
+  if(miniMockEl)miniMockEl.innerHTML='';
   if(homeworkEl)homeworkEl.innerHTML='';
   const myName=session.name||session.id;
   const [{data:exams},{data:myResponses}]=await Promise.all([
@@ -9358,14 +9370,14 @@ async function renderSExam(){
   ]);
   sExamRespCache={};
   (myResponses||[]).forEach(function(r){sExamRespCache[r.exam_id]=r;});
-  const list=exams||[];
+  const list=(exams||[]).filter(sExamVisibleForStudent);
   sExamClinicCache=list.filter(function(e){return (e.category||'school')==='school';});
   const mock=list.filter(function(e){return e.category==='mock';});
-  const naeshin=list.filter(function(e){return e.category==='naeshin';});
+  const miniMock=list.filter(function(e){return e.category==='mini_mock';});
   const homework=list.filter(function(e){return e.category==='homework';});
   renderSExamClinicGroups();
   if(mockEl)mockEl.innerHTML=renderSExamListCards(mock,sExamRespCache,'등록된 모의고사가 없어요');
-  if(naeshinEl)naeshinEl.innerHTML=renderSExamListCards(naeshin,sExamRespCache,'등록된 내신시험지가 없어요');
+  if(miniMockEl)miniMockEl.innerHTML=renderSExamListCards(miniMock,sExamRespCache,'등록된 미니모의고사가 없어요');
   if(homeworkEl)homeworkEl.innerHTML=renderSExamListCards(homework,sExamRespCache,'등록된 과제가 없어요');
 }
 
@@ -9458,6 +9470,7 @@ async function sExamOpenForGrading(examId){
     sb.from('exam_responses').select('*').eq('exam_id',examId).eq('student_name',myName).maybeSingle()
   ]);
   if(e1||!found){alert('시험 정보를 불러오지 못했어요.');return;}
+  if(!sExamVisibleForStudent(found)){alert('자기 학교에 등록된 시험만 채점할 수 있어요.');renderSExam();return;}
   if(resp&&!resp.regrade_approved){
     alert('이미 제출한 시험이에요. 다시 채점하려면 선생님 승인이 필요해요.');
     renderSExam();
@@ -9466,7 +9479,7 @@ async function sExamOpenForGrading(examId){
   sExamData=found;sExamPriorResponse=resp||null;
   sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;sWrongChecked={};sExamFullAnswers={};
   sExamCheckMode=(found.category==='naeshin'||found.category==='homework')?'wrongonly':'full';
-  const icon=found.category==='mock'?'📝 ':found.category==='naeshin'?'📚 ':found.category==='homework'?'📖 ':'🏫 ';
+  const icon=found.category==='mock'?'📝 ':found.category==='mini_mock'?'🧩 ':found.category==='naeshin'?'📚 ':found.category==='homework'?'📒 ':'🏫 ';
   document.getElementById('s-exam-check-title').textContent=icon+found.name;
   const fullEl=document.getElementById('s-exam-check-full');
   const wrongEl=document.getElementById('s-exam-check-wrong');
