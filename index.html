@@ -1936,8 +1936,9 @@ function hideLoading(){document.getElementById('loading-screen').classList.add('
 /* ===== DB ===== */
 async function loadAll(attempt=0){
   try{
+    const userColumns=session&&session.role==='teacher'?'id,name,role,status,school_id,group_id,parent_phone':'id,name,role,status,school_id,group_id';
     const [u,v,p,a,r,st,al]=await Promise.all([
-      sb.from('users').select('*'),
+      sb.from('users').select(userColumns),
       sb.from('videos').select('*').order('created_at'),
       sb.from('progress').select('*'),
       sb.from('video_access').select('*'),
@@ -1999,6 +2000,8 @@ async function doLogin(){
   const btn=document.getElementById('login-btn');
   err.textContent='';
   if(!id||!pw){err.textContent='아이디와 비밀번호를 입력하세요.';return;}
+  const lockUntil=Number(sessionStorage.getItem('login_lock_until')||0);
+  if(lockUntil>Date.now()){err.textContent='로그인 시도가 잠겼습니다. '+Math.ceil((lockUntil-Date.now())/60000)+'분 뒤 다시 시도해 주세요.';return;}
   if(currentRole==='teacher'){
     const provider=document.getElementById('login-ai-provider')?.value||'claude';
     sessionStorage.setItem('ai_provider',provider);
@@ -2009,12 +2012,23 @@ async function doLogin(){
   }
   btn.disabled=true;btn.textContent='로그인 중...';
   try{
-    await loadAll();
-    const user=db.users.find(u=>u.id===id&&u.pw===pw&&u.role===currentRole);
-    if(!user){err.textContent='아이디 또는 비밀번호가 올바르지 않습니다.';return;}
+    const result=await sb.from('users').select('*').eq('id',id).eq('role',currentRole).maybeSingle();
+    const user=result.data;
+    if(result.error||!user||user.pw!==pw){
+      const failures=Number(sessionStorage.getItem('login_failures')||0)+1;sessionStorage.setItem('login_failures',String(failures));
+      if(failures>=5){sessionStorage.setItem('login_lock_until',String(Date.now()+5*60*1000));sessionStorage.removeItem('login_failures');err.textContent='로그인에 5회 실패해 5분 동안 잠겼습니다.';}
+      else err.textContent='아이디 또는 비밀번호가 올바르지 않습니다. ('+failures+'/5)';
+      return;
+    }
     if(user.status==='pending'){err.textContent='강사 승인 대기 중입니다.';return;}
-    session=user;
-    localStorage.setItem('lms_sess',JSON.stringify({id:user.id,role:user.role}));
+    sessionStorage.removeItem('login_failures');sessionStorage.removeItem('login_lock_until');
+    delete user.pw;session=user;
+    await loadAll();
+    await loadQaData();
+    await loadCertData();
+    await loadClinicData();
+    await loadStudyData();
+    await loadAnnounceData();
     if(user.role==='teacher')launchTeacher();else launchStudent();
   }catch(e){err.textContent='연결 오류: '+e.message;}
   finally{btn.disabled=false;btn.textContent='로그인';}
@@ -2086,18 +2100,18 @@ async function enterPadMode(){
   const btn=document.getElementById('pad-mode-btn');
   if(btn){btn.disabled=true;btn.textContent='불러오는 중...';}
   try{
-    await loadAll();
     var authorizedUntil=Number(sessionStorage.getItem(PAD_AUTH_KEY)||0);
     if(authorizedUntil<=Date.now()){
       const teacherId=(document.getElementById('login-id')?.value||'').trim();
       const teacherPw=document.getElementById('login-pw')?.value||'';
       if(!teacherId||!teacherPw){alert('강사 아이디와 비밀번호를 로그인 칸에 입력한 뒤 패드 모드를 눌러주세요.');return;}
-      const teacher=db.users.find(function(u){return u.id===teacherId&&u.pw===teacherPw&&u.role==='teacher'&&u.status!=='pending';});
-      if(!teacher){alert('강사 인증에 실패했습니다. 아이디와 비밀번호를 확인해 주세요.');return;}
+      const authRes=await sb.from('users').select('id,pw,status').eq('id',teacherId).eq('role','teacher').maybeSingle();
+      const teacher=authRes.data;
+      if(authRes.error||!teacher||teacher.pw!==teacherPw||teacher.status==='pending'){alert('강사 인증에 실패했습니다. 아이디와 비밀번호를 확인해 주세요.');return;}
       document.getElementById('login-pw').value='';
       authorizedUntil=Date.now()+PAD_AUTH_MS;sessionStorage.setItem(PAD_AUTH_KEY,String(authorizedUntil));
     }
-    await loadClinicData();
+    await Promise.all([loadAll(),loadClinicData()]);
     padMode=true;
     schedulePadAutoLock();
     showPage('page-pad-picker');
@@ -2179,8 +2193,8 @@ function renderStudentPreviewPicker(){
   grid.innerHTML=list.map(function(s){
     var school=(qaDb.schools||[]).find(function(sc){return sc.id===s.school_id;});
     return '<button class="btn" onclick="openStudentPreview(\''+s.id+'\')" style="padding:13px;text-align:left">'+
-      '<div style="font-size:14px;font-weight:700">'+s.name+'</div>'+
-      '<div style="font-size:11px;color:var(--text2);margin-top:2px">'+(school?school.name:'학교 미지정')+' · '+studentClassLabel(s.group_id)+'</div>'+
+      '<div style="font-size:14px;font-weight:700">'+escHtml(s.name)+'</div>'+
+      '<div style="font-size:11px;color:var(--text2);margin-top:2px">'+escHtml(school?school.name:'학교 미지정')+' · '+escHtml(studentClassLabel(s.group_id))+'</div>'+
       '<div style="font-size:11px;color:var(--blue);margin-top:3px">화면 보기 →</div></button>';
   }).join('');
 }
@@ -2198,7 +2212,7 @@ function openStudentPreview(studentId){
     banner.style.cssText='position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:10000;background:#f59e0b;color:#1a0e00;border-radius:12px;padding:9px 12px;display:flex;align-items:center;gap:12px;box-shadow:0 6px 24px rgba(0,0,0,.35);font-size:13px;font-weight:700';
     document.body.appendChild(banner);
   }
-  banner.innerHTML='<span>👀 '+student.name+' 학생 화면 확인 중</span><button onclick="returnFromStudentPreview()" style="border:0;border-radius:8px;background:#1a0e00;color:white;padding:6px 10px;font-weight:700;cursor:pointer">교사 화면으로 돌아가기</button>';
+  banner.innerHTML='<span>👀 '+escHtml(student.name)+' 학생 화면 확인 중</span><button onclick="returnFromStudentPreview()" style="border:0;border-radius:8px;background:#1a0e00;color:white;padding:6px 10px;font-weight:700;cursor:pointer">교사 화면으로 돌아가기</button>';
   banner.style.display='flex';
 }
 function returnFromStudentPreview(){
@@ -3028,8 +3042,8 @@ function renderVideoGrid(videos, containerId){
         <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
           <span class="badge ${isReview?'review':'normal'}">${isReview?'🔁 복습':isClinic?'🏫 클리닉':'📚 일반'}</span>
         </div>
-        <div style="font-size:13px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${v.title}</div>
-        <div style="font-size:11px;color:var(--text2);margin-bottom:8px">${isClinic?(clinicVideoDescription(v)||'클리닉 해설 영상'):(v.description||'설명 없음')}</div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(v.title)}</div>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:8px">${escHtml(isClinic?(clinicVideoDescription(v)||'클리닉 해설 영상'):(v.description||'설명 없음'))}</div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
           <span style="font-size:11px;color:var(--text2)">${isReview?`권한 ${db.access.filter(a=>a.video_id===v.id).length}명`:doneC+'/'+sts.length+'명 완료'}</span>
           <strong style="font-size:12px;color:${pctColor(avgP)}">${avgP}%</strong>
@@ -3065,7 +3079,7 @@ async function addStudent(){
   if(db.users.find(u=>u.id===id)){notify('이미 존재하는 아이디입니다.','error');return;}
   const{error}=await sb.from('users').insert({id,name,pw,role:'student',status:'active',school_id});
   if(error){notify('등록 실패: '+error.message,'error');return;}
-  db.users.push({id,name,pw,role:'student',status:'active',school_id});
+  db.users.push({id,name,role:'student',status:'active',school_id});
   ['s-name','s-id','s-pw'].forEach(i=>document.getElementById(i).value='');
   if(schoolEl)schoolEl.value='';
   notify(`${name} 학생이 등록되었습니다.`,'success');renderStudents();
@@ -6886,29 +6900,10 @@ async function tSaveVocabStart(){
     return;
   }
   try{
-    document.querySelector('.loading-text').textContent='데이터 불러오는 중...';
-    await loadAll();
-    await loadQaData();
-    await loadCertData();
-    await loadClinicData();
-    await loadStudyData();
-    await loadAnnounceData();
-    var saved=localStorage.getItem('lms_sess');
-    if(saved){
-      try{
-        var parsed=JSON.parse(saved);
-        var user=db.users.find(function(u){return u.id===parsed.id&&u.role===parsed.role&&u.status!=='pending';});
-        if(user){
-          session=user;hideLoading();
-          if(parsed.role==='teacher'){
-            ['claude','openai','gemini'].forEach(function(p){localStorage.removeItem(p+'_api_key');});
-            launchTeacher();
-          }else launchStudent();
-          return;
-        }
-      }catch(e){}
-      localStorage.removeItem('lms_sess');
-    }
+    document.querySelector('.loading-text').textContent='로그인 화면 준비 중...';
+    // 역할과 아이디만 저장한 값으로 로그인 상태를 복원하면 누구나 강사로 위조할 수
+    // 있으므로 자동 로그인은 사용하지 않는다. 앱을 다시 열면 반드시 재인증한다.
+    localStorage.removeItem('lms_sess');
   }catch(e){
     console.error(e);
     document.querySelector('.loading-text').textContent='서버 연결 실패. 새로고침해주세요.';
@@ -10362,7 +10357,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=69', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=70', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
