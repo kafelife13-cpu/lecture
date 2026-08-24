@@ -1097,6 +1097,12 @@ input,button{font-family:var(--font)}
       </div>
       <div class="panel" id="panel-review">
         <div class="page-header"><h1>복습 신청</h1><p>복습하고 싶은 영상을 신청하면 강사가 승인 후 시청 가능합니다</p></div>
+        <div class="card" style="margin-bottom:12px;border-left:3px solid var(--accent)">
+          <div style="padding:12px 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <div style="flex:1;min-width:190px"><div style="font-size:13px;font-weight:800">📷 복습영상 카메라 준비</div><div id="review-camera-permission-status" style="font-size:11px;color:var(--text2);margin-top:3px">영상을 보기 전에 아래 버튼을 눌러 카메라를 허용해 주세요.</div></div>
+            <button class="btn blue" onclick="requestReviewCameraPermission()">카메라 허용하기</button>
+          </div>
+        </div>
         <div id="student-review-list"></div>
       </div>
       <div class="panel" id="panel-mypage">
@@ -3913,6 +3919,23 @@ function confirmResume(fromStart){
 
 function videoPresenceSetStatus(text,color){
   const el=document.getElementById('video-presence-status');if(el){el.textContent=text;el.style.color=color||'var(--text2)';}
+}
+async function requestReviewCameraPermission(){
+  const status=document.getElementById('review-camera-permission-status');
+  if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)){
+    if(status){status.textContent='이 브라우저에서는 카메라를 사용할 수 없어요. Chrome 또는 Safari 최신 버전으로 열어 주세요.';status.style.color='var(--red)';}
+    return;
+  }
+  if(status){status.textContent='브라우저의 카메라 허용 창을 확인해 주세요...';status.style.color='var(--amber)';}
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});
+    stream.getTracks().forEach(function(t){t.stop();});
+    if(status){status.textContent='카메라 허용 완료! 이제 복습영상을 재생할 수 있어요.';status.style.color='var(--green)';}
+    notify('카메라 허용이 완료됐어요.','success');
+  }catch(err){
+    if(status){status.textContent='카메라가 차단되어 있어요. 주소창의 자물쇠/카메라 아이콘 → 카메라 → 허용 후 새로고침해 주세요.';status.style.color='var(--red)';}
+    alert('카메라 허용이 필요해요.\n\n주소창 옆 자물쇠 또는 카메라 아이콘을 누르고 [카메라]를 [허용]으로 바꾼 뒤 새로고침해 주세요.\n\n아이폰: 설정 → Safari → 카메라 → 허용\n안드로이드: Chrome → 설정 → 사이트 설정 → 카메라 → 허용');
+  }
 }
 function videoPresenceAlert(reason,detail){
   const now=Date.now();if(now-videoPresenceLastAlert<120000)return;
@@ -10319,7 +10342,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=72', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=73', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
