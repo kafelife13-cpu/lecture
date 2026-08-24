@@ -1097,12 +1097,6 @@ input,button{font-family:var(--font)}
       </div>
       <div class="panel" id="panel-review">
         <div class="page-header"><h1>복습 신청</h1><p>복습하고 싶은 영상을 신청하면 강사가 승인 후 시청 가능합니다</p></div>
-        <div class="card" style="margin-bottom:12px;border-left:3px solid var(--accent)">
-          <div style="padding:12px 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-            <div style="flex:1;min-width:190px"><div style="font-size:13px;font-weight:800">📷 복습영상 카메라 준비</div><div id="review-camera-permission-status" style="font-size:11px;color:var(--text2);margin-top:3px">영상을 보기 전에 아래 버튼을 눌러 카메라를 허용해 주세요.</div></div>
-            <button class="btn blue" onclick="requestReviewCameraPermission()">카메라 허용하기</button>
-          </div>
-        </div>
         <div id="student-review-list"></div>
       </div>
       <div class="panel" id="panel-mypage">
@@ -3953,6 +3947,9 @@ async function stopVideoPresenceMonitor(){
   const box=document.getElementById('video-presence-box');if(box)box.style.display='none';
 }
 async function startVideoPresenceMonitor(videoInfo){
+  // 학생들의 카메라 권한 설정이 완료될 때까지 자리 이탈 감지를 일시 중지합니다.
+  return true;
+  /*
   if(videoInfo.category!=='review')return true;
   if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)){alert('이 기기에서는 카메라 자리 확인을 지원하지 않아 보강영상을 재생할 수 없어요.');return false;}
   const agreed=confirm('보강영상 시청 중 자리 이탈 확인을 위해 전면 카메라를 사용합니다.\n\n얼굴 영상이나 사진은 저장하지 않고, 얼굴이 15초 이상 보이지 않거나 화면을 벗어난 경우에만 강사에게 알림이 전송됩니다. 카메라 사용을 허용할까요?');
@@ -3992,6 +3989,7 @@ async function startVideoPresenceMonitor(videoInfo){
     alert('보강영상 시청에는 전면 카메라 허용이 필요해요. 브라우저 설정에서 카메라를 허용한 뒤 다시 시도해 주세요.');
     return false;
   }
+  */
 }
 document.addEventListener('visibilitychange',function(){
   if(!videoPresenceStream||!currentVid)return;
@@ -10342,7 +10340,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=73', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=74', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
