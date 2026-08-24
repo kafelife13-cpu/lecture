@@ -287,7 +287,7 @@ input,button{font-family:var(--font)}
       <div style="font-size:15px;font-weight:700;margin-bottom:1.25rem">학생 회원가입</div>
       <div class="form-group"><label>이름</label><input id="su-name" class="form-input" type="text" placeholder="실명 입력"/></div>
       <div class="form-group"><label>아이디</label><input id="su-id" class="form-input" type="text" placeholder="영문+숫자 조합"/></div>
-      <div class="form-group"><label>비밀번호</label><input id="su-pw" class="form-input" type="password" placeholder="4자 이상"/></div>
+      <div class="form-group"><label>비밀번호</label><input id="su-pw" class="form-input" type="password" placeholder="8자 이상" autocomplete="new-password"/></div>
       <div class="form-group"><label>비밀번호 확인</label><input id="su-pw2" class="form-input" type="password" placeholder="비밀번호 재입력" onkeydown="if(event.key==='Enter')doSignup()"/></div>
       <button class="btn-primary" id="signup-btn" onclick="doSignup()">가입 신청</button>
       <div id="signup-err" class="err-msg"></div>
@@ -1942,7 +1942,7 @@ async function loadAll(attempt=0){
       sb.from('progress').select('*'),
       sb.from('video_access').select('*'),
       sb.from('access_requests').select('*'),
-      sb.from('app_settings').select('*').eq('id','default').maybeSingle(),
+      sb.from('app_settings').select('id,ai_provider,vocab_start_date,updated_at').eq('id','default').maybeSingle(),
       sb.from('video_access_log').select('*').order('granted_at',{ascending:false})
     ]);
     if(u.error)throw new Error(u.error.message);
@@ -1976,7 +1976,7 @@ function selectRole(r){
   if(r==='teacher'){
     apiGroup.style.display='block';
     var providerSel=document.getElementById('login-ai-provider');
-    if(providerSel)providerSel.value=localStorage.getItem('ai_provider')||'claude';
+    if(providerSel)providerSel.value=sessionStorage.getItem('ai_provider')||'claude';
     onLoginAIProviderChange();
   }else{
     apiGroup.style.display='none';
@@ -1984,7 +1984,7 @@ function selectRole(r){
 }
 function onLoginAIProviderChange(){
   var provider=document.getElementById('login-ai-provider')?.value||'claude';
-  var saved=localStorage.getItem(provider+'_api_key');
+    var saved=sessionStorage.getItem(provider+'_api_key');
   var placeholders={claude:'sk-ant-api03-...',openai:'sk-...',gemini:'AIza...'};
   var apEl=document.getElementById('login-apikey');
   var hint=document.getElementById('api-key-hint');
@@ -2001,19 +2001,11 @@ async function doLogin(){
   if(!id||!pw){err.textContent='아이디와 비밀번호를 입력하세요.';return;}
   if(currentRole==='teacher'){
     const provider=document.getElementById('login-ai-provider')?.value||'claude';
-    localStorage.setItem('ai_provider',provider);
+    sessionStorage.setItem('ai_provider',provider);
     const inputKey=document.getElementById('login-apikey').value.trim();
-    if(inputKey)localStorage.setItem(provider+'_api_key',inputKey);
-    // 로그인할 때마다 브라우저에 저장된 키를 공유 저장소(app_settings)와 동기화 — 예전에 저장해둔 키도 학생 화면에서 쓸 수 있게
-    const keyToSync=inputKey||localStorage.getItem(provider+'_api_key');
-    if(keyToSync){
-      const settingsPatch={id:'default',ai_provider:provider,updated_at:new Date().toISOString()};
-      settingsPatch[provider+'_api_key']=keyToSync;
-      sb.from('app_settings').upsert(settingsPatch,{onConflict:'id'}).then(function(res){
-        if(!res.error)sharedAISettings=Object.assign({},sharedAISettings,settingsPatch);
-      });
-    }
-    CLAUDE_API_KEY=localStorage.getItem('claude_api_key')||CLAUDE_API_KEY;
+    if(inputKey)sessionStorage.setItem(provider+'_api_key',inputKey);
+    ['claude','openai','gemini'].forEach(function(p){localStorage.removeItem(p+'_api_key');});
+    CLAUDE_API_KEY=sessionStorage.getItem('claude_api_key')||'';
   }
   btn.disabled=true;btn.textContent='로그인 중...';
   try{
@@ -2039,7 +2031,8 @@ async function doSignup(){
   err.textContent='';
   if(!name||!id||!pw||!pw2){err.textContent='모든 항목을 입력하세요.';return;}
   if(!/^[a-zA-Z0-9_]+$/.test(id)){err.textContent='아이디는 영문/숫자/밑줄만 가능합니다.';return;}
-  if(pw.length<4){err.textContent='비밀번호는 4자 이상이어야 합니다.';return;}
+  if(pw.length<8){err.textContent='비밀번호는 8자 이상이어야 합니다.';return;}
+  if(pw.toLowerCase().includes(id.toLowerCase())||pw.includes(name)){err.textContent='비밀번호에 이름이나 아이디를 포함할 수 없습니다.';return;}
   if(pw!==pw2){err.textContent='비밀번호가 일치하지 않습니다.';return;}
   btn.disabled=true;btn.textContent='신청 중...';
   try{
@@ -2075,13 +2068,38 @@ function doLogout(){
    (같은 Supabase 계정으로 로그인되는 것과 동일해서, 데이터는 평소처럼 그 학생 이름/아이디로 정확히 저장됨)
    ════════════════════════════════════════════ */
 var padSelectedDay=['일','월','화','수','목','금','토'][new Date().getDay()];
+var padLockTimer=null;
+const PAD_AUTH_KEY='clinic_pad_authorized_until';
+const PAD_AUTH_MS=8*60*60*1000;
+function padMaskedName(name){
+  name=String(name||'학생');if(name.length<=1)return name;if(name.length===2)return name[0]+'○';
+  return name[0]+'○'.repeat(name.length-1);
+}
+function schedulePadAutoLock(){
+  if(padLockTimer)clearTimeout(padLockTimer);
+  const until=Number(sessionStorage.getItem(PAD_AUTH_KEY)||0),left=until-Date.now();
+  if(left<=0){exitPadMode();return;}
+  padLockTimer=setTimeout(function(){alert('패드 모드 보안 시간이 만료됐어요. 강사 인증 후 다시 이용해 주세요.');exitPadMode();},Math.min(left,2147483647));
+}
 
 async function enterPadMode(){
   const btn=document.getElementById('pad-mode-btn');
   if(btn){btn.disabled=true;btn.textContent='불러오는 중...';}
   try{
-    await Promise.all([loadAll(),loadClinicData()]);
+    await loadAll();
+    var authorizedUntil=Number(sessionStorage.getItem(PAD_AUTH_KEY)||0);
+    if(authorizedUntil<=Date.now()){
+      const teacherId=(document.getElementById('login-id')?.value||'').trim();
+      const teacherPw=document.getElementById('login-pw')?.value||'';
+      if(!teacherId||!teacherPw){alert('강사 아이디와 비밀번호를 로그인 칸에 입력한 뒤 패드 모드를 눌러주세요.');return;}
+      const teacher=db.users.find(function(u){return u.id===teacherId&&u.pw===teacherPw&&u.role==='teacher'&&u.status!=='pending';});
+      if(!teacher){alert('강사 인증에 실패했습니다. 아이디와 비밀번호를 확인해 주세요.');return;}
+      document.getElementById('login-pw').value='';
+      authorizedUntil=Date.now()+PAD_AUTH_MS;sessionStorage.setItem(PAD_AUTH_KEY,String(authorizedUntil));
+    }
+    await loadClinicData();
     padMode=true;
+    schedulePadAutoLock();
     showPage('page-pad-picker');
     renderPadPicker();
   }catch(e){
@@ -2091,6 +2109,8 @@ async function enterPadMode(){
   }
 }
 function exitPadMode(){
+  if(padLockTimer){clearTimeout(padLockTimer);padLockTimer=null;}
+  sessionStorage.removeItem(PAD_AUTH_KEY);
   padMode=false;session=null;db={users:[],videos:[],progress:[],access:[],requests:[],accessLog:[]};
   localStorage.removeItem('lms_sess');
   showPage('page-login');
@@ -2118,16 +2138,15 @@ function renderPadPicker(){
   const summary=document.getElementById('pad-day-summary');
   if(summary)summary.textContent=padSelectedDay+'요일 신청 학생 '+list.length+'명';
   if(!list.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text3);font-size:13px;padding:2rem 0">'+padSelectedDay+'요일에 확정된 학생이 없어요</div>';return;}
-  grid.innerHTML=list.map(function(s){
-    return '<button onclick="padPickStudent(\''+s.id+'\')" style="padding:16px 8px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:14px;font-weight:600;cursor:pointer">'+s.name+'</button>';
+  grid.innerHTML=list.filter(function(s){return /^[a-zA-Z0-9_]+$/.test(s.id);}).map(function(s){
+    return '<button onclick="padPickStudent(\''+s.id+'\')" style="padding:16px 8px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:14px;font-weight:600;cursor:pointer">'+escHtml(padMaskedName(s.name))+'<div style="font-size:10px;color:var(--text3);margin-top:4px">'+escHtml(studentClassLabel(s.group_id))+'</div></button>';
   }).join('');
 }
 function padPickStudent(id){
   const u=db.users.find(function(x){return x.id===id;});
   if(!u){alert('학생 정보를 찾을 수 없어요.');return;}
-  if(!confirm(u.name+' 학생 맞나요?'))return;
+  if(!confirm('선택한 학생이 본인인가요?'))return;
   session=u;
-  localStorage.setItem('lms_sess',JSON.stringify({id:u.id,role:u.role}));
   launchStudent();
 }
 var studentPreviewMode=false;
@@ -3041,6 +3060,8 @@ async function addStudent(){
   const schoolEl=document.getElementById('s-school');
   const school_id=(schoolEl&&schoolEl.value)||null;
   if(!name||!id||!pw){notify('모든 항목을 입력하세요.','error');return;}
+  if(!/^[a-zA-Z0-9_]+$/.test(id)){notify('아이디는 영문·숫자·밑줄만 사용할 수 있어요.','error');return;}
+  if(pw.length<8){notify('새 학생 비밀번호는 8자 이상으로 설정해 주세요.','error');return;}
   if(db.users.find(u=>u.id===id)){notify('이미 존재하는 아이디입니다.','error');return;}
   const{error}=await sb.from('users').insert({id,name,pw,role:'student',status:'active',school_id});
   if(error){notify('등록 실패: '+error.message,'error');return;}
@@ -3603,6 +3624,7 @@ function closeDetail(){document.getElementById('modal-detail').classList.remove(
 
 /* ===== STUDENT NAV ===== */
 function sNav(panel){
+  if(padMode&&panel!=='exam'){panel='exam';notify('패드 모드에서는 온라인 채점만 이용할 수 있어요.','info');}
   document.querySelectorAll('#page-student .nav-item').forEach(n=>n.classList.toggle('active',n.dataset.p===panel));
   document.querySelectorAll('#page-student .panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+panel));
   document.querySelectorAll('#s-tabbar .mobile-tab').forEach(b=>b.classList.toggle('active',b.dataset.ms===panel));
@@ -5729,17 +5751,17 @@ async function submitFreeQa(){
 var qaChatHistory=[];
 var qwSolText='';
 var qwSolFile=null;
-var CLAUDE_API_KEY=localStorage.getItem('claude_api_key')||'';
+var CLAUDE_API_KEY=sessionStorage.getItem('claude_api_key')||'';
 
 // ── 시험 등록 AI 분석용 provider 선택 (Claude/GPT/Gemini) ──
-function getAIProvider(){return localStorage.getItem('ai_provider')||(sharedAISettings&&sharedAISettings.ai_provider)||'claude';}
+function getAIProvider(){return sessionStorage.getItem('ai_provider')||(sharedAISettings&&sharedAISettings.ai_provider)||'claude';}
 function getAIKey(provider){
   provider=provider||getAIProvider();
-  return localStorage.getItem(provider+'_api_key')||(sharedAISettings&&sharedAISettings[provider+'_api_key'])||'';
+  return sessionStorage.getItem(provider+'_api_key')||'';
 }
 function aiProviderLabel(provider){return provider==='openai'?'GPT':provider==='gemini'?'Gemini':'Claude';}
-// OMR 사진 판독은 항상 Claude 비전을 사용 (학생 화면에서도 동작하도록 공유 설정에서 키를 가져옴)
-function getSharedClaudeKey(){return localStorage.getItem('claude_api_key')||(sharedAISettings&&sharedAISettings.claude_api_key)||'';}
+// 비밀키는 현재 브라우저 탭 세션에만 두고 DB나 영구 저장소에는 보관하지 않는다.
+function getSharedClaudeKey(){return sessionStorage.getItem('claude_api_key')||'';}
 
 async function callTextAI(prompt,maxTokens){
   const provider=getAIProvider();
@@ -6879,16 +6901,7 @@ async function tSaveVocabStart(){
         if(user){
           session=user;hideLoading();
           if(parsed.role==='teacher'){
-            // 저장된 세션으로 바로 복원되는 경우에도 로컬에 저장된 AI 키를 공유 저장소와 동기화
-            var provider=localStorage.getItem('ai_provider')||'claude';
-            var keyToSync=localStorage.getItem(provider+'_api_key');
-            if(keyToSync&&(!sharedAISettings||sharedAISettings[provider+'_api_key']!==keyToSync)){
-              var patch={id:'default',ai_provider:provider,updated_at:new Date().toISOString()};
-              patch[provider+'_api_key']=keyToSync;
-              sb.from('app_settings').upsert(patch,{onConflict:'id'}).then(function(res){
-                if(!res.error)sharedAISettings=Object.assign({},sharedAISettings,patch);
-              });
-            }
+            ['claude','openai','gemini'].forEach(function(p){localStorage.removeItem(p+'_api_key');});
             launchTeacher();
           }else launchStudent();
           return;
@@ -10188,7 +10201,7 @@ function sExamBack(){
 }
 
 async function sExamAnalyze(){
-  CLAUDE_API_KEY=localStorage.getItem('claude_api_key')||CLAUDE_API_KEY;
+  CLAUDE_API_KEY=sessionStorage.getItem('claude_api_key')||CLAUDE_API_KEY;
   if(!CLAUDE_API_KEY){alert('Claude API 키가 없어요. 로그아웃 후 다시 로그인해서 키를 입력해 주세요.');return;}
   if(!sExamData)return;
   const wrongs=sExamData.questions.reduce((acc,q,i)=>{
@@ -10349,7 +10362,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=68', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=69', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
