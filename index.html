@@ -335,7 +335,7 @@ input,button{font-family:var(--font)}
         <div class="nav-item" onclick="tNav('students')" data-p="students" id="nav-students"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>학생 관리</div>
         <div class="nav-item" onclick="tNav('student-preview')" data-p="student-preview"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5C21.27 7.61 17 4.5 12 4.5zm0 12.5a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-2a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>학생 화면 확인</div>
         <div class="nav-item" onclick="tNav('access')" data-p="access" id="nav-access"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습 신청 관리</div>
-        <div class="nav-item" onclick="tNav('review-performance')" data-p="review-performance"><svg viewBox="0 0 24 24"><path d="M3 3h18v2H3V3zm0 4h18v14H3V7zm4 3v2h10v-2H7zm0 4v2h7v-2H7z"/></svg>복습영상 수행</div>
+        <div class="nav-item" onclick="tNav('review-performance')" data-p="review-performance"><svg viewBox="0 0 24 24"><path d="M3 3h18v2H3V3zm0 4h18v14H3V7zm4 3v2h10v-2H7zm0 4v2h7v-2H7z"/></svg>영상 보강 시청관리</div>
         <div class="nav-item" onclick="tNav('progress')" data-p="progress"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>진도 현황</div>
         <div class="nav-item" onclick="tNav('qa')" data-p="qa" id="nav-qa" style="position:relative"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>과제 QnA 관리</div>
         <div class="nav-item" onclick="tNav('cert')" data-p="cert"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증 관리</div>
@@ -526,12 +526,12 @@ input,button{font-family:var(--font)}
         </div>
       </div>
 
-      <!-- 복습영상 수행 확인 -->
+      <!-- 영상 보강 시청관리 -->
       <div class="panel" id="panel-review-performance">
-        <div class="page-header"><h1>📺 복습영상 수행 확인</h1><p>지난주에 배정한 복습영상을 반별로 얼마나 시청했는지 확인하세요</p></div>
+        <div class="page-header"><h1>📺 영상 보강 시청관리</h1><p>이번 주에 배정한 보강영상의 시청 현황을 반별로 확인하세요</p></div>
         <div class="card" style="border:2px solid var(--red)">
           <div class="card-body">
-            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px"><label style="font-size:12px;font-weight:700">확인할 주</label><input type="date" id="review-performance-week" class="form-input" style="width:170px" onchange="renderReviewPerformance()"><span style="font-size:11px;color:var(--text3)">선택한 날짜가 포함된 월~일 기준</span></div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px"><label style="font-size:12px;font-weight:700">확인할 주</label><input type="date" id="review-performance-week" class="form-input" style="width:170px" onchange="renderReviewPerformance()"><button class="btn blue btn-sm" onclick="reviewPerformanceUseThisWeek()">이번 주</button><span style="font-size:11px;color:var(--text3)">선택한 날짜가 포함된 월~일 기준</span></div>
             <div id="review-performance-class-tabs" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"></div>
             <div id="review-performance-summary"></div>
             <div id="review-performance-list" style="overflow-x:auto"></div>
@@ -1044,7 +1044,7 @@ input,button{font-family:var(--font)}
     <button class="mobile-tab" onclick="tNav('videos')" data-mt="videos" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-02-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의</button>
     <button class="mobile-tab" onclick="tNav('clinic-videos')" data-mt="clinic-videos" style="min-width:68px"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4V4zm6 3v10l7-5-7-5z"/></svg>클리닉영상</button>
     <button class="mobile-tab" onclick="tNav('access')" data-mt="access" id="mt-access" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습관리</button>
-    <button class="mobile-tab" onclick="tNav('review-performance')" data-mt="review-performance" style="min-width:62px"><svg viewBox="0 0 24 24"><path d="M3 3h18v2H3V3zm0 4h18v14H3V7zm4 3v2h10v-2H7zm0 4v2h7v-2H7z"/></svg>복습수행</button>
+    <button class="mobile-tab" onclick="tNav('review-performance')" data-mt="review-performance" style="min-width:68px"><svg viewBox="0 0 24 24"><path d="M3 3h18v2H3V3zm0 4h18v14H3V7zm4 3v2h10v-2H7zm0 4v2h7v-2H7z"/></svg>보강시청</button>
     <button class="mobile-tab" onclick="tNav('students')" data-mt="students" id="mt-students-t" style="position:relative" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>학생</button>
     <button class="mobile-tab" onclick="tNav('student-preview')" data-mt="student-preview" style="min-width:62px"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5C21.27 7.61 17 4.5 12 4.5zm0 12.5a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-2a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>학생화면</button>
     <button class="mobile-tab" onclick="tNav('progress')" data-mt="progress" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>진도</button>
@@ -3638,14 +3638,21 @@ async function saveClinicRequiredStudents(){
 var reviewPerformanceClass='';
 function reviewPerformanceSetClass(id){reviewPerformanceClass=id;renderReviewPerformance();}
 function reviewPerformanceDefaultDate(){
-  const d=weekMonday(new Date());d.setDate(d.getDate()-7);
+  const d=weekMonday(new Date());
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function reviewPerformanceUseThisWeek(){
+  const el=document.getElementById('review-performance-week');
+  if(el)el.value=reviewPerformanceDefaultDate();
+  renderReviewPerformance();
 }
 function renderReviewPerformance(){
   const dateEl=document.getElementById('review-performance-week'),listEl=document.getElementById('review-performance-list'),sumEl=document.getElementById('review-performance-summary');
   if(!dateEl||!listEl||!sumEl)return;
   if(!dateEl.value)dateEl.value=reviewPerformanceDefaultDate();
   const start=weekMonday(new Date(dateEl.value+'T12:00:00')),end=new Date(start);end.setDate(end.getDate()+7);
+  const endDisplay=new Date(end);endDisplay.setDate(endDisplay.getDate()-1);
+  const rangeLabel=(start.getMonth()+1)+'/'+start.getDate()+' ~ '+(endDisplay.getMonth()+1)+'/'+endDisplay.getDate();
   const tabs=document.getElementById('review-performance-class-tabs');
   const classes=[['','전체 반']].concat((STUDENT_CLASSES||[]).map(c=>[c.id,c.label]));
   tabs.innerHTML=classes.map(c=>'<button class="btn btn-sm '+(reviewPerformanceClass===c[0]?'blue':'')+'" onclick="reviewPerformanceSetClass(\''+c[0]+'\')">'+c[1]+'</button>').join('');
@@ -3660,7 +3667,7 @@ function renderReviewPerformance(){
     return{student:s,items:items,done:items.every(x=>x.done),avg:Math.round(items.reduce((n,x)=>n+x.pct,0)/items.length)};
   }).sort((a,b)=>(a.done-b.done)||a.student.name.localeCompare(b.student.name,'ko'));
   const missing=rows.filter(r=>!r.done),completed=rows.length-missing.length;
-  sumEl.innerHTML='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px"><div class="stat"><div class="stat-label">배정 학생</div><div class="stat-val blue">'+rows.length+'명</div></div><div class="stat"><div class="stat-label">모두 완료</div><div class="stat-val green">'+completed+'명</div></div><div class="stat"><div class="stat-label">미완료</div><div class="stat-val" style="color:var(--red)">'+missing.length+'명</div></div></div>'+
+  sumEl.innerHTML='<div style="font-size:13px;font-weight:800;color:var(--accent);margin:4px 0 10px">📅 '+rangeLabel+' · '+(reviewPerformanceClass?studentClassLabel(reviewPerformanceClass):'전체 반')+'</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px"><div class="stat"><div class="stat-label">배정 학생</div><div class="stat-val blue">'+rows.length+'명</div></div><div class="stat"><div class="stat-label">모두 완료</div><div class="stat-val green">'+completed+'명</div></div><div class="stat"><div class="stat-label">미완료</div><div class="stat-val" style="color:var(--red)">'+missing.length+'명</div></div></div>'+
     (missing.length?'<div style="padding:10px 12px;background:var(--red-bg);border-radius:8px;color:var(--red);font-size:13px;font-weight:700;margin-bottom:10px">아직 안 본 학생: '+missing.map(r=>r.student.name).join(', ')+'</div>':'');
   if(!rows.length){listEl.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px">이 주차·반에 배정된 복습영상이 없습니다.</div>';return;}
   listEl.innerHTML='<table class="tbl"><thead><tr><th>학생</th><th>반</th><th>배정 영상과 시청률</th><th>평균</th><th>수행</th></tr></thead><tbody>'+rows.map(r=>'<tr style="'+(r.done?'':'background:var(--red-bg)')+'"><td style="font-weight:700;white-space:nowrap">'+r.student.name+'</td><td style="white-space:nowrap">'+studentClassLabel(r.student.group_id)+'</td><td>'+r.items.map(x=>'<div style="margin:3px 0">'+(x.done?'✅':'❌')+' '+x.title+' <b style="color:'+pctColor(x.pct)+'">'+x.pct+'%</b></div>').join('')+'</td><td style="font-weight:800;color:'+pctColor(r.avg)+'">'+r.avg+'%</td><td><span class="badge '+(r.done?'done':'none')+'">'+(r.done?'완료':'미완료')+'</span></td></tr>').join('')+'</tbody></table>';
