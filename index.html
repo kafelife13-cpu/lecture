@@ -2012,9 +2012,9 @@ async function doLogin(){
   }
   btn.disabled=true;btn.textContent='로그인 중...';
   try{
-    const result=await sb.from('users').select('*').eq('id',id).eq('role',currentRole).maybeSingle();
+    const result=await sb.rpc('authenticate_user',{p_id:id,p_password:pw,p_role:currentRole});
     const user=result.data;
-    if(result.error||!user||user.pw!==pw){
+    if(result.error||!user){
       const failures=Number(sessionStorage.getItem('login_failures')||0)+1;sessionStorage.setItem('login_failures',String(failures));
       if(failures>=5){sessionStorage.setItem('login_lock_until',String(Date.now()+5*60*1000));sessionStorage.removeItem('login_failures');err.textContent='로그인에 5회 실패해 5분 동안 잠겼습니다.';}
       else err.textContent='아이디 또는 비밀번호가 올바르지 않습니다. ('+failures+'/5)';
@@ -2022,7 +2022,7 @@ async function doLogin(){
     }
     if(user.status==='pending'){err.textContent='강사 승인 대기 중입니다.';return;}
     sessionStorage.removeItem('login_failures');sessionStorage.removeItem('login_lock_until');
-    delete user.pw;session=user;
+    session=user;
     await loadAll();
     await loadQaData();
     await loadCertData();
@@ -2105,9 +2105,9 @@ async function enterPadMode(){
       const teacherId=(document.getElementById('login-id')?.value||'').trim();
       const teacherPw=document.getElementById('login-pw')?.value||'';
       if(!teacherId||!teacherPw){alert('강사 아이디와 비밀번호를 로그인 칸에 입력한 뒤 패드 모드를 눌러주세요.');return;}
-      const authRes=await sb.from('users').select('id,pw,status').eq('id',teacherId).eq('role','teacher').maybeSingle();
+      const authRes=await sb.rpc('authenticate_user',{p_id:teacherId,p_password:teacherPw,p_role:'teacher'});
       const teacher=authRes.data;
-      if(authRes.error||!teacher||teacher.pw!==teacherPw||teacher.status==='pending'){alert('강사 인증에 실패했습니다. 아이디와 비밀번호를 확인해 주세요.');return;}
+      if(authRes.error||!teacher||teacher.status==='pending'){alert('강사 인증에 실패했습니다. 아이디와 비밀번호를 확인해 주세요.');return;}
       document.getElementById('login-pw').value='';
       authorizedUntil=Date.now()+PAD_AUTH_MS;sessionStorage.setItem(PAD_AUTH_KEY,String(authorizedUntil));
     }
@@ -10357,7 +10357,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=70', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=71', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
