@@ -2,13 +2,11 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8"/>
-<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#4f7cff">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="국어왕">
-<link rel="apple-touch-icon" href="icon-192.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <title>국어왕 김까까 온라인 학습</title>
 <meta name="description" content="서로국어 김이내T 온라인 학습 시스템"/>
@@ -19,10 +17,10 @@
 <meta name="mobile-web-app-capable" content="yes"/>
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%234f7cff'/><text y='.9em' font-size='70' x='50%' dominant-baseline='middle' text-anchor='middle'>📚</text></svg>"/>
 <link rel="manifest" href="manifest.json"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 (function(){
   var tag=document.createElement('script');
@@ -1097,7 +1095,7 @@ input,button{font-family:var(--font)}
       </div>
       <div class="panel" id="panel-review">
         <div class="page-header"><h1>복습 신청</h1><p>복습하고 싶은 영상을 신청하면 강사가 승인 후 시청 가능합니다</p></div>
-        <div class="card" style="display:none;margin-bottom:12px;border-left:3px solid var(--accent)">
+        <div class="card" style="margin-bottom:12px;border-left:3px solid var(--accent)">
           <div style="padding:12px 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
             <div style="flex:1;min-width:190px"><div style="font-size:13px;font-weight:800">📷 복습영상 카메라 준비</div><div id="review-camera-permission-status" style="font-size:11px;color:var(--text2);margin-top:3px">버튼을 누른 뒤 Chrome 공식 권한창에서 카메라를 허용해 주세요.</div></div>
             <button class="btn blue" onclick="requestReviewCameraPermission()">카메라 권한 요청</button>
@@ -1927,6 +1925,17 @@ function fmtTime(sec){if(!sec||isNaN(sec)||sec<=0)return '0초';const h=Math.flo
 function notify(msg,type='info'){const n=document.getElementById('notif');n.textContent=msg;n.className=`notif show ${type}`;setTimeout(()=>n.classList.remove('show'),3000);}
 function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');}
 function hideLoading(){document.getElementById('loading-screen').classList.add('hide');}
+var externalScriptLoads={};
+function loadExternalScript(src,test){
+  if(test())return Promise.resolve();
+  if(externalScriptLoads[src])return externalScriptLoads[src];
+  externalScriptLoads[src]=new Promise(function(resolve,reject){
+    var script=document.createElement('script');script.src=src;script.onload=function(){test()?resolve():reject(new Error('라이브러리를 불러오지 못했어요.'));};script.onerror=function(){reject(new Error('인터넷 연결을 확인해 주세요.'));};document.head.appendChild(script);
+  });
+  return externalScriptLoads[src];
+}
+function ensurePdfJs(){return loadExternalScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',function(){return !!window['pdfjs-dist/build/pdf'];}).then(function(){return window['pdfjs-dist/build/pdf'];});}
+function ensureXlsx(){return loadExternalScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',function(){return typeof XLSX!=='undefined';});}
 
 /* ===== DB ===== */
 async function loadAll(attempt=0){
@@ -3953,8 +3962,6 @@ async function stopVideoPresenceMonitor(){
   const box=document.getElementById('video-presence-box');if(box)box.style.display='none';
 }
 async function startVideoPresenceMonitor(videoInfo){
-  // TEMP: 복습영상 카메라 확인 비활성화 (2026-08-24)
-  return true;
   if(videoInfo.category!=='review')return true;
   if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)){alert('이 기기에서는 카메라 자리 확인을 지원하지 않아 보강영상을 재생할 수 없어요.');return false;}
   const box=document.getElementById('video-presence-box'),cam=document.getElementById('video-presence-camera');
@@ -5819,8 +5826,7 @@ async function extractPdfText(file){
     var reader=new FileReader();
     reader.onload=async function(e){
       try{
-        var pdfjsLib=window['pdfjs-dist/build/pdf'];
-        if(!pdfjsLib){resolve('');return;}
+        var pdfjsLib=await ensurePdfJs();
         pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
         var pdf=await pdfjsLib.getDocument({data:e.target.result}).promise;
         var text='';
@@ -7872,10 +7878,10 @@ function tResCopyNotifyMessage(rowIndex){
   });
 }
 
-function tResExportExcel(){
+async function tResExportExcel(){
   var exam=tResCurrentExam,responses=tResCurrentResponses;
   if(!exam||!responses||!responses.length){alert('데이터가 없어요.');return;}
-  if(typeof XLSX==='undefined'){alert('엑셀 기능을 불러오지 못했어요. 인터넷 연결을 확인하고 새로고침 해주세요.');return;}
+  try{await ensureXlsx();}catch(e){alert('엑셀 기능을 불러오지 못했어요. 인터넷 연결을 확인해 주세요.');return;}
   var summaryRows=tResBuildSummaryRows(exam,responses);
   var oxRows=tResBuildOxRows(exam,responses);
   var wb=XLSX.utils.book_new();
@@ -8520,8 +8526,7 @@ function omrBlobToBase64(blob){
 }
 async function omrPdfFileToImages(file){
   const buf=await file.arrayBuffer();
-  const pdfjsLib=window['pdfjs-dist/build/pdf'];
-  if(!pdfjsLib)return[];
+  const pdfjsLib=await ensurePdfJs();
   pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
   const pdf=await pdfjsLib.getDocument({data:buf}).promise;
   const blobs=[];
