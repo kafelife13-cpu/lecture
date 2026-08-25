@@ -974,6 +974,11 @@ input,button{font-family:var(--font)}
               <div class="card-head"><h3>발송 대상</h3><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"><select id="tres-notify-group" class="form-select" style="width:auto;min-width:145px;padding:6px 28px 6px 9px;font-size:12px" onchange="renderTResNotify()"><option value="">전체 반</option></select><button class="btn btn-sm" onclick="tResSelectNotifyType('taken')">응시 완료자만 선택</button><button class="btn btn-sm" onclick="tResSelectNotifyType('missing')">미응시자만 선택</button><button class="btn btn-sm" onclick="tResToggleNotifyAll(true)">전체 선택</button><button class="btn btn-sm" onclick="tResToggleNotifyAll(false)">선택 해제</button><button class="btn btn-sm blue" id="tres-solapi-send" onclick="tResSendSolapi()">📨 솔라피 문자 발송</button></div></div>
               <div id="tres-notify-list" style="padding:0 1.25rem 1rem"></div>
             </div>
+            <div class="card" style="margin-top:1rem">
+              <div class="card-head"><h3>📋 메시지 발송 내역</h3><button class="btn btn-sm" onclick="loadMessageSendLogs()">새로고침</button></div>
+              <div style="padding:0 1.25rem 1rem;font-size:11px;color:var(--text3)">솔라피가 접수한 요청과 요청 단계에서 실패한 내역입니다. 통신사 최종 도착 여부는 솔라피 결과 웹훅 연결 후 표시할 수 있습니다.</div>
+              <div id="tres-message-logs" style="padding:0 1.25rem 1rem"><div style="color:var(--text3);font-size:12px">발송 내역을 불러오는 중...</div></div>
+            </div>
           </div>
         </div>
       </div>
@@ -7453,7 +7458,7 @@ function tResTab(tab){
   });
   if(tab==='ranking')renderTResRanking();
   if(tab==='wrong')renderTResWrongStats();
-  if(tab==='notify')renderTResNotify();
+  if(tab==='notify'){renderTResNotify();loadMessageSendLogs();}
 }
 
 function renderTResWrongStats(){
@@ -7817,7 +7822,7 @@ function tResSelectNotifyType(type){
 async function tResSendSolapi(){
   var checks=Array.from(document.querySelectorAll('.tres-notify-check:checked'));
   if(!checks.length){alert('문자를 보낼 학생을 한 명 이상 선택해 주세요.');return;}
-  var messages=[];
+  var messages=[],sendRows=[];
   checks.forEach(function(check){
     var row=tResNotifyRows[Number(check.dataset.notifyIndex)];
     if(!row)return;
@@ -7825,6 +7830,7 @@ async function tResSendSolapi(){
     var phone=tResNormalizePhone(u.parent_phone);
     if(!/^01\d{8,9}$/.test(phone))return;
     messages.push({to:phone,text:row.missing?tResBuildMissingMessage(u.name,tResCurrentExam):tResBuildParentMessage(u.name,r,tResCurrentExam)});
+    sendRows.push({student_id:u.id,student_name:u.name,group_label:studentClassLabel(u.group_id||'all'),recipient_last4:phone.slice(-4)});
   });
   if(!messages.length){alert('선택한 학생의 학부모 연락처를 확인해 주세요.');return;}
   if(!confirm(messages.length+'명에게 성적 안내 문자를 발송할까요?\n\n솔라피 잔액이 차감되며, 발송 후에는 취소할 수 없습니다.'))return;
@@ -7846,12 +7852,45 @@ async function tResSendSolapi(){
       throw new Error(serverMessage||result.error.message||'문자 발송 서버 오류');
     }
     if(result.data&&result.data.error)throw new Error(result.data.error);
+    await saveMessageSendLogs(sendRows,'requested','',result.data||{});
     notify(messages.length+'명에게 솔라피 문자 발송을 요청했어요.','success');
+    loadMessageSendLogs();
   }catch(e){
+    await saveMessageSendLogs(sendRows,'failed',String(e&&e.message||e),{});
     alert('솔라피 문자 발송 실패: '+(e&&e.message||e));
+    loadMessageSendLogs();
   }finally{
     if(btn){btn.disabled=false;btn.textContent='📨 솔라피 문자 발송';}
   }
+}
+
+async function saveMessageSendLogs(rows,status,errorMessage,providerData){
+  if(!rows||!rows.length)return;
+  var providerId=String(providerData&&(providerData.groupId||providerData.group_id||providerData.messageId||providerData.message_id)||'');
+  var payload=rows.map(function(row){return{
+    exam_id:tResCurrentExam&&tResCurrentExam.id||null,exam_name:tResCurrentExam&&tResCurrentExam.name||'',
+    student_id:row.student_id||null,student_name:row.student_name||'',group_label:row.group_label||'',
+    recipient_last4:row.recipient_last4||'',provider:'solapi',status:status,
+    provider_reference:providerId||null,error_message:errorMessage||null
+  };});
+  var result=await sb.from('message_send_logs').insert(payload);
+  if(result.error)console.warn('메시지 발송 내역 저장 실패:',result.error.message);
+}
+
+async function loadMessageSendLogs(){
+  var el=document.getElementById('tres-message-logs');if(!el)return;
+  el.innerHTML='<div style="color:var(--text3);font-size:12px">발송 내역을 불러오는 중...</div>';
+  var result=await sb.from('message_send_logs').select('*').order('created_at',{ascending:false}).limit(200);
+  if(result.error){el.innerHTML='<div style="color:var(--red);font-size:12px">발송 내역을 불러오지 못했어요: '+escHtml(result.error.message)+'</div>';return;}
+  var rows=result.data||[];
+  if(!rows.length){el.innerHTML='<div style="color:var(--text3);font-size:12px">아직 발송 내역이 없습니다.</div>';return;}
+  var ok=rows.filter(function(r){return r.status==='requested'||r.status==='delivered';}).length;
+  var failed=rows.filter(function(r){return r.status==='failed'||r.status==='undelivered';}).length;
+  el.innerHTML='<div style="font-size:12px;margin-bottom:8px"><strong style="color:var(--green)">요청 성공 '+ok+'건</strong> · <strong style="color:var(--red)">실패 '+failed+'건</strong></div><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>발송 시각</th><th>학생</th><th>반</th><th>번호</th><th>시험</th><th>결과</th><th>실패 이유</th></tr></thead><tbody>'+rows.map(function(r){
+    var success=r.status==='requested'||r.status==='delivered';
+    var label=r.status==='delivered'?'도착 성공':r.status==='undelivered'?'도착 실패':r.status==='requested'?'발송 요청 성공':'요청 실패';
+    return '<tr><td style="white-space:nowrap">'+new Date(r.created_at).toLocaleString('ko-KR')+'</td><td>'+escHtml(r.student_name||'-')+'</td><td>'+escHtml(r.group_label||'-')+'</td><td>••••'+escHtml(r.recipient_last4||'')+'</td><td>'+escHtml(r.exam_name||'-')+'</td><td><span class="tag" style="color:'+(success?'var(--green)':'var(--red)')+'">'+label+'</span></td><td style="color:var(--red);max-width:260px">'+escHtml(r.error_message||'-')+'</td></tr>';
+  }).join('')+'</tbody></table></div>';
 }
 
 async function tResSetParentPhoneInline(studentId,val,inputEl){
