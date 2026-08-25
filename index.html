@@ -7819,6 +7819,23 @@ function tResSelectNotifyType(type){
   document.querySelectorAll('.tres-notify-check').forEach(function(el){el.checked=!el.disabled&&el.dataset.notifyType===type;});
 }
 
+function tResRequestSendPin(){
+  return new Promise(function(resolve){
+    var old=document.getElementById('solapi-pin-modal');if(old)old.remove();
+    var modal=document.createElement('div');modal.id='solapi-pin-modal';modal.className='modal-bg show';
+    modal.innerHTML='<div class="modal" style="max-width:360px"><h3 style="margin-bottom:8px">문자 발송 비밀번호</h3><p style="font-size:12px;color:var(--text2);margin-bottom:12px">솔라피 연동 때 정한 숫자 6자리를 입력해 주세요.</p><input id="solapi-pin-input" type="password" inputmode="numeric" maxlength="6" autocomplete="one-time-code" class="form-input" placeholder="숫자 6자리"><div id="solapi-pin-error" style="min-height:18px;margin-top:6px;font-size:11px;color:var(--red)"></div><div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px"><button type="button" class="btn" data-pin-cancel>취소</button><button type="button" class="btn blue" data-pin-submit>확인</button></div></div>';
+    document.body.appendChild(modal);
+    var input=modal.querySelector('#solapi-pin-input'),error=modal.querySelector('#solapi-pin-error');
+    function finish(value){modal.remove();resolve(value);}
+    function submit(){var value=String(input.value||'').trim();if(!/^\d{6}$/.test(value)){error.textContent='숫자 6자리를 입력해 주세요.';input.focus();return;}finish(value);}
+    modal.querySelector('[data-pin-cancel]').onclick=function(){finish(null);};
+    modal.querySelector('[data-pin-submit]').onclick=submit;
+    modal.onclick=function(e){if(e.target===modal)finish(null);};
+    input.onkeydown=function(e){if(e.key==='Enter')submit();else if(e.key==='Escape')finish(null);};
+    setTimeout(function(){input.focus();},0);
+  });
+}
+
 async function tResSendSolapi(){
   var checks=Array.from(document.querySelectorAll('.tres-notify-check:checked'));
   if(!checks.length){alert('문자를 보낼 학생을 한 명 이상 선택해 주세요.');return;}
@@ -7834,7 +7851,7 @@ async function tResSendSolapi(){
   });
   if(!messages.length){alert('선택한 학생의 학부모 연락처를 확인해 주세요.');return;}
   if(!confirm(messages.length+'명에게 성적 안내 문자를 발송할까요?\n\n솔라피 잔액이 차감되며, 발송 후에는 취소할 수 없습니다.'))return;
-  var sendPin=prompt('솔라피 연동 때 정한 문자 발송 비밀번호 6자리를 입력하세요.');
+  var sendPin=await tResRequestSendPin();
   if(sendPin===null)return;
   if(!/^\d{6}$/.test(String(sendPin).trim())){alert('문자 발송 비밀번호 숫자 6자리를 입력해 주세요.');return;}
   var btn=document.getElementById('tres-solapi-send');
@@ -7894,7 +7911,7 @@ async function loadMessageSendLogs(){
 }
 
 async function importSolapiHistory(){
-  var sendPin=prompt('문자 발송 비밀번호 6자리를 입력하세요.');
+  var sendPin=await tResRequestSendPin();
   if(sendPin===null)return;
   if(!/^\d{6}$/.test(String(sendPin).trim())){alert('문자 발송 비밀번호 숫자 6자리를 입력해 주세요.');return;}
   var months=6,start=new Date();start.setMonth(start.getMonth()-months);
