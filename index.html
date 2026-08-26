@@ -10089,14 +10089,18 @@ function sExamUploadPhotoLocal(idx,input){
 
 async function sExamSubmitScore(){
   if(!sExamData||!session){return;}
-  var total=sExamData.total_q;
-  var wrongIdxs=Object.keys(sWrongChecked).map(Number);
+  // 정답이 없는 문항은 문항 번호와 OMR 위치만 유지하고 채점에서는 제외한다.
+  // 예: 이번 한백 시험 1번(문항 오류로 채점 보류).
+  var objIdxs=[];
+  sExamData.questions.forEach(function(q,i){if(isObjectiveAnswer(q.answer))objIdxs.push(i);});
+  var total=objIdxs.length;
+  var wrongIdxs=Object.keys(sWrongChecked).map(Number).filter(function(i){return objIdxs.indexOf(i)!==-1;});
   document.getElementById('s-exam-check-err').textContent='';
   // 오답 기준으로 점수 계산 (문항별 배점 반영)
   var wrongCount=wrongIdxs.length;
   var correct=total-wrongCount;
-  var pointsTotal=sExamData.questions.reduce(function(s,q){return s+(q.points||1);},0)||total;
-  var pointsEarned=sExamData.questions.reduce(function(s,q,i){return s+(wrongIdxs.indexOf(i)>=0?0:(q.points||1));},0);
+  var pointsTotal=objIdxs.reduce(function(s,i){return s+(sExamData.questions[i].points||1);},0)||total;
+  var pointsEarned=objIdxs.reduce(function(s,i){return s+(wrongIdxs.indexOf(i)>=0?0:(sExamData.questions[i].points||1));},0);
   var score=pointsTotal?Math.round(pointsEarned/pointsTotal*100):Math.round(correct/total*100);
   var wrong=wrongIdxs.map(function(idx){
     return {idx:idx,q:sExamData.questions[idx]||{},my:sExamAnswers[idx]||'?'};
