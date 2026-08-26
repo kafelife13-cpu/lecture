@@ -2732,13 +2732,29 @@ function dashRenderOxSummary(){
   var el=document.getElementById('dash-ox-summary');
   if(!el)return;
   if(dashPerformanceFilter!=='ox'){el.style.display='none';el.innerHTML='';return;}
-  var missing=(dashPerformanceRows||[]).filter(function(r){return r.ox&&r.ox.state==='miss';});
   var days=['수','목','금','기타'];
-  var html='<div style="font-size:14px;font-weight:800;margin-bottom:10px">시험·OX 미응시자 요일별 이름</div>';
+  function names(rows){
+    return rows.length?rows.map(function(r){return dashSafeText(r.student&&r.student.name||'이름 없음');}).join(' · '):'<span style="color:var(--green)">없음</span>';
+  }
+  function statusLine(label,rows,color){
+    return '<div style="display:grid;grid-template-columns:110px 1fr;gap:8px;padding:6px 0;border-top:1px solid var(--border)"><div style="font-size:12px;font-weight:800;color:'+color+'">'+label+' · '+rows.length+'명</div><div style="font-size:13px;font-weight:700;line-height:1.6">'+names(rows)+'</div></div>';
+  }
+  var html='<div style="font-size:14px;font-weight:800;margin-bottom:10px">요일별 클리닉 테스트·OX 현황</div>';
   days.forEach(function(day){
-    var group=missing.filter(function(r){return day==='기타'?['수','목','금'].indexOf(r.clinicDay)<0:r.clinicDay===day;});
-    var names=group.map(function(r){return dashSafeText(r.student&&r.student.name||'이름 없음');});
-    html+='<div class="dash-ox-day" style="display:grid;grid-template-columns:92px 1fr;gap:10px;padding:9px 11px;margin-top:7px;border-radius:10px;background:'+(day==='수'?'rgba(245,158,11,.13)':'var(--bg3)')+';border:1px solid '+(day==='수'?'rgba(245,158,11,.35)':'var(--border)')+'"><div style="font-weight:800;color:'+(day==='수'?'var(--amber)':'var(--text2)')+'">'+day+(day==='기타'?'':'요일')+' · '+group.length+'명</div><div class="dash-ox-names" style="font-size:14px;font-weight:700;line-height:1.6">'+(names.length?names.join(' · '):'<span style="color:var(--green)">없음</span>')+'</div></div>';
+    var group=(dashPerformanceRows||[]).filter(function(r){return day==='기타'?['수','목','금'].indexOf(r.clinicDay)<0:r.clinicDay===day;});
+    if(!group.length)return;
+    var testDone=group.filter(function(r){return r.oxMeta&&r.oxMeta.testDone;});
+    var testMissing=group.filter(function(r){return r.oxMeta&&!r.oxMeta.testDone;});
+    var oxDone=group.filter(function(r){return r.oxMeta&&r.oxMeta.oxRequired&&r.oxMeta.oxDone;});
+    var oxMissing=group.filter(function(r){return r.oxMeta&&r.oxMeta.oxRequired&&!r.oxMeta.oxDone;});
+    var oxNotRequired=group.filter(function(r){return r.oxMeta&&r.oxMeta.testDone&&!r.oxMeta.oxRequired;});
+    html+='<div class="dash-ox-day" style="padding:10px 12px;margin-top:9px;border-radius:10px;background:'+(day==='수'?'rgba(245,158,11,.10)':'var(--bg3)')+';border:1px solid '+(day==='수'?'rgba(245,158,11,.35)':'var(--border)')+'">'+
+      '<div style="font-weight:900;font-size:14px;color:'+(day==='수'?'var(--amber)':'var(--accent)')+';margin-bottom:6px">'+day+(day==='기타'?'':'요일')+' 클리닉 · '+group.length+'명</div>'+
+      statusLine('테스트 응시',testDone,'var(--green)')+
+      statusLine('테스트 미응시',testMissing,'var(--red)')+
+      statusLine('OX 응시',oxDone,'var(--green)')+
+      statusLine('OX 미응시',oxMissing,'var(--red)')+
+      statusLine('OX 대상 아님',oxNotRequired,'var(--text3)')+'</div>';
   });
   el.style.display='block';el.innerHTML=html;
 }
@@ -2899,15 +2915,20 @@ async function dashLoadOx(run){
     dashPerformanceRows.forEach(function(row){
       var mySchool=schoolName(row.student.school_id||'');
       var myExams=exams.filter(function(exam){return !exam.clinic_school||!mySchool||exam.clinic_school===mySchool;});
+      row.oxMeta={testDone:false,oxRequired:false,oxDone:false};
       if(!myExams.length){row.ox=dashStatus('na','시험 없음');return;}
       var testMissing=[],oxMissing=[],done=[],noWrong=[];
       myExams.forEach(function(exam){
         var response=responses.find(function(r){return r.exam_id===exam.id&&r.student_name===row.student.name;});
         if(!response){testMissing.push(exam.name);return;}
+        row.oxMeta.testDone=true;
         var wrong=Object.keys(response.answers||{}).some(function(i){return repIsWrong(response,Number(i),exam);});
         if(!wrong)noWrong.push(exam.name);
-        else if(!attempted[row.student.id+'|'+exam.id])oxMissing.push(exam.name);
-        else done.push(exam.name);
+        else{
+          row.oxMeta.oxRequired=true;
+          if(!attempted[row.student.id+'|'+exam.id])oxMissing.push(exam.name);
+          else{done.push(exam.name);row.oxMeta.oxDone=true;}
+        }
       });
       if(testMissing.length)row.ox=dashStatus('miss','클리닉 테스트 미응시',testMissing.join(', '));
       else if(oxMissing.length)row.ox=dashStatus('miss','테스트 완료 · OX 미완료',oxMissing.join(', '));
