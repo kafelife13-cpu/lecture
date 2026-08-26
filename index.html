@@ -8877,16 +8877,20 @@ async function omrConfirmScore(){
   const name=document.getElementById('omr-student-select').value;
   if(!exam)return;
   if(!name){alert('학생이 자동 인식되지 않았어요. 위 목록에서 직접 선택해주세요.');return;}
-  const total=exam.total_q;
+  // 정답이 없는 문항(예: 전 선택지 마킹 안내 문항)은 사진에서는
+  // 번호 위치를 유지하되 점수 계산과 미응답 판정에서는 제외한다.
+  const objIdxs=[];
+  exam.questions.forEach(function(q,i){if(isObjectiveAnswer(q.answer))objIdxs.push(i);});
+  const total=objIdxs.length;
   const wrongIdxs=[];
-  for(let i=0;i<total;i++){
+  objIdxs.forEach(function(i){
     const val=omrReadAnswers[i]||'';
     const q=exam.questions[i]||{};
     if(!val||String(val)!==String(q.answer))wrongIdxs.push(i);
-  }
+  });
   const correct=total-wrongIdxs.length;
-  const pointsTotal=exam.questions.reduce(function(s,q){return s+(q.points||1);},0)||total;
-  const pointsEarned=exam.questions.reduce(function(s,q,i){return s+(wrongIdxs.indexOf(i)>=0?0:(q.points||1));},0);
+  const pointsTotal=objIdxs.reduce(function(s,i){return s+(exam.questions[i].points||1);},0)||total;
+  const pointsEarned=objIdxs.reduce(function(s,i){return s+(wrongIdxs.indexOf(i)>=0?0:(exam.questions[i].points||1));},0);
   const score=pointsTotal?Math.round(pointsEarned/pointsTotal*100):Math.round(correct/total*100);
   const savedAnswers={};
   wrongIdxs.forEach(function(idx){savedAnswers[idx]=omrReadAnswers[idx]||'';});
