@@ -8514,19 +8514,17 @@ function omrMergeReads(aiAnswers,aiUncertain,gridRead,total){
   return{answers:answers,uncertain:uncertain,method:gridRead?'ai-grid-consensus':'ai'};
 }
 async function openOmrModalForExam(examId){
-  if(!tResCurrentExam||tResCurrentExam.id!==examId){
-    const{data,error}=await sb.from('exams').select('*').eq('id',examId).single();
-    if(error||!data){alert('시험 정보를 불러올 수 없어요.');return;}
-    tResCurrentExam=data;
-  }
+  // 문항 수나 정답을 수정한 직후에도 예전 캐시를 쓰지 않도록
+  // 채점창을 열 때마다 시험 정보를 서버에서 다시 읽는다.
+  const{data,error}=await sb.from('exams').select('*').eq('id',examId).single();
+  if(error||!data){alert('시험 정보를 불러올 수 없어요.');return;}
+  tResCurrentExam=data;
   openOmrModal();
 }
 async function openManualAnswerEntryForExam(examId){
-  if(!tResCurrentExam||tResCurrentExam.id!==examId){
-    const{data,error}=await sb.from('exams').select('*').eq('id',examId).single();
-    if(error||!data){alert('시험 정보를 불러올 수 없어요.');return;}
-    tResCurrentExam=data;
-  }
+  const{data,error}=await sb.from('exams').select('*').eq('id',examId).single();
+  if(error||!data){alert('시험 정보를 불러올 수 없어요.');return;}
+  tResCurrentExam=data;
   openManualAnswerEntry();
 }
 function openManualAnswerEntry(){
