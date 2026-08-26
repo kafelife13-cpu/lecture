@@ -1835,6 +1835,13 @@ const VAPID_PUBLIC_KEY='BHZrIyaqw7HLsBN17c_VMQUI4T84fkL0gWaJEduzvtgvLuFuSSDbJlE7
 function sendTeacherAlert(text){
   sb.from('push_queue').insert({id:'teacher_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),title:'🚨 국어왕 김까까 강사 알림',body:text,target_ids:['teacher_alerts']}).then(function(){}).catch(function(){});
 }
+function sendTeacherScoreAlert(exam,score,correct,total,attempt){
+  if(!session||session.role!=='student')return;
+  var studentName=session.name||session.id||'학생';
+  var examName=exam&&exam.name||'클리닉 시험';
+  var attemptText=Number(attempt)>1?' · 재입력 '+attempt+'회차':'';
+  sendTeacherAlert('📊 성적 입력 완료 · '+studentName+' · '+examName+' · '+score+'점 ('+correct+'/'+total+')'+attemptText);
+}
 
 let session=null,currentRole='teacher',progressView='video',progressVideoPage=1,padMode=false;
 let db={users:[],videos:[],progress:[],access:[],requests:[],accessLog:[]};
@@ -9886,6 +9893,7 @@ async function sExamSubmitFull(forceSubmit){
     submitted_at:new Date().toISOString()
   },{onConflict:'exam_id,student_name'});
   if(saveRes.error){alert('채점 결과 저장에 실패했어요: '+saveRes.error.message+'\n선생님께 알려주세요.');return;}
+  sendTeacherScoreAlert(sExamData,score,correct,objIdxs.length,nextAttempt);
   sExamTimerStop(true);
   sExamPriorResponse=null;sOmrCurrentPhoto=null;
   showSExamView('result');
@@ -10169,6 +10177,7 @@ async function sExamSubmitScore(){
     submitted_at:new Date().toISOString()
   },{onConflict:'exam_id,student_name'});
   if(saveRes.error){alert('채점 결과 저장에 실패했어요: '+saveRes.error.message+'\n선생님께 알려주세요.');return;}
+  sendTeacherScoreAlert(sExamData,score,correct,total,nextAttempt);
   sExamPriorResponse=null;
   // 결과 표시
   showSExamView('result');
