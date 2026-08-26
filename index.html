@@ -624,6 +624,14 @@ input,button{font-family:var(--font)}
           <div class="card-head"><h3>📋 신청 현황 한눈에 보기</h3><span style="font-size:11px;color:var(--text2)">수·목·금 / 한백·치동</span></div>
           <div id="t-clinic-summary-table" style="overflow-x:auto"></div>
         </div>
+        <div class="card" style="margin-bottom:1rem;border-color:var(--blue)">
+          <div class="card-head" style="background:var(--blue-bg)"><h3 style="color:var(--blue)">🏫 수요일 한백고 등원시간 전환</h3><span id="t-wed-period-status" style="font-size:11px;color:var(--text2)">현황 확인 중</span></div>
+          <div class="card-body" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <button class="btn blue" id="t-wed-period-5" onclick="setWednesdaySchoolPeriod(5)">5교시 종료 · 오후 3시</button>
+            <button class="btn" id="t-wed-period-7" onclick="setWednesdaySchoolPeriod(7)">7교시 종료 · 오후 5시</button>
+            <span style="font-size:12px;color:var(--text2)">누르면 수요일 대상 학생 전원의 국어왕 일정과 패드 출결 시간이 함께 변경됩니다.</span>
+          </div>
+        </div>
         <div style="display:flex;gap:8px;margin-bottom:1rem;align-items:center;flex-wrap:wrap">
           <div id="t-clinic-school-tabs" style="display:flex;gap:6px;flex-wrap:wrap;flex:1"></div>
           <button class="btn blue btn-sm" id="t-clinic-add-btn" style="display:none" onclick="openClinicSlotModal()">+ 시간대 추가</button>
@@ -4167,6 +4175,55 @@ function currentClinicAssignments(){
   return Object.keys(latest).map(function(k){return latest[k];});
 }
 
+function renderWednesdayPeriodControl(){
+  var status=document.getElementById('t-wed-period-status');
+  if(!status)return;
+  var cohortSlots=['assigned_hanbaek_wed_1500','assigned_hanbaek_wed_1700'];
+  var active=currentClinicAssignments().filter(function(r){return cohortSlots.indexOf(r.slot_id)!==-1;});
+  var atThree=active.filter(function(r){return r.slot_id==='assigned_hanbaek_wed_1500';}).length;
+  var atFive=active.filter(function(r){return r.slot_id==='assigned_hanbaek_wed_1700';}).length;
+  status.textContent=atFive>0&&atThree===0?'현재 오후 5시 · '+atFive+'명':'현재 오후 3시 · '+atThree+'명';
+  var b5=document.getElementById('t-wed-period-5'),b7=document.getElementById('t-wed-period-7');
+  if(b5)b5.className='btn'+(atThree>0?' blue':'');
+  if(b7)b7.className='btn'+(atFive>0?' blue':'');
+}
+
+async function setWednesdaySchoolPeriod(period){
+  var targetTime=period===7?'17:00':'15:00';
+  var targetSlot='assigned_hanbaek_wed_'+(period===7?'1700':'1500');
+  var cohortSlots=['assigned_hanbaek_wed_1500','assigned_hanbaek_wed_1700'];
+  var active=currentClinicAssignments().filter(function(r){return cohortSlots.indexOf(r.slot_id)!==-1;});
+  var studentIds=Array.from(new Set(active.map(function(r){return r.student_id;})));
+  if(!studentIds.length){notify('변경할 수요일 대상 학생이 없어요.','error');return;}
+  var names=studentIds.map(function(id){var u=db.users.find(function(x){return x.id===id;});return u&&u.name;}).filter(Boolean);
+  var label=period===7?'7교시 종료 · 오후 5시':'5교시 종료 · 오후 3시';
+  if(!confirm(label+'로 '+studentIds.length+'명 전원을 변경할까요?'))return;
+  var buttons=[document.getElementById('t-wed-period-5'),document.getElementById('t-wed-period-7')];
+  buttons.forEach(function(b){if(b)b.disabled=true;});
+  try{
+    var now=new Date();
+    var slot={id:targetSlot,school_id:'sc_hanbaek',label:'수요일 '+targetTime+' 클리닉',day_of_week:'수',slot_date:null,start_time:targetTime,capacity:100,created_at:now.toISOString()};
+    var slotRes=await sb.from('clinic_slots').upsert(slot,{onConflict:'id'});
+    if(slotRes.error)throw slotRes.error;
+    var rows=studentIds.map(function(id,i){return{id:'cr_period_'+Date.now()+'_'+i,slot_id:targetSlot,student_id:id,school_id:'sc_hanbaek',status:'confirmed',created_at:new Date(now.getTime()+i).toISOString()};});
+    var reqRes=await sb.from('clinic_requests').insert(rows);
+    if(reqRes.error)throw reqRes.error;
+    if(names.length){
+      var attRes=await attendanceSb.from('clinic_students').update({days:['wed'],time_slot:targetTime}).in('student_name',names);
+      if(attRes.error)throw attRes.error;
+    }
+    await loadClinicData();
+    renderTClinicApplicationSummary();renderTClinicSlotList();renderTClinicReqList();renderTClinicChanges();
+    notify('수요일 대상 '+studentIds.length+'명이 '+label+'로 변경됐어요.','success');
+  }catch(e){
+    console.error('Wednesday period update failed',e);
+    notify('변경 실패: '+(e.message||e),'error');
+  }finally{
+    buttons.forEach(function(b){if(b)b.disabled=false;});
+    renderWednesdayPeriodControl();
+  }
+}
+
 async function loadClinicData(){
   try{
     var s=await sb.from('clinic_slots').select('*').order('created_at');
@@ -4810,6 +4867,7 @@ async function deleteClinicSlot(id){
 
 function renderTClinicApplicationSummary(){
   var el=document.getElementById('t-clinic-summary-table');
+  renderWednesdayPeriodControl();
   if(!el)return;
   var days=['수','목','금'];
   var schools=(qaDb.schools||[]).filter(function(s){
@@ -10428,7 +10486,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=75', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=79', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
