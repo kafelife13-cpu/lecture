@@ -10206,6 +10206,70 @@ async function sExamSubmitScore(){
   renderSExamResultView(score,correct,wrong,total);
 }
 
+// 결과 화면의 "틀린 문제" 목록 상태 — 클리닉 채점은 정답을 바로 안 보여주고
+// 해설을 먼저 보여준 뒤 한 번 더 답을 골라보게 하고, 그때 정답을 공개한다.
+var sExamLastWrong=[];
+var sResRetryAnswers={};
+var sResRetryDone={};
+function renderSResWrongList(wrong){
+  var wrongEl=document.getElementById('s-res-wrong-list');
+  if(!wrongEl)return;
+  if(wrong.length===0){
+    wrongEl.innerHTML='<div style="text-align:center;padding:2rem;color:var(--text3);font-size:15px">🎉 모두 맞았어요!</div>';
+    return;
+  }
+  var isClinic=sExamData&&(sExamData.category||'school')==='school';
+  if(!isClinic){
+    wrongEl.innerHTML='<div class="card-head"><h3>틀린 문제 ('+wrong.length+'개)</h3></div>'+
+      '<div style="padding:0 1.25rem 0.5rem">'+
+      wrong.map(function(w){
+        return '<div style="display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border)">'+
+          '<span style="background:var(--red-bg);color:var(--red);font-size:12px;font-weight:600;padding:2px 10px;border-radius:8px">'+(w.idx+1)+'번</span>'+
+          '<span style="font-size:13px;color:var(--text2)">내 답: <strong style="color:var(--red)">'+w.my+'번</strong></span>'+
+          '<span style="font-size:13px;color:var(--text2)">정답: <strong style="color:var(--green)">'+w.q.answer+'번</strong></span>'+
+          (w.q.explanation?'<span style="font-size:12px;color:var(--text3);margin-left:auto">📖 '+w.q.explanation.slice(0,40)+'...</span>':'')+
+          '</div>';
+      }).join('')+'</div>';
+    return;
+  }
+  wrongEl.innerHTML='<div class="card-head"><h3>틀린 문제 ('+wrong.length+'개) · 해설 보고 다시 풀기</h3></div>'+
+    '<div style="padding:0 1.25rem 0.75rem">'+
+    wrong.map(function(w){
+      var idx=w.idx,q=w.q;
+      var picked=sResRetryAnswers[idx];
+      var done=!!sResRetryDone[idx];
+      var retryCorrect=done&&String(picked)===String(q.answer);
+      return '<div class="card" style="margin:10px 0;border-left:3px solid var(--red)"><div style="padding:12px">'+
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
+          '<span style="background:var(--red-bg);color:var(--red);font-size:12px;font-weight:600;padding:2px 10px;border-radius:8px">'+(idx+1)+'번</span>'+
+          '<span style="font-size:13px;color:var(--text2)">처음 답: <strong style="color:var(--red)">'+w.my+'번</strong></span>'+
+        '</div>'+
+        (q.explanation?'<div style="background:var(--bg2);border-radius:8px;padding:10px;font-size:12.5px;color:var(--text2);line-height:1.5;margin-bottom:10px">📖 <strong>왜 틀렸을까요?</strong><br>'+escHtml(q.explanation)+'</div>'
+          :'<div style="font-size:12px;color:var(--text3);margin-bottom:10px">등록된 해설이 없어요.</div>')+
+        (!done?
+          '<div>'+
+            '<div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px">해설을 보고 다시 한 번 골라보세요</div>'+
+            '<div style="display:flex;gap:6px">'+
+              [1,2,3,4,5].map(function(n){
+                return '<button type="button" onclick="sResRetryPick('+idx+','+n+')" style="width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:14px;font-weight:600;border:1.5px solid var(--border);background:var(--card);color:var(--text2)">'+n+'</button>';
+              }).join('')+
+            '</div>'+
+          '</div>'
+          :
+          '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">'+
+            '<span style="font-size:13px">다시 고른 답: <strong style="color:'+(retryCorrect?'var(--green)':'var(--red)')+'">'+picked+'번</strong></span>'+
+            '<span style="font-size:13px;font-weight:700;color:'+(retryCorrect?'var(--green)':'var(--red)')+'">'+(retryCorrect?'✅ 정답이에요!':'❌ 아쉬워요')+'</span>'+
+            '<span style="font-size:13px;color:var(--text2)">정답: <strong style="color:var(--green)">'+q.answer+'번</strong></span>'+
+          '</div>'
+        )+
+        '</div></div>';
+    }).join('')+'</div>';
+}
+function sResRetryPick(idx,n){
+  sResRetryAnswers[idx]=String(n);
+  sResRetryDone[idx]=true;
+  renderSResWrongList(sExamLastWrong);
+}
 function renderSExamResultView(score,correct,wrong,total){
   const actions=document.getElementById('s-exam-result-actions');
   if(actions){
@@ -10221,21 +10285,8 @@ function renderSExamResultView(score,correct,wrong,total){
     '<div style="text-align:center;background:var(--bg2);border-radius:8px;padding:12px"><div style="font-size:24px;font-weight:700;color:var(--green)">'+correct+'</div><div style="font-size:11px;color:var(--text3);margin-top:2px">정답</div></div>'+
     '<div style="text-align:center;background:var(--bg2);border-radius:8px;padding:12px"><div style="font-size:24px;font-weight:700;color:var(--red)">'+wrong.length+'</div><div style="font-size:11px;color:var(--text3);margin-top:2px">오답</div></div>'+
     '<div style="text-align:center;background:var(--bg2);border-radius:8px;padding:12px"><div style="font-size:24px;font-weight:700">'+total+'</div><div style="font-size:11px;color:var(--text3);margin-top:2px">총 문항</div></div>';
-  var wrongEl=document.getElementById('s-res-wrong-list');
-  if(wrong.length===0){
-    wrongEl.innerHTML='<div style="text-align:center;padding:2rem;color:var(--text3);font-size:15px">🎉 모두 맞았어요!</div>';
-  } else {
-    wrongEl.innerHTML='<div class="card-head"><h3>틀린 문제 ('+wrong.length+'개)</h3></div>'+
-      '<div style="padding:0 1.25rem 0.5rem">'+
-      wrong.map(function(w){
-        return '<div style="display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border)">'+
-          '<span style="background:var(--red-bg);color:var(--red);font-size:12px;font-weight:600;padding:2px 10px;border-radius:8px">'+(w.idx+1)+'번</span>'+
-          '<span style="font-size:13px;color:var(--text2)">내 답: <strong style="color:var(--red)">'+w.my+'번</strong></span>'+
-          '<span style="font-size:13px;color:var(--text2)">정답: <strong style="color:var(--green)">'+w.q.answer+'번</strong></span>'+
-          (w.q.explanation?'<span style="font-size:12px;color:var(--text3);margin-left:auto">📖 '+w.q.explanation.slice(0,40)+'...</span>':'')+
-          '</div>';
-      }).join('')+'</div>';
-  }
+  sExamLastWrong=wrong;sResRetryAnswers={};sResRetryDone={};
+  renderSResWrongList(wrong);
   const reportEl=document.getElementById('s-res-report-card');
   if(padMode){
     if(reportEl)reportEl.innerHTML='<div class="card" style="padding:1.25rem;text-align:center;border-color:var(--green);color:var(--green);font-size:15px;font-weight:800">✓ 답안과 성적이 저장됐어요.<br><span style="font-size:12px;font-weight:500;color:var(--text2)">잠시 후 다음 학생 선택 화면으로 돌아갑니다.</span></div>';
