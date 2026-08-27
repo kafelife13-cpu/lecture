@@ -328,7 +328,7 @@ input,button{font-family:var(--font)}
         <div class="nav-item" onclick="tNav('qa')" data-p="qa" id="nav-qa" style="position:relative"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>과제 QnA 관리</div>
         <div class="nav-item" onclick="tNav('cert')" data-p="cert"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증 관리</div>
         <div class="nav-item" onclick="tNav('clinic')" data-p="clinic"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉 관리</div>
-        <div class="nav-item" onclick="tNav('study')" data-p="study"><svg viewBox="0 0 24 24"><path d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>공부 타이머</div>
+        <div class="nav-item" onclick="tNav('study')" data-p="study"><svg viewBox="0 0 24 24"><path d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>과제 타이머</div>
         <div class="nav-item" onclick="tNav('exam')" data-p="exam"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>온라인 채점</div>
         <div class="nav-item" onclick="tNav('weakness')" data-p="weakness"><svg viewBox="0 0 24 24"><path d="M3 13h2v8H3v-8zm4-6h2v14H7V7zm4 3h2v11h-2V10zm4-6h2v17h-2V4zm4 5h2v12h-2V9z"/></svg>약점 분석</div>
         <div class="nav-item" onclick="tNav('vocab')" data-p="vocab"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 13.5L4.24 12.5 2 11.15v3.7L12 20l10-5.15v-3.7l-2.24 1.35L12 16.5z"/></svg>오늘의 어휘</div>
@@ -651,9 +651,9 @@ input,button{font-family:var(--font)}
         </div>
       </div>
 
-      <!-- 공부 타이머 (교사) -->
+      <!-- 과제 타이머 (교사) -->
       <div class="panel" id="panel-study">
-        <div class="page-header"><h1>공부 타이머</h1><p>학생들의 하루 공부시간을 확인하세요 (챌린지 기준 60분)</p></div>
+        <div class="page-header"><h1>과제 타이머</h1><p>학생들의 하루 공부시간을 확인하세요 (챌린지 기준 60분)</p></div>
         <div class="card" style="margin-bottom:1rem;border-color:var(--green)">
           <div class="card-head" style="background:var(--green-bg)"><h3 style="color:var(--green)">🏆 오늘 60분 달성</h3><span id="t-study-achieved-count" style="font-size:11px;color:var(--green)"></span></div>
           <div id="t-study-achieved-list"></div>
@@ -1080,7 +1080,7 @@ input,button{font-family:var(--font)}
         <div class="nav-item" onclick="sNav('qa')" data-p="qa" id="nav-qa-s" style="position:relative"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>과제 QnA</div>
         <div class="nav-item" onclick="sNav('cert')" data-p="cert"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증</div>
         <div class="nav-item" onclick="sNav('clinic')" data-p="clinic"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉 변동</div>
-        <div class="nav-item" onclick="sNav('study')" data-p="study"><svg viewBox="0 0 24 24"><path d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>공부 타이머</div>
+        <div class="nav-item" onclick="sNav('study')" data-p="study"><svg viewBox="0 0 24 24"><path d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>과제 타이머</div>
         <div class="nav-item" onclick="sNav('oxreview')" data-p="oxreview"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>오답 재풀이</div>
         <div class="nav-item" onclick="sNav('exam')" data-p="exam"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>온라인 채점</div>
         <div class="nav-item" onclick="sNav('scores')" data-p="scores"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-8 14H8v-7h3v7zm5 0h-3V7h3v10z"/></svg>내 성적</div>
@@ -1197,9 +1197,9 @@ input,button{font-family:var(--font)}
         <div id="s-clinic-list"></div>
       </div>
 
-      <!-- 공부 타이머 (학생) -->
+      <!-- 과제 타이머 (학생) -->
       <div class="panel" id="panel-study">
-        <div class="page-header"><h1>공부 타이머</h1><p>공부 시작/종료할 때 사진을 찍어서 인증해요. 하루 60분 챌린지!</p></div>
+        <div class="page-header"><h1>과제 타이머</h1><p>공부 시작/종료할 때 사진을 찍어서 인증해요. 하루 60분 챌린지!</p></div>
         <div class="card" style="margin-bottom:1rem">
           <div style="padding:1.25rem;text-align:center">
             <div style="font-size:12px;color:var(--text2);margin-bottom:4px">오늘 누적 공부시간</div>
@@ -1456,7 +1456,7 @@ input,button{font-family:var(--font)}
 </div>
 
 <!-- 클리닉 시간대 추가 모달 -->
-<!-- 공부 타이머 인증사진 카메라 -->
+<!-- 과제 타이머 인증사진 카메라 -->
 <div class="modal-bg" id="modal-study-camera">
   <div class="modal" style="max-width:480px">
     <div class="modal-head"><h3>공부 인증 사진</h3><button class="modal-close" onclick="closeStudyCamera()">×</button></div>
@@ -2346,7 +2346,7 @@ function renderSHome(){
     ['💬','과제 QnA','질문하기','qa'],
     ['✅','인증','사진·완료 제출','cert'],
     ['🏫','클리닉 변동','시간 변경 신청','clinic'],
-    ['⏱','공부 타이머','순공 인증','study'],
+    ['⏱','과제 타이머','순공 인증','study'],
     ['🔁','오답 재풀이','OX 재시험','oxreview'],
     ['📝','온라인 채점','시험·OMR 채점','exam'],
     ['📊','내 성적 확인하기','점수·성적표 보기','scores'],
@@ -4436,7 +4436,7 @@ function updateAnnounceBadge(){
   setBadge('mt-announce-s',unread,'s');
 }
 
-/* ===== 공부 타이머 ===== */
+/* ===== 과제 타이머 ===== */
 var studyDb={sessions:[]};
 var studyActiveSession=null,studyTimerInterval=null,studyPendingAction=null;
 
