@@ -2346,6 +2346,7 @@ function renderSHome(){
     ['💬','과제 QnA','질문하기','qa'],
     ['✅','인증','사진·완료 제출','cert'],
     ['🏫','클리닉 변동','시간 변경 신청','clinic'],
+    ['✏️','클리닉 채점하기','이번주 클리닉 바로 채점','examclinic'],
     ['⏱','과제 타이머','순공 인증','study'],
     ['🔁','오답 재풀이','OX 재시험','oxreview'],
     ['📝','온라인 채점','시험·OMR 채점','exam'],
@@ -2353,7 +2354,8 @@ function renderSHome(){
     ['🔤','오늘의 어휘','단어 시험','vocab']
   ];
   grid.innerHTML=cards.map(function(c){
-    return '<div class="card" style="cursor:pointer" onclick="sNav(\''+c[3]+'\')">'+
+    var onclick=c[3]==='examclinic'?'sNavExamClinic()':"sNav('"+c[3]+"')";
+    return '<div class="card" style="cursor:pointer" onclick="'+onclick+'">'+
       '<div style="padding:1.5rem 1rem;text-align:center">'+
         '<div style="font-size:30px;margin-bottom:8px">'+c[0]+'</div>'+
         '<div style="font-size:14px;font-weight:700">'+c[1]+'</div>'+
@@ -3686,6 +3688,13 @@ function sNav(panel){
   if(panel==='vocab')renderVocabEntry();
   if(panel==='announce')renderSAnnounceList();
   if(panel==='home')renderSHome();
+}
+function sNavExamClinic(){
+  sNav('exam');
+  setTimeout(function(){
+    var el=document.getElementById('s-exam-clinic-groups');
+    if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+  },80);
 }
 
 function renderClinicRequiredPicker(){
