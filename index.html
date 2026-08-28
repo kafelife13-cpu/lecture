@@ -629,6 +629,21 @@ input,button{font-family:var(--font)}
           <div class="card-head"><h3>📋 신청 현황 한눈에 보기</h3><span style="font-size:11px;color:var(--text2)">수·목·금 / 한백·치동</span></div>
           <div id="t-clinic-summary-table" style="overflow-x:auto"></div>
         </div>
+        <div class="card" style="margin-bottom:1rem;border-color:var(--green)">
+          <div class="card-head" style="background:var(--green-bg)"><h3 style="color:var(--green)">✅ 클리닉 출결 수정</h3><span id="t-clinic-attendance-summary" style="font-size:11px;color:var(--text2)">불러오는 중</span></div>
+          <div class="card-body">
+            <div style="display:grid;grid-template-columns:minmax(145px,190px) minmax(150px,1fr);gap:8px;margin-bottom:10px">
+              <input type="date" id="t-clinic-attendance-date" class="form-input" onchange="loadTeacherClinicAttendance()">
+              <input id="t-clinic-attendance-search" class="form-input" placeholder="학생 이름 검색" oninput="renderTeacherClinicAttendance()">
+            </div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+              <button class="btn blue btn-sm" id="t-clinic-attendance-scheduled" onclick="setTeacherClinicAttendanceFilter('scheduled')">선택 요일 학생</button>
+              <button class="btn btn-sm" id="t-clinic-attendance-all" onclick="setTeacherClinicAttendanceFilter('all')">전체 학생</button>
+              <button class="btn btn-sm" onclick="loadTeacherClinicAttendance()">↻ 새로고침</button>
+            </div>
+            <div id="t-clinic-attendance-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px"></div>
+          </div>
+        </div>
         <div class="card" style="margin-bottom:1rem;border-color:var(--blue)">
           <div class="card-head" style="background:var(--blue-bg)"><h3 style="color:var(--blue)">🏫 수요일 한백고 등원시간 전환</h3><span id="t-wed-period-status" style="font-size:11px;color:var(--text2)">현황 확인 중</span></div>
           <div class="card-body" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
@@ -2541,7 +2556,7 @@ function tNav(panel){
   if(panel==='progress')renderProgress();
   if(panel==='qa'){renderTQaSchoolTabs();renderTQaWeekList();renderQaWeekFilter();renderQaReview();renderQaMaterialsList();}
   if(panel==='cert'){renderTCertSchoolTabs();renderTCertWeekList();}
-  if(panel==='clinic')renderTClinicSchoolTabs();
+  if(panel==='clinic'){renderTClinicSchoolTabs();loadTeacherClinicAttendance();}
   if(panel==='study')renderTStudy();
   if(panel==='exam')renderTExam();
   if(panel==='weakness')loadWeaknessAnalysis(false);
@@ -4227,6 +4242,107 @@ function currentClinicAssignments(){
     if(!latest[r.student_id]||new Date(r.created_at)>new Date(latest[r.student_id].created_at))latest[r.student_id]=r;
   });
   return Object.keys(latest).map(function(k){return latest[k];});
+}
+
+var teacherClinicAttendance={date:'',filter:'scheduled',students:[],records:[],loading:false};
+function clinicLocalDateString(d){
+  var x=d||new Date(),y=x.getFullYear(),m=String(x.getMonth()+1).padStart(2,'0'),day=String(x.getDate()).padStart(2,'0');
+  return y+'-'+m+'-'+day;
+}
+function clinicDayFromDate(value){
+  var d=new Date(value+'T12:00:00+09:00');
+  return['일','월','화','수','목','금','토'][d.getDay()];
+}
+function clinicStudentAssignment(student,dateValue){
+  var req=effectiveClinicRequest(student.id,new Date(dateValue+'T12:00:00+09:00'));
+  var slot=req?clinicDb.slots.find(function(s){return s.id===req.slot_id;}):null;
+  return{req:req,slot:slot,day:slot&&String(slot.day_of_week||'').replace('요일','').trim(),time:slot&&(slot.start_time||slot.label)||''};
+}
+function setTeacherClinicAttendanceFilter(value){
+  teacherClinicAttendance.filter=value;
+  renderTeacherClinicAttendance();
+}
+async function loadTeacherClinicAttendance(){
+  var dateEl=document.getElementById('t-clinic-attendance-date');
+  if(!dateEl)return;
+  if(!dateEl.value)dateEl.value=teacherClinicAttendance.date||clinicLocalDateString(new Date());
+  teacherClinicAttendance.date=dateEl.value;
+  teacherClinicAttendance.loading=true;
+  renderTeacherClinicAttendance();
+  try{
+    var start=new Date(dateEl.value+'T00:00:00+09:00'),end=new Date(start.getTime()+86400000);
+    var results=await Promise.all([
+      attendanceSb.from('clinic_students').select('*'),
+      attendanceSb.from('clinic_attendance').select('*').gte('checked_in_at',start.toISOString()).lt('checked_in_at',end.toISOString()).order('checked_in_at',{ascending:true})
+    ]);
+    if(results[0].error)throw results[0].error;
+    if(results[1].error)throw results[1].error;
+    teacherClinicAttendance.students=results[0].data||[];
+    teacherClinicAttendance.records=results[1].data||[];
+  }catch(e){
+    console.error('teacher clinic attendance load failed',e);
+    notify('출결 조회 실패: '+(e.message||e),'error');
+  }finally{
+    teacherClinicAttendance.loading=false;
+    renderTeacherClinicAttendance();
+  }
+}
+function renderTeacherClinicAttendance(){
+  var el=document.getElementById('t-clinic-attendance-list'),sum=document.getElementById('t-clinic-attendance-summary');
+  if(!el)return;
+  var bScheduled=document.getElementById('t-clinic-attendance-scheduled'),bAll=document.getElementById('t-clinic-attendance-all');
+  if(bScheduled)bScheduled.className='btn btn-sm'+(teacherClinicAttendance.filter==='scheduled'?' blue':'');
+  if(bAll)bAll.className='btn btn-sm'+(teacherClinicAttendance.filter==='all'?' blue':'');
+  if(teacherClinicAttendance.loading){el.innerHTML='<div style="padding:18px;color:var(--text2)">출결을 불러오는 중...</div>';if(sum)sum.textContent='불러오는 중';return;}
+  var date=teacherClinicAttendance.date||clinicLocalDateString(new Date()),targetDay=clinicDayFromDate(date);
+  var search=(document.getElementById('t-clinic-attendance-search')?.value||'').trim();
+  var active=activeStudents().slice().sort(function(a,b){return String(a.name||'').localeCompare(String(b.name||''),'ko');});
+  var rows=active.map(function(student){
+    var assignment=clinicStudentAssignment(student,date);
+    var records=teacherClinicAttendance.records.filter(function(r){return r.student_name===student.name||String(r.student_id||'').split('-')[0]===String(student.id);});
+    return{student:student,assignment:assignment,records:records,present:records.length>0};
+  }).filter(function(row){
+    if(search&&String(row.student.name||'').indexOf(search)<0)return false;
+    return teacherClinicAttendance.filter==='all'||row.assignment.day===targetDay;
+  });
+  var presentCount=rows.filter(function(r){return r.present;}).length;
+  if(sum)sum.textContent=date+' · '+presentCount+'/'+rows.length+'명 출석';
+  if(!rows.length){el.innerHTML='<div style="padding:18px;color:var(--text2)">표시할 학생이 없습니다. 전체 학생을 눌러 확인해 주세요.</div>';return;}
+  el.innerHTML=rows.map(function(row){
+    var s=row.student,a=row.assignment,record=row.records[0];
+    var time=record?new Date(record.checked_in_at).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}):(a.time||'시간 미지정');
+    return'<div style="border:1px solid '+(row.present?'var(--green)':'var(--border)')+';border-radius:10px;padding:11px;background:'+(row.present?'var(--green-bg)':'var(--bg2)')+'">'+
+      '<div style="display:flex;align-items:center;gap:8px"><div style="flex:1;min-width:0"><div style="font-weight:800">'+escHtml(s.name||'')+'</div><div style="font-size:11px;color:var(--text2);margin-top:3px">'+escHtml((a.day?a.day+'요일 ':'신청 없음 · ')+time)+'</div></div>'+
+      '<button class="btn btn-sm '+(row.present?'red':'green')+'" onclick="toggleTeacherClinicAttendance(\''+String(s.id).replace(/'/g,'')+'\',\''+String(s.name||'').replace(/'/g,'')+'\','+(row.present?'true':'false')+')">'+(row.present?'출석 취소':'출석 처리')+'</button></div></div>';
+  }).join('');
+}
+async function toggleTeacherClinicAttendance(studentId,studentName,isPresent){
+  var date=teacherClinicAttendance.date||clinicLocalDateString(new Date());
+  var start=new Date(date+'T00:00:00+09:00'),end=new Date(start.getTime()+86400000);
+  try{
+    if(isPresent){
+      if(!confirm(studentName+' 학생의 '+date+' 출석을 취소할까요?'))return;
+      var del=await attendanceSb.from('clinic_attendance').delete().eq('student_name',studentName).gte('checked_in_at',start.toISOString()).lt('checked_in_at',end.toISOString());
+      if(del.error)throw del.error;
+      notify(studentName+' 출석을 취소했어요.','success');
+    }else{
+      var student=activeStudents().find(function(s){return String(s.id)===String(studentId);});
+      var assignment=student?clinicStudentAssignment(student,date):{day:clinicDayFromDate(date),time:''};
+      var roster=teacherClinicAttendance.students.find(function(x){return x.student_name===studentName||String(x.id||'').split('-')[0]===String(studentId);});
+      if(!roster)throw new Error('출결 명단에서 학생을 찾지 못했습니다. 명단 동기화 후 다시 시도해 주세요.');
+      var now=new Date(),clock=(date===clinicLocalDateString(now))?String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0'):((assignment.time||'').match(/\d{1,2}:\d{2}/)||['18:00'])[0];
+      var checked=new Date(date+'T'+clock+':00+09:00');
+      var row={student_id:roster.id,student_name:studentName,class_name:roster.class_name||null,day_label:clinicDayFromDate(date),time_slot:assignment.time||clock,checked_in_at:checked.toISOString()};
+      var add=await attendanceSb.from('clinic_attendance').insert(row);
+      if(add.error)throw add.error;
+      notify(studentName+' 출석을 처리했어요.','success');
+    }
+    await loadTeacherClinicAttendance();
+    if(typeof renderDashboard==='function')setTimeout(function(){if(document.getElementById('panel-dashboard')?.classList.contains('active'))renderDashboard();},0);
+  }catch(e){
+    console.error('teacher clinic attendance update failed',e);
+    notify('출결 수정 실패: '+(e.message||e),'error');
+  }
 }
 
 function renderWednesdayPeriodControl(){
