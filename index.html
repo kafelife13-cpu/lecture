@@ -366,6 +366,10 @@ input,button{font-family:var(--font)}
           <div class="card-head" style="flex-wrap:wrap;gap:8px"><div><h3>학생별 주간 수행 통합표</h3><div style="font-size:11px;color:var(--text3);margin-top:3px">느린 항목은 각각 완료되는 대로 표에 반영됩니다.</div></div><div id="dash-performance-filters" style="display:flex;gap:5px;flex-wrap:wrap"></div></div>
           <div id="dash-ox-summary" class="dash-ox-summary" style="display:none;padding:14px 16px;border-top:1px solid var(--border)"></div>
           <div style="overflow:auto"><table class="tbl" id="dash-performance-table"></table></div>
+          <div style="border-top:1px solid var(--border);padding:16px">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px"><div><h3 style="margin:0">반별 상세 내역</h3><div style="font-size:11px;color:var(--text3);margin-top:4px">반을 선택하면 학생별 완료·미완료 항목을 자세히 볼 수 있어요.</div></div><div id="dash-class-detail-filters" style="display:flex;gap:5px;flex-wrap:wrap"></div></div>
+            <div id="dash-class-detail"></div>
+          </div>
         </div>
       </div>
 
@@ -2801,6 +2805,7 @@ async function renderDashboardFastLegacy(){
 
 var dashPerformanceRows=[];
 var dashPerformanceFilter='all';
+var dashPerformanceClass='all';
 var dashPerformanceRun=0;
 
 function dashStatus(state,label,detail){return{state:state,label:label,detail:detail||''};}
@@ -2813,6 +2818,23 @@ function dashStatusCell(status){
     (status.detail?'<div style="font-size:10px;color:var(--text3);margin-top:3px;max-width:180px;white-space:normal;line-height:1.4">'+dashSafeText(status.detail)+'</div>':'')+'</div>';
 }
 function dashSetPerformanceFilter(filter){dashPerformanceFilter=filter;dashRenderPerformance();}
+function dashSetPerformanceClass(groupId){dashPerformanceClass=groupId||'all';dashRenderClassDetail();}
+function dashRenderClassDetail(){
+  var filters=document.getElementById('dash-class-detail-filters'),el=document.getElementById('dash-class-detail');
+  if(!filters||!el)return;
+  var rows=dashPerformanceRows||[],groups=[];
+  rows.forEach(function(r){var id=String(r.student&&r.student.group_id||'미분류');if(!groups.some(function(g){return g.id===id;}))groups.push({id:id,label:id==='미분류'?'미분류':studentClassLabel(id)});});
+  groups.sort(function(a,b){return String(a.label).localeCompare(String(b.label),'ko');});
+  if(dashPerformanceClass!=='all'&&!groups.some(function(g){return g.id===dashPerformanceClass;}))dashPerformanceClass='all';
+  filters.innerHTML='<button class="btn btn-sm'+(dashPerformanceClass==='all'?' blue':'')+'" onclick="dashSetPerformanceClass(\'all\')">전체 '+rows.length+'명</button>'+groups.map(function(g){var count=rows.filter(function(r){return String(r.student&&r.student.group_id||'미분류')===g.id;}).length;return'<button class="btn btn-sm'+(dashPerformanceClass===g.id?' blue':'')+'" onclick="dashSetPerformanceClass(\''+String(g.id).replace(/'/g,'')+'\')">'+dashSafeText(g.label)+' '+count+'명</button>';}).join('');
+  var selected=dashPerformanceClass==='all'?rows:rows.filter(function(r){return String(r.student&&r.student.group_id||'미분류')===dashPerformanceClass;});
+  selected=selected.slice().sort(function(a,b){return String(a.student&&a.student.name||'').localeCompare(String(b.student&&b.student.name||''),'ko');});
+  function item(label,status){
+    var state=status&&status.state||'loading',ok=state==='ok'||state==='na',color=state==='loading'?'var(--text3)':ok?'var(--green)':'var(--red)';
+    return'<div style="padding:7px 8px;border-radius:8px;background:var(--bg3);min-width:0"><div style="font-size:10px;color:var(--text3);margin-bottom:3px">'+label+'</div><div style="font-size:12px;font-weight:800;color:'+color+';line-height:1.35">'+dashSafeText(status&&status.label||'조회중')+'</div>'+(status&&status.detail?'<div style="font-size:10px;color:var(--text2);margin-top:3px;line-height:1.4;word-break:keep-all">'+dashSafeText(status.detail)+'</div>':'')+'</div>';
+  }
+  el.innerHTML=selected.length?'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px">'+selected.map(function(r){var need=dashNeedsAction(r);return'<div style="border:1px solid '+(need?'rgba(239,68,68,.35)':'var(--border)')+';border-radius:11px;padding:12px;background:var(--bg2)"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:9px"><div><b style="font-size:14px">'+dashSafeText(r.student&&r.student.name||'이름 없음')+'</b><span style="font-size:11px;color:var(--text3);margin-left:7px">'+dashSafeText(r.student&&r.student.group_id?studentClassLabel(r.student.group_id):'미분류')+'</span></div><span class="badge '+(need?'none':'done')+'">'+(need?'확인 필요':'완료')+'</span></div><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px">'+item('클리닉 출석',r.attendance)+item('시험·OX',r.ox)+item('필수 영상',r.video)+item('단어시험',r.vocab)+item('지정 인증',r.cert)+item('공부 인증',r.study)+'</div></div>';}).join('')+'</div>':'<div style="padding:24px;text-align:center;color:var(--text3)">이 반에 표시할 학생이 없어요.</div>';
+}
 function dashRenderOxSummary(){
   var el=document.getElementById('dash-ox-summary');
   if(!el)return;
@@ -2891,6 +2913,7 @@ function dashRenderPerformance(){
       table.innerHTML='<thead><tr><th style="position:sticky;left:0;background:var(--bg2);z-index:1">학생</th><th>클리닉 요일</th><th>출석</th><th>시험·OX</th><th>필수 영상</th><th>단어시험</th><th>지정 인증</th><th>공부 인증</th></tr></thead><tbody>'+(body||'<tr><td colspan="8" style="padding:2rem;text-align:center;color:var(--text2)">해당하는 학생이 없어요.</td></tr>')+'</tbody>';
     }
     dashRenderOxSummary();
+    dashRenderClassDetail();
     if(stats){
       var cols=[['attendance','미출석'],['ox','시험·OX'],['video','미시청'],['vocab','단어 미응시'],['cert','지정 인증 미제출'],['study','공부 미인증']];
       stats.innerHTML=cols.map(function(c){var pending=(dashPerformanceRows||[]).some(function(r){return !r[c[0]]||r[c[0]].state==='loading';});var count=(dashPerformanceRows||[]).filter(function(r){return r[c[0]]&&r[c[0]].state==='miss';}).length;return'<div class="stat"><div class="stat-label">'+c[1]+'</div><div class="stat-val '+(pending?'blue':count?'amber':'green')+'">'+(pending?'···':count+'명')+'</div></div>';}).join('');
