@@ -1034,7 +1034,18 @@ input,button{font-family:var(--font)}
       </div>
 
       <div class="panel" id="panel-hunmin-test">
-        <div class="page-header"><h1>세종어제 훈민정음 빈칸 테스트</h1><p>반별 통과 여부와 재시험 결과를 계속 누적해서 확인하세요</p></div>
+        <div class="page-header"><h1 id="hunmin-test-page-title">세종어제 훈민정음 빈칸 테스트</h1><p id="hunmin-test-page-description">반별 통과 여부와 재시험 결과를 계속 누적해서 확인하세요</p></div>
+        <div class="card" style="margin-bottom:1rem;border-color:var(--accent)">
+          <div class="card-body">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><select id="hunmin-test-round-select" class="form-select" onchange="changeHunminTestRound(this.value)" style="min-width:230px;flex:1"></select><button class="btn blue" onclick="toggleHunminRoundForm()">+ 새 회차 추가</button></div>
+            <div id="hunmin-round-form" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+              <div style="font-weight:800;margin-bottom:8px"><span id="hunmin-next-round-label">다음 회차</span> 만들기</div>
+              <input id="hunmin-round-name" class="form-input" placeholder="예: 해석 쓰기 + 빈칸 심화" style="margin-bottom:8px">
+              <textarea id="hunmin-round-description" class="form-input" rows="2" placeholder="시험 범위나 달라진 내용을 적어주세요. 예: 해석 쓰기 추가, 빈칸 수 확대"></textarea>
+              <div style="display:flex;gap:7px;margin-top:9px"><button class="btn blue" onclick="createHunminTestRound()">회차 저장</button><button class="btn" onclick="toggleHunminRoundForm(false)">취소</button></div>
+            </div>
+          </div>
+        </div>
         <div class="stats" id="hunmin-test-summary" style="margin-bottom:1rem"></div>
         <div class="card">
           <div class="card-head" style="flex-wrap:wrap;gap:8px"><h3>학생별 결과</h3><input id="hunmin-test-search" class="form-input" placeholder="학생 이름 검색" oninput="renderHunminTest()" style="max-width:190px"></div>
@@ -6735,13 +6746,38 @@ async function renderStandaloneReportCard(responseId){
 }
 
 /* ===== 세종어제 훈민정음 빈칸 테스트 ===== */
-var HUNMIN_TEST_KEY='sejong_hunminjeongeum_blank_v1',HUNMIN_TEST_NAME='세종어제 훈민정음 빈칸 테스트';
-var hunminTestRows=[],hunminTestClass='',hunminTestLoading=false;
+var HUNMIN_TEST_BASE='sejong_hunminjeongeum',HUNMIN_TEST_KEY='sejong_hunminjeongeum_blank_v1',HUNMIN_TEST_NAME='1차 · 세종어제 훈민정음 빈칸 테스트';
+var hunminTests=[],hunminTestRows=[],hunminTestClass='',hunminTestLoading=false;
 async function loadHunminTest(){
   hunminTestLoading=true;renderHunminTest();
-  try{var res=await sb.from('special_test_results').select('*').eq('test_key',HUNMIN_TEST_KEY).order('student_name');if(res.error)throw res.error;hunminTestRows=res.data||[];}
+  try{
+    var testsRes=await sb.from('special_tests').select('*').eq('base_key',HUNMIN_TEST_BASE).eq('active',true).order('round_no');if(testsRes.error)throw testsRes.error;
+    hunminTests=testsRes.data||[];
+    if(hunminTests.length&&!hunminTests.some(function(t){return t.id===HUNMIN_TEST_KEY;}))HUNMIN_TEST_KEY=hunminTests[hunminTests.length-1].id;
+    var current=hunminTests.find(function(t){return t.id===HUNMIN_TEST_KEY;});if(current)HUNMIN_TEST_NAME=current.name;
+    var res=await sb.from('special_test_results').select('*').eq('test_key',HUNMIN_TEST_KEY).order('student_name');if(res.error)throw res.error;hunminTestRows=res.data||[];
+  }
   catch(e){console.error('hunmin test load failed',e);notify('훈민정음 테스트 현황 조회 실패: '+(e.message||e),'error');}
   finally{hunminTestLoading=false;renderHunminTest();}
+}
+function renderHunminRoundHeader(){
+  var sel=document.getElementById('hunmin-test-round-select'),current=hunminTests.find(function(t){return t.id===HUNMIN_TEST_KEY;});
+  if(sel){sel.innerHTML=hunminTests.map(function(t){return'<option value="'+t.id+'" '+(t.id===HUNMIN_TEST_KEY?'selected':'')+'>'+escHtml(t.name)+'</option>';}).join('');}
+  var title=document.getElementById('hunmin-test-page-title'),desc=document.getElementById('hunmin-test-page-description');
+  if(title)title.textContent=current?current.name:'세종어제 훈민정음 빈칸 테스트';
+  if(desc)desc.textContent=current?(current.description||'반별 통과 여부와 재시험 결과를 확인하세요'):'회차를 추가해 주세요.';
+  var next=hunminTests.length?Math.max.apply(null,hunminTests.map(function(t){return Number(t.round_no)||0;}))+1:1,label=document.getElementById('hunmin-next-round-label');if(label)label.textContent=next+'차';
+}
+async function changeHunminTestRound(id){HUNMIN_TEST_KEY=id;var t=hunminTests.find(function(x){return x.id===id;});if(t)HUNMIN_TEST_NAME=t.name;await loadHunminTest();}
+function toggleHunminRoundForm(force){var el=document.getElementById('hunmin-round-form');if(!el)return;el.style.display=force===false?'none':(el.style.display==='none'?'block':'none');renderHunminRoundHeader();}
+async function createHunminTestRound(){
+  var next=hunminTests.length?Math.max.apply(null,hunminTests.map(function(t){return Number(t.round_no)||0;}))+1:1;
+  var shortName=(document.getElementById('hunmin-round-name')?.value||'').trim(),description=(document.getElementById('hunmin-round-description')?.value||'').trim();
+  if(!shortName){notify('새 회차의 시험 이름을 적어주세요.','error');return;}
+  var id=HUNMIN_TEST_BASE+'_round_'+next+'_'+Date.now(),row={id:id,base_key:HUNMIN_TEST_BASE,round_no:next,name:next+'차 · '+shortName,description:description||null,active:true,created_at:new Date().toISOString()};
+  var res=await sb.from('special_tests').insert(row);if(res.error){notify('회차 추가 실패: '+res.error.message,'error');return;}
+  hunminTests.push(row);HUNMIN_TEST_KEY=id;HUNMIN_TEST_NAME=row.name;hunminTestRows=[];
+  document.getElementById('hunmin-round-name').value='';document.getElementById('hunmin-round-description').value='';toggleHunminRoundForm(false);notify(next+'차 시험을 만들었어요.','success');await loadHunminTest();
 }
 function hunminResultFor(id){return hunminTestRows.find(function(r){return String(r.student_id)===String(id);})||null;}
 function hunminAttemptName(n){n=Number(n)||1;return n===1?'첫 시험':n===2?'재시험':n===3?'재재시험':(n-1)+'차 재시험';}
@@ -6755,6 +6791,7 @@ function hunminClassOptions(){var ids=[];activeStudents().forEach(function(s){va
 function selectHunminTestClass(id){hunminTestClass=id;renderHunminTest();}
 function renderHunminTest(){
   var el=document.getElementById('hunmin-test-list'),tabs=document.getElementById('hunmin-test-class-tabs'),summary=document.getElementById('hunmin-test-summary');if(!el)return;
+  renderHunminRoundHeader();
   var all=activeStudents(),classes=hunminClassOptions();if(hunminTestClass&&classes.indexOf(hunminTestClass)<0)hunminTestClass='';
   if(tabs)tabs.innerHTML='<button class="btn btn-sm'+(!hunminTestClass?' blue':'')+'" onclick="selectHunminTestClass(\'\')">전체 '+all.length+'명</button>'+classes.map(function(id){var count=all.filter(function(s){return(s.group_id||'all')===id;}).length;return'<button class="btn btn-sm'+(hunminTestClass===id?' blue':'')+'" onclick="selectHunminTestClass(\''+String(id).replace(/'/g,'')+'\')">'+escHtml(studentClassLabel(id))+' '+count+'명</button>';}).join('');
   var passed=0,failed=0,untested=0;all.forEach(function(s){var r=hunminResultFor(s.id);if(!r||r.result==='untested')untested++;else if(r.result==='passed')passed++;else failed++;});
