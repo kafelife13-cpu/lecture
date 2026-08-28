@@ -2536,11 +2536,22 @@ async function renderWeeklyStudentDashboard(){
   }catch(e){}
   var homeworkSummary=!hwExams||!hwExams.length?'등록된 과제가 없어요':
     (homeworkNeeded.length?homeworkNeeded.map(function(e){return dashboardSafeText(e.name)+'('+(e.total_q||'?')+'문항)';}).join(', ')+' · 미제출':'모두 제출했어요');
+  // 과제 대표문제(필수 문제)를 다 풀어서 제출하면 월~수 공부인증도 자동으로 완료 처리한다.
+  if(hwExams&&hwExams.length&&!homeworkNeeded.length)mwDone=true;
+  // 인증(사진 제출) 항목 중 나에게 지정됐지만 아직 안 낸 것 — 별도 배너뿐 아니라 할 일 목록에도 통합해서 보여준다.
+  var certAssigned=certDb.items.filter(function(item){return(certDb.targets[item.id]||[]).indexOf(session.id)!==-1;});
+  var certMissing=certAssigned.filter(function(item){
+    var sub=certDb.submissions.find(function(s){return s.item_id===item.id&&s.student_id===session.id;});
+    return !sub||sub.status==='rejected';
+  });
+  var certSummary=!certAssigned.length?'지정된 인증 항목이 없어요':
+    (certMissing.length?certMissing.map(function(item){return dashboardSafeText(item.title);}).join(', ')+' · 미제출':'모두 제출했어요');
   var summary=[
     ['🏫','이번 주 클리닉',clinicSlot?((clinicSlot.day_of_week?clinicSlot.day_of_week+'요일 ':'')+(clinicSlot.start_time||clinicSlot.label||'')):'아직 확정된 시간이 없어요','clinic'],
     ['⏱','이번 주 학습시간',fmtTime(weeklyStudy),'study'],
     ['✅','공부 인증',('월~수 '+(mwDone?'완료':'필요'))+' · '+('목~금 '+(tfDone?'완료':'필요')),'study'],
     ['📒','과제 대표문제 채점(필수)',homeworkSummary,'examhomework'],
+    ['📸','인증 제출',certSummary,'cert'],
     ['🎬','들어야 할 강의',needed.length?needed.length+'개 남음':'모두 완료했어요','lectures'],
     ['🏫','이번 주 클리닉 해설',clinicSummary,'clinic-lectures'],
     ['📢','이번 주 과제',assignmentSummary,'announce'],
@@ -2552,6 +2563,7 @@ async function renderWeeklyStudentDashboard(){
   if(!mwDone)urgent.push('월~수 국어 공부 인증 1회');
   if(!tfDone)urgent.push('목~금 국어 공부 인증 1회');
   if(homeworkNeeded.length)urgent.push('📒 과제 대표문제 채점 '+homeworkNeeded.length+'개 (필수 · 자기가 푼 답 입력)');
+  if(certMissing.length)urgent.push('📸 인증 제출 '+certMissing.length+'개 ('+certMissing.map(function(item){return dashboardSafeText(item.title);}).join(', ')+')');
   if(needed.length)urgent.push('영상강의 '+needed.length+'개');
   if(clinicNeeded.length)urgent.push('클리닉 해설 '+clinicNeeded.length+'개');
   if(vocabLeft.length)urgent.push('단어시험 '+vocabLeft.join(', ')+'강');
