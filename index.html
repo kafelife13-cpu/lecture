@@ -336,6 +336,7 @@ input,button{font-family:var(--font)}
         <div class="nav-item" onclick="tNav('exam')" data-p="exam"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>온라인 채점</div>
         <div class="nav-item" onclick="tNav('weakness')" data-p="weakness"><svg viewBox="0 0 24 24"><path d="M3 13h2v8H3v-8zm4-6h2v14H7V7zm4 3h2v11h-2V10zm4-6h2v17h-2V4zm4 5h2v12h-2V9z"/></svg>약점 분석</div>
         <div class="nav-item" onclick="tNav('vocab')" data-p="vocab"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 13.5L4.24 12.5 2 11.15v3.7L12 20l10-5.15v-3.7l-2.24 1.35L12 16.5z"/></svg>오늘의 어휘</div>
+        <div class="nav-item" onclick="tNav('hunmin-test')" data-p="hunmin-test"><svg viewBox="0 0 24 24"><path d="M4 3h16v18H4V3zm3 4v2h10V7H7zm0 4v2h7v-2H7zm0 4v2h9v-2H7z"/></svg>훈민정음 테스트</div>
       </nav>
       <div class="sidebar-footer">
         <button id="pwa-install-btn-s" onclick="installPWA()" style="display:none;width:100%;margin-bottom:6px;background:rgba(79,124,255,0.1);border:1px solid rgba(79,124,255,0.3);color:var(--accent);border-radius:var(--radius-sm);padding:8px;font-size:12px;cursor:pointer;font-family:inherit">📲 앱으로 설치</button>
@@ -1032,6 +1033,15 @@ input,button{font-family:var(--font)}
         </div>
       </div>
 
+      <div class="panel" id="panel-hunmin-test">
+        <div class="page-header"><h1>세종어제 훈민정음 빈칸 테스트</h1><p>반별 통과 여부와 재시험 결과를 계속 누적해서 확인하세요</p></div>
+        <div class="stats" id="hunmin-test-summary" style="margin-bottom:1rem"></div>
+        <div class="card">
+          <div class="card-head" style="flex-wrap:wrap;gap:8px"><h3>학생별 결과</h3><input id="hunmin-test-search" class="form-input" placeholder="학생 이름 검색" oninput="renderHunminTest()" style="max-width:190px"></div>
+          <div class="card-body"><div id="hunmin-test-class-tabs" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px"></div><div id="hunmin-test-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:9px"></div></div>
+        </div>
+      </div>
+
       <!-- 과제 안내 (교사) -->
       <div class="panel" id="panel-announce">
         <div class="page-header"><h1>과제 안내</h1><p>학생들이 앱을 열면 바로 보이는 공지예요 — 문자보다 눈에 잘 띕니다</p></div>
@@ -1076,6 +1086,7 @@ input,button{font-family:var(--font)}
     <button class="mobile-tab" onclick="tNav('exam')" data-mt="exam" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>시험</button>
     <button class="mobile-tab" onclick="tNav('weakness')" data-mt="weakness" style="min-width:58px"><svg viewBox="0 0 24 24"><path d="M3 13h2v8H3v-8zm4-6h2v14H7V7zm4 3h2v11h-2V10zm4-6h2v17h-2V4zm4 5h2v12h-2V9z"/></svg>약점</button>
     <button class="mobile-tab" onclick="tNav('vocab')" data-mt="vocab" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 13.5L4.24 12.5 2 11.15v3.7L12 20l10-5.15v-3.7l-2.24 1.35L12 16.5z"/></svg>어휘</button>
+    <button class="mobile-tab" onclick="tNav('hunmin-test')" data-mt="hunmin-test" style="min-width:68px"><svg viewBox="0 0 24 24"><path d="M4 3h16v18H4V3zm3 4v2h10V7H7zm0 4v2h7v-2H7zm0 4v2h9v-2H7z"/></svg>훈민정음</button>
     <button class="mobile-tab" onclick="doLogout()" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>로그아웃</button>
   </div>
 </div>
@@ -2577,6 +2588,7 @@ function tNav(panel){
   if(panel==='exam')renderTExam();
   if(panel==='weakness')loadWeaknessAnalysis(false);
   if(panel==='vocab')renderTVocab();
+  if(panel==='hunmin-test')loadHunminTest();
   if(panel==='announce')renderTAnnounceList();
 }
 
@@ -6722,6 +6734,56 @@ async function renderStandaloneReportCard(responseId){
   }
 }
 
+/* ===== 세종어제 훈민정음 빈칸 테스트 ===== */
+var HUNMIN_TEST_KEY='sejong_hunminjeongeum_blank_v1',HUNMIN_TEST_NAME='세종어제 훈민정음 빈칸 테스트';
+var hunminTestRows=[],hunminTestClass='',hunminTestLoading=false;
+async function loadHunminTest(){
+  hunminTestLoading=true;renderHunminTest();
+  try{var res=await sb.from('special_test_results').select('*').eq('test_key',HUNMIN_TEST_KEY).order('student_name');if(res.error)throw res.error;hunminTestRows=res.data||[];}
+  catch(e){console.error('hunmin test load failed',e);notify('훈민정음 테스트 현황 조회 실패: '+(e.message||e),'error');}
+  finally{hunminTestLoading=false;renderHunminTest();}
+}
+function hunminResultFor(id){return hunminTestRows.find(function(r){return String(r.student_id)===String(id);})||null;}
+function hunminAttemptName(n){n=Number(n)||1;return n===1?'첫 시험':n===2?'재시험':n===3?'재재시험':(n-1)+'차 재시험';}
+function hunminStatusInfo(row){
+  if(!row||row.result==='untested')return{label:'미확인',color:'var(--text3)',bg:'var(--bg3)'};
+  var n=Math.max(1,Number(row.attempt_no)||1),name=hunminAttemptName(n);
+  if(row.result==='passed')return{label:n===1?'통과':name+' 통과',color:'var(--green)',bg:'var(--green-bg)'};
+  return{label:(n===1?'미통과':name+' 미통과')+' · '+hunminAttemptName(n+1)+' 대상',color:'var(--red)',bg:'var(--red-bg)'};
+}
+function hunminClassOptions(){var ids=[];activeStudents().forEach(function(s){var id=s.group_id||'all';if(ids.indexOf(id)<0)ids.push(id);});return ids.sort(function(a,b){return studentClassLabel(a).localeCompare(studentClassLabel(b),'ko');});}
+function selectHunminTestClass(id){hunminTestClass=id;renderHunminTest();}
+function renderHunminTest(){
+  var el=document.getElementById('hunmin-test-list'),tabs=document.getElementById('hunmin-test-class-tabs'),summary=document.getElementById('hunmin-test-summary');if(!el)return;
+  var all=activeStudents(),classes=hunminClassOptions();if(hunminTestClass&&classes.indexOf(hunminTestClass)<0)hunminTestClass='';
+  if(tabs)tabs.innerHTML='<button class="btn btn-sm'+(!hunminTestClass?' blue':'')+'" onclick="selectHunminTestClass(\'\')">전체 '+all.length+'명</button>'+classes.map(function(id){var count=all.filter(function(s){return(s.group_id||'all')===id;}).length;return'<button class="btn btn-sm'+(hunminTestClass===id?' blue':'')+'" onclick="selectHunminTestClass(\''+String(id).replace(/'/g,'')+'\')">'+escHtml(studentClassLabel(id))+' '+count+'명</button>';}).join('');
+  var passed=0,failed=0,untested=0;all.forEach(function(s){var r=hunminResultFor(s.id);if(!r||r.result==='untested')untested++;else if(r.result==='passed')passed++;else failed++;});
+  if(summary)summary.innerHTML='<div class="stat"><div class="stat-label">통과</div><div class="stat-val green">'+passed+'명</div></div><div class="stat"><div class="stat-label">재시험 대상</div><div class="stat-val red">'+failed+'명</div></div><div class="stat"><div class="stat-label">미확인</div><div class="stat-val">'+untested+'명</div></div>';
+  if(hunminTestLoading){el.innerHTML='<div style="padding:20px;color:var(--text2)">현황을 불러오는 중...</div>';return;}
+  var q=(document.getElementById('hunmin-test-search')?.value||'').trim(),students=all.filter(function(s){return(!hunminTestClass||(s.group_id||'all')===hunminTestClass)&&(!q||String(s.name||'').indexOf(q)>=0);});
+  if(!students.length){el.innerHTML='<div style="padding:20px;color:var(--text2)">표시할 학생이 없습니다.</div>';return;}
+  el.innerHTML=students.map(function(s){
+    var row=hunminResultFor(s.id),info=hunminStatusInfo(row),n=row?Number(row.attempt_no)||0:0,actions='';
+    if(!row||row.result==='untested')actions='<button class="btn green btn-sm" onclick="saveHunminTestResult(\''+s.id+'\',\'passed\',false)">통과</button><button class="btn red btn-sm" onclick="saveHunminTestResult(\''+s.id+'\',\'failed\',false)">미통과</button>';
+    else if(row.result==='failed'){var next=hunminAttemptName(n+1);actions='<button class="btn green btn-sm" onclick="saveHunminTestResult(\''+s.id+'\',\'passed\',false)">'+next+' 통과</button><button class="btn red btn-sm" onclick="saveHunminTestResult(\''+s.id+'\',\'failed\',false)">'+next+' 미통과</button><button class="btn btn-sm" onclick="resetHunminTestResult(\''+s.id+'\')">초기화</button>';}
+    else actions='<button class="btn red btn-sm" onclick="saveHunminTestResult(\''+s.id+'\',\'failed\',true)">미통과로 정정</button><button class="btn btn-sm" onclick="resetHunminTestResult(\''+s.id+'\')">초기화</button>';
+    return'<div style="border:1px solid var(--border);border-radius:11px;padding:12px;background:var(--card)"><div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:10px"><div style="flex:1"><div style="font-weight:800">'+escHtml(s.name)+'</div><div style="font-size:10px;color:var(--text3);margin-top:2px">'+escHtml(studentClassLabel(s.group_id||'all'))+'</div></div><span style="font-size:11px;font-weight:800;color:'+info.color+';background:'+info.bg+';padding:5px 7px;border-radius:999px;text-align:right">'+escHtml(info.label)+'</span></div><div style="display:flex;gap:5px;flex-wrap:wrap">'+actions+'</div></div>';
+  }).join('');
+}
+async function saveHunminTestResult(studentId,result,replaceCurrent){
+  var s=activeStudents().find(function(x){return String(x.id)===String(studentId);});if(!s)return;
+  var old=hunminResultFor(studentId),attempt=replaceCurrent&&old?Math.max(1,Number(old.attempt_no)||1):Math.max(1,(old?Number(old.attempt_no)||0:0)+1),history=old&&Array.isArray(old.history)?old.history.slice():[];
+  history.push({attempt_no:attempt,result:result,recorded_at:new Date().toISOString(),teacher:session&&session.name||'teacher'});
+  var row={id:HUNMIN_TEST_KEY+'_'+s.id,test_key:HUNMIN_TEST_KEY,test_name:HUNMIN_TEST_NAME,student_id:String(s.id),student_name:s.name,group_id:s.group_id||'all',attempt_no:attempt,result:result,history:history,updated_at:new Date().toISOString()};
+  var res=await sb.from('special_test_results').upsert(row,{onConflict:'id'});if(res.error){notify('저장 실패: '+res.error.message,'error');return;}
+  var i=hunminTestRows.findIndex(function(r){return r.id===row.id;});if(i>=0)hunminTestRows[i]=row;else hunminTestRows.push(row);notify(s.name+' · '+hunminStatusInfo(row).label,'success');renderHunminTest();
+}
+async function resetHunminTestResult(studentId){
+  var s=activeStudents().find(function(x){return String(x.id)===String(studentId);});if(!s||!confirm(s.name+' 학생의 테스트 기록을 초기화할까요?'))return;
+  var id=HUNMIN_TEST_KEY+'_'+s.id,res=await sb.from('special_test_results').delete().eq('id',id);if(res.error){notify('초기화 실패: '+res.error.message,'error');return;}
+  hunminTestRows=hunminTestRows.filter(function(r){return r.id!==id;});notify(s.name+' 기록을 초기화했어요.','success');renderHunminTest();
+}
+
 /* ════════════════════════════════════════════
    오늘의 어휘 — 단어 시험
    한 주(월~일)에 3강씩 배정, 월~금 자유 순서로 응시, 토·일은 밀린 것 보충
@@ -9961,7 +10023,8 @@ async function sExamOpenForGrading(examId){
   }
   sExamData=found;sExamPriorResponse=resp||null;
   sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;sWrongChecked={};sExamFullAnswers={};
-  sExamCheckMode=(found.category==='naeshin'||found.category==='homework')?'wrongonly':'full';
+  // 과제 대표문제(homework)도 클리닉과 동일하게 OMR 방식(문항별 답 선택/사진)으로 입력한다.
+  sExamCheckMode=(found.category==='naeshin')?'wrongonly':'full';
   const icon=found.category==='mock'?'📝 ':found.category==='mini_mock'?'🧩 ':found.category==='naeshin'?'📚 ':found.category==='homework'?'📒 ':'🏫 ';
   document.getElementById('s-exam-check-title').textContent=icon+found.name;
   const fullEl=document.getElementById('s-exam-check-full');
