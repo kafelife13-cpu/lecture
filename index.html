@@ -2501,10 +2501,24 @@ async function renderWeeklyStudentDashboard(){
       }
     }
   }catch(e){}
+  var homeworkNeeded=[];
+  try{
+    var hwExamRes=await sb.from('exams').select('id,name,clinic_school,total_q').eq('category','homework');
+    var hwExams=(hwExamRes.data||[]).filter(sExamVisibleForStudent);
+    if(hwExams.length){
+      var hwIds=hwExams.map(function(e){return e.id;});
+      var hwRespRes=await sb.from('exam_responses').select('exam_id').eq('student_name',session.name||session.id).in('exam_id',hwIds);
+      var hwDone={};(hwRespRes.data||[]).forEach(function(r){hwDone[r.exam_id]=true;});
+      homeworkNeeded=hwExams.filter(function(e){return !hwDone[e.id];});
+    }
+  }catch(e){}
+  var homeworkSummary=!hwExams||!hwExams.length?'등록된 과제가 없어요':
+    (homeworkNeeded.length?homeworkNeeded.map(function(e){return dashboardSafeText(e.name)+'('+(e.total_q||'?')+'문항)';}).join(', ')+' · 미제출':'모두 제출했어요');
   var summary=[
     ['🏫','이번 주 클리닉',clinicSlot?((clinicSlot.day_of_week?clinicSlot.day_of_week+'요일 ':'')+(clinicSlot.start_time||clinicSlot.label||'')):'아직 확정된 시간이 없어요','clinic'],
     ['⏱','이번 주 학습시간',fmtTime(weeklyStudy),'study'],
     ['✅','공부 인증',('월~수 '+(mwDone?'완료':'필요'))+' · '+('목~금 '+(tfDone?'완료':'필요')),'study'],
+    ['📒','과제 대표문제 채점(필수)',homeworkSummary,'examhomework'],
     ['🎬','들어야 할 강의',needed.length?needed.length+'개 남음':'모두 완료했어요','lectures'],
     ['🏫','이번 주 클리닉 해설',clinicSummary,'clinic-lectures'],
     ['📢','이번 주 과제',assignmentSummary,'announce'],
@@ -2515,11 +2529,13 @@ async function renderWeeklyStudentDashboard(){
   var urgent=[];
   if(!mwDone)urgent.push('월~수 국어 공부 인증 1회');
   if(!tfDone)urgent.push('목~금 국어 공부 인증 1회');
+  if(homeworkNeeded.length)urgent.push('📒 과제 대표문제 채점 '+homeworkNeeded.length+'개 (필수 · 자기가 푼 답 입력)');
   if(needed.length)urgent.push('영상강의 '+needed.length+'개');
   if(clinicNeeded.length)urgent.push('클리닉 해설 '+clinicNeeded.length+'개');
   if(vocabLeft.length)urgent.push('단어시험 '+vocabLeft.join(', ')+'강');
   grid.innerHTML='<div style="grid-column:1/-1;font-size:17px;font-weight:800;margin:4px 0">📅 이번 주 한눈에 보기</div>'+summary.map(function(c){
-    return '<div class="card" style="cursor:pointer;border-left:4px solid var(--accent);box-shadow:0 3px 12px rgba(0,0,0,.05)" onclick="sNav(\''+c[3]+'\')"><div style="padding:1rem"><div style="font-size:12px;color:var(--text2);margin-bottom:6px">'+c[0]+' '+c[1]+'</div><div style="font-size:14px;font-weight:800;line-height:1.45">'+c[2]+'</div></div></div>';
+    var onclick=c[3]==='examhomework'?'sNavExamHomework()':c[3]==='examclinic'?'sNavExamClinic()':"sNav('"+c[3]+"')";
+    return '<div class="card" style="cursor:pointer;border-left:4px solid var(--accent);box-shadow:0 3px 12px rgba(0,0,0,.05)" onclick="'+onclick+'"><div style="padding:1rem"><div style="font-size:12px;color:var(--text2);margin-bottom:6px">'+c[0]+' '+c[1]+'</div><div style="font-size:14px;font-weight:800;line-height:1.45">'+c[2]+'</div></div></div>';
   }).join('')+
   '<div class="card" style="grid-column:1/-1;border-color:'+(urgent.length?'var(--amber)':'var(--green)')+'"><div style="padding:1rem 1.15rem"><div style="font-size:14px;font-weight:800;margin-bottom:7px">'+(urgent.length?'⚠️ 이번 주 남은 할 일':'🎉 이번 주 필수 항목 완료')+'</div><div style="font-size:13px;line-height:1.7;color:var(--text2)">'+(urgent.length?urgent.map(function(x){return '• '+x;}).join('<br>'):'현재 남은 필수 항목이 없어요.')+'</div></div></div>'+
   '<div style="grid-column:1/-1;font-size:15px;font-weight:800;margin:12px 0 0">전체 메뉴</div>'+menuHtml;
@@ -3713,6 +3729,13 @@ function sNavExamClinic(){
   sNav('exam');
   setTimeout(function(){
     var el=document.getElementById('s-exam-clinic-groups');
+    if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+  },80);
+}
+function sNavExamHomework(){
+  sNav('exam');
+  setTimeout(function(){
+    var el=document.getElementById('s-exam-list-homework');
     if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
   },80);
 }
