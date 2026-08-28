@@ -9677,10 +9677,14 @@ function buildReportCardHTML(studentName,exam,response,allResponses,academyName,
   var domainRows=domainLabels.map(function(d){
     var s=domainStats[d];
     var classAvg=stats.domainClassAvgPct[d]||0;
-    return '<tr><td style="padding:5px;border-bottom:1px solid #eee">'+d+'</td><td style="padding:5px;text-align:center;border-bottom:1px solid #eee">'+s.qCount+'</td><td style="padding:5px;text-align:center;border-bottom:1px solid #eee">'+s.correctCount+'</td><td style="padding:5px;text-align:center;border-bottom:1px solid #eee;font-weight:700">'+s.earnedPoints+'</td><td style="padding:5px;text-align:center;border-bottom:1px solid #eee;color:#888">'+classAvg+'</td></tr>';
+    var wrongCount=s.qCount-s.correctCount;
+    return '<tr><td style="padding:5px;border-bottom:1px solid #eee">'+d+'</td><td style="padding:5px;text-align:center;border-bottom:1px solid #eee">'+s.qCount+'</td><td style="padding:5px;text-align:center;border-bottom:1px solid #eee">'+s.correctCount+'</td><td style="padding:5px;text-align:center;border-bottom:1px solid #eee;color:'+(wrongCount?'#c0392b':'#888')+';font-weight:'+(wrongCount?'700':'400')+'">'+wrongCount+'</td><td style="padding:5px;text-align:center;border-bottom:1px solid #eee;font-weight:700">'+s.earnedPoints+'</td><td style="padding:5px;text-align:center;border-bottom:1px solid #eee;color:#888">'+classAvg+'</td></tr>';
   }).join('');
-  var domainTotalQ=exam.questions.length;
-  var domainTotalCorrect=exam.questions.filter(function(q,i){return !repIsWrong(response,i,exam);}).length;
+  // 자동채점 대상(객관식) 문항만 집계 — 서술형·주관식은 repDomainStats·repScore와 동일 기준으로 제외
+  var objQuestions=exam.questions.filter(function(q){return isObjectiveAnswer(q.answer);});
+  var domainTotalQ=objQuestions.length;
+  var domainTotalCorrect=exam.questions.filter(function(q,i){return isObjectiveAnswer(q.answer)&&!repIsWrong(response,i,exam);}).length;
+  var domainTotalWrong=domainTotalQ-domainTotalCorrect;
 
   var itemRows=exam.questions.map(function(q,i){
     var wrong=repIsWrong(response,i,exam);
@@ -9723,8 +9727,8 @@ function buildReportCardHTML(studentName,exam,response,allResponses,academyName,
       '</div>'+
     '</div>'+
     '<table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:20px;text-align:center">'+
-      '<tr style="background:#2d5fa6;color:#fff"><th style="padding:8px">내점수/만점</th><th style="padding:8px">전체 평균</th><th style="padding:8px">표준편차</th><th style="padding:8px">상위 30%</th><th style="padding:8px">최고점</th>'+(showRank?'<th style="padding:8px">전체 석차</th>':'')+'</tr>'+
-      '<tr><td style="padding:8px;font-weight:700;font-size:16px">'+my.earned+'/'+my.total+'</td><td style="padding:8px">'+stats.avg+'</td><td style="padding:8px">'+stats.stddev+'</td><td style="padding:8px">'+stats.top30+'</td><td style="padding:8px">'+stats.max+'</td>'+(showRank?'<td style="padding:8px;font-weight:700">'+myRank+' / '+stats.n+'</td>':'')+'</tr>'+
+      '<tr style="background:#2d5fa6;color:#fff"><th style="padding:8px">내점수/만점</th><th style="padding:8px">틀린 문항</th><th style="padding:8px">전체 평균</th><th style="padding:8px">표준편차</th><th style="padding:8px">상위 30%</th><th style="padding:8px">최고점</th>'+(showRank?'<th style="padding:8px">전체 석차</th>':'')+'</tr>'+
+      '<tr><td style="padding:8px;font-weight:700;font-size:16px">'+my.earned+'/'+my.total+'</td><td style="padding:8px;font-weight:700;font-size:16px;color:'+(domainTotalWrong?'#c0392b':'#2a7a52')+'">'+domainTotalWrong+'/'+domainTotalQ+'</td><td style="padding:8px">'+stats.avg+'</td><td style="padding:8px">'+stats.stddev+'</td><td style="padding:8px">'+stats.top30+'</td><td style="padding:8px">'+stats.max+'</td>'+(showRank?'<td style="padding:8px;font-weight:700">'+myRank+' / '+stats.n+'</td>':'')+'</tr>'+
     '</table>'+
     historyHTML+
     (analysisText?'<div style="background:#eef6f1;border:1px solid #cfe8db;border-radius:8px;padding:12px 16px;margin-bottom:20px">'+
@@ -9737,9 +9741,9 @@ function buildReportCardHTML(studentName,exam,response,allResponses,academyName,
     '</div>':'')+
     '<div style="display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;align-items:flex-start">'+
       '<table style="flex:1;min-width:280px;border-collapse:collapse;font-size:12px">'+
-        '<tr style="background:#f0f0f0"><th style="padding:5px">영역</th><th style="padding:5px">문항수</th><th style="padding:5px">정답수</th><th style="padding:5px">내점수</th><th style="padding:5px">평균 점수</th></tr>'+
+        '<tr style="background:#f0f0f0"><th style="padding:5px">영역</th><th style="padding:5px">문항수</th><th style="padding:5px">정답수</th><th style="padding:5px">오답수</th><th style="padding:5px">내점수</th><th style="padding:5px">평균 점수</th></tr>'+
         domainRows+
-        '<tr style="font-weight:700;background:#fafafa"><td style="padding:5px">합계</td><td style="padding:5px;text-align:center">'+domainTotalQ+'</td><td style="padding:5px;text-align:center">'+domainTotalCorrect+'</td><td style="padding:5px;text-align:center">'+my.earned+'</td><td style="padding:5px;text-align:center">'+stats.avg+'</td></tr>'+
+        '<tr style="font-weight:700;background:#fafafa"><td style="padding:5px">합계</td><td style="padding:5px;text-align:center">'+domainTotalQ+'</td><td style="padding:5px;text-align:center">'+domainTotalCorrect+'</td><td style="padding:5px;text-align:center;color:'+(domainTotalWrong?'#c0392b':'inherit')+'">'+domainTotalWrong+'</td><td style="padding:5px;text-align:center">'+my.earned+'</td><td style="padding:5px;text-align:center">'+stats.avg+'</td></tr>'+
       '</table>'+
       '<div style="flex:0 0 auto;text-align:center">'+repRadarSVG(domainLabels,myPct,avgPct)+
         '<div style="font-size:11px;color:#666">🔴 내 성취도 &nbsp; ⚪ 전체 평균</div>'+
