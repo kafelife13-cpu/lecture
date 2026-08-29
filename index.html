@@ -7276,7 +7276,7 @@ function texQuickRegister(){
   if(!aRaw){errEl.textContent='정답지 텍스트를 붙여넣어 주세요.';errEl.style.display='block';return;}
   const circleMap={'①':'1','②':'2','③':'3','④':'4','⑤':'5'};
 
-  const matches=[...aRaw.matchAll(/(\d{1,3})번?\s*[-.:)]?\s*([①②③④⑤]|[1-5])번?/g)];
+  const matches=[...aRaw.matchAll(/(\d{1,3})번?\s*[-.:)]?\s*([①②③④⑤]|[1-5]|주관식|서술형)번?/g)];
   if(!matches.length){
     errEl.textContent='정답지에서 번호-정답 쌍을 찾지 못했어요. "1-③ 2-① 3-⑤"처럼 번호와 정답이 붙어있는 형식으로 넣어 주세요.';
     errEl.style.display='block';
@@ -7286,8 +7286,9 @@ function texQuickRegister(){
   const questions=[];
   matches.forEach(m=>{
     const num=parseInt(m[1]);
-    const ans=circleMap[m[2]]||m[2];
-    if(!seen[num]){seen[num]=true;questions.push({num,type:'기타',domain:'',points:2,answer:String(ans),text:'',explanation:''});}
+    const isSubjective=m[2]==='주관식'||m[2]==='서술형';
+    const ans=isSubjective?'':(circleMap[m[2]]||m[2]);
+    if(!seen[num]){seen[num]=true;questions.push({num,type:'기타',domain:'',points:isSubjective?0:2,answer:String(ans),text:isSubjective?'서술형·주관식 문항 — 선생님 확인 대상':'',explanation:isSubjective?'자동채점 대상이 아니며 선생님이 별도로 확인합니다.':''});}
   });
 
   // 영역 분류칸 반영
