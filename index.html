@@ -4128,6 +4128,15 @@ function announceImageUrls(a){
   }
   return a.image_url?[a.image_url]:[];
 }
+function announceTargetGroup(a){
+  return /^\s*\[한백고1\]/.test(String(a&&a.title||''))?'hanbaek_wed_1800':null;
+}
+function announceImageLabel(a,index){
+  if(/^\s*\[한백고1\]/.test(String(a&&a.title||''))){
+    return index===0?'과제1 · 세종어제훈민정음 빈칸·해석 채우기':'과제2 · 월~수 인증과제 32문항';
+  }
+  return '첨부자료 '+(index+1);
+}
 async function loadAnnounceData(){
   try{
     var a=await sb.from('announcements').select('*').order('created_at',{ascending:false});
@@ -4213,7 +4222,8 @@ function renderTAnnounceList(){
   var items=announceDb.items.filter(function(a){return !filterSchool||a.school_id===filterSchool;});
   if(!items.length){el.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px">게시된 안내가 없어요.</div>';return;}
   el.innerHTML=items.map(function(a){
-    var total=a.school_id?activeStudents().filter(function(s){return s.school_id===a.school_id;}).length:activeStudents().length;
+    var targetGroup=announceTargetGroup(a);
+    var total=targetGroup?activeStudents().filter(function(s){return s.group_id===targetGroup;}).length:(a.school_id?activeStudents().filter(function(s){return s.school_id===a.school_id;}).length:activeStudents().length);
     var readCnt=announceReadCount(a.id);
     var dateLabel=new Date(a.created_at).toLocaleString('ko-KR',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
     return '<div style="padding:12px 0;border-bottom:1px solid var(--border)">'+
@@ -4234,7 +4244,12 @@ function renderTAnnounceList(){
 function myAnnounceItems(){
   if(!session)return announceDb.items;
   var mySchool=session.school_id||null;
-  return announceDb.items.filter(function(a){return !a.school_id||a.school_id===mySchool;});
+  var me=(db.users||[]).find(function(u){return u.id===session.id;})||session;
+  return announceDb.items.filter(function(a){
+    if(a.school_id&&a.school_id!==mySchool)return false;
+    var targetGroup=announceTargetGroup(a);
+    return !targetGroup||me.group_id===targetGroup;
+  });
 }
 function renderSAnnounceList(){
   var el=document.getElementById('s-announce-list');
@@ -4259,7 +4274,7 @@ async function openAnnounceView(id){
   if(!a)return;
   document.getElementById('an-view-title').textContent=a.title;
   document.getElementById('an-view-date').textContent=new Date(a.created_at).toLocaleString('ko-KR');
-  document.getElementById('an-view-image').innerHTML=announceImageUrls(a).map(function(u){return '<img src="'+u+'" style="max-width:100%;border-radius:8px;margin-bottom:10px;display:block">';}).join('');
+  document.getElementById('an-view-image').innerHTML=announceImageUrls(a).map(function(u,i){return '<div style="margin-bottom:18px"><div style="padding:9px 12px;background:var(--amber-bg);border-left:4px solid var(--amber);border-radius:8px 8px 0 0;font-size:13px;font-weight:900;color:var(--amber)">'+announceImageLabel(a,i)+'</div><img src="'+u+'" style="width:100%;max-width:100%;border-radius:0 0 8px 8px;display:block"></div>';}).join('');
   document.getElementById('an-view-content').textContent=a.content||'';
   document.getElementById('modal-announce-view').classList.add('show');
   if(session&&session.role==='student'&&!isAnnounceRead(id)){
@@ -10369,7 +10384,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=93', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=94', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
