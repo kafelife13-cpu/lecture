@@ -1990,20 +1990,20 @@ async function doLogin(){
   const btn=document.getElementById('login-btn');
   err.textContent='';
   if(!id||!pw){err.textContent='아이디와 비밀번호를 입력하세요.';return;}
-  const lockUntil=Number(sessionStorage.getItem('login_lock_until')||0);
+  const lockUntil=Number(sessionStorage.getItem('login_lock_until_v2')||0);
   if(lockUntil>Date.now()){err.textContent='로그인 시도가 잠겼습니다. '+Math.ceil((lockUntil-Date.now())/60000)+'분 뒤 다시 시도해 주세요.';return;}
   btn.disabled=true;btn.textContent='로그인 중...';
   try{
     const result=await sb.rpc('authenticate_user',{p_id:id,p_password:pw,p_role:currentRole});
     const user=result.data;
     if(result.error||!user){
-      const failures=Number(sessionStorage.getItem('login_failures')||0)+1;sessionStorage.setItem('login_failures',String(failures));
-      if(failures>=5){sessionStorage.setItem('login_lock_until',String(Date.now()+5*60*1000));sessionStorage.removeItem('login_failures');err.textContent='로그인에 5회 실패해 5분 동안 잠겼습니다.';}
+      const failures=Number(sessionStorage.getItem('login_failures_v2')||0)+1;sessionStorage.setItem('login_failures_v2',String(failures));
+      if(failures>=5){sessionStorage.setItem('login_lock_until_v2',String(Date.now()+5*60*1000));sessionStorage.removeItem('login_failures_v2');err.textContent='로그인에 5회 실패해 5분 동안 잠겼습니다.';}
       else err.textContent='아이디 또는 비밀번호가 올바르지 않습니다. ('+failures+'/5)';
       return;
     }
     if(user.status==='pending'){err.textContent='강사 승인 대기 중입니다.';return;}
-    sessionStorage.removeItem('login_failures');sessionStorage.removeItem('login_lock_until');
+    sessionStorage.removeItem('login_failures_v2');sessionStorage.removeItem('login_lock_until_v2');
     session=user;
     await loadAll();
     await loadQaData();
