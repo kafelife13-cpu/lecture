@@ -1425,6 +1425,21 @@ input,button{font-family:var(--font)}
   </div>
 </div>
 
+<!-- 한백고1 필수 과제 알림 -->
+<div class="modal-bg" id="modal-hanbaek1-required-homework">
+  <div class="modal" style="max-width:420px;border:2px solid var(--amber)">
+    <div class="modal-head"><h3>📒 한백고1 필수과제</h3></div>
+    <div class="modal-body" style="text-align:center">
+      <div style="font-size:42px;margin-bottom:10px">⚠️</div>
+      <div style="font-size:18px;font-weight:900;color:var(--amber);margin-bottom:10px">32문제 답안 입력이 필요합니다</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7">세종어제훈민정음 과제 32문제를 반드시 입력해 주세요.<br>제출을 완료하면 이 안내는 더 이상 뜨지 않습니다.</div>
+    </div>
+    <div class="modal-footer" style="display:block;padding:12px 16px 16px">
+      <button class="btn amber" style="width:100%;padding:13px;font-size:15px;font-weight:900" onclick="openHanbaek1RequiredHomework()">32문제 지금 입력하기 →</button>
+    </div>
+  </div>
+</div>
+
 <!-- DETAIL MODAL -->
 <div class="modal-bg" id="modal-detail">
   <div class="modal">
@@ -2220,6 +2235,28 @@ function launchStudent(){
   sNav(padMode?'exam':'home');
   setTimeout(updateAllBadges,1000);
   setTimeout(updatePushBtnState,300);
+  if(!padMode)setTimeout(showHanbaek1RequiredHomeworkAlert,350);
+}
+
+var hanbaek1RequiredHomeworkId=null;
+async function showHanbaek1RequiredHomeworkAlert(){
+  if(!session||session.role!=='student')return;
+  var me=(db.users||[]).find(function(u){return u.id===session.id;})||session;
+  if(me.group_id!=='hanbaek_wed_1800')return;
+  try{
+    var examRes=await sb.from('exams').select('id,name,total_q').eq('category','homework').eq('total_q',32).ilike('name','%한백고1%').order('created_at',{ascending:false}).limit(1);
+    var exam=examRes.data&&examRes.data[0];if(!exam)return;
+    var responseRes=await sb.from('exam_responses').select('id').eq('exam_id',exam.id).eq('student_name',session.name||session.id).limit(1);
+    if(responseRes.data&&responseRes.data.length)return;
+    hanbaek1RequiredHomeworkId=exam.id;
+    var modal=document.getElementById('modal-hanbaek1-required-homework');if(modal)modal.classList.add('show');
+  }catch(e){console.warn('required homework alert failed',e);}
+}
+function openHanbaek1RequiredHomework(){
+  var modal=document.getElementById('modal-hanbaek1-required-homework');if(modal)modal.classList.remove('show');
+  var examId=hanbaek1RequiredHomeworkId;
+  sNav('exam');
+  if(examId)setTimeout(function(){sExamOpenForGrading(examId);},150);
 }
 
 /* ════════════════════════════════════════════
@@ -10332,7 +10369,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=92', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=93', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
