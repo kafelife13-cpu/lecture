@@ -265,6 +265,7 @@ input,button{font-family:var(--font)}
       </div>
       <div class="form-group"><label>아이디</label><input id="login-id" class="form-input" type="text" placeholder="아이디 입력" onkeydown="if(event.key==='Enter')doLogin()"/></div>
       <div class="form-group"><label>비밀번호</label><input id="login-pw" class="form-input" type="password" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+      <label id="login-remember-wrap" style="display:none;align-items:center;gap:8px;margin:-2px 0 12px;color:var(--text2);font-size:12px;cursor:pointer"><input id="login-remember" type="checkbox" checked style="width:17px;height:17px;accent-color:var(--accent)"> 이 기기에서 학생 로그인 유지</label>
       <button class="btn-primary" id="login-btn" onclick="doLogin()">로그인</button>
       <div id="login-err" class="err-msg"></div>
       <div class="login-switch">계정이 없으신가요? <a onclick="showSignup()">학생 회원가입</a></div>
@@ -1984,6 +1985,55 @@ async function upsertProgress(sid,vid,pct,watchSec,lastPosition,maxRate){
 function selectRole(r){
   currentRole=r;
   document.querySelectorAll('.role-tab').forEach((b,i)=>b.classList.toggle('active',(i===0&&r==='teacher')||(i===1&&r==='student')));
+  var rememberWrap=document.getElementById('login-remember-wrap');
+  if(rememberWrap)rememberWrap.style.display=r==='student'?'flex':'none';
+}
+function loginStoreOpen(){
+  return new Promise(function(resolve,reject){
+    var req=indexedDB.open('kukeo_student_login',1);
+    req.onupgradeneeded=function(){if(!req.result.objectStoreNames.contains('kv'))req.result.createObjectStore('kv');};
+    req.onsuccess=function(){resolve(req.result);};req.onerror=function(){reject(req.error);};
+  });
+}
+async function loginStorePut(key,value){
+  var d=await loginStoreOpen();return new Promise(function(resolve,reject){var tx=d.transaction('kv','readwrite');tx.objectStore('kv').put(value,key);tx.oncomplete=function(){d.close();resolve();};tx.onerror=function(){d.close();reject(tx.error);};});
+}
+async function loginStoreGet(key){
+  var d=await loginStoreOpen();return new Promise(function(resolve,reject){var tx=d.transaction('kv','readonly'),req=tx.objectStore('kv').get(key);req.onsuccess=function(){var v=req.result;d.close();resolve(v);};req.onerror=function(){d.close();reject(req.error);};});
+}
+async function clearRememberedStudentLogin(){
+  try{var d=await loginStoreOpen();await new Promise(function(resolve){var tx=d.transaction('kv','readwrite');tx.objectStore('kv').clear();tx.oncomplete=function(){d.close();resolve();};tx.onerror=function(){d.close();resolve();};});}catch(e){}
+}
+async function saveRememberedStudentLogin(id,pw){
+  try{
+    var key=await crypto.subtle.generateKey({name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+    var iv=crypto.getRandomValues(new Uint8Array(12));
+    var plain=new TextEncoder().encode(JSON.stringify({id:id,pw:pw,role:'student'}));
+    var encrypted=await crypto.subtle.encrypt({name:'AES-GCM',iv:iv},key,plain);
+    await loginStorePut('key',key);
+    await loginStorePut('session',{iv:Array.from(iv),data:Array.from(new Uint8Array(encrypted))});
+  }catch(e){console.warn('student login save failed',e);}
+}
+async function readRememberedStudentLogin(){
+  try{
+    var key=await loginStoreGet('key'),saved=await loginStoreGet('session');if(!key||!saved)return null;
+    var plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:new Uint8Array(saved.iv)},key,new Uint8Array(saved.data));
+    return JSON.parse(new TextDecoder().decode(plain));
+  }catch(e){await clearRememberedStudentLogin();return null;}
+}
+async function completeUserLogin(user){
+  session=user;
+  await loadAll();await loadQaData();await loadCertData();await loadClinicData();await loadStudyData();await loadAnnounceData();
+  if(user.role==='teacher')launchTeacher();else launchStudent();
+}
+async function restoreRememberedStudentLogin(){
+  var saved=await readRememberedStudentLogin();if(!saved||!saved.id||!saved.pw)return false;
+  document.querySelector('.loading-text').textContent='학생 로그인 복원 중...';
+  try{
+    var result=await sb.rpc('authenticate_user',{p_id:saved.id,p_password:saved.pw,p_role:'student'}),user=result.data;
+    if(result.error||!user||user.status==='pending'){await clearRememberedStudentLogin();return false;}
+    await completeUserLogin(user);return true;
+  }catch(e){return false;}
 }
 async function doLogin(){
   const id=document.getElementById('login-id').value.trim();
@@ -2006,14 +2056,9 @@ async function doLogin(){
     }
     if(user.status==='pending'){err.textContent='강사 승인 대기 중입니다.';return;}
     sessionStorage.removeItem('login_failures_v2');sessionStorage.removeItem('login_lock_until_v2');
-    session=user;
-    await loadAll();
-    await loadQaData();
-    await loadCertData();
-    await loadClinicData();
-    await loadStudyData();
-    await loadAnnounceData();
-    if(user.role==='teacher')launchTeacher();else launchStudent();
+    if(currentRole==='student'&&document.getElementById('login-remember')?.checked)await saveRememberedStudentLogin(id,pw);
+    else if(currentRole==='student')await clearRememberedStudentLogin();
+    await completeUserLogin(user);
   }catch(e){err.textContent='연결 오류: '+e.message;}
   finally{btn.disabled=false;btn.textContent='로그인';}
 }
@@ -2056,6 +2101,7 @@ function doLogout(){
     return;
   }
   session=null;db={users:[],videos:[],progress:[],access:[],requests:[],accessLog:[]};
+  clearRememberedStudentLogin();
   localStorage.removeItem('lms_sess');showPage('page-login');
   document.getElementById('login-id').value='';document.getElementById('login-pw').value='';
   document.getElementById('login-err').textContent='';
@@ -6853,9 +6899,8 @@ async function tSaveVocabStart(){
   }
   try{
     document.querySelector('.loading-text').textContent='로그인 화면 준비 중...';
-    // 역할과 아이디만 저장한 값으로 로그인 상태를 복원하면 누구나 강사로 위조할 수
-    // 있으므로 자동 로그인은 사용하지 않는다. 앱을 다시 열면 반드시 재인증한다.
     localStorage.removeItem('lms_sess');
+    if(await restoreRememberedStudentLogin()){hideLoading();return;}
   }catch(e){
     console.error(e);
     document.querySelector('.loading-text').textContent='서버 연결 실패. 새로고침해주세요.';
@@ -10384,7 +10429,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=95', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=96', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
