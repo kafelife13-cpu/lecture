@@ -1100,12 +1100,6 @@ input,button{font-family:var(--font)}
       </div>
       <div class="panel" id="panel-review">
         <div class="page-header"><h1>복습 신청</h1><p>복습하고 싶은 영상을 신청하면 강사가 승인 후 시청 가능합니다</p></div>
-        <div class="card" style="margin-bottom:12px;border-left:3px solid var(--accent)">
-          <div style="padding:12px 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-            <div style="flex:1;min-width:190px"><div style="font-size:13px;font-weight:800">📷 복습영상 카메라 준비</div><div id="review-camera-permission-status" style="font-size:11px;color:var(--text2);margin-top:3px">버튼을 누른 뒤 Chrome 공식 권한창에서 카메라를 허용해 주세요.</div></div>
-            <button class="btn blue" onclick="requestReviewCameraPermission()">카메라 권한 요청</button>
-          </div>
-        </div>
         <div id="student-review-list"></div>
       </div>
       <div class="panel" id="panel-mypage">
@@ -1408,12 +1402,6 @@ input,button{font-family:var(--font)}
           <div class="pbar" style="height:7px"><div id="trk-seg-fill" class="pbar-fill" style="background:var(--green);width:0%"></div></div>
         </div>
         <div style="margin-top:8px;font-size:11px;color:var(--text3)">영상을 재생하면 자동으로 진도가 기록됩니다.</div>
-      </div>
-      <div id="video-presence-box" style="display:none;margin-top:10px;padding:10px;border-radius:10px;background:var(--bg3);border:1px solid var(--border)">
-        <div style="display:flex;align-items:center;gap:10px">
-          <video id="video-presence-camera" autoplay playsinline muted style="width:92px;height:69px;object-fit:cover;border-radius:8px;background:#111;transform:scaleX(-1)"></video>
-          <div style="flex:1"><div style="font-size:12px;font-weight:800">📷 보강 시청 자리 확인</div><div id="video-presence-status" style="font-size:11px;color:var(--text2);margin-top:3px">카메라 준비 중...</div><div style="font-size:10px;color:var(--text3);margin-top:3px">영상·사진은 저장하지 않고 자리 이탈 여부만 확인합니다.</div></div>
-        </div>
       </div>
     </div>
   </div>
@@ -4026,8 +4014,6 @@ async function openPlay(vid, forceStart){
   currentStartPos=(forceStart===true)?0:lp;
   const id=ytId(v.url);
   if(!id){notify('유효하지 않은 유튜브 URL입니다.','error');return;}
-  const presenceReady=await startVideoPresenceMonitor(v);
-  if(!presenceReady){currentVid=null;currentStartPos=0;return;}
   sendTeacherAlert('▶️ '+session.name+' 학생이 "'+v.title+'" 강의 시청을 시작했어요.');
   document.getElementById('play-title').textContent=v.title;
   document.getElementById('modal-play').classList.add('show');
