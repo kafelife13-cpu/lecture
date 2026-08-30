@@ -5019,7 +5019,10 @@ async function renderSClinicList(){
   var myReq=myPending||effectiveClinicRequest(session.id,thisMonday);
   var clinicTop='';
   var surveyNotOpen=new Date()<CLINIC_SURVEY_OPEN_AT;
-  var slots=clinicDb.slots.filter(function(s){return !session.school_id||s.school_id===session.school_id;});
+  // 배정 명단용 내부 시간대는 출결·교사 화면에서는 사용하되 학생 신청 선택지에는 노출하지 않는다.
+  var slots=clinicDb.slots.filter(function(s){
+    return (!session.school_id||s.school_id===session.school_id)&&String(s.id||'').indexOf('assigned_')!==0;
+  });
   var datedUpcoming=slots.filter(function(s){return s.slot_date&&weekMonday(s.slot_date)>=thisMonday;});
   if(datedUpcoming.length)slots=datedUpcoming;
   if(!slots.length){
