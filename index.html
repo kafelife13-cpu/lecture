@@ -265,7 +265,6 @@ input,button{font-family:var(--font)}
       </div>
       <div class="form-group"><label>아이디</label><input id="login-id" class="form-input" type="text" placeholder="아이디 입력" onkeydown="if(event.key==='Enter')doLogin()"/></div>
       <div class="form-group"><label>비밀번호</label><input id="login-pw" class="form-input" type="password" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter')doLogin()"/></div>
-      <label id="login-remember-wrap" style="display:none;align-items:center;gap:8px;margin:-2px 0 12px;color:var(--text2);font-size:12px;cursor:pointer"><input id="login-remember" type="checkbox" checked style="width:17px;height:17px;accent-color:var(--accent)"> 이 기기에서 학생 로그인 유지</label>
       <button class="btn-primary" id="login-btn" onclick="doLogin()">로그인</button>
       <div id="login-err" class="err-msg"></div>
       <div class="login-switch">계정이 없으신가요? <a onclick="showSignup()">학생 회원가입</a></div>
@@ -328,7 +327,7 @@ input,button{font-family:var(--font)}
         <div class="nav-item" onclick="tNav('qa')" data-p="qa" id="nav-qa" style="position:relative"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>과제 QnA 관리</div>
         <div class="nav-item" onclick="tNav('cert')" data-p="cert"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증 관리</div>
         <div class="nav-item" onclick="tNav('clinic')" data-p="clinic"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉 관리</div>
-        <div class="nav-item" onclick="tNav('study')" data-p="study"><svg viewBox="0 0 24 24"><path d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>공부 타이머</div>
+        <div class="nav-item" onclick="tNav('study')" data-p="study"><svg viewBox="0 0 24 24"><path d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>과제 인증 타이머</div>
         <div class="nav-item" onclick="tNav('exam')" data-p="exam"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>온라인 채점</div>
         <div class="nav-item" onclick="tNav('weakness')" data-p="weakness"><svg viewBox="0 0 24 24"><path d="M3 13h2v8H3v-8zm4-6h2v14H7V7zm4 3h2v11h-2V10zm4-6h2v17h-2V4zm4 5h2v12h-2V9z"/></svg>약점 분석</div>
         <div class="nav-item" onclick="tNav('vocab')" data-p="vocab"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 13.5L4.24 12.5 2 11.15v3.7L12 20l10-5.15v-3.7l-2.24 1.35L12 16.5z"/></svg>오늘의 어휘</div>
@@ -645,7 +644,7 @@ input,button{font-family:var(--font)}
 
       <!-- 공부 타이머 (교사) -->
       <div class="panel" id="panel-study">
-        <div class="page-header"><h1>공부 타이머</h1><p>학생들의 하루 공부시간을 확인하세요 (챌린지 기준 60분)</p></div>
+        <div class="page-header"><h1>과제 인증 타이머</h1><p>학생들의 하루 공부시간을 확인하세요 (챌린지 기준 60분)</p></div>
         <div class="card" style="margin-bottom:1rem;border-color:var(--green)">
           <div class="card-head" style="background:var(--green-bg)"><h3 style="color:var(--green)">🏆 오늘 60분 달성</h3><span id="t-study-achieved-count" style="font-size:11px;color:var(--green)"></span></div>
           <div id="t-study-achieved-list"></div>
@@ -1021,7 +1020,10 @@ input,button{font-family:var(--font)}
               <span id="an-image-filename" style="font-size:12px;color:var(--text2);margin-left:6px"></span>
               <div id="an-image-preview" style="margin-top:8px"></div>
             </div>
-            <button class="btn blue" onclick="postAnnouncement()">📢 게시하기</button>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn blue" id="an-submit-btn" onclick="postAnnouncement()">📢 게시하기</button>
+              <button class="btn" id="an-edit-cancel" style="display:none" onclick="cancelAnnouncementEdit()">수정 취소</button>
+            </div>
           </div>
         </div>
         <div class="card">
@@ -1072,7 +1074,7 @@ input,button{font-family:var(--font)}
         <div class="nav-item" onclick="sNav('qa')" data-p="qa" id="nav-qa-s" style="position:relative"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>과제 QnA</div>
         <div class="nav-item" onclick="sNav('cert')" data-p="cert"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증</div>
         <div class="nav-item" onclick="sNav('clinic')" data-p="clinic"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉 변동</div>
-        <div class="nav-item" onclick="sNav('study')" data-p="study"><svg viewBox="0 0 24 24"><path d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>공부 타이머</div>
+        <div class="nav-item" onclick="sNav('study')" data-p="study"><svg viewBox="0 0 24 24"><path d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>과제 인증 타이머</div>
         <div class="nav-item" onclick="sNav('oxreview')" data-p="oxreview"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>오답 재풀이</div>
         <div class="nav-item" onclick="sNav('exam')" data-p="exam"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>온라인 채점</div>
         <div class="nav-item" onclick="sNav('scores')" data-p="scores"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-8 14H8v-7h3v7zm5 0h-3V7h3v10z"/></svg>내 성적</div>
@@ -1101,6 +1103,12 @@ input,button{font-family:var(--font)}
       </div>
       <div class="panel" id="panel-review">
         <div class="page-header"><h1>복습 신청</h1><p>복습하고 싶은 영상을 신청하면 강사가 승인 후 시청 가능합니다</p></div>
+        <div class="card" style="margin-bottom:12px;border-left:3px solid var(--accent)">
+          <div style="padding:12px 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <div style="flex:1;min-width:190px"><div style="font-size:13px;font-weight:800">📷 복습영상 카메라 준비</div><div id="review-camera-permission-status" style="font-size:11px;color:var(--text2);margin-top:3px">버튼을 누른 뒤 Chrome 공식 권한창에서 카메라를 허용해 주세요.</div></div>
+            <button class="btn blue" onclick="requestReviewCameraPermission()">카메라 권한 요청</button>
+          </div>
+        </div>
         <div id="student-review-list"></div>
       </div>
       <div class="panel" id="panel-mypage">
@@ -1185,7 +1193,7 @@ input,button{font-family:var(--font)}
 
       <!-- 공부 타이머 (학생) -->
       <div class="panel" id="panel-study">
-        <div class="page-header"><h1>공부 타이머</h1><p>공부 시작/종료할 때 사진을 찍어서 인증해요. 하루 60분 챌린지!</p></div>
+        <div class="page-header"><h1>과제 인증 타이머</h1><p>공부 시작/종료할 때 사진을 찍어서 인증해요. 하루 60분 챌린지!</p></div>
         <div class="card" style="margin-bottom:1rem">
           <div style="padding:1.25rem;text-align:center">
             <div style="font-size:12px;color:var(--text2);margin-bottom:4px">오늘 누적 공부시간</div>
@@ -1404,6 +1412,12 @@ input,button{font-family:var(--font)}
         </div>
         <div style="margin-top:8px;font-size:11px;color:var(--text3)">영상을 재생하면 자동으로 진도가 기록됩니다.</div>
       </div>
+      <div id="video-presence-box" style="display:none;margin-top:10px;padding:10px;border-radius:10px;background:var(--bg3);border:1px solid var(--border)">
+        <div style="display:flex;align-items:center;gap:10px">
+          <video id="video-presence-camera" autoplay playsinline muted style="width:92px;height:69px;object-fit:cover;border-radius:8px;background:#111;transform:scaleX(-1)"></video>
+          <div style="flex:1"><div style="font-size:12px;font-weight:800">📷 보강 시청 자리 확인</div><div id="video-presence-status" style="font-size:11px;color:var(--text2);margin-top:3px">카메라 준비 중...</div><div style="font-size:10px;color:var(--text3);margin-top:3px">영상·사진은 저장하지 않고 자리 이탈 여부만 확인합니다.</div></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1422,21 +1436,6 @@ input,button{font-family:var(--font)}
           ↺ 처음부터 다시 보기
         </button>
       </div>
-    </div>
-  </div>
-</div>
-
-<!-- 한백고1 필수 과제 알림 -->
-<div class="modal-bg" id="modal-hanbaek1-required-homework">
-  <div class="modal" style="max-width:420px;border:2px solid var(--amber)">
-    <div class="modal-head"><h3>📒 한백고1 필수과제</h3></div>
-    <div class="modal-body" style="text-align:center">
-      <div style="font-size:42px;margin-bottom:10px">⚠️</div>
-      <div style="font-size:18px;font-weight:900;color:var(--amber);margin-bottom:10px">32문제 답안 입력이 필요합니다</div>
-      <div style="font-size:13px;color:var(--text2);line-height:1.7">세종어제훈민정음 과제 32문제를 반드시 입력해 주세요.<br>제출을 완료하면 이 안내는 더 이상 뜨지 않습니다.</div>
-    </div>
-    <div class="modal-footer" style="display:block;padding:12px 16px 16px">
-      <button class="btn amber" style="width:100%;padding:13px;font-size:15px;font-weight:900" onclick="openHanbaek1RequiredHomework()">32문제 지금 입력하기 →</button>
     </div>
   </div>
 </div>
@@ -1832,6 +1831,7 @@ let db={users:[],videos:[],progress:[],access:[],requests:[],accessLog:[]};
 var sharedAISettings=null;
 let ytPlayer=null,ytApiReady=false,currentVid=null,currentStartPos=0;
 let watchedSet=new Set(),trackTimer=null,saveTimer=null,lastPos=-1,totalDur=0,maxRateSeen=1;
+let videoPresenceStream=null,videoPresenceDetector=null,videoPresenceTimer=null,videoPresenceBusy=false,videoPresenceMissingAt=0,videoPresenceLastAlert=0,videoPresenceHiddenAt=0;
 
 window.onYouTubeIframeAPIReady=function(){ytApiReady=true;};
 
@@ -1985,55 +1985,6 @@ async function upsertProgress(sid,vid,pct,watchSec,lastPosition,maxRate){
 function selectRole(r){
   currentRole=r;
   document.querySelectorAll('.role-tab').forEach((b,i)=>b.classList.toggle('active',(i===0&&r==='teacher')||(i===1&&r==='student')));
-  var rememberWrap=document.getElementById('login-remember-wrap');
-  if(rememberWrap)rememberWrap.style.display=r==='student'?'flex':'none';
-}
-function loginStoreOpen(){
-  return new Promise(function(resolve,reject){
-    var req=indexedDB.open('kukeo_student_login',1);
-    req.onupgradeneeded=function(){if(!req.result.objectStoreNames.contains('kv'))req.result.createObjectStore('kv');};
-    req.onsuccess=function(){resolve(req.result);};req.onerror=function(){reject(req.error);};
-  });
-}
-async function loginStorePut(key,value){
-  var d=await loginStoreOpen();return new Promise(function(resolve,reject){var tx=d.transaction('kv','readwrite');tx.objectStore('kv').put(value,key);tx.oncomplete=function(){d.close();resolve();};tx.onerror=function(){d.close();reject(tx.error);};});
-}
-async function loginStoreGet(key){
-  var d=await loginStoreOpen();return new Promise(function(resolve,reject){var tx=d.transaction('kv','readonly'),req=tx.objectStore('kv').get(key);req.onsuccess=function(){var v=req.result;d.close();resolve(v);};req.onerror=function(){d.close();reject(req.error);};});
-}
-async function clearRememberedStudentLogin(){
-  try{var d=await loginStoreOpen();await new Promise(function(resolve){var tx=d.transaction('kv','readwrite');tx.objectStore('kv').clear();tx.oncomplete=function(){d.close();resolve();};tx.onerror=function(){d.close();resolve();};});}catch(e){}
-}
-async function saveRememberedStudentLogin(id,pw){
-  try{
-    var key=await crypto.subtle.generateKey({name:'AES-GCM',length:256},false,['encrypt','decrypt']);
-    var iv=crypto.getRandomValues(new Uint8Array(12));
-    var plain=new TextEncoder().encode(JSON.stringify({id:id,pw:pw,role:'student'}));
-    var encrypted=await crypto.subtle.encrypt({name:'AES-GCM',iv:iv},key,plain);
-    await loginStorePut('key',key);
-    await loginStorePut('session',{iv:Array.from(iv),data:Array.from(new Uint8Array(encrypted))});
-  }catch(e){console.warn('student login save failed',e);}
-}
-async function readRememberedStudentLogin(){
-  try{
-    var key=await loginStoreGet('key'),saved=await loginStoreGet('session');if(!key||!saved)return null;
-    var plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:new Uint8Array(saved.iv)},key,new Uint8Array(saved.data));
-    return JSON.parse(new TextDecoder().decode(plain));
-  }catch(e){await clearRememberedStudentLogin();return null;}
-}
-async function completeUserLogin(user){
-  session=user;
-  await loadAll();await loadQaData();await loadCertData();await loadClinicData();await loadStudyData();await loadAnnounceData();
-  if(user.role==='teacher')launchTeacher();else launchStudent();
-}
-async function restoreRememberedStudentLogin(){
-  var saved=await readRememberedStudentLogin();if(!saved||!saved.id||!saved.pw)return false;
-  document.querySelector('.loading-text').textContent='학생 로그인 복원 중...';
-  try{
-    var result=await sb.rpc('authenticate_user',{p_id:saved.id,p_password:saved.pw,p_role:'student'}),user=result.data;
-    if(result.error||!user||user.status==='pending'){await clearRememberedStudentLogin();return false;}
-    await completeUserLogin(user);return true;
-  }catch(e){return false;}
 }
 async function doLogin(){
   const id=document.getElementById('login-id').value.trim();
@@ -2042,23 +1993,28 @@ async function doLogin(){
   const btn=document.getElementById('login-btn');
   err.textContent='';
   if(!id||!pw){err.textContent='아이디와 비밀번호를 입력하세요.';return;}
-  const lockUntil=Number(sessionStorage.getItem('login_lock_until_v2')||0);
+  const lockUntil=Number(sessionStorage.getItem('login_lock_until')||0);
   if(lockUntil>Date.now()){err.textContent='로그인 시도가 잠겼습니다. '+Math.ceil((lockUntil-Date.now())/60000)+'분 뒤 다시 시도해 주세요.';return;}
   btn.disabled=true;btn.textContent='로그인 중...';
   try{
     const result=await sb.rpc('authenticate_user',{p_id:id,p_password:pw,p_role:currentRole});
     const user=result.data;
     if(result.error||!user){
-      const failures=Number(sessionStorage.getItem('login_failures_v2')||0)+1;sessionStorage.setItem('login_failures_v2',String(failures));
-      if(failures>=5){sessionStorage.setItem('login_lock_until_v2',String(Date.now()+5*60*1000));sessionStorage.removeItem('login_failures_v2');err.textContent='로그인에 5회 실패해 5분 동안 잠겼습니다.';}
+      const failures=Number(sessionStorage.getItem('login_failures')||0)+1;sessionStorage.setItem('login_failures',String(failures));
+      if(failures>=5){sessionStorage.setItem('login_lock_until',String(Date.now()+5*60*1000));sessionStorage.removeItem('login_failures');err.textContent='로그인에 5회 실패해 5분 동안 잠겼습니다.';}
       else err.textContent='아이디 또는 비밀번호가 올바르지 않습니다. ('+failures+'/5)';
       return;
     }
     if(user.status==='pending'){err.textContent='강사 승인 대기 중입니다.';return;}
-    sessionStorage.removeItem('login_failures_v2');sessionStorage.removeItem('login_lock_until_v2');
-    if(currentRole==='student'&&document.getElementById('login-remember')?.checked)await saveRememberedStudentLogin(id,pw);
-    else if(currentRole==='student')await clearRememberedStudentLogin();
-    await completeUserLogin(user);
+    sessionStorage.removeItem('login_failures');sessionStorage.removeItem('login_lock_until');
+    session=user;
+    await loadAll();
+    await loadQaData();
+    await loadCertData();
+    await loadClinicData();
+    await loadStudyData();
+    await loadAnnounceData();
+    if(user.role==='teacher')launchTeacher();else launchStudent();
   }catch(e){err.textContent='연결 오류: '+e.message;}
   finally{btn.disabled=false;btn.textContent='로그인';}
 }
@@ -2101,7 +2057,6 @@ function doLogout(){
     return;
   }
   session=null;db={users:[],videos:[],progress:[],access:[],requests:[],accessLog:[]};
-  clearRememberedStudentLogin();
   localStorage.removeItem('lms_sess');showPage('page-login');
   document.getElementById('login-id').value='';document.getElementById('login-pw').value='';
   document.getElementById('login-err').textContent='';
@@ -2281,28 +2236,6 @@ function launchStudent(){
   sNav(padMode?'exam':'home');
   setTimeout(updateAllBadges,1000);
   setTimeout(updatePushBtnState,300);
-  if(!padMode)setTimeout(showHanbaek1RequiredHomeworkAlert,350);
-}
-
-var hanbaek1RequiredHomeworkId=null;
-async function showHanbaek1RequiredHomeworkAlert(){
-  if(!session||session.role!=='student')return;
-  var me=(db.users||[]).find(function(u){return u.id===session.id;})||session;
-  if(me.group_id!=='hanbaek_wed_1800')return;
-  try{
-    var examRes=await sb.from('exams').select('id,name,total_q').eq('category','homework').eq('total_q',32).ilike('name','%한백고1%').order('created_at',{ascending:false}).limit(1);
-    var exam=examRes.data&&examRes.data[0];if(!exam)return;
-    var responseRes=await sb.from('exam_responses').select('id').eq('exam_id',exam.id).eq('student_name',session.name||session.id).limit(1);
-    if(responseRes.data&&responseRes.data.length)return;
-    hanbaek1RequiredHomeworkId=exam.id;
-    var modal=document.getElementById('modal-hanbaek1-required-homework');if(modal)modal.classList.add('show');
-  }catch(e){console.warn('required homework alert failed',e);}
-}
-function openHanbaek1RequiredHomework(){
-  var modal=document.getElementById('modal-hanbaek1-required-homework');if(modal)modal.classList.remove('show');
-  var examId=hanbaek1RequiredHomeworkId;
-  sNav('exam');
-  if(examId)setTimeout(function(){sExamOpenForGrading(examId);},150);
 }
 
 /* ════════════════════════════════════════════
@@ -2389,7 +2322,7 @@ function renderSHome(){
     ['💬','과제 QnA','질문하기','qa'],
     ['✅','인증','사진·완료 제출','cert'],
     ['🏫','클리닉 변동','시간 변경 신청','clinic'],
-    ['⏱','공부 타이머','순공 인증','study'],
+    ['⏱','과제 인증 타이머','순공 인증','study'],
     ['🔁','오답 재풀이','OX 재시험','oxreview'],
     ['📝','온라인 채점','시험·OMR 채점','exam'],
     ['📊','내 성적 확인하기','점수·성적표 보기','scores'],
@@ -4001,6 +3934,86 @@ function confirmResume(fromStart){
   openPlay(vid, fromStart);
 }
 
+function videoPresenceSetStatus(text,color){
+  const el=document.getElementById('video-presence-status');if(el){el.textContent=text;el.style.color=color||'var(--text2)';}
+}
+async function requestReviewCameraPermission(){
+  const status=document.getElementById('review-camera-permission-status');
+  if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)){
+    if(status){status.textContent='이 브라우저에서는 카메라를 사용할 수 없어요. Chrome 또는 Safari 최신 버전으로 열어 주세요.';status.style.color='var(--red)';}
+    return;
+  }
+  if(status){status.textContent='브라우저의 카메라 허용 창을 확인해 주세요...';status.style.color='var(--amber)';}
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});
+    stream.getTracks().forEach(function(t){t.stop();});
+    if(status){status.textContent='카메라 허용 완료! 이제 복습영상을 재생할 수 있어요.';status.style.color='var(--green)';}
+    notify('카메라 허용이 완료됐어요.','success');
+  }catch(err){
+    if(status){status.textContent='카메라가 차단되어 있어요. 주소창의 자물쇠/카메라 아이콘 → 카메라 → 허용 후 새로고침해 주세요.';status.style.color='var(--red)';}
+    alert('카메라 허용이 필요해요.\n\n주소창 옆 자물쇠 또는 카메라 아이콘을 누르고 [카메라]를 [허용]으로 바꾼 뒤 새로고침해 주세요.\n\n아이폰: 설정 → Safari → 카메라 → 허용\n안드로이드: Chrome → 설정 → 사이트 설정 → 카메라 → 허용');
+  }
+}
+function videoPresenceAlert(reason,detail){
+  const now=Date.now();if(now-videoPresenceLastAlert<120000)return;
+  videoPresenceLastAlert=now;
+  const v=db.videos.find(function(x){return x.id===currentVid;});
+  const title=v?v.title:'보강영상';
+  sendTeacherAlert('보강영상 자리 이탈 감지 · '+(session.name||session.id)+' · '+title+' · '+reason+(detail?' ('+detail+')':'')+' · '+new Date().toLocaleString('ko-KR'));
+  notify('자리 이탈이 감지됐어요. 화면 앞에서 계속 시청해 주세요.','error');
+}
+async function stopVideoPresenceMonitor(){
+  if(videoPresenceTimer){clearInterval(videoPresenceTimer);videoPresenceTimer=null;}
+  videoPresenceBusy=false;videoPresenceMissingAt=0;videoPresenceHiddenAt=0;
+  if(videoPresenceStream){videoPresenceStream.getTracks().forEach(function(t){t.stop();});videoPresenceStream=null;}
+  const cam=document.getElementById('video-presence-camera');if(cam)cam.srcObject=null;
+  const box=document.getElementById('video-presence-box');if(box)box.style.display='none';
+}
+async function startVideoPresenceMonitor(videoInfo){
+  if(videoInfo.category!=='review')return true;
+  if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)){alert('이 기기에서는 카메라 자리 확인을 지원하지 않아 보강영상을 재생할 수 없어요.');return false;}
+  const box=document.getElementById('video-presence-box'),cam=document.getElementById('video-presence-camera');
+  if(box)box.style.display='block';videoPresenceSetStatus('카메라 연결 중...','var(--amber)');
+  try{
+    videoPresenceStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:320},height:{ideal:240}},audio:false});
+    cam.srcObject=videoPresenceStream;await cam.play();
+    if(!videoPresenceDetector){
+      videoPresenceSetStatus('얼굴 확인 기능 준비 중...','var(--amber)');
+      const visionLib=await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/+esm');
+      const vision=await visionLib.FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/wasm');
+      videoPresenceDetector=await visionLib.FaceDetector.createFromOptions(vision,{baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/latest/blaze_face_short_range.tflite'},runningMode:'VIDEO',minDetectionConfidence:0.55});
+    }
+    videoPresenceSetStatus('얼굴 확인 중 · 정상','var(--green)');
+    videoPresenceTimer=setInterval(async function(){
+      if(videoPresenceBusy||!videoPresenceDetector||!cam||cam.readyState<2||document.hidden)return;
+      videoPresenceBusy=true;
+      try{
+        const result=videoPresenceDetector.detectForVideo(cam,performance.now());
+        const faceCount=result&&result.detections?result.detections.length:0;
+        if(faceCount>1){videoPresenceMissingAt=0;videoPresenceSetStatus('여러 사람이 감지됐어요','var(--red)');videoPresenceAlert('카메라에 여러 사람 감지',faceCount+'명');}
+        else if(faceCount===1){videoPresenceMissingAt=0;videoPresenceSetStatus('얼굴 확인 중 · 정상','var(--green)');}
+        else{
+          if(!videoPresenceMissingAt)videoPresenceMissingAt=Date.now();
+          const awaySec=Math.floor((Date.now()-videoPresenceMissingAt)/1000);
+          videoPresenceSetStatus('얼굴이 보이지 않아요 · '+awaySec+'초','var(--red)');
+          if(awaySec>=15){videoPresenceAlert('카메라에서 얼굴이 보이지 않음',awaySec+'초 이상');videoPresenceMissingAt=Date.now();}
+        }
+      }catch(e){videoPresenceSetStatus('얼굴 확인을 다시 시도 중...','var(--amber)');}
+      videoPresenceBusy=false;
+    },2000);
+    return true;
+  }catch(err){
+    await stopVideoPresenceMonitor();
+    alert('보강영상 시청에는 전면 카메라 허용이 필요해요. 브라우저 설정에서 카메라를 허용한 뒤 다시 시도해 주세요.');
+    return false;
+  }
+}
+document.addEventListener('visibilitychange',function(){
+  if(!videoPresenceStream||!currentVid)return;
+  if(document.hidden)videoPresenceHiddenAt=Date.now();
+  else if(videoPresenceHiddenAt){const sec=Math.floor((Date.now()-videoPresenceHiddenAt)/1000);if(sec>=5)videoPresenceAlert('영상 화면을 벗어남',sec+'초');videoPresenceHiddenAt=0;}
+});
+
 async function openPlay(vid, forceStart){
   const v=db.videos.find(x=>x.id===vid);
   if(!v)return;
@@ -4016,6 +4029,8 @@ async function openPlay(vid, forceStart){
   currentStartPos=(forceStart===true)?0:lp;
   const id=ytId(v.url);
   if(!id){notify('유효하지 않은 유튜브 URL입니다.','error');return;}
+  const presenceReady=await startVideoPresenceMonitor(v);
+  if(!presenceReady){currentVid=null;currentStartPos=0;return;}
   sendTeacherAlert('▶️ '+session.name+' 학생이 "'+v.title+'" 강의 시청을 시작했어요.');
   document.getElementById('play-title').textContent=v.title;
   document.getElementById('modal-play').classList.add('show');
@@ -4098,6 +4113,7 @@ function updateTrackUI(pct){
 }
 async function closePlay(){
   stopTracking();
+  await stopVideoPresenceMonitor();
   if(saveTimer){clearTimeout(saveTimer);saveTimer=null;}
   if(currentVid&&session&&totalDur>0){
     const pct=Math.min(Math.round((watchedSet.size/totalDur)*100),100);
@@ -4174,15 +4190,6 @@ function announceImageUrls(a){
   }
   return a.image_url?[a.image_url]:[];
 }
-function announceTargetGroup(a){
-  return null;
-}
-function announceImageLabel(a,index){
-  if(/^\s*\[한백고(?:1)?\]/.test(String(a&&a.title||''))){
-    return index===0?'과제1 · 세종어제훈민정음 빈칸·해석 채우기':'과제2 · 월~수 인증과제 32문항';
-  }
-  return '첨부자료 '+(index+1);
-}
 async function loadAnnounceData(){
   try{
     var a=await sb.from('announcements').select('*').order('created_at',{ascending:false});
@@ -4200,6 +4207,7 @@ function announceReadCount(id){
 }
 
 /* 교사: 작성/목록 */
+var announceEditingId=null;
 function onAnnounceImageSelected(input){
   var files=input.files?Array.from(input.files):[];
   announcePendingImageFiles=files;
@@ -4223,22 +4231,51 @@ async function postAnnouncement(){
       if(up.error){notify('이미지 업로드 실패: '+up.error.message,'error');return;}
       imageUrls.push(sb.storage.from('qa-files').getPublicUrl(path).data.publicUrl);
     }
+    if(announceEditingId){
+      var patch={title:title,content:content,school_id:schoolId};
+      if(imageUrls.length){patch.image_url=imageUrls[0]||null;patch.image_urls=JSON.stringify(imageUrls);}
+      var updated=await sb.from('announcements').update(patch).eq('id',announceEditingId);
+      if(updated.error){notify('수정 실패: '+updated.error.message,'error');return;}
+      announceDb.items=announceDb.items.map(function(a){return a.id===announceEditingId?Object.assign({},a,patch):a;});
+      resetAnnouncementForm();
+      notify('수정됐어요!','success');
+      renderTAnnounceList();
+      return;
+    }
     var id='an_'+Date.now();
     var row={id:id,title:title,content:content,image_url:imageUrls[0]||null,image_urls:imageUrls.length?JSON.stringify(imageUrls):null,school_id:schoolId,created_at:new Date().toISOString()};
     var res=await sb.from('announcements').insert(row);
     if(res.error){notify('게시 실패: '+res.error.message,'error');return;}
     announceDb.items.unshift(row);
-    document.getElementById('an-title').value='';
-    document.getElementById('an-content').value='';
-    document.getElementById('an-image-input').value='';
-    document.getElementById('an-image-filename').textContent='';
-    document.getElementById('an-image-preview').innerHTML='';
-    announcePendingImageFiles=[];
+    resetAnnouncementForm();
     sendTeacherAlert('📢 새 과제 안내: '+title);
     notify('게시됐어요!','success');
     renderTAnnounceList();
   }catch(e){notify('오류: '+e.message,'error');}
 }
+function resetAnnouncementForm(){
+  announceEditingId=null;
+  document.getElementById('an-title').value='';
+  document.getElementById('an-content').value='';
+  document.getElementById('an-image-input').value='';
+  document.getElementById('an-image-filename').textContent='';
+  document.getElementById('an-image-preview').innerHTML='';
+  announcePendingImageFiles=[];
+  var submit=document.getElementById('an-submit-btn');if(submit)submit.textContent='📢 게시하기';
+  var cancel=document.getElementById('an-edit-cancel');if(cancel)cancel.style.display='none';
+}
+function editAnnouncement(id){
+  var a=announceDb.items.find(function(item){return item.id===id;});
+  if(!a)return;
+  announceEditingId=id;
+  document.getElementById('an-school').value=a.school_id||'';
+  document.getElementById('an-title').value=a.title||'';
+  document.getElementById('an-content').value=a.content||'';
+  var submit=document.getElementById('an-submit-btn');if(submit)submit.textContent='💾 수정 저장';
+  var cancel=document.getElementById('an-edit-cancel');if(cancel)cancel.style.display='';
+  var panel=document.getElementById('panel-announce');if(panel)panel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function cancelAnnouncementEdit(){resetAnnouncementForm();}
 async function deleteAnnouncement(id){
   if(!confirm('이 안내를 삭제할까요?'))return;
   await sb.from('announcements').delete().eq('id',id);
@@ -4268,8 +4305,7 @@ function renderTAnnounceList(){
   var items=announceDb.items.filter(function(a){return !filterSchool||a.school_id===filterSchool;});
   if(!items.length){el.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px">게시된 안내가 없어요.</div>';return;}
   el.innerHTML=items.map(function(a){
-    var targetGroup=announceTargetGroup(a);
-    var total=targetGroup?activeStudents().filter(function(s){return s.group_id===targetGroup;}).length:(a.school_id?activeStudents().filter(function(s){return s.school_id===a.school_id;}).length:activeStudents().length);
+    var total=a.school_id?activeStudents().filter(function(s){return s.school_id===a.school_id;}).length:activeStudents().length;
     var readCnt=announceReadCount(a.id);
     var dateLabel=new Date(a.created_at).toLocaleString('ko-KR',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
     return '<div style="padding:12px 0;border-bottom:1px solid var(--border)">'+
@@ -4281,6 +4317,7 @@ function renderTAnnounceList(){
       (announceImageUrls(a).length?'<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">'+announceImageUrls(a).map(function(u){return '<img src="'+u+'" style="max-width:120px;border-radius:8px">';}).join('')+'</div>':'')+
       '<div style="display:flex;align-items:center;gap:8px">'+
       '<span class="badge '+(total>0&&readCnt>=total?'done':'partial')+'" style="font-size:11px">읽음 '+readCnt+'/'+total+'명</span>'+
+      '<button class="btn btn-sm" onclick="editAnnouncement(\''+a.id+'\')">수정</button>'+
       '<button class="btn btn-sm red" onclick="deleteAnnouncement(\''+a.id+'\')">삭제</button>'+
       '</div></div>';
   }).join('');
@@ -4290,12 +4327,7 @@ function renderTAnnounceList(){
 function myAnnounceItems(){
   if(!session)return announceDb.items;
   var mySchool=session.school_id||null;
-  var me=(db.users||[]).find(function(u){return u.id===session.id;})||session;
-  return announceDb.items.filter(function(a){
-    if(a.school_id&&a.school_id!==mySchool)return false;
-    var targetGroup=announceTargetGroup(a);
-    return !targetGroup||me.group_id===targetGroup;
-  });
+  return announceDb.items.filter(function(a){return !a.school_id||a.school_id===mySchool;});
 }
 function renderSAnnounceList(){
   var el=document.getElementById('s-announce-list');
@@ -4320,7 +4352,7 @@ async function openAnnounceView(id){
   if(!a)return;
   document.getElementById('an-view-title').textContent=a.title;
   document.getElementById('an-view-date').textContent=new Date(a.created_at).toLocaleString('ko-KR');
-  document.getElementById('an-view-image').innerHTML=announceImageUrls(a).map(function(u,i){return '<div style="margin-bottom:18px"><div style="padding:9px 12px;background:var(--amber-bg);border-left:4px solid var(--amber);border-radius:8px 8px 0 0;font-size:13px;font-weight:900;color:var(--amber)">'+announceImageLabel(a,i)+'</div><img src="'+u+'" style="width:100%;max-width:100%;border-radius:0 0 8px 8px;display:block"></div>';}).join('');
+  document.getElementById('an-view-image').innerHTML=announceImageUrls(a).map(function(u){return '<img src="'+u+'" style="max-width:100%;border-radius:8px;margin-bottom:10px;display:block">';}).join('');
   document.getElementById('an-view-content').textContent=a.content||'';
   document.getElementById('modal-announce-view').classList.add('show');
   if(session&&session.role==='student'&&!isAnnounceRead(id)){
@@ -6899,8 +6931,9 @@ async function tSaveVocabStart(){
   }
   try{
     document.querySelector('.loading-text').textContent='로그인 화면 준비 중...';
+    // 역할과 아이디만 저장한 값으로 로그인 상태를 복원하면 누구나 강사로 위조할 수
+    // 있으므로 자동 로그인은 사용하지 않는다. 앱을 다시 열면 반드시 재인증한다.
     localStorage.removeItem('lms_sess');
-    if(await restoreRememberedStudentLogin()){hideLoading();return;}
   }catch(e){
     console.error(e);
     document.querySelector('.loading-text').textContent='서버 연결 실패. 새로고침해주세요.';
@@ -10429,7 +10462,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=96', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=75', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
