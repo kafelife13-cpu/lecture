@@ -4129,10 +4129,10 @@ function announceImageUrls(a){
   return a.image_url?[a.image_url]:[];
 }
 function announceTargetGroup(a){
-  return /^\s*\[한백고1\]/.test(String(a&&a.title||''))?'hanbaek_wed_1800':null;
+  return null;
 }
 function announceImageLabel(a,index){
-  if(/^\s*\[한백고1\]/.test(String(a&&a.title||''))){
+  if(/^\s*\[한백고(?:1)?\]/.test(String(a&&a.title||''))){
     return index===0?'과제1 · 세종어제훈민정음 빈칸·해석 채우기':'과제2 · 월~수 인증과제 32문항';
   }
   return '첨부자료 '+(index+1);
@@ -10384,7 +10384,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=94', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=95', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
