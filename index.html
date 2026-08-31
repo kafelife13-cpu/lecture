@@ -9638,7 +9638,7 @@ var sExamPriorResponse=null;
 var sExamClinicCache=[];
 var sExamRespCache={};
 var sExamClinicWeekOpen={};
-var sExamCheckMode='full'; // 'full'(클리닉/모의고사: 문항별 답 선택) | 'wrongonly'(내신시험지 분석: 오답만 체크)
+var sExamCheckMode='full'; // 'full'(클리닉/과제/모의고사: 문항별 답 선택) | 'wrongonly'(내신시험지 분석: 오답만 체크)
 var sExamFullAnswers={};
 var sOmrCamStream=null,sOmrCurrentPhoto=null;
 var sExamTimerInterval=null,sExamTimerDeadline=0,sExamTimerSubmitting=false;
@@ -9803,7 +9803,9 @@ async function sExamOpenForGrading(examId){
   }
   sExamData=found;sExamPriorResponse=resp||null;
   sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;sWrongChecked={};sExamFullAnswers={};
-  sExamCheckMode=(found.category==='naeshin'||found.category==='homework')?'wrongonly':'full';
+  // 과제 채점도 클리닉 테스트처럼 모든 문항의 답을 입력해 자동 채점한다.
+  // 틀린 번호만 체크하는 방식은 내신시험지 분석에만 사용한다.
+  sExamCheckMode=found.category==='naeshin'?'wrongonly':'full';
   const icon=found.category==='mock'?'📝 ':found.category==='mini_mock'?'🧩 ':found.category==='naeshin'?'📚 ':found.category==='homework'?'📒 ':'🏫 ';
   document.getElementById('s-exam-check-title').textContent=icon+found.name;
   const fullEl=document.getElementById('s-exam-check-full');
@@ -10548,7 +10550,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=81', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=82', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
