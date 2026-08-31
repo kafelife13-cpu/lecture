@@ -21,6 +21,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="classical-vocab.js"></script>
 <script>
 (function(){
   var tag=document.createElement('script');
@@ -70,6 +71,7 @@ input,button{font-family:var(--font)}
 .form-input::placeholder{color:var(--text3)}
 .form-select{width:100%;padding:9px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:14px;cursor:pointer}
 .form-select:focus{outline:none;border-color:var(--accent)}
+.old-hangul{font-family:'Noto Serif CJK KR','Source Han Serif K','NanumMyeongjo YetHangul','Noto Sans KR','Malgun Gothic',sans-serif;font-variant-ligatures:normal;text-rendering:optimizeLegibility;unicode-bidi:isolate}
 .role-tabs{display:flex;gap:8px;margin-bottom:1.25rem}
 .role-tab{flex:1;padding:8px;border:1px solid var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--text2);font-size:13px;cursor:pointer;transition:all .2s}
 .role-tab.active{background:var(--accent);border-color:var(--accent);color:white;font-weight:500}
@@ -985,7 +987,7 @@ input,button{font-family:var(--font)}
 
       <!-- 오늘의 어휘 (교사) -->
       <div class="panel" id="panel-vocab">
-        <div class="page-header"><h1>오늘의 어휘</h1><p>단어 시험 스케줄과 제출 현황을 확인하세요</p></div>
+        <div class="page-header"><h1>오늘의 어휘</h1><p>주차별 기존 어휘 30% + 고전 어휘 70%를 중복 없이 3회분으로 관리합니다</p></div>
         <div class="card" style="margin-bottom:1rem">
           <div class="card-head"><h3>스케줄 설정</h3></div>
           <div style="padding:0 1.25rem 1.25rem">
@@ -6478,7 +6480,8 @@ async function renderStandaloneReportCard(responseId){
 var VOCAB_UNITS_CACHE=null;
 var vocabCurrentQuiz=null;
 const VOCAB_PER_WEEK=3;
-
+const CLASSICAL_VOCAB_ACTIVATED_AT='2026-08-31T00:00:00+09:00';
+const CLASSICAL_VOCAB_UNITS=window.CLASSICAL_VOCAB_UNITS||[];
 function vocabYmd(d){var dt=new Date(d);return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
 async function ensureVocabUnitsLoaded(){
   if(!VOCAB_UNITS_CACHE){
@@ -6523,26 +6526,86 @@ function shuffleArr(arr){
   for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
   return a;
 }
-function buildUnitQuizItems(unit){
+function vocabSeedNumber(text){
+  var h=2166136261;
+  for(var i=0;i<text.length;i++){h^=text.charCodeAt(i);h=Math.imul(h,16777619);}
+  return h>>>0;
+}
+function vocabSeededRandom(seed){
+  var a=vocabSeedNumber(seed);
+  return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
+}
+function vocabSeededShuffle(arr,seed){
+  var a=arr.slice(),random=vocabSeededRandom(seed);
+  for(var i=a.length-1;i>0;i--){var j=Math.floor(random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
+  return a;
+}
+function vocabGroupInfo(unitWeek){
+  var groupIndex=Math.floor((unitWeek-1)/VOCAB_PER_WEEK);
+  return{groupIndex:groupIndex,startUnit:groupIndex*VOCAB_PER_WEEK+1,slot:(unitWeek-1)%VOCAB_PER_WEEK,sourceWeek:(groupIndex%CLASSICAL_VOCAB_UNITS.length)+1};
+}
+function classicalVocabChoices(correct,entries,seed){
+  var distractors=vocabSeededShuffle(entries.map(function(x){return x.word;}).filter(function(word){return word!==correct;}),seed+'-d').slice(0,4);
+  return vocabSeededShuffle([correct].concat(distractors),seed+'-o');
+}
+function buildBaseUnitQuizItems(unit){
   var items=[];
   var bankA=(unit.section_a||[]).map(function(x){return x.word;});
   (unit.section_a||[]).forEach(function(x,i){
-    items.push({type:'a',index:i,week:unit.week,prompt:x.definition,options:shuffleArr(bankA),correct:x.word,label:x.word});
+    items.push({type:'a',index:i,week:unit.week,prompt:x.definition,options:vocabSeededShuffle(bankA,'base-'+unit.week+'-a-'+i),correct:x.word,label:x.word,source:'기존 어휘'});
   });
   var bankB=(unit.section_b||[]).map(function(x){return x.meaning;});
   (unit.section_b||[]).forEach(function(x,i){
-    items.push({type:'b',index:i,week:unit.week,prompt:x.idiom,options:shuffleArr(bankB),correct:x.meaning,label:x.idiom});
+    items.push({type:'b',index:i,week:unit.week,prompt:x.idiom,options:vocabSeededShuffle(bankB,'base-'+unit.week+'-b-'+i),correct:x.meaning,label:x.idiom,source:'기존 어휘'});
   });
   var bankC=(unit.section_c||[]).map(function(x){return x.word;});
   (unit.section_c||[]).forEach(function(x,i){
-    items.push({type:'c',index:i,week:unit.week,prompt:x.sentence,options:shuffleArr(bankC),correct:x.word,label:x.word});
+    items.push({type:'c',index:i,week:unit.week,prompt:x.sentence,options:vocabSeededShuffle(bankC,'base-'+unit.week+'-c-'+i),correct:x.word,label:x.word,source:'기존 어휘'});
   });
   return items;
+}
+function buildWeeklyMixedQuizItems(unitWeek){
+  var info=vocabGroupInfo(unitWeek);
+  var classical=CLASSICAL_VOCAB_UNITS.find(function(u){return u.week===info.sourceWeek;});
+  if(!classical)return[];
+  var classicalRows=vocabSeededShuffle(classical.entries.map(function(entry,index){return{entry:entry,index:index};}),'classical-week-'+info.sourceWeek);
+  var cStart=Math.floor(info.slot*classicalRows.length/VOCAB_PER_WEEK);
+  var cEnd=Math.floor((info.slot+1)*classicalRows.length/VOCAB_PER_WEEK);
+  var classicalPart=classicalRows.slice(cStart,cEnd).map(function(row){
+    return{type:'k',index:row.index,week:unitWeek,prompt:row.entry.meaning,options:classicalVocabChoices(row.entry.word,classical.entries,'classical-'+info.sourceWeek+'-'+row.index),correct:row.entry.word,label:row.entry.word,source:'고전 어휘'};
+  });
+  var existingPool=[];
+  for(var offset=0;offset<VOCAB_PER_WEEK;offset++){
+    var sourceUnit=(VOCAB_UNITS_CACHE||[]).find(function(u){return u.week===info.startUnit+offset;});
+    if(!sourceUnit)continue;
+    buildBaseUnitQuizItems(sourceUnit).forEach(function(item){
+      item.index=sourceUnit.week*1000+item.index;
+      item.week=unitWeek;
+      existingPool.push(item);
+    });
+  }
+  var seen={};
+  existingPool=existingPool.filter(function(item){var key=String(item.type==='b'?item.label:item.correct).trim();if(seen[key])return false;seen[key]=true;return true;});
+  existingPool=vocabSeededShuffle(existingPool,'existing-group-'+info.groupIndex);
+  var classicalCounts=[];
+  for(var slot=0;slot<VOCAB_PER_WEEK;slot++)classicalCounts.push(Math.floor((slot+1)*classicalRows.length/VOCAB_PER_WEEK)-Math.floor(slot*classicalRows.length/VOCAB_PER_WEEK));
+  var existingNeeds=classicalCounts.map(function(count){return Math.round(count*3/7);});
+  var totalNeed=existingNeeds.reduce(function(a,b){return a+b;},0);
+  if(totalNeed>existingPool.length){
+    existingNeeds=classicalCounts.map(function(_,slot){return Math.floor((slot+1)*existingPool.length/VOCAB_PER_WEEK)-Math.floor(slot*existingPool.length/VOCAB_PER_WEEK);});
+  }
+  var eStart=existingNeeds.slice(0,info.slot).reduce(function(a,b){return a+b;},0);
+  var existingPart=existingPool.slice(eStart,eStart+existingNeeds[info.slot]);
+  return vocabSeededShuffle(existingPart.concat(classicalPart),'mixed-'+info.groupIndex+'-'+info.slot);
+}
+function buildUnitQuizItems(unit,includeClassical){
+  return includeClassical===false?buildBaseUnitQuizItems(unit):buildWeeklyMixedQuizItems(unit.week);
 }
 function buildRetestQuizItems(wrongRows){
   var groups={};
   wrongRows.forEach(function(w){
-    var key=w.week+'_'+w.item_type;
+    var sourceKey=w.item_type==='k'?'k':(w.item_index>=1000?Math.floor(w.item_index/1000):w.week);
+    var key=w.week+'_'+w.item_type+'_'+sourceKey;
     if(!groups[key])groups[key]=[];
     groups[key].push(w);
   });
@@ -6550,16 +6613,30 @@ function buildRetestQuizItems(wrongRows){
   Object.keys(groups).forEach(function(key){
     var rows=groups[key];
     var week=rows[0].week,type=rows[0].item_type;
-    var unit=(VOCAB_UNITS_CACHE||[]).find(function(u){return u.week===week;});
+    if(type==='k'){
+      var sourceWeek=vocabGroupInfo(week).sourceWeek;
+      var classical=CLASSICAL_VOCAB_UNITS.find(function(u){return u.week===sourceWeek;});
+      if(!classical)return;
+      rows.forEach(function(w){
+        var x=classical.entries[w.item_index];
+        if(!x)return;
+        items.push({type:'k',index:w.item_index,week:week,prompt:x.meaning,options:classicalVocabChoices(x.word,classical.entries,'retest-k-'+sourceWeek+'-'+w.item_index),correct:x.word,label:x.word,source:'고전 어휘',wrongRowId:w.id});
+      });
+      return;
+    }
+    var encodedIndex=rows[0].item_index;
+    var sourceUnitWeek=encodedIndex>=1000?Math.floor(encodedIndex/1000):week;
+    var unit=(VOCAB_UNITS_CACHE||[]).find(function(u){return u.week===sourceUnitWeek;});
     if(!unit)return;
     var section=type==='a'?unit.section_a:type==='b'?unit.section_b:unit.section_c;
     var bank=(section||[]).map(function(x){return type==='b'?x.meaning:x.word;});
     rows.forEach(function(w){
-      var x=(section||[])[w.item_index];
+      var sourceIndex=w.item_index>=1000?w.item_index%1000:w.item_index;
+      var x=(section||[])[sourceIndex];
       if(!x)return;
       var prompt=type==='a'?x.definition:type==='b'?x.idiom:x.sentence;
       var correct=type==='b'?x.meaning:x.word;
-      items.push({type:type,index:w.item_index,week:week,prompt:prompt,options:shuffleArr(bank),correct:correct,label:correct,wrongRowId:w.id});
+      items.push({type:type,index:w.item_index,week:week,prompt:prompt,options:vocabSeededShuffle(bank,'retest-'+sourceUnitWeek+'-'+type+'-'+sourceIndex),correct:correct,label:correct,source:'기존 어휘',wrongRowId:w.id});
     });
   });
   return items;
@@ -6567,9 +6644,13 @@ function buildRetestQuizItems(wrongRows){
 
 function vocabUnitRowHtml(week,resp){
   var unit=(VOCAB_UNITS_CACHE||[]).find(function(u){return u.week===week;});
+  var mixed=unit?buildUnitQuizItems(unit,true):[];
+  var total=mixed.length||15;
+  var classicalCount=mixed.filter(function(item){return item.type==='k';}).length;
+  var existingCount=total-classicalCount;
   return '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">'+
     '<div><div style="font-size:13px;font-weight:600">'+week+'강'+(unit?' — '+unit.title:'')+'</div>'+
-    '<div style="font-size:11px;color:var(--text2);margin-top:2px">'+(resp?'제출완료 · '+resp.score+'점 ('+resp.correct_count+'/'+resp.total_q+')':'총 15문항')+'</div></div>'+
+    '<div style="font-size:11px;color:var(--text2);margin-top:2px">'+(resp?'제출완료 · '+resp.score+'점 ('+resp.correct_count+'/'+resp.total_q+')':'기존 '+existingCount+'문항 · 고전 '+classicalCount+'문항 · 총 '+total+'문항')+'</div></div>'+
     (resp?'<button class="btn btn-sm" onclick="viewVocabPastResult('+week+')">결과보기</button>':'<button class="btn blue btn-sm" onclick="startVocabUnit('+week+')">시작하기</button>')+
     '</div>';
 }
@@ -6582,7 +6663,8 @@ async function viewVocabPastResult(week){
   if(!resp){notify('제출 기록을 찾을 수 없어요.','error');return;}
   var wrongMap={};
   (resp.wrong||[]).forEach(function(w){wrongMap[w.type+'_'+w.index]=w;});
-  var allItems=buildUnitQuizItems(unit);
+  var allItems=buildUnitQuizItems(unit,new Date(resp.submitted_at||0)>=new Date(CLASSICAL_VOCAB_ACTIVATED_AT));
+  allItems=vocabSeededShuffle(allItems,'student-'+myName+'-'+week);
   var detail=allItems.map(function(it){
     var w=wrongMap[it.type+'_'+it.index];
     if(w)return{prompt:it.prompt,correct:it.correct,my:w.my||'미선택',ok:false};
@@ -6652,8 +6734,11 @@ async function renderVocabEntry(){
 async function startVocabUnit(week){
   var unit=(VOCAB_UNITS_CACHE||[]).find(function(u){return u.week===week;});
   if(!unit)return;
-  var unitItems=buildUnitQuizItems(unit);
   var myName=session.name||session.id;
+  var unitItems=vocabSeededShuffle(buildUnitQuizItems(unit),'student-'+myName+'-'+week).map(function(item,i){
+    item.options=vocabSeededShuffle(item.options,'options-'+myName+'-'+week+'-'+i);
+    return item;
+  });
   var todayStr=vocabYmd(new Date());
   var{data:wrongRows}=await sb.from('vocab_wrong_words').select('*').eq('student_name',myName).eq('resolved',false);
   var retestable=(wrongRows||[]).filter(function(w){return vocabYmd(w.created_at)<todayStr;});
@@ -6678,7 +6763,7 @@ async function startVocabRetest(){
 function renderVocabQuiz(){
   var el=document.getElementById('vocab-quiz-body');
   if(!el||!vocabCurrentQuiz)return;
-  var typeLabel={a:'뜻풀이',b:'한자성어',c:'빈칸 채우기'};
+  var typeLabel={a:'뜻풀이 · 기존 단어장',b:'한자성어 · 기존 단어장',c:'빈칸 채우기 · 기존 단어장',k:'고전시가 어휘 · 현대어 뜻 보고 고어 찾기'};
   var unitCount=vocabCurrentQuiz.unitItemCount;
   el.innerHTML=vocabCurrentQuiz.items.map(function(it,i){
     var my=vocabCurrentQuiz.answers[i];
@@ -6686,8 +6771,8 @@ function renderVocabQuiz(){
     return divider+'<div class="card" style="margin-bottom:8px">'+
       '<div style="padding:10px 14px">'+
         '<div style="font-size:11px;color:var(--accent);margin-bottom:4px">'+typeLabel[it.type]+'</div>'+
-        '<div style="font-size:14px;margin-bottom:8px;line-height:1.6">'+(i+1)+'. '+it.prompt+'</div>'+
-        '<div style="display:flex;flex-wrap:wrap;gap:6px">'+
+        '<div class="old-hangul" style="font-size:14px;margin-bottom:8px;line-height:1.8">'+(i+1)+'. '+it.prompt+'</div>'+
+        '<div class="old-hangul" style="display:flex;flex-wrap:wrap;gap:6px;line-height:1.8">'+
         it.options.map(function(opt){
           var sel=my===opt;
           return '<button type="button" onclick="vocabPickAnswer('+i+',\''+opt.replace(/'/g,"\\'")+'\')" style="padding:6px 10px;border-radius:8px;font-size:12px;border:1.5px solid '+(sel?'var(--accent)':'var(--border)')+';background:'+(sel?'var(--accent)':'var(--card)')+';color:'+(sel?'white':'var(--text2)')+'">'+opt+'</button>';
@@ -6782,7 +6867,7 @@ function vocabBackToEntry(){
   renderVocabEntry();
 }
 function vocabDetailRow(it,num){
-  return '<div style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:6px">'+
+  return '<div class="old-hangul" style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:6px;line-height:1.8">'+
     '<span style="font-size:12px;font-weight:700;color:'+(it.ok?'var(--green)':'var(--red)')+';min-width:16px">'+(it.ok?'✓':'✗')+'</span>'+
     '<div style="flex:1">'+
       '<div style="font-size:12px;color:var(--text2);line-height:1.5">'+(num?num+'. ':'')+it.prompt+'</div>'+
@@ -10432,7 +10517,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=75', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=79', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
