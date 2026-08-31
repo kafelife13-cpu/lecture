@@ -1,0 +1,23 @@
+name: 영상 미시청 3일 문자 안내
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch: {}
+  push:
+    paths:
+      - 'scripts/video-watch-reminder.mjs'
+      - '.github/workflows/video-watch-reminder.yml'
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node scripts/video-watch-reminder.mjs
+        env:
+          SOLAPI_SEND_PIN: ${{ secrets.SOLAPI_SEND_PIN }}
+
