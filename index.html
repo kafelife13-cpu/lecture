@@ -19,6 +19,7 @@
 <link rel="manifest" href="manifest.json"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="classical-vocab.js"></script>
@@ -32,6 +33,11 @@
 })();
 </script>
 <style>
+@font-face{
+  font-family:'Nanum Barun Gothic YetHangul';
+  src:url('https://cdn.jsdelivr.net/gh/fonts-archive/NanumBarunGothic-YetHangul/NanumBarunGothic-YetHangul.woff2') format('woff2');
+  font-weight:400;font-style:normal;font-display:swap;
+}
 :root{
   --bg:#0f1117;--bg2:#181c27;--bg3:#1e2333;--card:#242938;
   --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
@@ -72,7 +78,7 @@ input,button{font-family:var(--font)}
 .form-input::placeholder{color:var(--text3)}
 .form-select{width:100%;padding:9px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:14px;cursor:pointer}
 .form-select:focus{outline:none;border-color:var(--accent)}
-.old-hangul{font-family:'Noto Serif CJK KR','Source Han Serif K','NanumMyeongjo YetHangul','Noto Sans KR','Malgun Gothic',sans-serif;font-variant-ligatures:normal;text-rendering:optimizeLegibility;unicode-bidi:isolate}
+.old-hangul{font-family:'Nanum Barun Gothic YetHangul','Noto Sans KR','Malgun Gothic',sans-serif;font-variant-ligatures:normal;font-synthesis:none;text-rendering:optimizeLegibility;unicode-bidi:isolate}
 .role-tabs{display:flex;gap:8px;margin-bottom:1.25rem}
 .role-tab{flex:1;padding:8px;border:1px solid var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--text2);font-size:13px;cursor:pointer;transition:all .2s}
 .role-tab.active{background:var(--accent);border-color:var(--accent);color:white;font-weight:500}
@@ -7803,24 +7809,8 @@ function renderTResOverview(){
   const responses=tResCurrentResponses;
   const statsEl=document.getElementById('t-res-stats');
   const studentsEl=document.getElementById('t-res-students');
-  // 이 시험(과제 포함)에 지정된 학교 학생 중, 아직 제출 안 한 학생을 따로 보여줌
-  // (결과 화면에는 원래 "제출한 학생"만 나오고 미제출자는 안 보였음)
-  let missingHtml='';
-  if(exam&&exam.clinic_school){
-    const school=(qaDb.schools||[]).find(function(s){return s.name===exam.clinic_school;});
-    const roster=school?activeStudents().filter(function(s){return s.school_id===school.id;}):[];
-    const respondedNames={};
-    (responses||[]).forEach(function(r){respondedNames[r.student_name]=true;});
-    const missing=roster.filter(function(s){return !respondedNames[s.name];});
-    if(roster.length){
-      missingHtml='<div class="card" style="margin-bottom:1rem'+(missing.length?';border-color:var(--red)':'')+'">'+
-        '<div class="card-head"><h3>'+(missing.length?'❌ 미제출':'✅ 전원 제출 완료')+'</h3><span style="font-size:11px;color:var(--text2)">'+exam.clinic_school+' 대상 '+roster.length+'명 중 '+(roster.length-missing.length)+'명 제출</span></div>'+
-        (missing.length?'<div style="padding:0 1.25rem 1rem;font-size:13px;color:var(--red)">'+missing.map(function(s){return s.name;}).join(', ')+'</div>':'')+
-      '</div>';
-    }
-  }
   if(!responses||responses.length===0){
-    statsEl.innerHTML=missingHtml+'<p style="color:var(--text3);font-size:13px;padding:0.5rem 0">아직 제출한 학생이 없어요</p>';
+    statsEl.innerHTML='<p style="color:var(--text3);font-size:13px;padding:0.5rem 0">아직 제출한 학생이 없어요</p>';
     studentsEl.innerHTML='';return;
   }
   // 오답 빈도
@@ -7837,7 +7827,7 @@ function renderTResOverview(){
     const wc=r.answers?Object.entries(r.answers).filter(([idx,my])=>my!==String(exam.questions[idx]?.answer)).length:0;
     return acc+((exam.total_q-wc)/exam.total_q*100);
   },0)/responses.length);
-  statsEl.innerHTML=missingHtml+`
+  statsEl.innerHTML=`
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px">
       <div style="text-align:center;background:var(--bg2);border-radius:8px;padding:12px">
         <div style="font-size:22px;font-weight:600">${responses.length}</div>
