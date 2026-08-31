@@ -1947,7 +1947,7 @@ function ensureXlsx(){return loadExternalScript('https://cdnjs.cloudflare.com/aj
 /* ===== DB ===== */
 async function loadAll(attempt=0){
   try{
-    const userColumns=session&&session.role==='teacher'?'id,name,role,status,school_id,group_id,parent_phone':'id,name,role,status,school_id,group_id';
+    const userColumns=session&&session.role==='teacher'?'id,name,role,status,school_id,group_id,student_phone,parent_phone':'id,name,role,status,school_id,group_id';
     const [u,v,p,a,r,st,al]=await Promise.all([
       sb.from('users').select(userColumns),
       sb.from('videos').select('*').order('created_at'),
@@ -3255,10 +3255,10 @@ function renderStudents(){
   });
   document.getElementById('student-count').textContent=`총 ${allSts.length}명`+((studentSchoolFilter||studentClassFilter)?` · 표시 ${sts.length}명`:'');
   const tbl=document.getElementById('student-tbl');
-  if(!sts.length){tbl.innerHTML='<tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--text2)">등록된 학생이 없습니다.</td></tr>';return;}
+  if(!sts.length){tbl.innerHTML='<tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--text2)">등록된 학생이 없습니다.</td></tr>';return;}
   const schoolOptsHtml='<option value="">미배정</option>'+(qaDb.schools||[]).map(function(sc){return '<option value="'+sc.id+'">'+sc.name+'</option>';}).join('');
   const classOptsHtml='<option value="all">반 미배정</option>'+STUDENT_CLASSES.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');
-  tbl.innerHTML=`<thead><tr><th>이름</th><th>아이디</th><th>학교</th><th>반</th><th>평균 진도</th><th>완료 강의</th><th>학부모 연락처</th><th></th></tr></thead><tbody>`+
+  tbl.innerHTML=`<thead><tr><th>이름</th><th>아이디</th><th>학교</th><th>반</th><th>평균 진도</th><th>완료 강의</th><th>학생 연락처</th><th>학부모 연락처</th><th></th></tr></thead><tbody>`+
     sts.map(s=>{
       const vids=normalVideos();
       const progs=vids.map(v=>getPct(s.id,v.id));
@@ -3271,6 +3271,7 @@ function renderStudents(){
         <td>${classSel}</td>
         <td><div style="display:flex;align-items:center;gap:8px"><div class="pbar" style="width:90px"><div class="pbar-fill" style="width:${avg}%;background:${pctColor(avg)}"></div></div><span style="font-size:12px;font-weight:600;color:${pctColor(avg)}">${avg}%</span></div></td>
         <td style="font-weight:600;color:${doneC===vids.length&&vids.length>0?'var(--green)':'var(--text)'}">${doneC}/${vids.length}</td>
+        <td><input type="tel" class="form-input" placeholder="010-1234-5678" value="${s.student_phone||''}" style="font-size:11px;padding:4px 6px;width:120px" onchange="setStudentPhone('${s.id}',this.value)"></td>
         <td><input type="tel" class="form-input" placeholder="010-1234-5678" value="${s.parent_phone||''}" style="font-size:11px;padding:4px 6px;width:120px" onchange="setStudentParentPhone('${s.id}',this.value)"></td>
         <td><button class="btn btn-sm red" onclick="deleteStudent('${s.id}')">삭제</button></td></tr>`;
     }).join('')+'</tbody>';
@@ -3515,6 +3516,14 @@ function renderAccessPanel(){
     </div>`;
   }).join('');
   renderAccessWeeklyHistory();
+}
+async function setStudentPhone(id,val){
+  const phone=(val||'').trim();
+  const{error}=await sb.from('users').update({student_phone:phone||null}).eq('id',id);
+  if(error){notify('학생 연락처 저장 실패: '+error.message,'error');return;}
+  const u=db.users.find(x=>x.id===id);
+  if(u)u.student_phone=phone||null;
+  notify('학생 연락처가 저장됐어요.','success');
 }
 let accessGrantedOpen=false;
 function toggleAccessGranted(){
@@ -10581,7 +10590,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=83', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=84', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
