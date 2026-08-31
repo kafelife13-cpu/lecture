@@ -24,6 +24,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="classical-vocab.js"></script>
 <script src="classical-course.js"></script>
+<script src="classical-translations.js"></script>
 <script>
 (function(){
   var tag=document.createElement('script');
@@ -6577,6 +6578,7 @@ const VOCAB_PER_WEEK=3;
 const CLASSICAL_VOCAB_ACTIVATED_AT='2026-08-31T16:15:00+09:00';
 const CLASSICAL_VOCAB_UNITS=window.CLASSICAL_VOCAB_UNITS||[];
 const CLASSICAL_COURSE=window.CLASSICAL_COURSE||[];
+const CLASSICAL_TRANSLATIONS=window.CLASSICAL_TRANSLATIONS||{};
 function vocabYmd(d){var dt=new Date(d);return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
 async function ensureVocabUnitsLoaded(){
   if(!VOCAB_UNITS_CACHE){
@@ -6657,6 +6659,10 @@ function vocabExampleCloze(entry){
   return null;
 }
 function classicalCourseLesson(lesson){return CLASSICAL_COURSE.find(function(unit){return unit.lesson===lesson;});}
+function classicalModernTranslation(lessonNumber,entryIndex,entry){
+  var rows=CLASSICAL_TRANSLATIONS[lessonNumber]||[];
+  return rows[entryIndex]||(entry&&entry.translation)||'';
+}
 function classicalCourseCloze(entry){
   if(!entry||!entry.example)return entry&&entry.meaning||'';
   var candidates=String(entry.word).split(/[\/=,，]/).map(function(x){return x.replace(/[\(（\[【].*$/,'').trim();}).filter(Boolean).sort(function(a,b){return b.length-a.length;});
@@ -6673,10 +6679,11 @@ function buildClassicalCourseItems(lessonNumber){
   var meaningBank=chosen.map(function(entry){return entry.meaning;});
   return chosen.map(function(entry,index){
     var mode=index%3;
-    if(mode===0)return{type:'k',index:index,week:lessonNumber,prompt:'다음 뜻에 해당하는 고전 어휘를 쓰세요.\n'+entry.meaning,input:true,options:wordBank,correct:entry.word,label:entry.word,source:'고전 어휘 '+String(lessonNumber).padStart(2,'0')+'강',explanation:entry.meaning,originalExample:entry.example};
-    if(mode===1)return{type:'k',index:index,week:lessonNumber,prompt:'다음 사용 예시의 빈칸에 들어갈 고전 어휘를 쓰세요.\n“'+classicalCourseCloze(entry)+'”',input:true,options:wordBank,correct:entry.word,label:entry.word,source:'고전 어휘 '+String(lessonNumber).padStart(2,'0')+'강',explanation:entry.meaning,originalExample:entry.example};
+    var modernTranslation=classicalModernTranslation(lessonNumber,lesson.entries.indexOf(entry),entry);
+    if(mode===0)return{type:'k',index:index,week:lessonNumber,prompt:'다음 뜻에 해당하는 고전 어휘를 쓰세요.\n'+entry.meaning,input:true,options:wordBank,correct:entry.word,label:entry.word,source:'고전 어휘 '+String(lessonNumber).padStart(2,'0')+'강',explanation:entry.meaning,originalExample:entry.example,modernTranslation:modernTranslation};
+    if(mode===1)return{type:'k',index:index,week:lessonNumber,prompt:'다음 사용 예시의 빈칸에 들어갈 고전 어휘를 쓰세요.\n“'+classicalCourseCloze(entry)+'”',input:true,options:wordBank,correct:entry.word,label:entry.word,source:'고전 어휘 '+String(lessonNumber).padStart(2,'0')+'강',explanation:entry.meaning,originalExample:entry.example,modernTranslation:modernTranslation};
     var choices=vocabSeededShuffle(meaningBank.filter(function(value){return value!==entry.meaning;}),'course-meaning-'+lessonNumber+'-'+index).slice(0,3).concat([entry.meaning]);
-    return{type:'k',index:index,week:lessonNumber,prompt:'‘'+entry.word+'’의 알맞은 뜻을 고르세요.',options:vocabSeededShuffle(choices,'course-choice-'+lessonNumber+'-'+index),correct:entry.meaning,label:entry.word,source:'고전 어휘 '+String(lessonNumber).padStart(2,'0')+'강',explanation:entry.meaning,originalExample:entry.example};
+    return{type:'k',index:index,week:lessonNumber,prompt:'‘'+entry.word+'’의 알맞은 뜻을 고르세요.',options:vocabSeededShuffle(choices,'course-choice-'+lessonNumber+'-'+index),correct:entry.meaning,label:entry.word,source:'고전 어휘 '+String(lessonNumber).padStart(2,'0')+'강',explanation:entry.meaning,originalExample:entry.example,modernTranslation:modernTranslation};
   });
 }
 function buildBaseUnitQuizItems(unit){
@@ -6769,8 +6776,8 @@ async function viewVocabPastResult(week){
   allItems=vocabSeededShuffle(allItems,'student-'+myName+'-'+week);
   var detail=allItems.map(function(it){
     var w=wrongMap[it.type+'_'+it.index];
-    if(w)return{prompt:it.prompt,correct:it.correct,my:w.my||'미선택',ok:false,explanation:it.explanation||'',originalExample:it.originalExample||''};
-    return{prompt:it.prompt,correct:it.correct,my:it.correct,ok:true,explanation:it.explanation||'',originalExample:it.originalExample||''};
+    if(w)return{prompt:it.prompt,correct:it.correct,my:w.my||'미선택',ok:false,explanation:it.explanation||'',originalExample:it.originalExample||'',modernTranslation:it.modernTranslation||''};
+    return{prompt:it.prompt,correct:it.correct,my:it.correct,ok:true,explanation:it.explanation||'',originalExample:it.originalExample||'',modernTranslation:it.modernTranslation||''};
   });
   vocabCurrentQuiz=null;
   document.getElementById('vocab-quiz-title').textContent=week+'강 단어시험 결과';
@@ -6841,7 +6848,8 @@ function openVocabStudy(week){
     lesson.entries.map(function(entry,index){return'<div class="old-hangul" style="padding:11px 0;border-bottom:1px solid var(--border)">'+
       '<div style="font-size:14px;font-weight:800;color:var(--accent)">'+(index+1)+'. '+entry.word+'</div>'+
       '<div style="font-size:13px;margin-top:4px">'+entry.meaning+'</div>'+
-      '<div style="font-size:12px;color:var(--text2);margin-top:4px;line-height:1.7">사용 예시: '+entry.example+'</div></div>';}).join('')+
+      '<div style="font-size:12px;color:var(--text2);margin-top:4px;line-height:1.7">사용 예시: '+entry.example+'</div>'+
+      '<div style="font-size:12px;color:var(--teal);margin-top:3px;line-height:1.7">현대어 해석: '+classicalModernTranslation(lesson.lesson,index,entry)+'</div></div>';}).join('')+
     '</div></div>';
   document.getElementById('vocab-study-start').onclick=function(){startVocabUnit(week);};
   showVocabView('study');
@@ -6920,11 +6928,11 @@ async function submitVocabUnitQuiz(){
     var my=q.answers[i]||'';
     var ok=!!my&&vocabAnswerMatches(it,my);
     if(i<unitCount){
-      unitDetail.push({prompt:it.prompt,correct:it.correct,my:my,ok:ok,explanation:it.explanation||'',originalExample:it.originalExample||''});
+      unitDetail.push({prompt:it.prompt,correct:it.correct,my:my,ok:ok,explanation:it.explanation||'',originalExample:it.originalExample||'',modernTranslation:it.modernTranslation||''});
       if(ok)unitCorrect++;
       else{unitWrong.push({type:it.type,index:it.index,label:it.correct,my:my});newWrongForUnit.push(it);}
     }else{
-      reviewDetail.push({prompt:it.prompt,correct:it.correct,my:my,ok:ok,explanation:it.explanation||'',originalExample:it.originalExample||''});
+      reviewDetail.push({prompt:it.prompt,correct:it.correct,my:my,ok:ok,explanation:it.explanation||'',originalExample:it.originalExample||'',modernTranslation:it.modernTranslation||''});
       if(ok){reviewCorrect++;if(it.wrongRowId)toResolve.push(it.wrongRowId);}
     }
   });
@@ -6960,7 +6968,7 @@ async function submitVocabRetest(){
   q.items.forEach(function(it,i){
     var my=q.answers[i]||'';
     var ok=!!my&&vocabAnswerMatches(it,my);
-    detail.push({prompt:it.prompt,correct:it.correct,my:my,ok:ok,explanation:it.explanation||'',originalExample:it.originalExample||''});
+    detail.push({prompt:it.prompt,correct:it.correct,my:my,ok:ok,explanation:it.explanation||'',originalExample:it.originalExample||'',modernTranslation:it.modernTranslation||''});
     if(ok){correct++;toResolve.push(it.wrongRowId);}
   });
   if(toResolve.length){
@@ -6995,7 +7003,8 @@ function vocabDetailRow(it,num){
           '<span style="color:var(--red)">내 답: '+(it.my||'미선택')+'</span> · <span style="color:var(--green);font-weight:600">정답: '+it.correct+'</span>')+
       '</div>'+
       (it.originalExample?'<div style="font-size:12px;color:var(--text2);margin-top:7px;line-height:1.7">원문 예문: '+it.originalExample+'</div>':'')+
-      (it.explanation?'<div style="font-size:12px;color:var(--accent);margin-top:4px;line-height:1.7">현대어 해설: '+it.explanation+'</div>':'')+
+      (it.modernTranslation?'<div style="font-size:12px;color:var(--teal);margin-top:4px;line-height:1.7">현대어 해석: '+it.modernTranslation+'</div>':'')+
+      (it.explanation?'<div style="font-size:12px;color:var(--accent);margin-top:4px;line-height:1.7">어휘 뜻: '+it.explanation+'</div>':'')+
     '</div>'+
   '</div>';
 }
