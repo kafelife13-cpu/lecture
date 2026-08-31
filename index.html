@@ -22,6 +22,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="classical-vocab.js"></script>
+<script src="classical-course.js"></script>
 <script>
 (function(){
   var tag=document.createElement('script');
@@ -1344,6 +1345,14 @@ input,button{font-family:var(--font)}
           <div id="vocab-week-card"></div>
           <div id="vocab-catchup-card" style="margin-top:1rem"></div>
           <div id="vocab-retest-card" style="margin-top:1rem"></div>
+        </div>
+        <div id="vocab-study-view" style="display:none">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem">
+            <button class="btn btn-sm" onclick="vocabBackToEntry()">← 돌아가기</button>
+            <div id="vocab-study-title" style="font-size:16px;font-weight:700"></div>
+          </div>
+          <div id="vocab-study-body"></div>
+          <button id="vocab-study-start" class="btn blue" style="width:100%;margin-top:12px">암기 완료 · 테스트 시작</button>
         </div>
         <div id="vocab-quiz-view" style="display:none">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem">
@@ -6566,6 +6575,7 @@ var vocabCurrentQuiz=null;
 const VOCAB_PER_WEEK=3;
 const CLASSICAL_VOCAB_ACTIVATED_AT='2026-08-31T16:15:00+09:00';
 const CLASSICAL_VOCAB_UNITS=window.CLASSICAL_VOCAB_UNITS||[];
+const CLASSICAL_COURSE=window.CLASSICAL_COURSE||[];
 function vocabYmd(d){var dt=new Date(d);return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
 async function ensureVocabUnitsLoaded(){
   if(!VOCAB_UNITS_CACHE){
@@ -6574,7 +6584,7 @@ async function ensureVocabUnitsLoaded(){
   }
   return VOCAB_UNITS_CACHE;
 }
-function vocabMaxWeek(){return VOCAB_UNITS_CACHE?VOCAB_UNITS_CACHE.length:0;}
+function vocabMaxWeek(){return Math.max(VOCAB_UNITS_CACHE?VOCAB_UNITS_CACHE.length:0,CLASSICAL_COURSE.length);}
 // vocab_start_date가 속한 주(월요일 기준)를 0주차로 보고, 그 이후 매 주마다 3강씩 순서대로 배정
 function vocabWeekIndexForDate(startStr,d){
   var start=new Date(startStr+'T00:00:00');
@@ -6645,6 +6655,29 @@ function vocabExampleCloze(entry){
   }
   return null;
 }
+function classicalCourseLesson(lesson){return CLASSICAL_COURSE.find(function(unit){return unit.lesson===lesson;});}
+function classicalCourseCloze(entry){
+  if(!entry||!entry.example)return entry&&entry.meaning||'';
+  var candidates=String(entry.word).split(/[\/=,，]/).map(function(x){return x.replace(/[\(（\[【].*$/,'').trim();}).filter(Boolean).sort(function(a,b){return b.length-a.length;});
+  for(var i=0;i<candidates.length;i++){
+    var re=new RegExp(vocabRegexEscape(candidates[i]).replace(/\\ /g,'\\s*'));
+    if(re.test(entry.example))return entry.example.replace(re,'(      )');
+  }
+  return entry.example+'\n뜻: '+entry.meaning;
+}
+function buildClassicalCourseItems(lessonNumber){
+  var lesson=classicalCourseLesson(lessonNumber);if(!lesson)return[];
+  var chosen=vocabSeededShuffle(lesson.entries,'course-'+lessonNumber).slice(0,10);
+  var wordBank=chosen.map(function(entry){return entry.word;});
+  var meaningBank=chosen.map(function(entry){return entry.meaning;});
+  return chosen.map(function(entry,index){
+    var mode=index%3;
+    if(mode===0)return{type:'k',index:index,week:lessonNumber,prompt:'다음 뜻에 해당하는 고전 어휘를 쓰세요.\n'+entry.meaning,input:true,options:wordBank,correct:entry.word,label:entry.word,source:'고전 어휘 '+String(lessonNumber).padStart(2,'0')+'강',explanation:entry.meaning,originalExample:entry.example};
+    if(mode===1)return{type:'k',index:index,week:lessonNumber,prompt:'다음 사용 예시의 빈칸에 들어갈 고전 어휘를 쓰세요.\n“'+classicalCourseCloze(entry)+'”',input:true,options:wordBank,correct:entry.word,label:entry.word,source:'고전 어휘 '+String(lessonNumber).padStart(2,'0')+'강',explanation:entry.meaning,originalExample:entry.example};
+    var choices=vocabSeededShuffle(meaningBank.filter(function(value){return value!==entry.meaning;}),'course-meaning-'+lessonNumber+'-'+index).slice(0,3).concat([entry.meaning]);
+    return{type:'k',index:index,week:lessonNumber,prompt:'‘'+entry.word+'’의 알맞은 뜻을 고르세요.',options:vocabSeededShuffle(choices,'course-choice-'+lessonNumber+'-'+index),correct:entry.meaning,label:entry.word,source:'고전 어휘 '+String(lessonNumber).padStart(2,'0')+'강',explanation:entry.meaning,originalExample:entry.example};
+  });
+}
 function buildBaseUnitQuizItems(unit){
   var items=[];
   var bankA=(unit.section_a||[]).map(function(x){return x.word;});
@@ -6662,40 +6695,10 @@ function buildBaseUnitQuizItems(unit){
   return items;
 }
 function buildWeeklyMixedQuizItems(unitWeek){
-  var info=vocabGroupInfo(unitWeek);
-  var classical=CLASSICAL_VOCAB_UNITS.find(function(u){return u.week===info.sourceWeek;});
-  if(!classical)return[];
-  var classicalRows=vocabSeededShuffle(classical.entries.map(function(entry,index){return{entry:entry,index:index};}),'classical-week-'+info.sourceWeek);
-  var cStart=Math.floor(info.slot*classicalRows.length/VOCAB_PER_WEEK);
-  var cEnd=Math.floor((info.slot+1)*classicalRows.length/VOCAB_PER_WEEK);
-  var classicalPart=classicalRows.slice(cStart,cEnd).map(function(row){
-    var cloze=vocabExampleCloze(row.entry);
-    var prompt=cloze?('다음 예문의 빈칸에 들어갈 고어를 고르세요.\n“'+cloze+'”'+(row.entry.source?'\n— '+row.entry.source:'')):row.entry.meaning;
-    return{type:'k',index:row.index,week:unitWeek,prompt:prompt,options:classicalVocabChoices(row.entry.word,classical.entries,'classical-'+info.sourceWeek+'-'+row.index),correct:row.entry.word,label:row.entry.word,source:'고전 어휘',questionKind:cloze?'example':'meaning',explanation:row.entry.modern_explanation||('빈칸의 고어는 현대어로 ‘'+row.entry.meaning+'’라는 뜻입니다.'),originalExample:row.entry.example||''};
-  });
-  var existingPool=[];
-  for(var offset=0;offset<VOCAB_PER_WEEK;offset++){
-    var sourceUnit=(VOCAB_UNITS_CACHE||[]).find(function(u){return u.week===info.startUnit+offset;});
-    if(!sourceUnit)continue;
-    buildBaseUnitQuizItems(sourceUnit).forEach(function(item){
-      item.index=sourceUnit.week*1000+item.index;
-      item.week=unitWeek;
-      existingPool.push(item);
-    });
-  }
-  var seen={};
-  existingPool=existingPool.filter(function(item){var key=String(item.type==='b'?item.label:item.correct).trim();if(seen[key])return false;seen[key]=true;return true;});
-  existingPool=vocabSeededShuffle(existingPool,'existing-group-'+info.groupIndex);
-  var classicalCounts=[];
-  for(var slot=0;slot<VOCAB_PER_WEEK;slot++)classicalCounts.push(Math.floor((slot+1)*classicalRows.length/VOCAB_PER_WEEK)-Math.floor(slot*classicalRows.length/VOCAB_PER_WEEK));
-  var existingNeeds=classicalCounts.map(function(count){return Math.round(count*3/7);});
-  var totalNeed=existingNeeds.reduce(function(a,b){return a+b;},0);
-  if(totalNeed>existingPool.length){
-    existingNeeds=classicalCounts.map(function(_,slot){return Math.floor((slot+1)*existingPool.length/VOCAB_PER_WEEK)-Math.floor(slot*existingPool.length/VOCAB_PER_WEEK);});
-  }
-  var eStart=existingNeeds.slice(0,info.slot).reduce(function(a,b){return a+b;},0);
-  var existingPart=existingPool.slice(eStart,eStart+existingNeeds[info.slot]);
-  return vocabSeededShuffle(existingPart.concat(classicalPart),'mixed-'+info.groupIndex+'-'+info.slot);
+  var classicalPart=buildClassicalCourseItems(unitWeek);
+  var unit=(VOCAB_UNITS_CACHE||[]).find(function(u){return u.week===unitWeek;});
+  var existingPart=unit?vocabSeededShuffle(buildBaseUnitQuizItems(unit),'existing-course-'+unitWeek).slice(0,Math.max(1,Math.round(classicalPart.length*3/7))):[];
+  return vocabSeededShuffle(existingPart.concat(classicalPart),'mixed-course-'+unitWeek);
 }
 function buildUnitQuizItems(unit,includeClassical){
   return includeClassical===false?buildBaseUnitQuizItems(unit):buildWeeklyMixedQuizItems(unit.week);
@@ -6713,14 +6716,10 @@ function buildRetestQuizItems(wrongRows){
     var rows=groups[key];
     var week=rows[0].week,type=rows[0].item_type;
     if(type==='k'){
-      var sourceWeek=vocabGroupInfo(week).sourceWeek;
-      var classical=CLASSICAL_VOCAB_UNITS.find(function(u){return u.week===sourceWeek;});
-      if(!classical)return;
+      var courseItems=buildClassicalCourseItems(week);
       rows.forEach(function(w){
-        var x=classical.entries[w.item_index];
-        if(!x)return;
-        var cloze=vocabExampleCloze(x);
-        items.push({type:'k',index:w.item_index,week:week,prompt:cloze?('다음 예문의 빈칸에 들어갈 고어를 고르세요.\n“'+cloze+'”'+(x.source?'\n— '+x.source:'')):x.meaning,options:classicalVocabChoices(x.word,classical.entries,'retest-k-'+sourceWeek+'-'+w.item_index),correct:x.word,label:x.word,source:'고전 어휘',questionKind:cloze?'example':'meaning',explanation:x.modern_explanation||('빈칸의 고어는 현대어로 ‘'+x.meaning+'’라는 뜻입니다.'),originalExample:x.example||'',wrongRowId:w.id});
+        var item=courseItems.find(function(candidate){return candidate.index===w.item_index;});
+        if(item)items.push(Object.assign({},item,{wrongRowId:w.id}));
       });
       return;
     }
@@ -6744,20 +6743,22 @@ function buildRetestQuizItems(wrongRows){
 
 function vocabUnitRowHtml(week,resp){
   var unit=(VOCAB_UNITS_CACHE||[]).find(function(u){return u.week===week;});
-  var mixed=unit?buildUnitQuizItems(unit,true):[];
+  var course=classicalCourseLesson(week);
+  var mixed=course?buildWeeklyMixedQuizItems(week):(unit?buildUnitQuizItems(unit,true):[]);
   var total=mixed.length||15;
   var classicalCount=mixed.filter(function(item){return item.type==='k';}).length;
   var existingCount=total-classicalCount;
   return '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">'+
-    '<div><div style="font-size:13px;font-weight:600">'+week+'강'+(unit?' — '+unit.title:'')+'</div>'+
+    '<div><div style="font-size:13px;font-weight:600">'+String(week).padStart(2,'0')+'강'+(course?' — '+course.title.replace(/^.*?\d+강\s*/, ''):(unit?' — '+unit.title:''))+'</div>'+
     '<div style="font-size:11px;color:var(--text2);margin-top:2px">'+(resp?'제출완료 · '+resp.score+'점 ('+resp.correct_count+'/'+resp.total_q+')':'기존 '+existingCount+'문항 · 고전 '+classicalCount+'문항 · 총 '+total+'문항')+'</div></div>'+
-    (resp?'<button class="btn btn-sm" onclick="viewVocabPastResult('+week+')">결과보기</button>':'<button class="btn blue btn-sm" onclick="startVocabUnit('+week+')">시작하기</button>')+
+    (resp?'<button class="btn btn-sm" onclick="viewVocabPastResult('+week+')">결과보기</button>':'<button class="btn blue btn-sm" onclick="openVocabStudy('+week+')">암기자료 보기</button>')+
     '</div>';
 }
 async function viewVocabPastResult(week){
   await ensureVocabUnitsLoaded();
   var unit=(VOCAB_UNITS_CACHE||[]).find(function(u){return u.week===week;});
-  if(!unit)return;
+  if(!unit&&!classicalCourseLesson(week))return;
+  if(!unit)unit={week:week,title:String(week).padStart(2,'0')+'강'};
   var myName=session.name||session.id;
   var{data:resp}=await sb.from('vocab_responses').select('*').eq('id','vr_mix_'+week+'_'+myName).maybeSingle();
   if(!resp){notify('제출 기록을 찾을 수 없어요.','error');return;}
@@ -6831,12 +6832,27 @@ async function renderVocabEntry(){
   }
 }
 
+function openVocabStudy(week){
+  var lesson=classicalCourseLesson(week);if(!lesson){notify('암기 자료를 찾을 수 없어요.','error');return;}
+  document.getElementById('vocab-study-title').textContent=String(week).padStart(2,'0')+'강 암기 자료';
+  document.getElementById('vocab-study-body').innerHTML='<div class="card"><div style="padding:1rem 1.1rem">'+
+    '<div style="font-size:12px;color:var(--text2);margin-bottom:12px">어휘·풀이·사용 예시를 암기한 다음 테스트를 시작하세요. 시험 중에는 자료가 보이지 않습니다.</div>'+
+    lesson.entries.map(function(entry,index){return'<div class="old-hangul" style="padding:11px 0;border-bottom:1px solid var(--border)">'+
+      '<div style="font-size:14px;font-weight:800;color:var(--accent)">'+(index+1)+'. '+entry.word+'</div>'+
+      '<div style="font-size:13px;margin-top:4px">'+entry.meaning+'</div>'+
+      '<div style="font-size:12px;color:var(--text2);margin-top:4px;line-height:1.7">사용 예시: '+entry.example+'</div></div>';}).join('')+
+    '</div></div>';
+  document.getElementById('vocab-study-start').onclick=function(){startVocabUnit(week);};
+  showVocabView('study');
+  window.scrollTo(0,0);
+}
 async function startVocabUnit(week){
   var unit=(VOCAB_UNITS_CACHE||[]).find(function(u){return u.week===week;});
-  if(!unit)return;
+  if(!unit&&!classicalCourseLesson(week))return;
+  if(!unit)unit={week:week,title:String(week).padStart(2,'0')+'강'};
   var myName=session.name||session.id;
   var unitItems=vocabSeededShuffle(buildUnitQuizItems(unit),'student-'+myName+'-'+week).map(function(item,i){
-    item.options=vocabSeededShuffle(item.options,'options-'+myName+'-'+week+'-'+i);
+    item.options=vocabSeededShuffle(item.options||[],'options-'+myName+'-'+week+'-'+i);
     return item;
   });
   var todayStr=vocabYmd(new Date());
@@ -6863,7 +6879,7 @@ async function startVocabRetest(){
 function renderVocabQuiz(){
   var el=document.getElementById('vocab-quiz-body');
   if(!el||!vocabCurrentQuiz)return;
-  var typeLabel={a:'뜻풀이 · 기존 단어장',b:'한자성어 · 기존 단어장',c:'빈칸 채우기 · 기존 단어장',k:'고전시가 어휘 · 현대어 뜻 보고 고어 찾기'};
+  var typeLabel={a:'뜻풀이 · 기존 단어장',b:'한자성어 · 기존 단어장',c:'빈칸 채우기 · 기존 단어장',k:'고전 어휘 · 직접 쓰기/뜻 연결'};
   var unitCount=vocabCurrentQuiz.unitItemCount;
   el.innerHTML=vocabCurrentQuiz.items.map(function(it,i){
     var my=vocabCurrentQuiz.answers[i];
@@ -6873,10 +6889,10 @@ function renderVocabQuiz(){
         '<div style="font-size:11px;color:var(--accent);margin-bottom:4px">'+typeLabel[it.type]+'</div>'+
         '<div class="old-hangul" style="font-size:14px;margin-bottom:8px;line-height:1.8;white-space:pre-line">'+(i+1)+'. '+it.prompt+'</div>'+
         '<div class="old-hangul" style="display:flex;flex-wrap:wrap;gap:6px;line-height:1.8">'+
-        it.options.map(function(opt){
+        (it.input?'<input class="form-input old-hangul" value="'+String(my||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'" placeholder="고전 어휘를 정확히 써 주세요" oninput="vocabTypeAnswer('+i+',this.value)" autocomplete="off" autocapitalize="off" spellcheck="false">':(it.options||[]).map(function(opt){
           var sel=my===opt;
           return '<button type="button" onclick="vocabPickAnswer('+i+',\''+opt.replace(/'/g,"\\'")+'\')" style="padding:6px 10px;border-radius:8px;font-size:12px;border:1.5px solid '+(sel?'var(--accent)':'var(--border)')+';background:'+(sel?'var(--accent)':'var(--card)')+';color:'+(sel?'white':'var(--text2)')+'">'+opt+'</button>';
-        }).join('')+
+        }).join(''))+
         '</div>'+
       '</div>'+
     '</div>';
@@ -6901,7 +6917,7 @@ async function submitVocabUnitQuiz(){
   var toResolve=[];
   q.items.forEach(function(it,i){
     var my=q.answers[i]||'';
-    var ok=!!my&&my===it.correct;
+    var ok=!!my&&vocabAnswerMatches(it,my);
     if(i<unitCount){
       unitDetail.push({prompt:it.prompt,correct:it.correct,my:my,ok:ok,explanation:it.explanation||'',originalExample:it.originalExample||''});
       if(ok)unitCorrect++;
@@ -6942,7 +6958,7 @@ async function submitVocabRetest(){
   var detail=[];
   q.items.forEach(function(it,i){
     var my=q.answers[i]||'';
-    var ok=!!my&&my===it.correct;
+    var ok=!!my&&vocabAnswerMatches(it,my);
     detail.push({prompt:it.prompt,correct:it.correct,my:my,ok:ok,explanation:it.explanation||'',originalExample:it.originalExample||''});
     if(ok){correct++;toResolve.push(it.wrongRowId);}
   });
@@ -6956,9 +6972,11 @@ async function submitVocabRetest(){
 }
 function showVocabView(v){
   var entry=document.getElementById('vocab-entry');
+  var study=document.getElementById('vocab-study-view');
   var quiz=document.getElementById('vocab-quiz-view');
   var result=document.getElementById('vocab-result-view');
   if(entry)entry.style.display=v==='entry'?'block':'none';
+  if(study)study.style.display=v==='study'?'block':'none';
   if(quiz)quiz.style.display=v==='quiz'?'block':'none';
   if(result)result.style.display=v==='result'?'block':'none';
 }
@@ -7650,6 +7668,11 @@ function tResTab(tab){
   if(tab==='ranking')renderTResRanking();
   if(tab==='wrong')renderTResWrongStats();
   if(tab==='notify'){renderTResNotify();loadMessageSendLogs();}
+}
+function vocabTypeAnswer(idx,val){vocabCurrentQuiz.answers[idx]=val;}
+function vocabAnswerMatches(item,answer){
+  function clean(value){return String(value||'').normalize('NFC').replace(/\s+/g,'').trim();}
+  return clean(answer)===clean(item.correct);
 }
 
 function renderTResWrongStats(){
