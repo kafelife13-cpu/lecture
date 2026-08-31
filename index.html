@@ -2479,7 +2479,7 @@ async function renderWeeklyStudentDashboard(){
   try{
     await ensureVocabUnitsLoaded();
     var units=vocabCurrentWeekUnits(),myName=session.name||session.id;
-    var result=units.length?await sb.from('vocab_responses').select('unit_week').in('unit_week',units).eq('student_name',myName):{data:[]};
+    var result=units.length?await sb.from('vocab_responses').select('unit_week').in('unit_week',units).eq('student_name',myName).gte('submitted_at',CLASSICAL_VOCAB_ACTIVATED_AT):{data:[]};
     var done={};(result.data||[]).forEach(function(r){done[r.unit_week]=true;});
     vocabLeft=units.filter(function(w){return !done[w];});
   }catch(e){}
@@ -2703,7 +2703,7 @@ async function renderDashboardFastLegacy(){
       dashWait(clinicIds.length?sb.from('exam_responses').select('exam_id,student_name,answers').in('exam_id',clinicIds):Promise.resolve({data:[]}),{data:[]},2000),
       dashWait(clinicIds.length?sb.from('ox_attempts').select('exam_id,student_id,submitted_at').in('exam_id',clinicIds):Promise.resolve({data:[]}),{data:[]},2000),
       dashWait(sb.from('clinic_attendance').select('*').gte('checked_in_at',todayStart.toISOString()).lt('checked_in_at',tomorrow.toISOString()),{data:[]},2000),
-      dashWait(units.length?sb.from('vocab_responses').select('unit_week,student_name').in('unit_week',units):Promise.resolve({data:[]}),{data:[]},2000)
+      dashWait(units.length?sb.from('vocab_responses').select('unit_week,student_name').in('unit_week',units).gte('submitted_at',CLASSICAL_VOCAB_ACTIVATED_AT):Promise.resolve({data:[]}),{data:[]},2000)
     ]);
 
     const responses=queryResults[0].data||[],attempts=queryResults[1].data||[];
@@ -2983,7 +2983,7 @@ async function dashLoadVocab(run){
     await ensureVocabUnitsLoaded();if(run!==dashPerformanceRun)return;
     var units=vocabCurrentWeekUnits();
     if(!units.length){dashPerformanceRows.forEach(function(r){r.vocab=dashStatus('na','배정 없음');});dashRenderPerformance();return;}
-    var res=await sb.from('vocab_responses').select('unit_week,student_name').in('unit_week',units);
+    var res=await sb.from('vocab_responses').select('unit_week,student_name').in('unit_week',units).gte('submitted_at',CLASSICAL_VOCAB_ACTIVATED_AT);
     if(res.error)throw res.error;if(run!==dashPerformanceRun)return;
     var done={};(res.data||[]).forEach(function(x){done[x.student_name+'|'+x.unit_week]=true;});
     dashPerformanceRows.forEach(function(r){var missing=units.filter(function(w){return !done[r.student.name+'|'+w];});r.vocab=missing.length?dashStatus('miss',missing.length+'강 미응시',missing.join(', ')+'강'):dashStatus('ok','응시 완료',units.join(', ')+'강');});
@@ -6759,7 +6759,7 @@ async function viewVocabPastResult(week){
   var unit=(VOCAB_UNITS_CACHE||[]).find(function(u){return u.week===week;});
   if(!unit)return;
   var myName=session.name||session.id;
-  var{data:resp}=await sb.from('vocab_responses').select('*').eq('id','vr_'+week+'_'+myName).maybeSingle();
+  var{data:resp}=await sb.from('vocab_responses').select('*').eq('id','vr_mix_'+week+'_'+myName).maybeSingle();
   if(!resp){notify('제출 기록을 찾을 수 없어요.','error');return;}
   var wrongMap={};
   (resp.wrong||[]).forEach(function(w){wrongMap[w.type+'_'+w.index]=w;});
@@ -6791,7 +6791,7 @@ async function renderVocabEntry(){
     var pastUnits=[];
     for(var wi=0;wi<curWeekIdx;wi++)pastUnits=pastUnits.concat(vocabUnitsForWeekIndex(wi));
     var allNums=thisWeekUnits.concat(pastUnits);
-    var{data:resps}=allNums.length?await sb.from('vocab_responses').select('*').in('unit_week',allNums).eq('student_name',myName):{data:[]};
+    var{data:resps}=allNums.length?await sb.from('vocab_responses').select('*').in('unit_week',allNums).eq('student_name',myName).gte('submitted_at',CLASSICAL_VOCAB_ACTIVATED_AT):{data:[]};
     var respMap={};
     (resps||[]).forEach(function(r){respMap[r.unit_week]=r;});
     if(!thisWeekUnits.length){
@@ -6914,7 +6914,7 @@ async function submitVocabUnitQuiz(){
   var score=unitCount?Math.round(unitCorrect/unitCount*100):0;
   var myName=session.name||session.id;
   const saveRes=await sb.from('vocab_responses').upsert({
-    id:'vr_'+q.week+'_'+myName,
+    id:'vr_mix_'+q.week+'_'+myName,
     unit_week:q.week,student_name:myName,
     score:score,correct_count:unitCorrect,total_q:unitCount,
     wrong:unitWrong,
@@ -7024,7 +7024,7 @@ async function renderTVocab(){
     if(!thisWeekWeeks.length){
       statusEl.innerHTML='<p style="color:var(--text3);font-size:13px">이번 주 시험이 아직 없어요</p>';
     }else{
-      const{data:resps}=await sb.from('vocab_responses').select('*').in('unit_week',thisWeekWeeks);
+      const{data:resps}=await sb.from('vocab_responses').select('*').in('unit_week',thisWeekWeeks).gte('submitted_at',CLASSICAL_VOCAB_ACTIVATED_AT);
       const students=activeStudents();
       statusEl.innerHTML=thisWeekWeeks.map(function(w){
         var unit=VOCAB_UNITS_CACHE.find(function(u){return u.week===w;});
