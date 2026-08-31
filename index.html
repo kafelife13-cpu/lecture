@@ -6717,7 +6717,12 @@ function classicalCourseMarkedExample(entry){
 function classicalCourseCloze(entry){
   var target=classicalCourseTarget(entry);
   if(!target)return null;
-  return entry.example.slice(0,target.start)+'（          ）'+entry.example.slice(target.end);
+  var before=entry.example.slice(0,target.start),after=entry.example.slice(target.end);
+  var remaining=(before+after).replace(/[\s\(\)（）、,，.。!?！？'"“”‘’·:：;；\[\]【】]/g,'');
+  // 표제어 전체가 곧 예문이거나 어미만 남는 문항은 문맥 추론이 불가능하다.
+  // 이런 항목은 빈칸형을 만들지 않고 아래에서 뜻 고르기형으로 전환한다.
+  if(Array.from(remaining).length<4)return null;
+  return before+'（          ）'+after;
 }
 function buildClassicalCourseItems(lessonNumber){
   var lesson=classicalCourseLesson(lessonNumber);if(!lesson)return[];
