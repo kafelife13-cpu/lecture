@@ -6641,9 +6641,21 @@ function vocabGroupInfo(unitWeek){
   var groupIndex=Math.floor((unitWeek-1)/VOCAB_PER_WEEK);
   return{groupIndex:groupIndex,startUnit:groupIndex*VOCAB_PER_WEEK+1,slot:(unitWeek-1)%VOCAB_PER_WEEK,sourceWeek:(groupIndex%CLASSICAL_VOCAB_UNITS.length)+1};
 }
-function classicalVocabChoices(correct,entries,seed){
-  var distractors=vocabSeededShuffle(entries.map(function(x){return x.word;}).filter(function(word){return word!==correct;}),seed+'-d').slice(0,4);
+function vocabUniqueChoices(values){
+  var seen={};
+  return values.filter(function(value){
+    var key=String(value||'').trim();
+    if(!key||seen[key])return false;
+    seen[key]=true;return true;
+  });
+}
+function vocabChoiceSet(correct,candidates,seed,distractorCount){
+  var distractors=vocabUniqueChoices(candidates).filter(function(value){return value!==correct;});
+  distractors=vocabSeededShuffle(distractors,seed+'-d').slice(0,distractorCount);
   return vocabSeededShuffle([correct].concat(distractors),seed+'-o');
+}
+function classicalVocabChoices(correct,entries,seed){
+  return vocabChoiceSet(correct,entries.map(function(x){return x.word;}),seed,4);
 }
 function vocabRegexEscape(text){return String(text).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
 function vocabExampleCloze(entry){
@@ -6675,15 +6687,14 @@ function classicalCourseCloze(entry){
 function buildClassicalCourseItems(lessonNumber){
   var lesson=classicalCourseLesson(lessonNumber);if(!lesson)return[];
   var chosen=vocabSeededShuffle(lesson.entries,'course-'+lessonNumber).slice(0,10);
-  var wordBank=chosen.map(function(entry){return entry.word;});
-  var meaningBank=chosen.map(function(entry){return entry.meaning;});
   return chosen.map(function(entry,index){
     var mode=index%3;
     var modernTranslation=classicalModernTranslation(lessonNumber,lesson.entries.indexOf(entry),entry);
-    if(mode===0)return{type:'k',index:index,week:lessonNumber,prompt:'다음 뜻에 해당하는 고전 어휘를 쓰세요.\n'+entry.meaning,input:true,options:wordBank,correct:entry.word,label:entry.word,source:'고전 어휘 '+String(lessonNumber).padStart(2,'0')+'강',explanation:entry.meaning,originalExample:entry.example,modernTranslation:modernTranslation};
-    if(mode===1)return{type:'k',index:index,week:lessonNumber,prompt:'다음 사용 예시의 빈칸에 들어갈 고전 어휘를 쓰세요.\n“'+classicalCourseCloze(entry)+'”',input:true,options:wordBank,correct:entry.word,label:entry.word,source:'고전 어휘 '+String(lessonNumber).padStart(2,'0')+'강',explanation:entry.meaning,originalExample:entry.example,modernTranslation:modernTranslation};
-    var choices=vocabSeededShuffle(meaningBank.filter(function(value){return value!==entry.meaning;}),'course-meaning-'+lessonNumber+'-'+index).slice(0,3).concat([entry.meaning]);
-    return{type:'k',index:index,week:lessonNumber,prompt:'‘'+entry.word+'’의 알맞은 뜻을 고르세요.',options:vocabSeededShuffle(choices,'course-choice-'+lessonNumber+'-'+index),correct:entry.meaning,label:entry.word,source:'고전 어휘 '+String(lessonNumber).padStart(2,'0')+'강',explanation:entry.meaning,originalExample:entry.example,modernTranslation:modernTranslation};
+    var baseSeed='course-'+lessonNumber+'-'+index;
+    if(mode===0)return{type:'k',index:index,week:lessonNumber,prompt:'다음 뜻에 해당하는 고전 어휘를 고르세요.\n'+entry.meaning,options:classicalVocabChoices(entry.word,lesson.entries,baseSeed+'-word'),correct:entry.word,label:entry.word,source:'고전 어휘 '+String(lessonNumber).padStart(2,'0')+'강',explanation:entry.meaning,originalExample:entry.example,modernTranslation:modernTranslation};
+    if(mode===1)return{type:'k',index:index,week:lessonNumber,prompt:'다음 사용 예시의 빈칸에 들어갈 고전 어휘를 고르세요.\n“'+classicalCourseCloze(entry)+'”',options:classicalVocabChoices(entry.word,lesson.entries,baseSeed+'-example'),correct:entry.word,label:entry.word,source:'고전 어휘 '+String(lessonNumber).padStart(2,'0')+'강',explanation:entry.meaning,originalExample:entry.example,modernTranslation:modernTranslation};
+    var meaningChoices=vocabChoiceSet(entry.meaning,lesson.entries.map(function(item){return item.meaning;}),baseSeed+'-meaning',3);
+    return{type:'k',index:index,week:lessonNumber,prompt:'‘'+entry.word+'’의 알맞은 뜻을 고르세요.',options:meaningChoices,correct:entry.meaning,label:entry.word,source:'고전 어휘 '+String(lessonNumber).padStart(2,'0')+'강',explanation:entry.meaning,originalExample:entry.example,modernTranslation:modernTranslation};
   });
 }
 function buildBaseUnitQuizItems(unit){
@@ -6888,7 +6899,7 @@ async function startVocabRetest(){
 function renderVocabQuiz(){
   var el=document.getElementById('vocab-quiz-body');
   if(!el||!vocabCurrentQuiz)return;
-  var typeLabel={a:'뜻풀이 · 기존 단어장',b:'한자성어 · 기존 단어장',c:'빈칸 채우기 · 기존 단어장',k:'고전 어휘 · 직접 쓰기/뜻 연결'};
+  var typeLabel={a:'뜻풀이 · 기존 단어장',b:'한자성어 · 기존 단어장',c:'빈칸 채우기 · 기존 단어장',k:'고전 어휘 · 객관식'};
   var unitCount=vocabCurrentQuiz.unitItemCount;
   el.innerHTML=vocabCurrentQuiz.items.map(function(it,i){
     var my=vocabCurrentQuiz.answers[i];
@@ -6897,10 +6908,10 @@ function renderVocabQuiz(){
       '<div style="padding:10px 14px">'+
         '<div style="font-size:11px;color:var(--accent);margin-bottom:4px">'+typeLabel[it.type]+'</div>'+
         '<div class="old-hangul" style="font-size:14px;margin-bottom:8px;line-height:1.8;white-space:pre-line">'+(i+1)+'. '+it.prompt+'</div>'+
-        '<div class="old-hangul" style="display:flex;flex-wrap:wrap;gap:6px;line-height:1.8">'+
+        '<div class="old-hangul" style="display:'+(it.type==='k'?'grid':'flex')+';flex-wrap:wrap;gap:6px;line-height:1.8">'+
         (it.input?'<input class="form-input old-hangul" value="'+String(my||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'" placeholder="고전 어휘를 정확히 써 주세요" oninput="vocabTypeAnswer('+i+',this.value)" autocomplete="off" autocapitalize="off" spellcheck="false">':(it.options||[]).map(function(opt){
           var sel=my===opt;
-          return '<button type="button" onclick="vocabPickAnswer('+i+',\''+opt.replace(/'/g,"\\'")+'\')" style="padding:6px 10px;border-radius:8px;font-size:12px;border:1.5px solid '+(sel?'var(--accent)':'var(--border)')+';background:'+(sel?'var(--accent)':'var(--card)')+';color:'+(sel?'white':'var(--text2)')+'">'+opt+'</button>';
+          return '<button type="button" onclick="vocabPickAnswer('+i+',\''+opt.replace(/'/g,"\\'")+'\')" style="padding:'+(it.type==='k'?'10px 12px':'6px 10px')+';border-radius:8px;font-size:12px;border:1.5px solid '+(sel?'var(--accent)':'var(--border)')+';background:'+(sel?'var(--accent)':'var(--card)')+';color:'+(sel?'white':'var(--text2)')+';'+(it.type==='k'?'width:100%;text-align:left;line-height:1.6':'')+'">'+opt+'</button>';
         }).join(''))+
         '</div>'+
       '</div>'+
