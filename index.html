@@ -1091,6 +1091,7 @@ input,button{font-family:var(--font)}
     <div class="main"><div class="main-inner">
       <div class="panel active" id="panel-home">
         <div class="page-header"><h1>안녕하세요, <span id="home-greet-name">학생</span>님 👋</h1><p>오늘 할 일을 확인해보세요</p></div>
+        <div id="home-push-banner" class="card" style="display:none;border-left:3px solid var(--green)"></div>
         <div id="home-cert-alert"></div>
         <div id="home-announce-banner"></div>
         <div id="home-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px"></div>
@@ -2296,12 +2297,17 @@ async function updateTeacherAlertButton(){
 }
 async function updatePushBtnState(){
   const btn=document.getElementById('s-push-btn');
-  if(!btn)return;
-  if(!('serviceWorker' in navigator)||!('PushManager' in window)){btn.style.display='none';return;}
+  const banner=document.getElementById('home-push-banner');
+  if(!btn&&!banner)return;
+  if(!('serviceWorker' in navigator)||!('PushManager' in window)){if(btn)btn.style.display='none';if(banner)banner.style.display='none';return;}
   try{
     const reg=await navigator.serviceWorker.ready;
     const sub=await reg.pushManager.getSubscription();
-    btn.textContent=sub?'🔔 알림 켜짐':'🔔 알림 받기';
+    if(btn)btn.textContent=sub?'🔔 알림 켜짐':'🔔 알림 받기';
+    if(banner){
+      banner.style.display=sub?'none':'block';
+      banner.innerHTML='<div style="padding:12px 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><div style="flex:1;min-width:180px"><div style="font-size:14px;font-weight:800">🔔 과제·시험 알림 받기</div><div style="font-size:12px;color:var(--text2);margin-top:3px">한 번 허용하면 앱을 닫아도 카카오톡처럼 휴대폰 알림으로 안내를 받을 수 있어요.</div></div><button class="btn green" onclick="subscribeToPush()">알림 켜기</button></div>';
+    }
   }catch(e){}
 }
 
@@ -6548,6 +6554,19 @@ function classicalVocabChoices(correct,entries,seed){
   var distractors=vocabSeededShuffle(entries.map(function(x){return x.word;}).filter(function(word){return word!==correct;}),seed+'-d').slice(0,4);
   return vocabSeededShuffle([correct].concat(distractors),seed+'-o');
 }
+function vocabRegexEscape(text){return String(text).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
+function vocabExampleCloze(entry){
+  if(!entry||!entry.example)return null;
+  var candidates=String(entry.word).split(/[\/=,，]/).map(function(x){return x.replace(/[\(（\[【].*$/,'').trim();}).filter(Boolean).sort(function(a,b){return b.length-a.length;});
+  for(var i=0;i<candidates.length;i++){
+    var chars=Array.from(candidates[i]);
+    if(chars.length<2)continue;
+    var pattern=chars.map(vocabRegexEscape).join('\\s*');
+    var re=new RegExp(pattern);
+    if(re.test(entry.example))return entry.example.replace(re,'＿＿＿＿');
+  }
+  return null;
+}
 function buildBaseUnitQuizItems(unit){
   var items=[];
   var bankA=(unit.section_a||[]).map(function(x){return x.word;});
@@ -6572,7 +6591,9 @@ function buildWeeklyMixedQuizItems(unitWeek){
   var cStart=Math.floor(info.slot*classicalRows.length/VOCAB_PER_WEEK);
   var cEnd=Math.floor((info.slot+1)*classicalRows.length/VOCAB_PER_WEEK);
   var classicalPart=classicalRows.slice(cStart,cEnd).map(function(row){
-    return{type:'k',index:row.index,week:unitWeek,prompt:row.entry.meaning,options:classicalVocabChoices(row.entry.word,classical.entries,'classical-'+info.sourceWeek+'-'+row.index),correct:row.entry.word,label:row.entry.word,source:'고전 어휘'};
+    var cloze=vocabExampleCloze(row.entry);
+    var prompt=cloze?('다음 예문의 빈칸에 들어갈 고어를 고르세요.\n“'+cloze+'”'+(row.entry.source?'\n— '+row.entry.source:'')):row.entry.meaning;
+    return{type:'k',index:row.index,week:unitWeek,prompt:prompt,options:classicalVocabChoices(row.entry.word,classical.entries,'classical-'+info.sourceWeek+'-'+row.index),correct:row.entry.word,label:row.entry.word,source:'고전 어휘',questionKind:cloze?'example':'meaning',explanation:row.entry.modern_explanation||('빈칸의 고어는 현대어로 ‘'+row.entry.meaning+'’라는 뜻입니다.'),originalExample:row.entry.example||''};
   });
   var existingPool=[];
   for(var offset=0;offset<VOCAB_PER_WEEK;offset++){
@@ -6620,7 +6641,8 @@ function buildRetestQuizItems(wrongRows){
       rows.forEach(function(w){
         var x=classical.entries[w.item_index];
         if(!x)return;
-        items.push({type:'k',index:w.item_index,week:week,prompt:x.meaning,options:classicalVocabChoices(x.word,classical.entries,'retest-k-'+sourceWeek+'-'+w.item_index),correct:x.word,label:x.word,source:'고전 어휘',wrongRowId:w.id});
+        var cloze=vocabExampleCloze(x);
+        items.push({type:'k',index:w.item_index,week:week,prompt:cloze?('다음 예문의 빈칸에 들어갈 고어를 고르세요.\n“'+cloze+'”'+(x.source?'\n— '+x.source:'')):x.meaning,options:classicalVocabChoices(x.word,classical.entries,'retest-k-'+sourceWeek+'-'+w.item_index),correct:x.word,label:x.word,source:'고전 어휘',questionKind:cloze?'example':'meaning',explanation:x.modern_explanation||('빈칸의 고어는 현대어로 ‘'+x.meaning+'’라는 뜻입니다.'),originalExample:x.example||'',wrongRowId:w.id});
       });
       return;
     }
@@ -6667,8 +6689,8 @@ async function viewVocabPastResult(week){
   allItems=vocabSeededShuffle(allItems,'student-'+myName+'-'+week);
   var detail=allItems.map(function(it){
     var w=wrongMap[it.type+'_'+it.index];
-    if(w)return{prompt:it.prompt,correct:it.correct,my:w.my||'미선택',ok:false};
-    return{prompt:it.prompt,correct:it.correct,my:it.correct,ok:true};
+    if(w)return{prompt:it.prompt,correct:it.correct,my:w.my||'미선택',ok:false,explanation:it.explanation||'',originalExample:it.originalExample||''};
+    return{prompt:it.prompt,correct:it.correct,my:it.correct,ok:true,explanation:it.explanation||'',originalExample:it.originalExample||''};
   });
   vocabCurrentQuiz=null;
   document.getElementById('vocab-quiz-title').textContent=week+'강 단어시험 결과';
@@ -6771,7 +6793,7 @@ function renderVocabQuiz(){
     return divider+'<div class="card" style="margin-bottom:8px">'+
       '<div style="padding:10px 14px">'+
         '<div style="font-size:11px;color:var(--accent);margin-bottom:4px">'+typeLabel[it.type]+'</div>'+
-        '<div class="old-hangul" style="font-size:14px;margin-bottom:8px;line-height:1.8">'+(i+1)+'. '+it.prompt+'</div>'+
+        '<div class="old-hangul" style="font-size:14px;margin-bottom:8px;line-height:1.8;white-space:pre-line">'+(i+1)+'. '+it.prompt+'</div>'+
         '<div class="old-hangul" style="display:flex;flex-wrap:wrap;gap:6px;line-height:1.8">'+
         it.options.map(function(opt){
           var sel=my===opt;
@@ -6803,11 +6825,11 @@ async function submitVocabUnitQuiz(){
     var my=q.answers[i]||'';
     var ok=!!my&&my===it.correct;
     if(i<unitCount){
-      unitDetail.push({prompt:it.prompt,correct:it.correct,my:my,ok:ok});
+      unitDetail.push({prompt:it.prompt,correct:it.correct,my:my,ok:ok,explanation:it.explanation||'',originalExample:it.originalExample||''});
       if(ok)unitCorrect++;
       else{unitWrong.push({type:it.type,index:it.index,label:it.correct,my:my});newWrongForUnit.push(it);}
     }else{
-      reviewDetail.push({prompt:it.prompt,correct:it.correct,my:my,ok:ok});
+      reviewDetail.push({prompt:it.prompt,correct:it.correct,my:my,ok:ok,explanation:it.explanation||'',originalExample:it.originalExample||''});
       if(ok){reviewCorrect++;if(it.wrongRowId)toResolve.push(it.wrongRowId);}
     }
   });
@@ -6843,7 +6865,7 @@ async function submitVocabRetest(){
   q.items.forEach(function(it,i){
     var my=q.answers[i]||'';
     var ok=!!my&&my===it.correct;
-    detail.push({prompt:it.prompt,correct:it.correct,my:my,ok:ok});
+    detail.push({prompt:it.prompt,correct:it.correct,my:my,ok:ok,explanation:it.explanation||'',originalExample:it.originalExample||''});
     if(ok){correct++;toResolve.push(it.wrongRowId);}
   });
   if(toResolve.length){
@@ -6875,6 +6897,8 @@ function vocabDetailRow(it,num){
         (it.ok?'<span style="color:var(--green);font-weight:600">'+it.my+'</span>':
           '<span style="color:var(--red)">내 답: '+(it.my||'미선택')+'</span> · <span style="color:var(--green);font-weight:600">정답: '+it.correct+'</span>')+
       '</div>'+
+      (it.originalExample?'<div style="font-size:12px;color:var(--text2);margin-top:7px;line-height:1.7">원문 예문: '+it.originalExample+'</div>':'')+
+      (it.explanation?'<div style="font-size:12px;color:var(--accent);margin-top:4px;line-height:1.7">현대어 해설: '+it.explanation+'</div>':'')+
     '</div>'+
   '</div>';
 }
@@ -10517,7 +10541,7 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',function(){
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=79', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=80', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
