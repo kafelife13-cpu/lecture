@@ -1988,10 +1988,42 @@ function selectRole(r){
   if(rememberWrap)rememberWrap.style.display=r==='student'?'flex':'none';
 }
 const STUDENT_REMEMBER_KEY='lms_remember_student';
+const STUDENT_VAULT_DB='kukeo_student_login_v1';
+function studentVaultOpen(){
+  return new Promise(function(resolve,reject){
+    var request=indexedDB.open(STUDENT_VAULT_DB,1);
+    request.onupgradeneeded=function(){var db=request.result;if(!db.objectStoreNames.contains('vault'))db.createObjectStore('vault');};
+    request.onsuccess=function(){resolve(request.result);};request.onerror=function(){reject(request.error);};
+  });
+}
+async function studentVaultPut(id,pw){
+  if(!window.crypto||!crypto.subtle||!window.indexedDB)return;
+  var db=await studentVaultOpen(),key=await crypto.subtle.generateKey({name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+  var iv=crypto.getRandomValues(new Uint8Array(12));
+  var cipher=await crypto.subtle.encrypt({name:'AES-GCM',iv:iv},key,new TextEncoder().encode(JSON.stringify({id:id,pw:pw})));
+  await new Promise(function(resolve,reject){var tx=db.transaction('vault','readwrite');var os=tx.objectStore('vault');os.put(key,'key');os.put(Array.from(iv),'iv');os.put(Array.from(new Uint8Array(cipher)),'data');tx.oncomplete=resolve;tx.onerror=function(){reject(tx.error);};});
+  db.close();
+}
+async function studentVaultGet(){
+  if(!window.crypto||!crypto.subtle||!window.indexedDB)return null;
+  var db=await studentVaultOpen();
+  function read(name){return new Promise(function(resolve,reject){var r=db.transaction('vault').objectStore('vault').get(name);r.onsuccess=function(){resolve(r.result);};r.onerror=function(){reject(r.error);};});}
+  try{
+    var values=await Promise.all([read('key'),read('iv'),read('data')]);db.close();
+    if(!values[0]||!values[1]||!values[2])return null;
+    var clear=await crypto.subtle.decrypt({name:'AES-GCM',iv:new Uint8Array(values[1])},values[0],new Uint8Array(values[2]));
+    return JSON.parse(new TextDecoder().decode(clear));
+  }catch(e){db.close();return null;}
+}
+async function studentVaultClear(){
+  if(!window.indexedDB)return;
+  try{var db=await studentVaultOpen();await new Promise(function(resolve,reject){var tx=db.transaction('vault','readwrite');tx.objectStore('vault').clear();tx.oncomplete=resolve;tx.onerror=function(){reject(tx.error);};});db.close();}catch(e){}
+}
 async function saveRememberedStudentLogin(id,pw){
   var checked=document.getElementById('login-remember')&&document.getElementById('login-remember').checked;
-  if(!checked){localStorage.removeItem(STUDENT_REMEMBER_KEY);return;}
+  if(!checked){localStorage.removeItem(STUDENT_REMEMBER_KEY);await studentVaultClear();return;}
   localStorage.setItem(STUDENT_REMEMBER_KEY,id);
+  try{await studentVaultPut(id,pw);}catch(e){}
   if('credentials' in navigator&&window.PasswordCredential){
     try{await navigator.credentials.store(new PasswordCredential({id:id,password:pw,name:id}));}catch(e){}
   }
@@ -2003,14 +2035,12 @@ async function restoreRememberedStudentLogin(){
   var idEl=document.getElementById('login-id'),check=document.getElementById('login-remember');
   if(idEl)idEl.value=id;
   if(check)check.checked=true;
-  if(!('credentials' in navigator))return;
-  try{
-    var cred=await navigator.credentials.get({password:true,mediation:'optional'});
-    if(cred&&cred.id===id&&cred.password){
-      document.getElementById('login-pw').value=cred.password;
-      await doLogin();
-    }
-  }catch(e){}
+  var saved=null;
+  if('credentials' in navigator){
+    try{var cred=await navigator.credentials.get({password:true,mediation:'optional'});if(cred&&cred.id===id&&cred.password)saved={id:cred.id,pw:cred.password};}catch(e){}
+  }
+  if(!saved)try{saved=await studentVaultGet();}catch(e){}
+  if(saved&&saved.id===id&&saved.pw){document.getElementById('login-pw').value=saved.pw;await doLogin();}
 }
 async function doLogin(){
   const id=document.getElementById('login-id').value.trim();
@@ -2085,6 +2115,7 @@ function doLogout(){
   }
   session=null;db={users:[],videos:[],progress:[],access:[],requests:[],accessLog:[]};
   localStorage.removeItem('lms_sess');localStorage.removeItem(STUDENT_REMEMBER_KEY);
+  studentVaultClear();
   if('credentials' in navigator&&navigator.credentials.preventSilentAccess)navigator.credentials.preventSilentAccess().catch(function(){});
   showPage('page-login');
   document.getElementById('login-id').value='';document.getElementById('login-pw').value='';
