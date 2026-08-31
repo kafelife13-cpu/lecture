@@ -6675,14 +6675,49 @@ function classicalModernTranslation(lessonNumber,entryIndex,entry){
   var rows=CLASSICAL_TRANSLATIONS[lessonNumber]||[];
   return rows[entryIndex]||(entry&&entry.translation)||'';
 }
-function classicalCourseCloze(entry){
-  if(!entry||!entry.example)return entry&&entry.meaning||'';
-  var candidates=String(entry.word).split(/[\/=,，]/).map(function(x){return x.replace(/[\(（\[【].*$/,'').trim();}).filter(Boolean).sort(function(a,b){return b.length-a.length;});
+function classicalCourseTarget(entry){
+  if(!entry||!entry.example||!entry.word)return null;
+  var example=String(entry.example);
+  var candidates=String(entry.word).split(/[\/=,，]/).map(function(x){return x.replace(/[（\[【].*$/,'').trim();}).filter(Boolean).sort(function(a,b){return b.length-a.length;});
   for(var i=0;i<candidates.length;i++){
-    var re=new RegExp(vocabRegexEscape(candidates[i]).replace(/\\ /g,'\\s*'));
-    if(re.test(entry.example))return entry.example.replace(re,'(      )');
+    var chars=Array.from(candidates[i]);
+    var re=new RegExp(chars.map(vocabRegexEscape).join('\\s*'));
+    var exact=re.exec(example);
+    if(exact)return{start:exact.index,end:exact.index+exact[0].length,text:exact[0]};
   }
-  return entry.example+'\n뜻: '+entry.meaning;
+  var formHints={'믜다':['뮈온'],'하다':['ᄒᆞᆫᄃᆡ']};
+  var hintedForms=formHints[entry.word]||[];
+  for(var h=0;h<hintedForms.length;h++){
+    var hintedIndex=example.indexOf(hintedForms[h]);
+    if(hintedIndex>=0)return{start:hintedIndex,end:hintedIndex+hintedForms[h].length,text:hintedForms[h]};
+  }
+  // 표제어와 활용형이 다른 경우(예: ᄃᆞᆯ욋곶 → ᄃᆞᆯ욋고지여)는
+  // 어간의 공통 자모를 비교해 예문 속 실제 형태를 찾는다.
+  function matchText(value){return String(value||'').normalize('NFD').replace(/[\s\(\)（）、,，.。!?！？'"“”‘’·:：;；\[\]【】]/g,'');}
+  function commonPrefix(a,b){var n=Math.min(a.length,b.length),j=0;while(j<n&&a[j]===b[j])j++;return j;}
+  var tokens=[],tokenRe=/\S+/g,tokenMatch;
+  while((tokenMatch=tokenRe.exec(example)))tokens.push({start:tokenMatch.index,end:tokenMatch.index+tokenMatch[0].length,text:tokenMatch[0]});
+  var best=null,bestScore=0;
+  candidates.forEach(function(candidate){
+    var stem=matchText(candidate.replace(/다$/,''));
+    if(!stem)return;
+    var threshold=Math.min(4,Math.max(2,Math.ceil(stem.length*0.35)));
+    tokens.forEach(function(token){
+      var score=commonPrefix(stem,matchText(token.text));
+      if(score>=threshold&&score>bestScore){best=token;bestScore=score;}
+    });
+  });
+  return best;
+}
+function classicalCourseMarkedExample(entry){
+  var target=classicalCourseTarget(entry);
+  if(!target)return entry.example+'\n고전 어휘: <u style="text-decoration-thickness:2px;text-underline-offset:3px">'+entry.word+'</u>';
+  return entry.example.slice(0,target.start)+'<u style="text-decoration-thickness:2px;text-underline-offset:3px">'+target.text+'</u>'+entry.example.slice(target.end);
+}
+function classicalCourseCloze(entry){
+  var target=classicalCourseTarget(entry);
+  if(!target)return null;
+  return entry.example.slice(0,target.start)+'（          ）'+entry.example.slice(target.end);
 }
 function buildClassicalCourseItems(lessonNumber){
   var lesson=classicalCourseLesson(lessonNumber);if(!lesson)return[];
@@ -6691,10 +6726,10 @@ function buildClassicalCourseItems(lessonNumber){
     var mode=index%3;
     var modernTranslation=classicalModernTranslation(lessonNumber,lesson.entries.indexOf(entry),entry);
     var baseSeed='course-'+lessonNumber+'-'+index;
-    if(mode===0)return{type:'k',index:index,week:lessonNumber,prompt:'다음 뜻에 해당하는 고전 어휘를 고르세요.\n'+entry.meaning,options:classicalVocabChoices(entry.word,lesson.entries,baseSeed+'-word'),correct:entry.word,label:entry.word,source:'고전 어휘 '+String(lessonNumber).padStart(2,'0')+'강',explanation:entry.meaning,originalExample:entry.example,modernTranslation:modernTranslation};
-    if(mode===1)return{type:'k',index:index,week:lessonNumber,prompt:'다음 사용 예시의 빈칸에 들어갈 고전 어휘를 고르세요.\n“'+classicalCourseCloze(entry)+'”',options:classicalVocabChoices(entry.word,lesson.entries,baseSeed+'-example'),correct:entry.word,label:entry.word,source:'고전 어휘 '+String(lessonNumber).padStart(2,'0')+'강',explanation:entry.meaning,originalExample:entry.example,modernTranslation:modernTranslation};
     var meaningChoices=vocabChoiceSet(entry.meaning,lesson.entries.map(function(item){return item.meaning;}),baseSeed+'-meaning',3);
-    return{type:'k',index:index,week:lessonNumber,prompt:'‘'+entry.word+'’의 알맞은 뜻을 고르세요.',options:meaningChoices,correct:entry.meaning,label:entry.word,source:'고전 어휘 '+String(lessonNumber).padStart(2,'0')+'강',explanation:entry.meaning,originalExample:entry.example,modernTranslation:modernTranslation};
+    var cloze=mode===1?classicalCourseCloze(entry):null;
+    if(cloze)return{type:'k',index:index,week:lessonNumber,prompt:'다음 예문의 괄호 안에 들어갈 고전 어휘의 기본형을 고르세요.\n“'+cloze+'”',options:classicalVocabChoices(entry.word,lesson.entries,baseSeed+'-example'),correct:entry.word,label:entry.word,source:'고전 어휘 '+String(lessonNumber).padStart(2,'0')+'강',explanation:entry.meaning,originalExample:entry.example,modernTranslation:modernTranslation};
+    return{type:'k',index:index,week:lessonNumber,prompt:'다음 예문에서 밑줄 친 고전 어휘의 뜻으로 알맞은 것을 고르세요.\n“'+classicalCourseMarkedExample(entry)+'”',options:meaningChoices,correct:entry.meaning,label:entry.word,source:'고전 어휘 '+String(lessonNumber).padStart(2,'0')+'강',explanation:entry.meaning,originalExample:entry.example,modernTranslation:modernTranslation};
   });
 }
 function buildBaseUnitQuizItems(unit){
