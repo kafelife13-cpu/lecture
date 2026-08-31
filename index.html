@@ -501,15 +501,15 @@ input,button{font-family:var(--font)}
             </div>
           </div>
         </div>
-        <!-- 현재 권한 목록 -->
-        <div class="card" style="margin-bottom:1rem">
-          <div class="card-head"><h3>현재 시청 권한 목록</h3><span style="font-size:11px;color:var(--text2)">권한 해제 시 즉시 적용</span></div>
-          <div id="access-granted-list"></div>
-        </div>
         <!-- 주차별 기록 -->
-        <div class="card">
+        <div class="card" style="margin-bottom:1rem">
           <div class="card-head"><h3>📅 주차별 시청 권한 기록</h3><span style="font-size:11px;color:var(--text2)">시작~마감 이력, 클릭해서 펼치기</span></div>
           <div id="access-weekly-history"></div>
+        </div>
+        <!-- 현재 권한 목록 -->
+        <div class="card">
+          <div class="card-head" style="gap:10px;flex-wrap:wrap"><h3>현재 시청 권한 목록 <span id="access-granted-count" style="font-size:11px;color:var(--text2);font-weight:600"></span></h3><button class="btn btn-sm" id="access-granted-toggle" type="button" onclick="toggleAccessGranted()" aria-expanded="false">목록 열어보기 ▼</button></div>
+          <div id="access-granted-list" style="display:none"></div>
         </div>
       </div>
 
@@ -1896,6 +1896,7 @@ function pendingStudents(){return db.users.filter(u=>u.role==='student'&&u.statu
 function normalVideos(){return db.videos.filter(v=>!v.category||v.category==='normal');}
 function clinicVideos(){return db.videos.filter(v=>v.category==='clinic');}
 function reviewVideos(){return db.videos.filter(v=>v.category==='review');}
+function reviewVideoVisible(v){return v.student_visible!==false;}
 function clinicVideoSchool(v){
   var text=((v.title||'')+' '+(v.description||'')).toLowerCase();
   var marker=text.match(/\[학교:(sc_hanbaek|sc_chidong|all)\]/);
@@ -3021,11 +3022,13 @@ function renderVideoGrid(videos, containerId){
     const doneC=progs.filter(p=>p>=100).length;
     const isReview=v.category==='review';
     const isClinic=v.category==='clinic';
+    const studentVisible=reviewVideoVisible(v);
     return`<div class="video-card ${isReview?'review-card':''}">
       <div class="video-thumb">${t?`<img src="${t}" onerror="this.style.display='none'">`:''}<div class="thumb-fb"><div class="yt-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
       <div style="padding:12px 14px">
         <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
           <span class="badge ${isReview?'review':'normal'}">${isReview?'🔁 복습':isClinic?'🏫 클리닉':'📚 일반'}</span>
+          ${isReview?`<span class="badge ${studentVisible?'done':'none'}">${studentVisible?'학생 표시 중':'학생에게 숨김'}</span>`:''}
         </div>
         <div style="font-size:13px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(v.title)}</div>
         <div style="font-size:11px;color:var(--text2);margin-bottom:8px">${escHtml(isClinic?(clinicVideoDescription(v)||'클리닉 해설 영상'):(v.description||'설명 없음'))}</div>
@@ -3035,11 +3038,22 @@ function renderVideoGrid(videos, containerId){
         </div>
         <div class="pbar"><div class="pbar-fill" style="width:${avgP}%;background:${pctColor(avgP)}"></div></div>
         <div style="display:flex;gap:6px;margin-top:10px">
+          ${isReview?`<button class="btn btn-sm ${studentVisible?'':'teal'}" onclick="toggleReviewVideoVisibility('${v.id}',${studentVisible?'false':'true'})">${studentVisible?'학생에게 숨기기':'학생에게 보이기'}</button>`:''}
           <button class="btn btn-sm" onclick="openDetail2('${v.id}')">진도 확인</button>
           <button class="btn btn-sm red" onclick="deleteVideo('${v.id}')">삭제</button>
         </div>
       </div></div>`;
   }).join('')+`</div>`;
+}
+
+async function toggleReviewVideoVisibility(id,visible){
+  const v=db.videos.find(x=>x.id===id&&x.category==='review');
+  if(!v)return;
+  const{error}=await sb.from('videos').update({student_visible:!!visible}).eq('id',id);
+  if(error){notify('표시 설정 저장 실패: '+error.message,'error');return;}
+  v.student_visible=!!visible;
+  notify('"'+v.title+'" 영상을 학생에게 '+(visible?'표시합니다.':'숨겼습니다.'),visible?'success':'info');
+  renderVideos();
 }
 
 function renderVideos(){
@@ -3433,6 +3447,9 @@ function renderAccessPanel(){
   }
   // 현재 권한 목록
   const gl=document.getElementById('access-granted-list');
+  const grantedCount=document.getElementById('access-granted-count');
+  if(grantedCount)grantedCount.textContent='('+db.access.length+'건)';
+  if(gl)gl.style.display=accessGrantedOpen?'block':'none';
   if(!db.access.length){gl.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text2);font-size:13px">현재 시청 권한을 가진 학생이 없습니다.</div>';renderAccessWeeklyHistory();return;}
   gl.innerHTML=db.access.map(a=>{
     const s=db.users.find(u=>u.id===a.student_id);
@@ -3458,6 +3475,14 @@ function renderAccessPanel(){
     </div>`;
   }).join('');
   renderAccessWeeklyHistory();
+}
+let accessGrantedOpen=false;
+function toggleAccessGranted(){
+  accessGrantedOpen=!accessGrantedOpen;
+  const list=document.getElementById('access-granted-list');
+  const btn=document.getElementById('access-granted-toggle');
+  if(list)list.style.display=accessGrantedOpen?'block':'none';
+  if(btn){btn.textContent=accessGrantedOpen?'목록 접기 ▲':'목록 열어보기 ▼';btn.setAttribute('aria-expanded',accessGrantedOpen?'true':'false');}
 }
 /* granted_at이 속한 주의 마감 일요일을 기준으로 "N월 N주차" 라벨을 만든다 (그 달의 몇 번째 일요일인지로 계산) */
 function weekLabelForDate(d){
@@ -3829,6 +3854,7 @@ function renderClinicLectures(){
 /* ===== 학생: 복습 신청 ===== */
 async function requestReview(vid){
   const v=db.videos.find(x=>x.id===vid);
+  if(!v||(!reviewVideoVisible(v)&&!hasRequested(session.id,vid)&&!hasAccess(session.id,vid))){notify('현재 신청할 수 없는 영상입니다.','info');return;}
   if(hasRequested(session.id,vid)){notify('이미 신청한 영상입니다.','info');return;}
   if(hasAccess(session.id,vid)){notify('이미 시청 권한이 있습니다.','info');return;}
   const id='req'+Date.now();
@@ -3843,7 +3869,7 @@ async function requestReview(vid){
 function renderStudentReview(){
   const el=document.getElementById('student-review-list');
   // 시청 권한이 (마감 안 되고) 열려있는 영상을 맨 위로, 그중에서도 최근에 열어준 순서대로 정렬
-  const vids=reviewVideos().slice().sort((a,b)=>{
+  const vids=reviewVideos().filter(v=>reviewVideoVisible(v)||hasRequested(session.id,v.id)||hasAccess(session.id,v.id)).sort((a,b)=>{
     const accA=hasAccess(session.id,a.id),accB=hasAccess(session.id,b.id);
     if(accA&&accB){
       const gA=db.access.find(x=>x.student_id===session.id&&x.video_id===a.id);
@@ -10529,3 +10555,4 @@ function installPWA(){
 </script>
 </body>
 </html>
+
