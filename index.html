@@ -10438,6 +10438,27 @@ async function sExamSubmitScore(){
 var sExamLastWrong=[];
 var sResRetryAnswers={};
 var sResRetryPassed={};
+var sResWrongFeedback={};
+var sResWrongFeedbackLoading=false;
+async function loadSResWrongFeedback(wrong){
+  if(!wrong.length||sResWrongFeedbackLoading)return;
+  sResWrongFeedbackLoading=true;
+  var source=wrong.map(function(w){return '['+(w.idx+1)+'번] 학생이 고른 오답: '+w.my+'번\n문제: '+(w.q.text||'종이 시험지 참조')+'\n교사용 해설: '+(w.q.explanation||'없음');}).join('\n---\n');
+  var prompt='학생이 고른 선택지가 왜 틀렸는지만 설명하세요. 정답 번호, 정답 선택지의 내용, "정답은"이라는 표현은 절대 쓰지 마세요. 학생이 다시 스스로 풀 수 있도록 오답 판단의 문제점과 확인할 개념만 문항별 1~2문장으로 알려주세요. JSON 배열만 반환하세요: [{"num":문항번호,"feedback":"오답 이유"}]\n\n'+source;
+  try{
+    var data=await callClaudeServer({model:'claude-sonnet-5',max_tokens:1800,thinking:{type:'disabled'},messages:[{role:'user',content:prompt}]});
+    var raw=(data.content||[]).map(function(c){return c.text||'';}).join('');
+    var rows=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    rows.forEach(function(row){
+      var text=String(row.feedback||'').replace(/정답은\s*[①②③④⑤1-5]번?/g,'정답').replace(/[①②③④⑤1-5]번이\s*정답[^.]*\.?/g,'');
+      sResWrongFeedback[Number(row.num)-1]=text;
+    });
+  }catch(e){
+    wrong.forEach(function(w){sResWrongFeedback[w.idx]='선택한 답의 개념 적용이나 지문 근거가 맞지 않습니다. 문제의 핵심 조건을 다시 확인해 보세요.';});
+  }
+  sResWrongFeedbackLoading=false;
+  renderSResWrongList(sExamLastWrong);
+}
 function renderSResWrongList(wrong){
   var wrongEl=document.getElementById('s-res-wrong-list');
   if(!wrongEl)return;
@@ -10452,12 +10473,13 @@ function renderSResWrongList(wrong){
     }).join('')+'</div>';
     return;
   }
-  wrongEl.innerHTML='<div class="card-head"><h3>틀린 문제 ('+wrong.length+'개) · 답안 다시 입력</h3></div><div style="padding:0 1.25rem 0.75rem">'+wrong.map(function(w){
+  wrongEl.innerHTML='<div class="card-head"><h3>틀린 문제 ('+wrong.length+'개) · 정답 없이 다시 풀기</h3></div><div style="padding:0 1.25rem 0.75rem">'+wrong.map(function(w){
     var idx=w.idx,q=w.q,picked=sResRetryAnswers[idx],passed=!!sResRetryPassed[idx];
+    var feedback=sResWrongFeedback[idx];
     return '<div class="card" style="margin:10px 0;border-left:3px solid '+(passed?'var(--green)':'var(--red)')+'"><div style="padding:12px">'+
       '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="background:'+(passed?'var(--green-bg)':'var(--red-bg)')+';color:'+(passed?'var(--green)':'var(--red)')+';font-size:12px;font-weight:600;padding:2px 10px;border-radius:8px">'+(idx+1)+'번</span><span style="font-size:13px;color:var(--text2)">처음 답: <strong style="color:var(--red)">'+w.my+'번</strong></span></div>'+
-      (q.explanation?'<div style="background:var(--bg2);border-radius:8px;padding:10px;font-size:12.5px;color:var(--text2);line-height:1.6;margin-bottom:10px">📖 <strong>개념 해설</strong><br>'+escHtml(q.explanation)+'</div>':'')+
-      (passed?'<div style="font-size:13px;font-weight:700;color:var(--green)">✅ 다시 풀기 통과</div>':
+      (!passed?'<div style="background:var(--red-bg);border-radius:8px;padding:10px;font-size:12.5px;color:var(--text2);line-height:1.6;margin-bottom:10px">💡 <strong>내 답이 틀린 이유</strong><br>'+(feedback?escHtml(feedback):'오답 이유를 분석하고 있어요...')+'</div>':'')+
+      (passed?'<div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:8px">✅ 다시 풀기 통과</div>'+(q.explanation?'<div style="background:var(--green-bg);border-radius:8px;padding:10px;font-size:12.5px;color:var(--text2);line-height:1.6">📖 <strong>통과 후 해설</strong><br>'+escHtml(q.explanation)+'</div>':''):
         '<div><div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px">답안을 다시 입력하세요</div><div style="display:flex;gap:6px;flex-wrap:wrap">'+[1,2,3,4,5].map(function(n){var sel=String(picked)===String(n);return '<button type="button" onclick="sResRetryPick('+idx+','+n+')" style="width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:14px;font-weight:700;border:1.5px solid '+(sel?'var(--accent)':'var(--border)')+';background:'+(sel?'var(--accent)':'var(--card)')+';color:'+(sel?'white':'var(--text2)')+'">'+n+'</button>';}).join('')+'</div>'+(picked?'<div style="font-size:12px;color:var(--red);margin-top:8px">❌ 아직 틀렸어요. 정답은 공개되지 않습니다. 다시 선택하세요.</div>':'')+'</div>')+
       '</div></div>';
   }).join('')+'</div>';
@@ -10487,8 +10509,9 @@ function renderSExamResultView(score,correct,wrong,total){
     '<div style="text-align:center;background:var(--bg2);border-radius:8px;padding:12px"><div style="font-size:24px;font-weight:700;color:var(--green)">'+correct+'</div><div style="font-size:11px;color:var(--text3);margin-top:2px">정답</div></div>'+
     '<div style="text-align:center;background:var(--bg2);border-radius:8px;padding:12px"><div style="font-size:24px;font-weight:700;color:var(--red)">'+wrong.length+'</div><div style="font-size:11px;color:var(--text3);margin-top:2px">오답</div></div>'+
     '<div style="text-align:center;background:var(--bg2);border-radius:8px;padding:12px"><div style="font-size:24px;font-weight:700">'+total+'</div><div style="font-size:11px;color:var(--text3);margin-top:2px">총 문항</div></div>';
-  sExamLastWrong=wrong;sResRetryAnswers={};sResRetryPassed={};
+  sExamLastWrong=wrong;sResRetryAnswers={};sResRetryPassed={};sResWrongFeedback={};
   renderSResWrongList(wrong);
+  if(wrong.length&&sExamData&&(sExamData.category||'school')==='school')loadSResWrongFeedback(wrong);
   const reportEl=document.getElementById('s-res-report-card');
   if(padMode){
     if(reportEl)reportEl.innerHTML='<div class="card" style="padding:1.25rem;text-align:center;border-color:var(--green);color:var(--green);font-size:15px;font-weight:800">✓ 답안과 성적이 저장됐어요.<br><span style="font-size:12px;font-weight:500;color:var(--text2)">잠시 후 다음 학생 선택 화면으로 돌아갑니다.</span></div>';
