@@ -3605,7 +3605,7 @@ function weekLabelForDate(d){
   for(let day=1;day<=d.getDate();day++){
     if(new Date(d.getFullYear(),d.getMonth(),day).getDay()===0)count++;
   }
-  return (d.getMonth()+1)+'월 '+count+'주차';
+  return (d.getMonth()+1)+'월 '+Math.max(1,count)+'주차';
 }
 let accessWeekOpen=null;
 function toggleAccessWeek(key){
