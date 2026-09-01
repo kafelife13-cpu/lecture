@@ -9346,7 +9346,7 @@ async function submitOxQuiz(){
       const my=oxQuizAnswers[q.id],ok=my===q.answer;
       return'<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:12px">'+
         '<span style="color:'+(ok?'var(--green)':'var(--red)')+'">'+(ok?'✓ 정답':'✗ 다시 풀기')+'</span> '+q.statement+
-        (!ok?'<div style="color:var(--text2);margin-top:2px">정답은 숨김 처리되며 이 문제를 다시 풀 수 있어요.</div>':'')+'</div>';
+        (!ok?'<div style="color:var(--text2);margin-top:2px">정답과 해설은 숨김 처리되며 이 문제를 다시 풀 수 있어요.</div>':(q.explanation?'<div style="color:var(--text2);margin-top:4px;line-height:1.6">💡 '+escHtml(q.explanation)+'</div>':''))+'</div>';
     }).join('')+
     '</div>'+(retryItems.length?'<button class="btn blue" style="width:100%;margin-top:14px" onclick="retryWrongOxItems()">틀린 문제 다시 풀기</button>':'')+
     '<button class="btn" style="width:100%;margin-top:8px" onclick="closeOxQuiz()">닫기</button>';
