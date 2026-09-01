@@ -1087,6 +1087,7 @@ input,button{font-family:var(--font)}
         <div class="nav-item" onclick="sNav('vocab')" data-p="vocab"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 13.5L4.24 12.5 2 11.15v3.7L12 20l10-5.15v-3.7l-2.24 1.35L12 16.5z"/></svg>오늘의 어휘</div>
       </nav>
       <div class="sidebar-footer">
+        <button onclick="openStudentGuide()" style="width:100%;margin-bottom:6px;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.3);color:var(--purple);border-radius:var(--radius-sm);padding:8px;font-size:12px;cursor:pointer;font-family:inherit">📖 사용설명서 · 인쇄</button>
         <button id="pwa-install-btn-t" onclick="installPWA()" style="display:none;width:100%;margin-bottom:6px;background:rgba(79,124,255,0.1);border:1px solid rgba(79,124,255,0.3);color:var(--accent);border-radius:var(--radius-sm);padding:8px;font-size:12px;cursor:pointer;font-family:inherit">📲 앱으로 설치</button>
         <button id="s-push-btn" onclick="subscribeToPush()" style="width:100%;margin-bottom:6px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:var(--green);border-radius:var(--radius-sm);padding:8px;font-size:12px;cursor:pointer;font-family:inherit">🔔 알림 받기</button>
         <button class="btn-logout" id="s-logout-btn" onclick="doLogout()">로그아웃</button>
@@ -1096,6 +1097,10 @@ input,button{font-family:var(--font)}
       <div class="panel active" id="panel-home">
         <div class="page-header"><h1>안녕하세요, <span id="home-greet-name">학생</span>님 👋</h1><p>오늘 할 일을 확인해보세요</p></div>
         <section id="home-push-banner" class="card" aria-label="휴대폰 알림 설정" style="display:block;margin-bottom:16px;border:2px solid var(--green);background:linear-gradient(135deg,rgba(34,197,94,.18),rgba(79,124,255,.10));box-shadow:0 8px 24px rgba(34,197,94,.12)"><div style="padding:18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap"><div style="font-size:32px">🔔</div><div style="flex:1;min-width:180px"><div style="font-size:17px;font-weight:900">휴대폰 알림</div><div style="font-size:13px;color:var(--text2);margin-top:4px">과제·시험 안내를 카카오톡처럼 휴대폰 알림으로 받아보세요.</div></div><button class="btn green" onclick="subscribeToPush()" style="font-size:15px;padding:11px 18px">알림 받기</button></div></section>
+        <button onclick="openStudentGuide()" style="width:100%;margin-bottom:12px;padding:13px 16px;border:1px solid rgba(167,139,250,.35);border-radius:var(--radius);background:linear-gradient(135deg,rgba(79,124,255,.16),rgba(167,139,250,.14));color:var(--text);text-align:left;cursor:pointer;font-family:inherit">
+          <strong style="display:block;font-size:14px">📖 국어왕 앱 사용설명서</strong>
+          <span style="display:block;margin-top:3px;font-size:12px;color:var(--text2)">로그인부터 과제·채점·인증·복습강의까지 확인하기 →</span>
+        </button>
         <div id="home-cert-alert"></div>
         <div id="home-announce-banner"></div>
         <div id="home-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px"></div>
@@ -2307,6 +2312,10 @@ function launchStudent(){
   sNav(padMode?'exam':'home');
   setTimeout(updateAllBadges,1000);
   setTimeout(updatePushBtnState,300);
+}
+
+function openStudentGuide(){
+  window.open('guide.html','_blank','noopener');
 }
 
 /* ════════════════════════════════════════════

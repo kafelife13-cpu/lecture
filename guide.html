@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>국어왕 김까까 학생용 사용설명서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#315fe8;--ink:#172033;--muted:#5d6677;--line:#dce2ec;--pale:#f4f7ff;--green:#11875d;--amber:#a65d00}
+*{box-sizing:border-box}body{margin:0;background:#eef2f8;color:var(--ink);font-family:'Noto Sans KR',sans-serif;line-height:1.55}.toolbar{position:sticky;top:0;z-index:10;display:flex;justify-content:center;gap:10px;padding:12px;background:rgba(23,32,51,.94)}.toolbar button,.toolbar a{border:0;border-radius:9px;padding:10px 16px;font:700 14px inherit;cursor:pointer;text-decoration:none}.print{background:#fff;color:#172033}.open{background:var(--blue);color:#fff}.sheet{width:210mm;min-height:297mm;margin:18px auto;background:#fff;padding:16mm 15mm;box-shadow:0 8px 30px rgba(30,45,75,.12)}header{display:grid;grid-template-columns:1fr 40mm;gap:12mm;align-items:center;border-bottom:3px solid var(--blue);padding-bottom:10mm;margin-bottom:8mm}.eyebrow{color:var(--blue);font-size:12px;font-weight:900;letter-spacing:.12em}.title{font-size:28px;line-height:1.2;margin:4px 0 8px;font-weight:900}.subtitle{font-size:13px;color:var(--muted)}.qr-wrap{text-align:center}.qr-box{width:36mm;height:36mm;margin:auto;border:1px solid var(--line);padding:3mm;background:#fff;display:flex;align-items:center;justify-content:center}.qr-box img,.qr-box canvas{max-width:100%;max-height:100%}.qr-label{font-size:10px;font-weight:700;margin-top:4px}.login-box{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:var(--pale);border:1px solid #cbd7ff;border-radius:12px;padding:11px 13px;margin-bottom:8mm}.login-box strong{color:var(--blue)}.login-note{grid-column:1/-1;font-size:11px;color:var(--muted)}h2{font-size:17px;margin:8mm 0 4mm}.steps{display:grid;grid-template-columns:1fr 1fr;gap:7px 10px}.step{position:relative;border:1px solid var(--line);border-radius:10px;padding:9px 10px 9px 42px;min-height:58px;break-inside:avoid}.num{position:absolute;left:10px;top:10px;width:24px;height:24px;border-radius:8px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900}.step h3{font-size:13px;margin:0 0 2px}.step p{font-size:11px;color:var(--muted);margin:0}.step.wide{grid-column:1/-1}.important{margin-top:8mm;border-left:5px solid #f59e0b;background:#fff8e7;padding:10px 13px;border-radius:8px;font-size:11px}.important strong{color:var(--amber)}footer{display:flex;justify-content:space-between;gap:10px;margin-top:9mm;padding-top:5mm;border-top:1px solid var(--line);font-size:10px;color:var(--muted)}.url{word-break:break-all}.check{color:var(--green);font-weight:900}
+@media(max-width:800px){.toolbar{position:static}.sheet{width:100%;min-height:0;margin:0;padding:24px 18px;box-shadow:none}header{grid-template-columns:1fr}.qr-wrap{display:flex;align-items:center;gap:12px;text-align:left}.qr-box{margin:0;width:34mm;height:34mm}.steps{grid-template-columns:1fr}.step.wide{grid-column:auto}.login-box{grid-template-columns:1fr}.login-note{grid-column:auto}}
+@media print{@page{size:A4;margin:0}body{background:#fff}.toolbar{display:none}.sheet{margin:0;box-shadow:none;width:210mm;min-height:297mm;padding:13mm 14mm}.title{font-size:25px}header{padding-bottom:7mm;margin-bottom:6mm}.login-box{margin-bottom:5mm}.steps{gap:5px 8px}.step{min-height:52px;padding-top:7px;padding-bottom:7px}.num{top:8px}.important{margin-top:5mm}footer{margin-top:5mm}}
+</style>
+</head>
+<body>
+<div class="toolbar"><a class="open" href="./">국어왕 앱 열기</a><button class="print" onclick="window.print()">🖨 인쇄 · PDF 저장</button></div>
+<main class="sheet">
+  <header>
+    <div><div class="eyebrow">서로국어 김이내T</div><h1 class="title">국어왕 김까까<br>학생용 사용설명서</h1><p class="subtitle">알림을 허용하고, 매주 과제·테스트·인증을 빠짐없이 완료하세요.</p></div>
+    <div class="qr-wrap"><div class="qr-box" id="guide-qr"></div><div class="qr-label">QR을 찍어 앱 열기</div></div>
+  </header>
+  <section class="login-box">
+    <div><strong>아이디</strong><br>학생 휴대폰 번호 가운데 4자리</div>
+    <div><strong>비밀번호</strong><br>학생 휴대폰 번호 마지막 4자리</div>
+    <div class="login-note">로그인이 안 되면 아이디와 비밀번호를 모두 휴대폰 번호 마지막 4자리로 입력해 보세요.</div>
+  </section>
+  <h2>처음 시작할 때</h2>
+  <section class="steps">
+    <article class="step"><span class="num">1</span><h3>앱 링크·QR 받기</h3><p>선생님이 보낸 링크를 누르거나 위 QR을 촬영해 접속합니다. 홈 화면에 추가하면 앱처럼 사용할 수 있습니다.</p></article>
+    <article class="step"><span class="num">2</span><h3>아이디·비밀번호로 로그인</h3><p>위 로그인 방법대로 입력합니다. 정보가 맞지 않으면 선생님께 문의하세요.</p></article>
+    <article class="step"><span class="num">3</span><h3>알림 받기 허용</h3><p>로그인 후 <b>🔔 알림 받기</b>를 누르고 웹 알림을 반드시 허용합니다.</p></article>
+    <article class="step"><span class="num">4</span><h3>과제 공지 확인</h3><p><b>과제 안내</b>에서 이번 주 과제, 기간, 문항 수와 준비물을 확인합니다.</p></article>
+  </section>
+  <h2>매주 해야 할 일</h2>
+  <section class="steps">
+    <article class="step"><span class="num">5</span><h3>어휘 테스트 3개 수행</h3><p><b>오늘의 어휘</b>에서 매주 지정된 어휘 테스트 3개를 모두 완료합니다.</p></article>
+    <article class="step"><span class="num">6</span><h3>인증 알림 확인</h3><p>전체 과제 인증과 클리닉 미수행 시 추가로 오는 완료 인증을 확인하고 제출합니다.</p></article>
+    <article class="step"><span class="num">7</span><h3>클리닉 테스트 채점</h3><p><b>온라인 채점</b>에서 답안을 입력한 뒤 틀린 문제를 다시 풀고 <b>오답 OX</b>까지 완료합니다.</p></article>
+    <article class="step"><span class="num">8</span><h3>필수 과제 30~35문항 채점</h3><p>필수 문항 답안을 입력하고, 오답 재풀이와 오답 OX까지 마쳐야 완료입니다.</p></article>
+    <article class="step"><span class="num">9</span><h3>나머지 과제 채점</h3><p>필수 과제 외 문제도 채점하고 싶으면 같은 방법으로 추가 채점할 수 있습니다.</p></article>
+    <article class="step"><span class="num">10</span><h3>과제 인증타이머 사용</h3><p><b>공부 타이머</b>에서 시작 사진 → 공부 → 종료 사진 순서로 제출합니다.</p></article>
+  </section>
+  <h2>복습강의 이용</h2>
+  <section class="steps">
+    <article class="step"><span class="num">11</span><h3>복습강의 신청</h3><p><b>복습 신청</b>에서 필요한 영상을 선택해 신청하고 승인 여부를 확인합니다.</p></article>
+    <article class="step"><span class="num">12</span><h3>영상강의 대체 학생</h3><p>영상강의 대체 대상은 시청 권한이 자동 생성되며, 생성일부터 <b>8일간</b> 유지된 뒤 소멸합니다.</p></article>
+    <article class="step wide"><span class="num">13</span><h3>개별 신청 학생 주의</h3><p>개별 신청 영상은 권한 생성일부터 <b>2일간</b> 시청할 수 있습니다. 권한을 받고도 시청하지 않은 일이 2회 발생하면 이후 강의 시청이 제한됩니다.</p></article>
+    <article class="step"><span class="num">14</span><h3>과제 QnA 이용</h3><p>과제 중 질문이 생기면 <b>과제 QnA</b>에 남깁니다. 선생님이 댓글로 답변하면 앱에서 확인할 수 있습니다.</p></article>
+    <article class="step"><span class="num">15</span><h3>클리닉 일정 변경 신청</h3><p>클리닉 요일이나 시간을 바꿔야 할 때 <b>클리닉 변동</b>에서 가능한 일정을 선택해 변경을 신청합니다.</p></article>
+  </section>
+  <div class="important"><strong>꼭 기억하세요!</strong> 채점만 하고 끝내지 말고 <span class="check">틀린 문제 다시 풀기 → 오답 OX</span>까지 해야 완료입니다. 알림이 오지 않으면 휴대폰 설정에서 국어왕 또는 Chrome의 알림 권한을 확인하세요.</div>
+  <footer><span>국어왕 김까까 · 서로국어 김이내T</span><span class="url" id="guide-url">https://kafelife13-cpu.github.io/lecture/</span></footer>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script>
+(function(){
+  var appUrl='https://kafelife13-cpu.github.io/lecture/';
+  document.getElementById('guide-url').textContent=appUrl;
+  if(window.QRCode)new QRCode(document.getElementById('guide-qr'),{text:appUrl,width:132,height:132,colorDark:'#172033',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+  else document.getElementById('guide-qr').innerHTML='<strong style="font-size:11px">앱 주소를 입력하세요</strong>';
+})();
+</script>
+</body>
+</html>
