@@ -9261,6 +9261,7 @@ async function ensureOxQuestions(examId,domain,sourceItems){
 }
 
 var oxQuizItems=[],oxQuizAnswers={},oxQuizExamId=null;
+var oxQuizSubmitting=false;
 async function openOxQuizFromResult(){
   if(!sExamData||!session)return;
   // 방금 제출/조회한 실제 응답을 DB에서 다시 읽어와 사용 (FULL 모드에서는 sWrongChecked가 비어있어 오답 도메인을 못 찾는 문제 방지)
@@ -9317,7 +9318,9 @@ function oxAnswer(qid,val){
   renderOxQuiz();
 }
 async function submitOxQuiz(){
+  if(oxQuizSubmitting)return;
   if(Object.keys(oxQuizAnswers).length<oxQuizItems.length){notify('모든 문제에 답해주세요.','error');return;}
+  oxQuizSubmitting=true;
   let correct=0;
   const rows=oxQuizItems.map(function(q){
     const my=oxQuizAnswers[q.id];
@@ -9325,10 +9328,15 @@ async function submitOxQuiz(){
     if(isCorrect)correct++;
     return{id:'oxa_'+Date.now()+'_'+q.id,exam_id:oxQuizExamId,student_id:session.id,ox_question_id:q.id,student_answer:my,is_correct:isCorrect,submitted_at:new Date().toISOString()};
   });
-  await sb.from('ox_attempts').insert(rows);
+  const saveResult=await sb.from('ox_attempts').insert(rows);
+  if(saveResult.error){
+    oxQuizSubmitting=false;
+    alert('OX 제출 저장에 실패했어요: '+saveResult.error.message);
+    return;
+  }
   const total=oxQuizItems.length;
   const retryItems=oxQuizItems.filter(function(q){return oxQuizAnswers[q.id]!==q.answer;});
-  const oxExam=examDb.exams.find(function(e){return e.id===oxQuizExamId;});
+  const oxExam=(sExamData&&sExamData.id===oxQuizExamId)?sExamData:null;
   sendStudentActivity('오답 OX 제출',(oxExam?oxExam.name:'시험')+' · '+correct+'/'+total);
   document.getElementById('ox-quiz-body').innerHTML='<div style="text-align:center;padding:1rem 0 1.5rem">'+
     '<div style="font-size:28px;font-weight:700;color:'+(correct===total?'var(--green)':'var(--amber)')+'">'+correct+'/'+total+'</div>'+
@@ -9343,6 +9351,7 @@ async function submitOxQuiz(){
     '</div>'+(retryItems.length?'<button class="btn blue" style="width:100%;margin-top:14px" onclick="retryWrongOxItems()">틀린 문제 다시 풀기</button>':'')+
     '<button class="btn" style="width:100%;margin-top:8px" onclick="closeOxQuiz()">닫기</button>';
   window.oxRetryItems=retryItems;
+  oxQuizSubmitting=false;
 }
 function retryWrongOxItems(){
   oxQuizItems=(window.oxRetryItems||[]).slice();
