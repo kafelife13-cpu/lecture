@@ -9,8 +9,10 @@ Deno.serve(async (req) => {
   if (req.method !== "POST") return json({ error: "POST 요청만 지원합니다." }, 405);
   try {
     const token = Deno.env.get("TELEGRAM_BOT_TOKEN") || Deno.env.get("TG_BOT_TOKEN");
-    const chatId = Deno.env.get("TELEGRAM_CHAT_ID") || Deno.env.get("TG_CHAT_ID");
-    if (!token || !chatId) return json({ error: "텔레그램 비밀키가 설정되지 않았습니다." }, 503);
+    if (!token) return json({ error: "텔레그램 봇 토큰이 설정되지 않았습니다." }, 503);
+    const configuredChatId = Deno.env.get("TELEGRAM_CHAT_ID") || Deno.env.get("TG_CHAT_ID");
+    const chatId = configuredChatId || await findLatestPrivateChatId(token);
+    if (!chatId) return json({ error: "봇 채팅방을 찾지 못했습니다. 텔레그램에서 봇에게 메시지를 한 번 보내주세요." }, 503);
     const body = await req.json();
     const studentName = clean(body?.student_name, 60) || "학생";
     const studentId = clean(body?.student_id, 60);
@@ -40,6 +42,18 @@ Deno.serve(async (req) => {
     return json({ error: error instanceof Error ? error.message : String(error) }, 500);
   }
 });
+
+async function findLatestPrivateChatId(token: string) {
+  const response = await fetch(`https://api.telegram.org/bot${token}/getUpdates`);
+  if (!response.ok) return "";
+  const data = await response.json();
+  const updates = Array.isArray(data?.result) ? data.result : [];
+  for (let i = updates.length - 1; i >= 0; i--) {
+    const chat = updates[i]?.message?.chat || updates[i]?.edited_message?.chat;
+    if (chat?.id && chat?.type === "private") return String(chat.id);
+  }
+  return "";
+}
 
 function clean(value: unknown, max: number) {
   return String(value ?? "").replace(/[\u0000-\u001F\u007F]/g, " ").trim().slice(0, max);
