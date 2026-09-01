@@ -2366,6 +2366,7 @@ async function subscribeToPush(){
       auth:j.keys.auth
     },{onConflict:'endpoint'});
     if(error){notify('구독 저장 실패: '+error.message,'error');return;}
+    sendStudentActivity('앱 알림 허용','이 기기에서 웹 알림 사용 시작');
     notify('🔔 알림 켜졌어요! 새 소식이 오면 바로 알려드릴게요.','success');
     updatePushBtnState();
   }catch(e){
@@ -4447,6 +4448,7 @@ async function openAnnounceView(id){
     try{
       await sb.from('announcement_reads').upsert(row,{onConflict:'announcement_id,student_id'});
       announceDb.reads.push(row);
+      sendStudentActivity('공지 확인',a.title);
       updateAnnounceBadge();
       renderSAnnounceList();
       renderHomeAnnounceBanner();
@@ -5213,6 +5215,8 @@ async function cancelMyClinicReq(id){
   await sb.from('clinic_requests').update({status:'cancelled'}).eq('id',id);
   var r=clinicDb.requests.find(function(r){return r.id===id;});
   if(r)r.status='cancelled';
+  var cancelledSlot=r&&clinicDb.slots.find(function(s){return s.id===r.slot_id;});
+  sendStudentActivity('클리닉 신청 취소',cancelledSlot?cancelledSlot.label:'신청 취소');
   notify('신청이 취소됐어요.','info');
   renderSClinicList();renderTClinicSlotList();renderTClinicReqList();renderTClinicChanges();
 }
@@ -10402,6 +10406,7 @@ async function sExamSubmitScore(){
     submitted_at:new Date().toISOString()
   },{onConflict:'exam_id,student_name'});
   if(saveRes.error){alert('채점 결과 저장에 실패했어요: '+saveRes.error.message+'\n선생님께 알려주세요.');return;}
+  sendStudentActivity(sExamData.category==='homework'?'숙제 채점 제출':'시험 채점 제출',sExamData.name+' · '+score+'점 ('+correct+'/'+total+')');
   sExamPriorResponse=null;
   // 결과 표시
   showSExamView('result');
