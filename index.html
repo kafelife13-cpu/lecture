@@ -5901,6 +5901,16 @@ function aiProviderLabel(provider){return provider==='openai'?'GPT':provider==='
 // 비밀키는 현재 브라우저 탭 세션에만 두고 DB나 영구 저장소에는 보관하지 않는다.
 function getSharedClaudeKey(){return sessionStorage.getItem('claude_api_key')||'';}
 
+// 학생 기기에는 비밀키를 두지 않고 Supabase Edge Function을 통해 Claude를 호출한다.
+async function callClaudeServer(payload){
+  const resp=await fetch(SB_URL+'/functions/v1/claude-ai',{method:'POST',headers:{
+    'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY
+  },body:JSON.stringify({payload:payload})});
+  const data=await resp.json();
+  if(!resp.ok||data.error)throw new Error((data.error&&data.error.message)||'AI 서버 호출에 실패했어요.');
+  return data;
+}
+
 async function callTextAI(prompt,maxTokens){
   const provider=getAIProvider();
   const key=getAIKey(provider);
@@ -9218,8 +9228,6 @@ async function fetchOxQuestions(examId,domain){
 async function ensureOxQuestions(examId,domain,sourceItems){
   const existing=await fetchOxQuestions(examId,domain);
   if(existing.length)return existing;
-  CLAUDE_API_KEY=getSharedClaudeKey();
-  if(!CLAUDE_API_KEY)return[];
   try{
     const items=(sourceItems||[]).filter(function(it){return it&&(it.text||it.explanation||it.passage);});
     const hasAnyPassage=items.some(function(it){return it.passage;});
@@ -9238,9 +9246,7 @@ async function ensureOxQuestions(examId,domain,sourceItems){
       '절대로 "참고용 해설"이나 정답 정보를 passage에 넣지 마세요 — passage는 학생이 문제를 풀기 전에 보는 순수한 읽기 자료여야 합니다.\n'+
       '순수 JSON 배열만 반환하세요. 다른 설명 없이. 형식:\n'+
       '[{"passage":"원본 지문 원문 그대로(요약 금지, 해설/정답 포함 금지)","statement":"OX로 판단할 문장","answer":true,"explanation":"정답 이유 한두 문장"}]';
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:2000,thinking:{type:'disabled'},messages:[{role:'user',content:promptText}]})});
-    const data=await resp.json();
-    if(data.error)throw new Error(data.error.message||'AI 응답 오류');
+    const data=await callClaudeServer({model:'claude-sonnet-5',max_tokens:2000,thinking:{type:'disabled'},messages:[{role:'user',content:promptText}]});
     const raw=(data.content||[]).map(function(c){return c.text||'';}).join('');
     let parsed=[];
     try{parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());}catch(e){parsed=[];}
@@ -9321,6 +9327,7 @@ async function submitOxQuiz(){
   });
   await sb.from('ox_attempts').insert(rows);
   const total=oxQuizItems.length;
+  const retryItems=oxQuizItems.filter(function(q){return oxQuizAnswers[q.id]!==q.answer;});
   const oxExam=examDb.exams.find(function(e){return e.id===oxQuizExamId;});
   sendStudentActivity('오답 OX 제출',(oxExam?oxExam.name:'시험')+' · '+correct+'/'+total);
   document.getElementById('ox-quiz-body').innerHTML='<div style="text-align:center;padding:1rem 0 1.5rem">'+
@@ -9330,10 +9337,18 @@ async function submitOxQuiz(){
     oxQuizItems.map(function(q){
       const my=oxQuizAnswers[q.id],ok=my===q.answer;
       return'<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:12px">'+
-        '<span style="color:'+(ok?'var(--green)':'var(--red)')+'">'+(ok?'✓':'✗')+'</span> '+q.statement+
-        '<div style="color:var(--text2);margin-top:2px">정답: '+(q.answer?'O':'X')+(q.explanation?' · '+q.explanation:'')+'</div></div>';
+        '<span style="color:'+(ok?'var(--green)':'var(--red)')+'">'+(ok?'✓ 정답':'✗ 다시 풀기')+'</span> '+q.statement+
+        (!ok?'<div style="color:var(--text2);margin-top:2px">정답은 숨김 처리되며 이 문제를 다시 풀 수 있어요.</div>':'')+'</div>';
     }).join('')+
-    '</div><button class="btn" style="width:100%;margin-top:14px" onclick="closeOxQuiz()">닫기</button>';
+    '</div>'+(retryItems.length?'<button class="btn blue" style="width:100%;margin-top:14px" onclick="retryWrongOxItems()">틀린 문제 다시 풀기</button>':'')+
+    '<button class="btn" style="width:100%;margin-top:8px" onclick="closeOxQuiz()">닫기</button>';
+  window.oxRetryItems=retryItems;
+}
+function retryWrongOxItems(){
+  oxQuizItems=(window.oxRetryItems||[]).slice();
+  oxQuizAnswers={};
+  if(!oxQuizItems.length){closeOxQuiz();return;}
+  renderOxQuiz();
 }
 function closeOxQuiz(){document.getElementById('modal-ox-quiz').classList.remove('show');}
 
@@ -9385,8 +9400,7 @@ function renderSOxReviewList(){
                 (w.q.domain||w.q.type?'<span style="font-size:11px;color:var(--text2)">'+(w.q.domain||w.q.type)+'</span>':'')+
               '</div>'+
               (w.q.text?'<div style="font-size:13px;line-height:1.6;margin-bottom:6px;white-space:pre-wrap">'+w.q.text+'</div>':'')+
-              '<div style="font-size:12px;color:var(--text2)">내 답: <strong style="color:var(--red)">'+(w.my||'미선택')+'</strong> · 정답: <strong style="color:var(--green)">'+w.q.answer+'</strong></div>'+
-              (w.q.explanation?'<div style="font-size:12px;color:var(--text3);margin-top:4px;line-height:1.6">📖 '+w.q.explanation+'</div>':'')+
+              '<div style="font-size:12px;color:var(--text2)">내 답: <strong style="color:var(--red)">'+(w.my||'미선택')+'</strong> · 정답은 숨김</div>'+
             '</div>';
           }).join('')+
           '<button class="btn blue btn-sm" style="width:100%;margin-top:10px" onclick="openOxQuizForExamId(\''+x.examId+'\')">🔁 OX 재시험 풀기</button>'+
@@ -9765,7 +9779,7 @@ function buildReportCardHTML(studentName,exam,response,allResponses,academyName,
   var itemRows=exam.questions.map(function(q,i){
     var wrong=repIsWrong(response,i,exam);
     var wrongRate=(allResponses&&allResponses.length)?Math.round(allResponses.filter(function(r){return repIsWrong(r,i,exam);}).length/allResponses.length*1000)/10:0;
-    return {num:q.num||(i+1),label:(q.domain||q.type||''),points:q.points||1,answer:q.answer,mark:wrong?'✗':'○',wrongRate:wrongRate,isWrong:wrong};
+    return {num:q.num||(i+1),label:(q.domain||q.type||''),points:q.points||1,mark:wrong?'✗':'○',wrongRate:wrongRate,isWrong:wrong};
   });
   var perCol=Math.ceil(itemRows.length/3)||1;
   var cols=[itemRows.slice(0,perCol),itemRows.slice(perCol,perCol*2),itemRows.slice(perCol*2)];
@@ -9773,12 +9787,11 @@ function buildReportCardHTML(studentName,exam,response,allResponses,academyName,
     cols.map(function(col){
       if(!col.length)return '<div></div>';
       return '<table style="width:100%;border-collapse:collapse;font-size:11px">'+
-        '<tr style="background:#f0f0f0"><th style="padding:3px">문항</th><th style="padding:3px">영역/유형</th><th style="padding:3px">배점</th><th style="padding:3px">정답</th><th style="padding:3px">채점</th><th style="padding:3px">오답률</th></tr>'+
+        '<tr style="background:#f0f0f0"><th style="padding:3px">문항</th><th style="padding:3px">영역/유형</th><th style="padding:3px">배점</th><th style="padding:3px">채점</th><th style="padding:3px">오답률</th></tr>'+
         col.map(function(r){
           return '<tr style="'+(r.isWrong?'background:#fff3f3':'')+'"><td style="text-align:center;padding:3px;border-bottom:1px solid #eee">'+r.num+'</td>'+
             '<td style="text-align:center;padding:3px;border-bottom:1px solid #eee;font-size:9.5px">'+r.label+'</td>'+
             '<td style="text-align:center;padding:3px;border-bottom:1px solid #eee">'+r.points+'</td>'+
-            '<td style="text-align:center;padding:3px;border-bottom:1px solid #eee">'+r.answer+'</td>'+
             '<td style="text-align:center;padding:3px;border-bottom:1px solid #eee;color:'+(r.isWrong?'#c0392b':'#2a7a52')+';font-weight:700">'+r.mark+'</td>'+
             '<td style="text-align:center;padding:3px;border-bottom:1px solid #eee;color:#888">'+r.wrongRate+'</td></tr>';
         }).join('')+
@@ -10301,7 +10314,7 @@ function renderWrongDetails(){
       '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">'+
         '<span style="background:var(--red);color:white;font-size:12px;font-weight:700;padding:3px 10px;border-radius:8px">'+(idx+1)+'번 오답</span>'+
         (q&&q.type?'<span style="font-size:11px;color:var(--text2)">'+q.type+'</span>':'')+'</div>'+
-      // 내 답 + 정답
+      // 학생은 자신의 답만 확인하고 정답은 다시 풀기 전까지 보지 않는다.
       '<div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap">'+
         '<div style="flex:1;min-width:120px">'+
           '<div style="font-size:11px;color:var(--text2);margin-bottom:4px">내가 선택한 답</div>'+
@@ -10313,7 +10326,6 @@ function renderWrongDetails(){
             }).join('')+
           '</div>'+
         '</div>'+
-        (q&&q.answer?'<div style="flex:1;min-width:80px"><div style="font-size:11px;color:var(--text2);margin-bottom:4px">정답</div><div style="font-size:20px;font-weight:700;color:var(--green)">'+q.answer+'번</div></div>':'')+
       '</div>'+
       // 사고과정 입력
       '<div style="margin-bottom:10px">'+
@@ -10438,8 +10450,7 @@ function renderSExamResultView(score,correct,wrong,total){
         return '<div style="display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border)">'+
           '<span style="background:var(--red-bg);color:var(--red);font-size:12px;font-weight:600;padding:2px 10px;border-radius:8px">'+(w.idx+1)+'번</span>'+
           '<span style="font-size:13px;color:var(--text2)">내 답: <strong style="color:var(--red)">'+w.my+'번</strong></span>'+
-          '<span style="font-size:13px;color:var(--text2)">정답: <strong style="color:var(--green)">'+w.q.answer+'번</strong></span>'+
-          (w.q.explanation?'<span style="font-size:12px;color:var(--text3);margin-left:auto">📖 '+w.q.explanation.slice(0,40)+'...</span>':'')+
+          '<span style="font-size:12px;color:var(--text3);margin-left:auto">정답은 숨김 · 다시 풀어보세요</span>'+
           '</div>';
       }).join('')+'</div>';
   }
@@ -10534,25 +10545,22 @@ function renderSExamQDetail(idx){
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">
       <span style="background:rgba(79,124,255,0.15);color:var(--accent);font-size:11px;padding:2px 8px;border-radius:10px;font-weight:500">${idx+1}번</span>
       <span style="font-size:11px;color:var(--text2)">${q.type}</span>
-      ${isCorrect?'<span style="background:var(--green-bg);color:var(--green);font-size:11px;padding:2px 8px;border-radius:8px">✓ 정답</span>':''}
-      ${isWrong?`<span style="background:var(--red-bg);color:var(--red);font-size:11px;padding:2px 8px;border-radius:8px">✗ 오답 — 내 답: ${my}번 / 정답: ${q.answer}번</span>`:''}
+      ${isWrong?`<span style="background:var(--red-bg);color:var(--red);font-size:11px;padding:2px 8px;border-radius:8px">✗ 오답 — 내 답: ${my}번 · 정답은 숨김</span>`:''}
     </div>
     ${q.text?`<div style="background:var(--bg2);border-radius:8px;padding:10px;margin-bottom:10px;font-size:13px;line-height:1.7">${q.text}</div>`:''}
     <div style="font-size:12px;color:var(--text2);margin-bottom:6px">내가 선택한 답:</div>
     <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:12px">
       ${[1,2,3,4,5].map(n=>{
-        const isAns=String(n)===String(q.answer);
         const isMy=String(n)===my;
         return `<div onclick="sExamSelectChoice(${idx},${n})" style="
-          border:1.5px solid ${isMy&&isAns?'var(--green)':isMy?'var(--red)':my&&isAns?'var(--green)':'var(--border)'};
-          border-radius:8px;padding:10px 4px;text-align:center;cursor:pointer;font-size:13px;font-weight:${isMy||(my&&isAns)?'600':'400'};
-          background:${isMy&&isAns?'var(--green-bg)':isMy?'var(--red-bg)':my&&isAns?'var(--green-bg)':'var(--bg)'};
-          color:${isMy&&isAns?'var(--green)':isMy?'var(--red)':my&&isAns?'var(--green)':'var(--text2)'};
+          border:1.5px solid ${isMy?'var(--accent)':'var(--border)'};
+          border-radius:8px;padding:10px 4px;text-align:center;cursor:pointer;font-size:13px;font-weight:${isMy?'600':'400'};
+          background:${isMy?'rgba(79,124,255,0.15)':'var(--bg)'};
+          color:${isMy?'var(--accent)':'var(--text2)'};
           transition:all 0.1s;user-select:none">
-          ${n}번${isMy&&!isAns?' ✗':isMy?' ✓':my&&isAns?' ✓':''}
+          ${n}번${isMy?' · 내 답':''}
         </div>`;}).join('')}
     </div>
-    ${isWrong&&q.explanation?`<div style="background:var(--green-bg);border:1px solid rgba(34,197,94,0.3);border-radius:8px;padding:10px;margin-bottom:10px;font-size:12px;color:var(--green);line-height:1.7"><strong>📖 해설:</strong> ${q.explanation}</div>`:''}
     ${isWrong?`<div>
       <div style="font-size:12px;color:var(--text2);margin-bottom:8px;font-weight:500">💭 오답 분석 자료 (선택)</div>
 
