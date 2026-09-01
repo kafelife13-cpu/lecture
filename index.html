@@ -1840,6 +1840,19 @@ const VAPID_PUBLIC_KEY='BHZrIyaqw7HLsBN17c_VMQUI4T84fkL0gWaJEduzvtgvLuFuSSDbJlE7
 function sendTeacherAlert(text){
   sb.from('push_queue').insert({id:'teacher_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),title:'🚨 국어왕 김까까 강사 알림',body:text,target_ids:['teacher_alerts']}).then(function(){}).catch(function(){});
 }
+function sendStudentActivity(activity,detail){
+  if(!session||session.role!=='student'||studentPreviewMode||padMode)return;
+  var studentName=session.name||session.id||'학생';
+  var safeActivity=String(activity||'학생 활동').slice(0,80);
+  var safeDetail=String(detail||'').slice(0,800);
+  sendTeacherAlert('🔔 '+studentName+' · '+safeActivity+(safeDetail?' · '+safeDetail:''));
+  sb.functions.invoke('student-activity-telegram',{body:{
+    student_id:session.id||'',student_name:studentName,activity:safeActivity,
+    detail:safeDetail,occurred_at:new Date().toISOString()
+  }}).then(function(result){
+    if(result&&result.error)console.warn('텔레그램 활동 알림 실패',result.error.message||result.error);
+  }).catch(function(error){console.warn('텔레그램 활동 알림 실패',error);});
+}
 
 let session=null,currentRole='teacher',progressView='video',progressVideoPage=1,padMode=false;
 let db={users:[],videos:[],progress:[],access:[],requests:[],accessLog:[]};
@@ -2088,7 +2101,7 @@ async function doLogin(){
     await loadClinicData();
     await loadStudyData();
     await loadAnnounceData();
-    if(user.role==='teacher')launchTeacher();else launchStudent();
+    if(user.role==='teacher')launchTeacher();else{launchStudent();sendStudentActivity('로그인','학생 앱 접속');}
   }catch(e){err.textContent='연결 오류: '+e.message;}
   finally{btn.disabled=false;btn.textContent='로그인';}
 }
@@ -3962,7 +3975,7 @@ async function requestReview(vid){
   const{error}=await sb.from('access_requests').insert({id,student_id:session.id,video_id:vid,status:'pending'});
   if(error){notify('신청 실패: '+error.message,'error');return;}
   db.requests.push({id,student_id:session.id,video_id:vid,status:'pending'});
-  sendTeacherAlert(`📺 ${session.name} 학생이 "${v.title}" 복습영상을 신청했어요.`);
+  sendStudentActivity('복습강의 신청',v.title);
   notify(`"${v.title}" 복습 신청이 완료됐습니다. 강사 승인을 기다려주세요.`,'success');
   renderStudentReview();
 }
@@ -4069,7 +4082,7 @@ function videoPresenceAlert(reason,detail){
   videoPresenceLastAlert=now;
   const v=db.videos.find(function(x){return x.id===currentVid;});
   const title=v?v.title:'보강영상';
-  sendTeacherAlert('보강영상 자리 이탈 감지 · '+(session.name||session.id)+' · '+title+' · '+reason+(detail?' ('+detail+')':'')+' · '+new Date().toLocaleString('ko-KR'));
+  sendStudentActivity('영상 자리 이탈',title+' · '+reason+(detail?' ('+detail+')':''));
   notify('자리 이탈이 감지됐어요. 화면 앞에서 계속 시청해 주세요.','error');
 }
 async function stopVideoPresenceMonitor(){
@@ -4105,7 +4118,7 @@ async function openPlay(vid, forceStart){
   if(!id){notify('유효하지 않은 유튜브 URL입니다.','error');return;}
   const presenceReady=await startVideoPresenceMonitor(v);
   if(!presenceReady){currentVid=null;currentStartPos=0;return;}
-  sendTeacherAlert('▶️ '+session.name+' 학생이 "'+v.title+'" 강의 시청을 시작했어요.');
+  sendStudentActivity('강의 시청 시작',v.title);
   document.getElementById('play-title').textContent=v.title;
   document.getElementById('modal-play').classList.add('show');
   let tries=0;
@@ -4671,7 +4684,7 @@ async function handleStudyPhotoFile(file,action){
       if(res.error){notify('시작 실패: '+res.error.message,'error');return;}
       studyDb.sessions.unshift(row);
       requestStudyWakeLock();
-      sendTeacherAlert('📚 '+session.name+' 학생이 공부를 시작했어요.');
+      sendStudentActivity('과제 타이머 시작','공부 시작');
       notify('공부를 시작했어요! 화이팅 💪 (화면 벗어나면 자동으로 기록돼요)','success');
     }else{
       await resolvePendingStudyAway();
@@ -4683,7 +4696,7 @@ async function handleStudyPhotoFile(file,action){
       var durSec=Math.floor((new Date(updates.end_time)-new Date(studyActiveSession.start_time))/1000);
       var awaySec=updates.away_seconds;
       var awayCnt=(function(){try{return (JSON.parse(updates.away_log||'[]')||[]).length;}catch(e){return 0;}})();
-      sendTeacherAlert('📚 '+session.name+' 학생이 공부를 마쳤어요 ('+fmtTime(durSec)+')'+(awaySec>0?' · 이탈 '+awayCnt+'회 총 '+fmtTime(awaySec):'')+'.');
+      sendStudentActivity('과제 타이머 완료',fmtTime(durSec)+(awaySec>0?' · 이탈 '+awayCnt+'회 총 '+fmtTime(awaySec):''));
       notify('수고하셨어요! 공부가 기록됐어요 🎉','success');
     }
     renderSStudy();
@@ -5190,9 +5203,7 @@ async function applyClinicSlot(slotId,schoolId){
   var res=await sb.from('clinic_requests').insert(req);
   if(res.error){notify('신청 실패: '+res.error.message,'error');return;}
   clinicDb.requests.push(req);
-  sendTeacherAlert(isFirst?
-    ('✅ '+session.name+' 학생의 첫 클리닉 시간이 확정됐어요: '+slot.label):
-    ('🔄 '+session.name+' 학생이 클리닉 변경 승인을 요청했어요: '+slot.label));
+  sendStudentActivity(isFirst?'클리닉 신청':'클리닉 변경 신청',slot.label);
   notify(isFirst?(slot.label+' 첫 클리닉 시간이 바로 확정됐어요!'):(slot.label+' 변경 신청을 보냈어요. 선생님 승인 후 확정됩니다.'),'success');
   renderSClinicList();renderTClinicSlotList();renderTClinicReqList();renderTClinicChanges();
 }
@@ -5726,6 +5737,7 @@ async function saveCertSubmission(itemId,photoUrl){
     certDb.submissions.unshift(sub);
   }
   notify('제출됐어요! 선생님이 확인 후 승인해드릴게요.','success');
+  sendStudentActivity(photoUrl?'숙제 인증 파일 제출':'숙제 인증 완료 체크',item.title||item.name||'인증 과제');
   renderSCertList();
 }
 
@@ -5862,7 +5874,7 @@ async function submitFreeQa(){
   };
   qaDb.questions.unshift(newQ);
   await sb.from('qa_questions').upsert(newQ,{onConflict:'id'});
-  sendTeacherAlert('❓ '+session.name+' 학생이 자유 질문을 남겼어요: '+title);
+  sendStudentActivity('과제 Q&A 질문',title);
   document.getElementById('free-qa-title').value='';
   document.getElementById('free-qa-content').value='';
   notify('질문이 전송됐어요! 선생님이 답변드릴게요 😊','success');
@@ -6481,7 +6493,7 @@ async function submitQaQuestion(){
   qaDb.questions.unshift(newQ);
   await sb.from('qa_questions').upsert(newQ,{onConflict:'week_id,prob_num,student_id'});
   var qaWeek=qaDb.weeks.find(function(w){return w.id===qaState.week;});
-  sendTeacherAlert('❓ '+session.name+' 학생이 질문을 남겼어요: '+(qaWeek?qaWeek.name+' ':'')+qaState.prob+'번');
+  sendStudentActivity('문항 질문',(qaWeek?qaWeek.name+' ':'')+qaState.prob+'번');
   addChatBubble('user',text);
   document.getElementById('qa-q-text').value='';
   showQaPending();
@@ -7043,6 +7055,7 @@ async function submitVocabUnitQuiz(){
     await sb.from('vocab_wrong_words').update({resolved:true,resolved_at:new Date().toISOString()}).in('id',toResolve);
   }
   vocabCurrentQuiz=null;
+  sendStudentActivity('어휘 테스트 제출',q.week+'주차 · '+score+'점 ('+unitCorrect+'/'+unitCount+')');
   showVocabResult(score,unitCorrect,unitCount,unitDetail,false,reviewTotal>0?{correct:reviewCorrect,total:reviewTotal,items:reviewDetail}:null);
 }
 async function submitVocabRetest(){
@@ -7064,6 +7077,7 @@ async function submitVocabRetest(){
   var total=q.items.length;
   var score=Math.round(correct/total*100);
   vocabCurrentQuiz=null;
+  sendStudentActivity('어휘 재시험 제출',score+'점 ('+correct+'/'+total+')');
   showVocabResult(score,correct,total,detail,true);
 }
 function showVocabView(v){
@@ -9303,6 +9317,8 @@ async function submitOxQuiz(){
   });
   await sb.from('ox_attempts').insert(rows);
   const total=oxQuizItems.length;
+  const oxExam=examDb.exams.find(function(e){return e.id===oxQuizExamId;});
+  sendStudentActivity('오답 OX 제출',(oxExam?oxExam.name:'시험')+' · '+correct+'/'+total);
   document.getElementById('ox-quiz-body').innerHTML='<div style="text-align:center;padding:1rem 0 1.5rem">'+
     '<div style="font-size:28px;font-weight:700;color:'+(correct===total?'var(--green)':'var(--amber)')+'">'+correct+'/'+total+'</div>'+
     '<div style="font-size:13px;color:var(--text2);margin-top:6px">'+(correct===total?'개념을 잘 이해했어요! 🎉':'틀린 부분은 다시 한번 복습해보세요.')+'</div></div>'+
@@ -10106,6 +10122,7 @@ async function sExamSubmitFull(forceSubmit){
     submitted_at:new Date().toISOString()
   },{onConflict:'exam_id,student_name'});
   if(saveRes.error){alert('채점 결과 저장에 실패했어요: '+saveRes.error.message+'\n선생님께 알려주세요.');return;}
+  sendStudentActivity(sExamData.category==='homework'?'숙제 채점 제출':'시험 채점 제출',sExamData.name+' · '+score+'점 ('+correct+'/'+objIdxs.length+')');
   sExamTimerStop(true);
   sExamPriorResponse=null;sOmrCurrentPhoto=null;
   showSExamView('result');
@@ -10210,7 +10227,7 @@ async function sExamRequestRegrade(examId,examName){
   const myName=session.name||session.id;
   const {error}=await sb.from('exam_responses').update({regrade_requested:true}).eq('exam_id',examId).eq('student_name',myName);
   if(error){alert('요청 실패: '+error.message);return;}
-  sendTeacherAlert('🔁 재채점 요청 · '+myName+' · '+examName);
+  sendStudentActivity('재채점 요청',examName);
   notify('재채점을 요청했어요. 선생님 승인을 기다려주세요.','success');
   renderSExam();
 }
