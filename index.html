@@ -9980,7 +9980,7 @@ function sExamVisibleForStudent(exam){
 }
 
 async function renderSExam(){
-  sExamData=null;sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;sWrongChecked={};sExamPriorResponse=null;
+  sExamData=null;sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;sWrongChecked={};sExamPriorResponse=null;sExamCurrentThoughts={};sMockWrongNotes={};
   showSExamView('entry');
   const clinicEl=document.getElementById('s-exam-clinic-groups');
   const homeworkEl=document.getElementById('s-exam-list-homework');
@@ -10247,7 +10247,7 @@ async function sExamSubmitFull(forceSubmit){
   if(saveRes.error){alert('채점 결과 저장에 실패했어요: '+saveRes.error.message+'\n선생님께 알려주세요.');return;}
   sendStudentActivity(sExamData.category==='homework'?'숙제 채점 제출':'시험 채점 제출',sExamData.name+' · '+score+'점 ('+correct+'/'+objIdxs.length+')');
   sExamTimerStop(true);
-  sExamPriorResponse=null;sOmrCurrentPhoto=null;
+  sExamPriorResponse=null;sOmrCurrentPhoto=null;sExamCurrentThoughts={};sMockWrongNotes={};
   showSExamView('result');
   renderSExamResultView(score,correct,wrong,objIdxs.length);
 }
