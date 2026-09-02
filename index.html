@@ -270,7 +270,7 @@ input,button{font-family:var(--font)}
       </div>
       <div class="form-group"><label>아이디</label><input id="login-id" class="form-input" type="text" placeholder="아이디 입력" onkeydown="if(event.key==='Enter')doLogin()"/></div>
       <div class="form-group"><label>비밀번호</label><input id="login-pw" class="form-input" type="password" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter')doLogin()"/></div>
-      <label id="student-remember-wrap" style="display:none;align-items:center;gap:8px;margin:-2px 0 12px;font-size:13px;color:var(--text2);cursor:pointer"><input id="login-remember" type="checkbox" style="width:18px;height:18px;accent-color:var(--accent)"> 로그인 유지하기</label>
+      <label id="student-remember-wrap" style="display:none;align-items:center;gap:8px;margin:-2px 0 12px;font-size:13px;color:var(--text2);cursor:pointer"><input id="login-remember" type="checkbox" checked style="width:18px;height:18px;accent-color:var(--accent)"> 로그인 유지하기</label>
       <button class="btn-primary" id="login-btn" onclick="doLogin()">로그인</button>
       <div id="login-err" class="err-msg"></div>
       <div class="login-switch">계정이 없으신가요? <a onclick="showSignup()">학생 회원가입</a></div>
@@ -2016,6 +2016,8 @@ function selectRole(r){
   document.querySelectorAll('.role-tab').forEach((b,i)=>b.classList.toggle('active',(i===0&&r==='teacher')||(i===1&&r==='student')));
   var rememberWrap=document.getElementById('student-remember-wrap');
   if(rememberWrap)rememberWrap.style.display=r==='student'?'flex':'none';
+  var remember=document.getElementById('login-remember');
+  if(r==='student'&&remember&&!localStorage.getItem(STUDENT_REMEMBER_KEY))remember.checked=true;
 }
 const STUDENT_REMEMBER_KEY='lms_remember_student';
 const STUDENT_VAULT_DB='kukeo_student_login_v1';
@@ -2053,6 +2055,7 @@ async function saveRememberedStudentLogin(id,pw){
   var checked=document.getElementById('login-remember')&&document.getElementById('login-remember').checked;
   if(!checked){localStorage.removeItem(STUDENT_REMEMBER_KEY);await studentVaultClear();return;}
   localStorage.setItem(STUDENT_REMEMBER_KEY,id);
+  localStorage.setItem('lms_sess',JSON.stringify({id:id,role:'student',saved_at:new Date().toISOString()}));
   try{await studentVaultPut(id,pw);}catch(e){}
   if('credentials' in navigator&&window.PasswordCredential){
     try{await navigator.credentials.store(new PasswordCredential({id:id,password:pw,name:id}));}catch(e){}
@@ -2060,6 +2063,9 @@ async function saveRememberedStudentLogin(id,pw){
 }
 async function restoreRememberedStudentLogin(){
   var id=localStorage.getItem(STUDENT_REMEMBER_KEY);
+  if(!id){
+    try{var hint=JSON.parse(localStorage.getItem('lms_sess')||'null');if(hint&&hint.role==='student')id=hint.id||'';}catch(e){}
+  }
   if(!id)return;
   selectRole('student');
   var idEl=document.getElementById('login-id'),check=document.getElementById('login-remember');
@@ -2822,6 +2828,48 @@ function dashStatusCell(status){
   return'<div><span class="badge '+cls+'" style="'+color+'">'+dashSafeText(status.label)+'</span>'+
     (status.detail?'<div style="font-size:10px;color:var(--text3);margin-top:3px;max-width:180px;white-space:normal;line-height:1.4">'+dashSafeText(status.detail)+'</div>':'')+'</div>';
 }
+function dashAttendanceCell(row){
+  var html=dashStatusCell(row&&row.attendance);
+  if(!session||session.role!=='teacher'||!row||!row.attendanceStart||!row.attendanceEnd)return html;
+  var sid=String(row.student&&row.student.id||'').replace(/[^A-Za-z0-9_-]/g,'');
+  var present=row.attendance&&row.attendance.state==='ok';
+  return'<div>'+html+'<div style="display:flex;gap:4px;margin-top:6px;flex-wrap:wrap">'+
+    '<button class="btn btn-sm'+(present?' green':'')+'" style="padding:4px 7px;font-size:10px" onclick="dashSetAttendance(\''+sid+'\',true)">출석</button>'+
+    '<button class="btn btn-sm'+(!present&&row.attendance&&row.attendance.state==='miss'?' red':'')+'" style="padding:4px 7px;font-size:10px" onclick="dashSetAttendance(\''+sid+'\',false)">미출석</button>'+
+    '</div></div>';
+}
+async function dashSetAttendance(studentId,present){
+  var row=(dashPerformanceRows||[]).find(function(r){return r.student&&r.student.id===studentId;});
+  if(!row||!row.attendanceStart||!row.attendanceEnd)return;
+  var student=row.student;
+  if(!present&&!confirm(student.name+' 학생을 미출석 처리할까요?\n기존 출석 기록이 있으면 삭제됩니다.'))return;
+  try{
+    if(present){
+      var existing=await attendanceSb.from('clinic_attendance').select('id,checked_in_at').or('student_id.eq.'+student.id+',student_name.eq.'+student.name).gte('checked_in_at',row.attendanceStart).lt('checked_in_at',row.attendanceEnd).limit(1);
+      if(existing.error)throw existing.error;
+      if(!(existing.data||[]).length){
+        var checkedAt=new Date();
+        var dayStart=new Date(row.attendanceStart),dayEnd=new Date(row.attendanceEnd);
+        if(checkedAt<dayStart||checkedAt>=dayEnd)checkedAt=new Date(row.attendanceScheduledAt||row.attendanceStart);
+        var inserted=await attendanceSb.from('clinic_attendance').insert({
+          student_id:student.id,student_name:student.name,class_name:schoolName(student.school_id||'')||studentClassLabel(student.group_id||''),
+          day_label:row.clinicDay||'',time_slot:row.attendanceSlotLabel||'',checked_in_at:checkedAt.toISOString()
+        }).select('id,student_id,student_name,checked_in_at').single();
+        if(inserted.error)throw inserted.error;
+        row.attendanceRecord=inserted.data;
+      }
+      row.attendance=dashStatus('ok','출석','교사 직접 처리 · '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}));
+      notify(student.name+' 학생을 출석 처리했어요.','success');
+    }else{
+      var removed=await attendanceSb.from('clinic_attendance').delete().or('student_id.eq.'+student.id+',student_name.eq.'+student.name).gte('checked_in_at',row.attendanceStart).lt('checked_in_at',row.attendanceEnd);
+      if(removed.error)throw removed.error;
+      row.attendanceRecord=null;
+      row.attendance=dashStatus('miss','미출석',(row.clinicDay||'')+'요일 '+(row.attendanceSlotLabel||''));
+      notify(student.name+' 학생을 미출석 처리했어요.','info');
+    }
+    dashRenderPerformance();
+  }catch(e){alert('출결 수정 실패: '+(e&&e.message||e));}
+}
 function dashSetPerformanceFilter(filter){dashPerformanceFilter=filter;dashRenderPerformance();}
 function dashRenderOxSummary(){
   var el=document.getElementById('dash-ox-summary');
@@ -2869,7 +2917,7 @@ function dashRenderPerformance(){
       return r[dashPerformanceFilter]&&r[dashPerformanceFilter].state==='miss';
     });
     rows.sort(function(a,b){var dc={'수':1,'목':2,'금':3,'토':4,'일':5};return (dc[a.clinicDay]||9)-(dc[b.clinicDay]||9)||String(a.student&&a.student.name||'').localeCompare(String(b.student&&b.student.name||''),'ko');});
-    function rowHtml(r){return'<tr class="dash-student-row"><td data-label="학생" style="font-weight:700;position:sticky;left:0;background:var(--bg2);z-index:1;white-space:nowrap">'+dashSafeText(r.student&&r.student.name||'이름 없음')+'</td><td data-label="클리닉 요일"><span class="badge partial">'+dashSafeText((r.clinicDay||'미지정')+'요일')+'</span></td><td data-label="출석">'+dashStatusCell(r.attendance)+'</td><td data-label="시험·OX">'+dashStatusCell(r.ox)+'</td><td data-label="필수 영상">'+dashStatusCell(r.video)+'</td><td data-label="단어시험">'+dashStatusCell(r.vocab)+'</td><td data-label="지정 인증">'+dashStatusCell(r.cert)+'</td><td data-label="공부 인증">'+dashStatusCell(r.study)+'</td></tr>';}
+    function rowHtml(r){return'<tr class="dash-student-row"><td data-label="학생" style="font-weight:700;position:sticky;left:0;background:var(--bg2);z-index:1;white-space:nowrap">'+dashSafeText(r.student&&r.student.name||'이름 없음')+'</td><td data-label="클리닉 요일"><span class="badge partial">'+dashSafeText((r.clinicDay||'미지정')+'요일')+'</span></td><td data-label="출석">'+dashAttendanceCell(r)+'</td><td data-label="시험·OX">'+dashStatusCell(r.ox)+'</td><td data-label="필수 영상">'+dashStatusCell(r.video)+'</td><td data-label="단어시험">'+dashStatusCell(r.vocab)+'</td><td data-label="지정 인증">'+dashStatusCell(r.cert)+'</td><td data-label="공부 인증">'+dashStatusCell(r.study)+'</td></tr>';}
     function certRowHtml(r){
       var detail=r.cert&&r.cert.detail?r.cert.detail:(r.cert&&r.cert.label||'미제출 인증');
       return'<tr class="dash-student-row"><td data-label="학생" style="font-weight:800;position:sticky;left:0;background:var(--bg2);z-index:1;white-space:nowrap">'+dashSafeText(r.student&&r.student.name||'이름 없음')+'</td><td data-label="안 한 지정 인증"><div style="font-size:14px;font-weight:700;color:var(--red);line-height:1.6">'+dashSafeText(detail)+'</div></td></tr>';
@@ -2965,17 +3013,19 @@ async function dashLoadAttendance(run){
     dashPerformanceRows.forEach(function(r){
       var req=effectiveClinicRequest(r.student.id,now),slot=req?clinicDb.slots.find(function(s){return s.id===req.slot_id;}):null;
       var d=String(slot&&slot.day_of_week||'').replace('요일','').trim();
-      if(!slot||dayIndex[d]==null){r.attendance=dashStatus('na','요일 미지정');return;}
+      if(!slot||dayIndex[d]==null){r.attendanceStart='';r.attendanceEnd='';r.attendance=dashStatus('na','요일 미지정');return;}
       var at=new Date(start);at.setDate(at.getDate()+(dayIndex[d]===0?6:dayIndex[d]-1));
-      if(slot.start_time){var p=String(slot.start_time).split(':');at.setHours(Number(p[0])||0,Number(p[1])||0,0,0);}else at.setHours(23,59,0,0);
+      if(slot.start_time){var p=String(slot.start_time).match(/(\d{1,2}):(\d{2})/);at.setHours(p?Number(p[1]):0,p?Number(p[2]):0,0,0);}else at.setHours(23,59,0,0);
+      var dateStart=new Date(at);dateStart.setHours(0,0,0,0);var dateEnd=new Date(dateStart);dateEnd.setDate(dateEnd.getDate()+1);
+      r.attendanceStart=dateStart.toISOString();r.attendanceEnd=dateEnd.toISOString();r.attendanceScheduledAt=at.toISOString();r.attendanceSlotLabel=slot.start_time||slot.label||'';
       if(now<at){r.attendance=dashStatus('na','예정',d+'요일 '+(slot.start_time||''));return;}
       r.attendance=dashStatus('loading','출석 확인중',d+'요일 '+(slot.start_time||''));
     });
     dashRenderPerformance();
-    var res=await attendanceSb.from('clinic_attendance').select('student_id,student_name,checked_in_at').gte('checked_in_at',start.toISOString()).lt('checked_in_at',end.toISOString());
+    var res=await attendanceSb.from('clinic_attendance').select('id,student_id,student_name,checked_in_at').gte('checked_in_at',start.toISOString()).lt('checked_in_at',end.toISOString());
     if(res.error)throw res.error;if(run!==dashPerformanceRun)return;
     var checked={};(res.data||[]).forEach(function(a){if(a.student_id)checked[a.student_id]=a;if(a.student_name)checked[a.student_name]=a;});
-    dashPerformanceRows.forEach(function(r){if(r.attendance.state==='loading'){var a=checked[r.student.id]||checked[r.student.name];r.attendance=a?dashStatus('ok','출석',new Date(a.checked_in_at).toLocaleDateString('ko-KR',{month:'numeric',day:'numeric'})+' '+new Date(a.checked_in_at).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})):dashStatus('miss','미출석',r.attendance.detail);}});
+    dashPerformanceRows.forEach(function(r){if(r.attendance.state==='loading'){var a=checked[r.student.id]||checked[r.student.name];r.attendanceRecord=a||null;r.attendance=a?dashStatus('ok','출석',new Date(a.checked_in_at).toLocaleDateString('ko-KR',{month:'numeric',day:'numeric'})+' '+new Date(a.checked_in_at).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})):dashStatus('miss','미출석',r.attendance.detail);}});
     dashRenderPerformance();
   }catch(e){dashSetColumnError('attendance','출결 기록 연결 확인',run);}
 }
@@ -7231,16 +7281,15 @@ async function tSaveVocabStart(){
   }
   try{
     document.querySelector('.loading-text').textContent='로그인 화면 준비 중...';
-    // 역할과 아이디만 저장한 값으로 로그인 상태를 복원하면 누구나 강사로 위조할 수
-    // 있으므로 자동 로그인은 사용하지 않는다. 앱을 다시 열면 반드시 재인증한다.
-    localStorage.removeItem('lms_sess');
+    // 앱 업데이트나 새로고침만으로 기기 로그인 힌트를 지우지 않는다.
+    // 실제 인증은 IndexedDB 보안 저장소의 자격정보로 서버 RPC를 다시 호출해 검증한다.
   }catch(e){
     console.error(e);
     document.querySelector('.loading-text').textContent='서버 연결 실패. 새로고침해주세요.';
     setTimeout(function(){hideLoading();showPage('page-login');},2500);
     return;
   }
-  hideLoading();showPage('page-login');selectRole(currentRole||'teacher');restoreRememberedStudentLogin();
+  hideLoading();showPage('page-login');selectRole(currentRole||'teacher');await restoreRememberedStudentLogin();
 })();
 
 // ════════════════════════════════════════════
