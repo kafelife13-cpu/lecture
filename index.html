@@ -299,13 +299,15 @@ input,button{font-family:var(--font)}
       <h2 style="margin:0;font-size:18px">본인 이름을 눌러주세요</h2>
       <button onclick="exitPadMode()" style="background:transparent;border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer">패드 모드 종료</button>
     </div>
-    <div id="pad-day-buttons" style="display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin-bottom:12px">
+    <label style="margin-bottom:12px">명단 기준 <select id="pad-roster-kind" class="form-select" onchange="renderPadPicker()"><option value="lesson">본수업 반 배정</option><option value="clinic">클리닉 신청</option></select></label>
+    <div id="pad-day-buttons" style="display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-bottom:12px">
       <button class="btn" data-pad-day="월" onclick="setPadDay('월')">월</button>
       <button class="btn" data-pad-day="화" onclick="setPadDay('화')">화</button>
       <button class="btn" data-pad-day="수" onclick="setPadDay('수')">수</button>
       <button class="btn" data-pad-day="목" onclick="setPadDay('목')">목</button>
       <button class="btn" data-pad-day="금" onclick="setPadDay('금')">금</button>
       <button class="btn" data-pad-day="토" onclick="setPadDay('토')">토</button>
+      <button class="btn" data-pad-day="일" onclick="setPadDay('일')">일</button>
     </div>
     <div id="pad-day-summary" style="font-size:12px;color:var(--text2);margin:0 2px 10px"></div>
     <input id="pad-search" class="form-input" placeholder="이름 검색..." oninput="renderPadPicker()" style="margin-bottom:14px;font-size:15px;padding:12px">
@@ -2176,7 +2178,7 @@ function doLogout(){
    클리닉 패드 모드 — 공용 패드에서 학생이 비밀번호 없이 이름만 눌러 들어가는 모드
    (같은 Supabase 계정으로 로그인되는 것과 동일해서, 데이터는 평소처럼 그 학생 이름/아이디로 정확히 저장됨)
    ════════════════════════════════════════════ */
-var padSelectedDay=['일','월','화','수','목','금','토'][new Date().getDay()];
+var padSelectedDay=['일','월','화','수','목','금','토'][new Date().getDay()];if(['수','토','일'].indexOf(padSelectedDay)<0)padSelectedDay=new Date().getDay()<3?'수':'토';
 var padLockTimer=null;
 const PAD_AUTH_KEY='clinic_pad_authorized_until';
 const PAD_AUTH_MS=8*60*60*1000;
@@ -2237,15 +2239,16 @@ function renderPadPicker(){
     btn.classList.toggle('blue',btn.getAttribute('data-pad-day')===padSelectedDay);
   });
   const q=(document.getElementById('pad-search')?.value||'').trim();
+  const lessonMode=document.getElementById('pad-roster-kind').value==='lesson';
   const assignedIds=currentClinicAssignments().filter(function(req){
     var slot=clinicDb.slots.find(function(s){return s.id===req.slot_id;});
     return slot&&slot.day_of_week===padSelectedDay;
   }).map(function(req){return req.student_id;});
   const list=activeStudents().filter(function(s){
-    return assignedIds.indexOf(s.id)!==-1&&(!q||s.name.indexOf(q)>=0);
+    var cls=ClassAttendance.find(s.group_id);var assigned=lessonMode?(cls&&cls.day===({'수':'wed','토':'sat','일':'sun'}[padSelectedDay])):assignedIds.indexOf(s.id)!==-1;return assigned&&(!q||s.name.indexOf(q)>=0);
   });
   const summary=document.getElementById('pad-day-summary');
-  if(summary)summary.textContent=padSelectedDay+'요일 신청 학생 '+list.length+'명';
+  if(summary)summary.textContent=padSelectedDay+'요일 '+(lessonMode?'본수업':'클리닉')+' 학생 '+list.length+'명';
   if(!list.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text3);font-size:13px;padding:2rem 0">'+padSelectedDay+'요일에 확정된 학생이 없어요</div>';return;}
   grid.innerHTML=list.filter(function(s){return /^[a-zA-Z0-9_]+$/.test(s.id);}).map(function(s){
     return '<button onclick="padPickStudent(\''+s.id+'\')" style="padding:16px 8px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:14px;font-weight:600;cursor:pointer">'+escHtml(padMaskedName(s.name))+'<div style="font-size:10px;color:var(--text3);margin-top:4px">'+escHtml(studentClassLabel(s.group_id))+'</div></button>';
