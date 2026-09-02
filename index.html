@@ -22,6 +22,8 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="class-attendance.js"></script>
+<script src="class-attendance-ui.js"></script>
 <script src="classical-vocab.js"></script>
 <script src="classical-course.js"></script>
 <script src="classical-translations.js"></script>
@@ -362,6 +364,11 @@ input,button{font-family:var(--font)}
         </div>
         <div id="dash-action-loading" class="card" style="padding:1.5rem;text-align:center;color:var(--text2)">확인할 학생 현황을 불러오는 중...</div>
         <div id="dash-action-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px"></div>
+        <div class="card" style="margin-bottom:20px">
+          <div class="card-head"><h3>🏫 수요일·주말 수업 출결</h3><button class="btn btn-sm" onclick="initClassAttendance()">새로고침</button></div>
+          <div class="card-body"><div style="display:flex;gap:8px;flex-wrap:wrap"><label>날짜 <input id="class-attendance-date" aria-label="수업 출결 날짜" type="date" class="form-input" onchange="renderClassAttendance()"></label><label style="flex:1">수업 <select id="class-attendance-filter" aria-label="수업 선택" class="form-select" onchange="renderClassAttendance()"></select></label></div><p id="class-attendance-summary" style="margin-top:10px;color:var(--text2)"></p></div>
+          <div style="overflow:auto"><table class="tbl mobile-cards"><thead><tr><th>학생</th><th>수업</th><th>출결</th><th>처리</th></tr></thead><tbody id="class-attendance-body"></tbody></table></div>
+        </div>
         <div class="card" style="margin-top:14px">
           <div class="card-head" style="flex-wrap:wrap;gap:8px"><div><h3>학생별 주간 수행 통합표</h3><div style="font-size:11px;color:var(--text3);margin-top:3px">느린 항목은 각각 완료되는 대로 표에 반영됩니다.</div></div><div id="dash-performance-filters" style="display:flex;gap:5px;flex-wrap:wrap"></div></div>
           <div id="dash-ox-summary" class="dash-ox-summary" style="display:none;padding:14px 16px;border-top:1px solid var(--border)"></div>
@@ -1103,6 +1110,7 @@ input,button{font-family:var(--font)}
         </button>
         <div id="home-cert-alert"></div>
         <div id="home-announce-banner"></div>
+        <div id="home-class-attendance" class="card" style="margin-bottom:16px"></div>
         <div id="home-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px"></div>
       </div>
       <div class="panel" id="panel-lectures">
@@ -2149,13 +2157,13 @@ function doLogout(){
   if(studentPreviewMode){returnFromStudentPreview();return;}
   if(padMode){
     // 패드 모드에서는 완전 로그아웃 대신 학생 선택 화면으로 돌아가요 (다음 학생 차례)
-    session=null;
+    session=null;classAttendancePin='';
     localStorage.removeItem('lms_sess');
     showPage('page-pad-picker');
     renderPadPicker();
     return;
   }
-  session=null;db={users:[],videos:[],progress:[],access:[],requests:[],accessLog:[]};
+  session=null;classAttendancePin='';db={users:[],videos:[],progress:[],access:[],requests:[],accessLog:[]};
   localStorage.removeItem('lms_sess');localStorage.removeItem(STUDENT_REMEMBER_KEY);
   studentVaultClear();
   if('credentials' in navigator&&navigator.credentials.preventSilentAccess)navigator.credentials.preventSilentAccess().catch(function(){});
@@ -2212,7 +2220,7 @@ async function enterPadMode(){
 function exitPadMode(){
   if(padLockTimer){clearTimeout(padLockTimer);padLockTimer=null;}
   sessionStorage.removeItem(PAD_AUTH_KEY);
-  padMode=false;session=null;db={users:[],videos:[],progress:[],access:[],requests:[],accessLog:[]};
+  padMode=false;session=null;classAttendancePin='';db={users:[],videos:[],progress:[],access:[],requests:[],accessLog:[]};
   localStorage.removeItem('lms_sess');
   showPage('page-login');
 }
@@ -2428,6 +2436,7 @@ async function updatePushBtnState(){
 }
 
 function renderSHome(){
+  renderStudentClassAttendance();
   var greet=document.getElementById('home-greet-name');
   if(greet)greet.textContent=session.name||'학생';
   var grid=document.getElementById('home-grid');
@@ -2619,7 +2628,7 @@ function tNav(panel){
   document.querySelectorAll('#page-teacher .nav-item').forEach(n=>n.classList.toggle('active',n.dataset.p===panel));
   document.querySelectorAll('#page-teacher .panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+panel));
   document.querySelectorAll('#t-tabbar .mobile-tab').forEach(b=>b.classList.toggle('active',b.dataset.mt===panel));
-  if(panel==='dashboard'){renderDashboard();if(session&&session.role==='teacher')updateTQaBadge();}
+  if(panel==='dashboard'){renderDashboard();initClassAttendance();if(session&&session.role==='teacher')updateTQaBadge();}
   if(panel==='videos')renderVideos();
   if(panel==='clinic-videos')renderClinicVideos();
   if(panel==='students')renderStudents();
@@ -2749,7 +2758,7 @@ async function renderDashboardFastLegacy(){
     const queryResults=await Promise.all([
       dashWait(clinicIds.length?sb.from('exam_responses').select('exam_id,student_name,answers').in('exam_id',clinicIds):Promise.resolve({data:[]}),{data:[]},2000),
       dashWait(clinicIds.length?sb.from('ox_attempts').select('exam_id,student_id,submitted_at').in('exam_id',clinicIds):Promise.resolve({data:[]}),{data:[]},2000),
-      dashWait(sb.from('clinic_attendance').select('*').gte('checked_in_at',todayStart.toISOString()).lt('checked_in_at',tomorrow.toISOString()),{data:[]},2000),
+      dashWait(teacherAttendanceRead(todayStart.toISOString(),tomorrow.toISOString()),{data:[]},2000),
       dashWait(units.length?sb.from('vocab_responses').select('unit_week,student_name').in('unit_week',units).gte('submitted_at',CLASSICAL_VOCAB_ACTIVATED_AT):Promise.resolve({data:[]}),{data:[]},2000)
     ]);
 
@@ -2821,6 +2830,7 @@ async function renderDashboardFastLegacy(){
   }
 }
 
+async function teacherAttendanceRead(start,end){if(!session||session.role!=='teacher'||!classAttendancePin)return {data:[],error:new Error('교사 PIN으로 출결을 열어 주세요.')};return attendanceSb.rpc('teacher_read_attendance',{p_pin:classAttendancePin,p_kind:'clinic',p_start:start,p_end:end});}
 var dashPerformanceRows=[];
 var dashPerformanceFilter='all';
 var dashPerformanceRun=0;
@@ -2851,7 +2861,7 @@ async function dashSetAttendance(studentId,present){
   if(!present&&!confirm(student.name+' 학생을 미출석 처리할까요?\n기존 출석 기록이 있으면 삭제됩니다.'))return;
   try{
     if(present){
-      var existing=await attendanceSb.from('clinic_attendance').select('id,checked_in_at').or('student_id.eq.'+student.id+',student_name.eq.'+student.name).gte('checked_in_at',row.attendanceStart).lt('checked_in_at',row.attendanceEnd).limit(1);
+      var existing=await teacherAttendanceRead(row.attendanceStart,row.attendanceEnd);existing.data=(existing.data||[]).filter(function(a){return a.student_id===student.id||a.student_name===student.name;});
       if(existing.error)throw existing.error;
       if(!(existing.data||[]).length){
         var checkedAt=new Date();
@@ -2860,7 +2870,7 @@ async function dashSetAttendance(studentId,present){
         var inserted=await attendanceSb.from('clinic_attendance').insert({
           student_id:student.id,student_name:student.name,class_name:schoolName(student.school_id||'')||studentClassLabel(student.group_id||''),
           day_label:row.clinicDay||'',time_slot:row.attendanceSlotLabel||'',checked_in_at:checkedAt.toISOString()
-        }).select('id,student_id,student_name,checked_in_at').single();
+        });
         if(inserted.error)throw inserted.error;
         row.attendanceRecord=inserted.data;
       }
@@ -3028,7 +3038,7 @@ async function dashLoadAttendance(run){
       r.attendance=dashStatus('loading','출석 확인중',d+'요일 '+(slot.start_time||''));
     });
     dashRenderPerformance();
-    var res=await attendanceSb.from('clinic_attendance').select('id,student_id,student_name,checked_in_at').gte('checked_in_at',start.toISOString()).lt('checked_in_at',end.toISOString());
+    var res=await teacherAttendanceRead(start.toISOString(),end.toISOString());
     if(res.error)throw res.error;if(run!==dashPerformanceRun)return;
     var checked={};(res.data||[]).forEach(function(a){if(a.student_id)checked[a.student_id]=a;if(a.student_name)checked[a.student_name]=a;});
     dashPerformanceRows.forEach(function(r){if(r.attendance.state==='loading'){var a=checked[r.student.id]||checked[r.student.name];r.attendanceRecord=a||null;r.attendance=a?dashStatus('ok','출석',new Date(a.checked_in_at).toLocaleDateString('ko-KR',{month:'numeric',day:'numeric'})+' '+new Date(a.checked_in_at).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})):dashStatus('miss','미출석',r.attendance.detail);}});
