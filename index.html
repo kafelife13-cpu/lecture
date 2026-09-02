@@ -1269,9 +1269,15 @@ input,button{font-family:var(--font)}
                     📄 스캔 PDF·사진 파일로 채점
                     <input type="file" id="s-omr-file-input" accept="image/*,application/pdf" style="display:none" onchange="sOmrReadSelectedFile(this.files)">
                   </label>
+                  <button id="s-mock-score-only-btn" class="btn" style="display:none;width:100%;margin-top:8px;color:var(--amber)" onclick="sExamOpenScoreOnly()">🔢 점수만 입력</button>
+                  <div id="s-mock-entry-notice" style="display:none;text-align:left;padding:10px;margin-top:10px;border-radius:8px;background:var(--blue-bg);font-size:11px;color:var(--text2);line-height:1.55"><strong>전체 답안 입력</strong>은 영역·유형별 오답 경향이 누적됩니다.<br><strong>점수만 입력</strong>은 총점만 저장되고 오답 경향에는 반영되지 않습니다.</div>
                   <div style="font-size:11px;color:var(--text3);margin-top:7px">로그인한 학생의 답안으로 저장되므로 이름·생년월일을 읽지 않아요.</div>
                 </div>
               </div>
+            </div>
+            <div id="s-mock-score-only" class="card" style="display:none;padding:1.25rem;margin-bottom:10px">
+              <div style="font-size:15px;font-weight:800;margin-bottom:6px">모의고사 점수만 입력</div><div style="font-size:12px;color:var(--text2);margin-bottom:12px">총점만 집계되며 문항별 오답 데이터에는 반영되지 않습니다.</div>
+              <input id="s-mock-score-input" class="form-input" type="number" min="0" max="100" step="1" inputmode="numeric" placeholder="0~100점" style="font-size:20px;text-align:center;margin-bottom:10px"><div style="display:flex;gap:8px"><button class="btn" style="flex:1" onclick="sExamCancelScoreOnly()">취소</button><button class="btn blue" style="flex:2" onclick="sExamSubmitReportedScore()">점수 저장</button></div>
             </div>
             <div id="s-exam-full-camera" style="display:none">
               <video id="s-omr-cam-video" autoplay playsinline muted style="width:100%;display:block;background:#000;max-height:50vh;object-fit:contain;border-radius:8px"></video>
@@ -9651,6 +9657,7 @@ function renderWeaknessTable(){
 }
 
 function repScore(exam,response){
+  if(exam&&exam.category==='mock'&&sExamIsScoreOnlyResponse(response))return {earned:Number(response.score)||0,total:100,pct:Number(response.score)||0,scoreOnly:true};
   var earned=0,total=0;
   exam.questions.forEach(function(q,i){
     if(!isObjectiveAnswer(q.answer))return; // 서술형·주관식은 자동 채점 집계에서 제외
@@ -9662,6 +9669,7 @@ function repScore(exam,response){
 }
 
 function repDomainStats(exam,response){
+  if(exam&&exam.category==='mock'&&sExamIsScoreOnlyResponse(response))return {};
   var byDomain={};
   exam.questions.forEach(function(q,i){
     if(!isObjectiveAnswer(q.answer))return; // 서술형·주관식은 자동 채점 집계에서 제외
@@ -9928,6 +9936,7 @@ var sExamPhotos={};
 var sExamThoughts={};
 var sExamSelectedQ=null;
 var sExamPriorResponse=null;
+var sExamCurrentThoughts={};
 var sExamClinicCache=[];
 var sExamRespCache={};
 var sExamClinicWeekOpen={};
@@ -9984,7 +9993,7 @@ async function renderSExam(){
   const myName=session.name||session.id;
   const [{data:exams},{data:myResponses}]=await Promise.all([
     sb.from('exams').select('*').order('created_at',{ascending:false}),
-    sb.from('exam_responses').select('exam_id,score,attempt_count,regrade_requested,regrade_approved').eq('student_name',myName)
+    sb.from('exam_responses').select('exam_id,score,answers,attempt_count,regrade_requested,regrade_approved').eq('student_name',myName)
   ]);
   sExamRespCache={};
   (myResponses||[]).forEach(function(r){sExamRespCache[r.exam_id]=r;});
@@ -10069,7 +10078,7 @@ function renderSExamListCards(list,respMap,emptyLabel){
       '<div style="padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">'+
         '<div>'+
           '<div style="font-size:14px;font-weight:600">'+e.name+'</div>'+
-          '<div style="font-size:12px;color:var(--text2);margin-top:2px">총 '+e.total_q+'문항'+(resp?' · 제출완료 '+resp.score+'점':'')+'</div>'+
+          '<div style="font-size:12px;color:var(--text2);margin-top:2px">총 '+e.total_q+'문항'+(resp?' · 제출완료 '+resp.score+'점'+(sExamIsScoreOnlyResponse(resp)?' · 점수만 입력':''):'')+'</div>'+
         '</div>'+
         actionHtml+
       '</div>'+
@@ -10110,6 +10119,9 @@ async function sExamOpenForGrading(examId){
     document.getElementById('s-exam-full-camera').style.display='none';
     document.getElementById('s-exam-full-loading').style.display='none';
     document.getElementById('s-exam-full-grid-wrap').style.display='none';
+    document.getElementById('s-mock-score-only').style.display='none';
+    document.getElementById('s-mock-score-only-btn').style.display=found.category==='mock'?'block':'none';
+    document.getElementById('s-mock-entry-notice').style.display=found.category==='mock'?'block':'none';
   }else{
     fullEl.style.display='none';wrongEl.style.display='block';
     document.getElementById('s-exam-check-sub').textContent='총 '+found.total_q+'문항 · 틀린 번호를 클릭하세요';
@@ -10121,10 +10133,35 @@ async function sExamOpenForGrading(examId){
 
 /* ── FULL 모드: 문항별 답 선택 온라인 시험 (직접 체크 또는 OMR 사진) ── */
 function sExamFullManualStart(){
+  document.getElementById('s-mock-score-only').style.display='none';
   document.getElementById('s-exam-full-choice').style.display='none';
   document.getElementById('s-exam-full-grid-wrap').style.display='block';
   document.getElementById('s-omr-photo-preview').innerHTML='';
   renderSExamFullGrid();
+}
+
+function sExamIsScoreOnlyResponse(resp){
+  var answers=(resp&&resp.answers)||{};
+  return !!resp&&Object.keys(answers).filter(function(k){return /^\d+$/.test(k)&&String(answers[k]||'').trim();}).length===0;
+}
+function sExamOpenScoreOnly(){
+  document.getElementById('s-exam-full-choice').style.display='none';
+  document.getElementById('s-mock-score-only').style.display='block';
+  document.getElementById('s-mock-score-input').focus();
+}
+function sExamCancelScoreOnly(){
+  document.getElementById('s-mock-score-only').style.display='none';
+  document.getElementById('s-exam-full-choice').style.display='block';
+}
+async function sExamSubmitReportedScore(){
+  var input=document.getElementById('s-mock-score-input'),score=Number(input.value);
+  if(!Number.isInteger(score)||score<0||score>100){alert('0~100 사이의 정수 점수를 입력해주세요.');return;}
+  if(!confirm(score+'점으로 저장할까요?\n문항별 오답 경향에는 반영되지 않습니다.'))return;
+  var next=(sExamPriorResponse&&sExamPriorResponse.attempt_count?sExamPriorResponse.attempt_count:0)+1;
+  var res=await sb.from('exam_responses').upsert({exam_id:sExamData.id,student_name:session.name||session.id,answers:{},photo_urls:{},thoughts:{},score:score,correct_count:0,total_q:sExamData.total_q,points_earned:score,points_total:100,attempt_count:next,regrade_requested:false,regrade_approved:false,submitted_at:new Date().toISOString()},{onConflict:'exam_id,student_name'});
+  if(res.error){alert('점수 저장 실패: '+res.error.message);return;}
+  sendStudentActivity('모의고사 점수 제출',sExamData.name+' · '+score+'점 · 점수만 입력');
+  notify('점수를 저장했어요.','success');renderSExam();
 }
 
 function renderSExamFullGrid(){
@@ -10326,6 +10363,9 @@ async function sExamViewResult(examId){
   ]);
   if(e1||e2||!exam||!resp){alert('결과를 불러오지 못했어요.');return;}
   sExamData=exam;
+  if(exam.category==='mock'&&sExamIsScoreOnlyResponse(resp)){alert('점수만 입력한 기록입니다: '+resp.score+'점\n온라인 오답노트는 전체 답안을 입력한 경우에만 만들 수 있어요.');renderSExam();return;}
+  sExamCurrentThoughts=resp.thoughts||{};
+  sMockWrongNotes=sExamCurrentThoughts._mock_wrong_notes||{};
   const answers=resp.answers||{};
   const wrongIdxs=Object.keys(answers).map(Number).filter(function(idx){
     const q=exam.questions[idx];
@@ -10500,6 +10540,7 @@ var sResRetryAnswers={};
 var sResRetryPassed={};
 var sResWrongFeedback={};
 var sResWrongFeedbackLoading=false;
+var sMockWrongNotes={};
 async function loadSResWrongFeedback(wrong){
   if(!wrong.length||sResWrongFeedbackLoading)return;
   sResWrongFeedbackLoading=true;
@@ -10527,6 +10568,20 @@ function renderSResWrongList(wrong){
     return;
   }
   var isClinic=sExamData&&(sExamData.category||'school')==='school';
+  var isMock=sExamData&&sExamData.category==='mock';
+  if(isMock){
+    wrongEl.innerHTML='<div class="card-head"><h3>📝 온라인 오답노트 ('+wrong.length+'문항)</h3></div><div style="padding:0 1.25rem 0.75rem"><div style="font-size:12px;color:var(--text2);line-height:1.6;padding:10px 0">정답은 먼저 공개되지 않습니다. 오답 이유를 정리하고 다시 답을 고른 뒤 저장하세요. 다시 맞힌 문항은 공식 해설을 확인할 수 있습니다.</div>'+wrong.map(function(w){
+      var idx=w.idx,q=w.q,note=sMockWrongNotes[idx]||{},retry=note.retry||'',passed=String(retry)===String(q.answer);
+      return '<div class="card" style="margin:10px 0;border-left:3px solid '+(passed?'var(--green)':'var(--red)')+'"><div style="padding:12px">'+
+        '<div style="display:flex;gap:8px;align-items:center;margin-bottom:10px"><span style="background:var(--red-bg);color:var(--red);font-size:12px;font-weight:700;padding:3px 9px;border-radius:8px">'+(idx+1)+'번</span><span style="font-size:12px;color:var(--text2)">처음 답 <strong style="color:var(--red)">'+escHtml(w.my)+'번</strong></span>'+(q.domain?'<span style="margin-left:auto;font-size:11px;color:var(--text3)">'+escHtml(q.domain)+'</span>':'')+'</div>'+
+        '<label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">왜 틀렸는지 정리</label><textarea class="form-input" style="min-height:72px;font-size:12px;margin-bottom:10px" placeholder="지문 근거, 헷갈린 개념, 선택지를 잘못 판단한 이유를 적어보세요" oninput="sMockSetWrongNote('+idx+',\'reason\',this.value)">'+escHtml(note.reason||'')+'</textarea>'+
+        '<label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">답을 다시 선택</label><div style="display:flex;gap:6px;margin-bottom:10px">'+[1,2,3,4,5].map(function(n){var sel=String(retry)===String(n);return '<button type="button" onclick="sMockPickRetry('+idx+','+n+')" style="width:36px;height:36px;border-radius:50%;cursor:pointer;font-weight:700;border:1.5px solid '+(sel?'var(--accent)':'var(--border)')+';background:'+(sel?'var(--accent)':'var(--card)')+';color:'+(sel?'white':'var(--text2)')+'">'+n+'</button>';}).join('')+'</div>'+
+        (retry?(passed?'<div style="padding:10px;border-radius:8px;background:var(--green-bg);color:var(--green);font-size:12px;line-height:1.55;margin-bottom:10px">✅ 다시 풀기 통과'+(q.explanation?'<br><span style="color:var(--text2)"><strong>공식 해설</strong> '+escHtml(q.explanation)+'</span>':'')+'</div>':'<div style="padding:9px;border-radius:8px;background:var(--red-bg);color:var(--red);font-size:12px;margin-bottom:10px">아직 정답이 아닙니다. 정답은 공개하지 않으니 다시 검토하세요.</div>'):'')+
+        '<label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">다음에 기억할 핵심</label><textarea class="form-input" style="min-height:58px;font-size:12px" placeholder="다음 시험에서 적용할 개념이나 풀이 원칙" oninput="sMockSetWrongNote('+idx+',\'lesson\',this.value)">'+escHtml(note.lesson||'')+'</textarea>'+
+      '</div></div>';
+    }).join('')+'<button class="btn blue" style="width:100%;margin:10px 0" onclick="sMockSaveWrongNotes()">💾 오답노트 저장</button></div>';
+    return;
+  }
   if(!isClinic){
     wrongEl.innerHTML='<div class="card-head"><h3>틀린 문제 ('+wrong.length+'개)</h3></div><div style="padding:0 1.25rem 0.5rem">'+wrong.map(function(w){
       return '<div style="display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border)"><span style="background:var(--red-bg);color:var(--red);font-size:12px;font-weight:600;padding:2px 10px;border-radius:8px">'+(w.idx+1)+'번</span><span style="font-size:13px;color:var(--text2)">내 답: <strong style="color:var(--red)">'+w.my+'번</strong></span><span style="font-size:12px;color:var(--text3);margin-left:auto">정답은 숨김</span></div>';
@@ -10554,12 +10609,35 @@ function sResRetryPick(idx,n){
   renderSResWrongList(sExamLastWrong);
 }
 
+function sMockSetWrongNote(idx,key,value){
+  if(!sMockWrongNotes[idx])sMockWrongNotes[idx]={};
+  sMockWrongNotes[idx][key]=value;
+}
+function sMockPickRetry(idx,n){
+  sMockSetWrongNote(idx,'retry',String(n));
+  renderSResWrongList(sExamLastWrong);
+}
+async function sMockSaveWrongNotes(){
+  if(!sExamData||!session)return;
+  var incomplete=sExamLastWrong.filter(function(w){var n=sMockWrongNotes[w.idx]||{};return !String(n.reason||'').trim()||!String(n.lesson||'').trim()||!n.retry;});
+  if(incomplete.length&&!confirm(incomplete.length+'문항의 오답노트가 아직 덜 작성됐어요. 지금 작성한 내용만 저장할까요?'))return;
+  var payload=Object.assign({},sExamCurrentThoughts||{});payload._mock_wrong_notes=sMockWrongNotes;
+  var res=await sb.from('exam_responses').update({thoughts:payload}).eq('exam_id',sExamData.id).eq('student_name',session.name||session.id);
+  if(res.error){alert('오답노트 저장 실패: '+res.error.message);return;}
+  sExamCurrentThoughts=payload;
+  sendStudentActivity('모의고사 오답노트 저장',sExamData.name+' · '+Object.keys(sMockWrongNotes).length+'문항');
+  notify('온라인 오답노트를 저장했어요.','success');
+}
+function sExamOpenMockWrongNote(){
+  var el=document.getElementById('s-res-wrong-list');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
 function renderSExamResultView(score,correct,wrong,total){
   const actions=document.getElementById('s-exam-result-actions');
   if(actions){
     actions.innerHTML=padMode
       ?'<button class="btn btn-sm blue" onclick="padFinishExamAndNext()">✓ 제출 완료 · 다음 학생</button>'
-      :'<button class="btn btn-sm blue" onclick="sExamRenderInlineReport(true)">📊 성적표 보기</button><button class="btn btn-sm green" onclick="openOxQuizFromResult()">🔁 오답 OX 재시험</button><button class="btn btn-sm" onclick="sExamBack()">다시 입력</button>';
+      :'<button class="btn btn-sm blue" onclick="sExamRenderInlineReport(true)">📊 성적표 보기</button>'+(sExamData&&sExamData.category==='mock'?'<button class="btn btn-sm green" onclick="sExamOpenMockWrongNote()">📝 온라인 오답노트</button>':'<button class="btn btn-sm green" onclick="openOxQuizFromResult()">🔁 오답 OX 재시험</button>')+'<button class="btn btn-sm" onclick="sExamBack()">다시 입력</button>';
   }
   document.getElementById('s-res-header').innerHTML=
     '<div style="font-size:17px;font-weight:600">'+sExamData.name+'</div>'+
