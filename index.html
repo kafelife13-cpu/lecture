@@ -9958,17 +9958,11 @@ function sExamTimerStart(exam){
   sExamTimerStop(false);
   const el=document.getElementById('s-exam-timer');
   if(!sExamIsTimedMock(exam)){if(el)el.style.display='none';return;}
-  const key=sExamTimerKey(exam),saved=Number(sessionStorage.getItem(key)||0);
-  sExamTimerDeadline=saved>Date.now()?saved:Date.now()+80*60*1000;
-  sessionStorage.setItem(key,String(sExamTimerDeadline));
+  // 모의고사는 이미 치른 시험을 채점하는 화면이므로 제한 시간을 두지 않는다.
+  // 답안 임시 저장만 유지하여 화면을 벗어났다가 돌아와도 입력값이 남게 한다.
+  sessionStorage.removeItem(sExamTimerKey(exam));
   try{sExamFullAnswers=JSON.parse(sessionStorage.getItem(sExamAnswerKey(exam))||'{}')||{};}catch(e){sExamFullAnswers={};}
-  if(el)el.style.display='block';
-  function tick(){
-    const left=Math.max(0,sExamTimerDeadline-Date.now()),sec=Math.ceil(left/1000),m=Math.floor(sec/60),s=sec%60;
-    if(el){el.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');el.style.background=sec<=600?'rgba(239,68,68,.18)':'var(--red-bg)';}
-    if(left<=0&&!sExamTimerSubmitting){sExamTimerSubmitting=true;clearInterval(sExamTimerInterval);sExamTimerInterval=null;alert('80분이 종료되어 지금까지 입력한 답안으로 자동 제출합니다.');sExamSubmitFull(true);}
-  }
-  tick();sExamTimerInterval=setInterval(tick,1000);
+  if(el)el.style.display='none';
 }
 
 function sExamVisibleForStudent(exam){
