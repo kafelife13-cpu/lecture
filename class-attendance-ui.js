@@ -42,7 +42,24 @@ async function editClassAttendance(studentId,action){
   }catch(e){if(String(e.message).includes('invalid teacher pin')){classAttendancePin='';alert('교사 PIN이 맞지 않습니다.');}else alert('출결 저장 실패: '+e.message);}
   finally{classAttendanceBusy=false;}
 }
-function unlockAttendance(){if(!session||session.role!=='teacher')return;classAttendancePin=prompt('출결 조회용 교사 PIN을 입력하세요.')||'';if(classAttendancePin){renderClassAttendance();if(typeof dashLoadAttendance==='function')dashLoadAttendance(dashPerformanceRun);}}
+function unlockAttendance(){
+  if(!session||session.role!=='teacher')return;
+  var box=document.getElementById('attendance-pin-dialog');
+  if(!box){
+    box=document.createElement('div');box.id='attendance-pin-dialog';
+    box.style.cssText='position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:20px';
+    box.innerHTML='<form style="background:var(--card,#fff);color:var(--text,#111);padding:24px;border-radius:16px;width:100%;max-width:360px" onsubmit="event.preventDefault();submitAttendancePin()"><h3 style="margin-bottom:12px">교사 PIN으로 출결 열기</h3><label for="attendance-pin-input">출결프로그램 교사 PIN</label><input id="attendance-pin-input" class="form-input" type="password" inputmode="numeric" autocomplete="off" required style="margin:12px 0;font-size:22px"><div style="display:flex;gap:8px"><button type="button" class="btn" onclick="closeAttendancePin()">취소</button><button type="submit" class="btn blue">출결 열기</button></div></form>';
+    document.body.appendChild(box);
+  }
+  document.getElementById('attendance-pin-input').focus();
+}
+function closeAttendancePin(){var box=document.getElementById('attendance-pin-dialog');if(box)box.remove();}
+function submitAttendancePin(){
+  var input=document.getElementById('attendance-pin-input');
+  if(!input||!input.value.trim())return;
+  classAttendancePin=input.value.trim();input.value='';closeAttendancePin();
+  renderClassAttendance();if(typeof dashLoadAttendance==='function')dashLoadAttendance(dashPerformanceRun);
+}
 function renderStudentClassAttendance(){
  var box=document.getElementById('home-class-attendance');if(!box||!session||session.role!=='student')return;
  var student=(db.users||[]).find(function(s){return s.id===session.id;})||session,cls=ClassAttendance.find(student.group_id);
