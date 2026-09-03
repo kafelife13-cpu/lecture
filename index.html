@@ -2849,6 +2849,7 @@ function dashStatusCell(status){
 }
 function dashAttendanceCell(row){
   var html=dashStatusCell(row&&row.attendance);
+  if(session&&session.role==='teacher'&&!classAttendancePin)return html+'<button class="btn blue btn-sm" onclick="unlockAttendance()">교사 PIN으로 출결 열기</button>';
   if(!session||session.role!=='teacher'||!row||!row.attendanceStart||!row.attendanceEnd)return html;
   var sid=String(row.student&&row.student.id||'').replace(/[^A-Za-z0-9_-]/g,'');
   var present=row.attendance&&row.attendance.state==='ok';
@@ -2858,6 +2859,8 @@ function dashAttendanceCell(row){
     '</div></div>';
 }
 async function dashSetAttendance(studentId,present){
+  if(!session||session.role!=='teacher')return;
+  if(!classAttendancePin){unlockAttendance();return;}
   var row=(dashPerformanceRows||[]).find(function(r){return r.student&&r.student.id===studentId;});
   if(!row||!row.attendanceStart||!row.attendanceEnd)return;
   var student=row.student;
@@ -2870,9 +2873,10 @@ async function dashSetAttendance(studentId,present){
         var checkedAt=new Date();
         var dayStart=new Date(row.attendanceStart),dayEnd=new Date(row.attendanceEnd);
         if(checkedAt<dayStart||checkedAt>=dayEnd)checkedAt=new Date(row.attendanceScheduledAt||row.attendanceStart);
-        var inserted=await attendanceSb.from('clinic_attendance').insert({
-          student_id:student.id,student_name:student.name,class_name:schoolName(student.school_id||'')||studentClassLabel(student.group_id||''),
-          day_label:row.clinicDay||'',time_slot:row.attendanceSlotLabel||'',checked_in_at:checkedAt.toISOString()
+        var inserted=await attendanceSb.rpc('teacher_edit_attendance',{
+          p_pin:classAttendancePin,p_action:'present',p_record_id:null,
+          p_student_id:student.id,p_student_name:student.name,p_class_name:schoolName(student.school_id||'')||studentClassLabel(student.group_id||''),
+          p_day_label:row.clinicDay||'',p_time_slot:row.attendanceSlotLabel||'',p_checked_in_at:checkedAt.toISOString()
         });
         if(inserted.error)throw inserted.error;
         row.attendanceRecord=inserted.data;
@@ -2880,8 +2884,12 @@ async function dashSetAttendance(studentId,present){
       row.attendance=dashStatus('ok','출석','교사 직접 처리 · '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}));
       notify(student.name+' 학생을 출석 처리했어요.','success');
     }else{
-      var removed=await attendanceSb.from('clinic_attendance').delete().or('student_id.eq.'+student.id+',student_name.eq.'+student.name).gte('checked_in_at',row.attendanceStart).lt('checked_in_at',row.attendanceEnd);
-      if(removed.error)throw removed.error;
+      var records=await teacherAttendanceRead(row.attendanceStart,row.attendanceEnd);
+      if(records.error)throw records.error;
+      for(var record of (records.data||[]).filter(function(a){return a.student_id===student.id||a.student_name===student.name;})){
+        var removed=await attendanceSb.rpc('teacher_edit_attendance',{p_pin:classAttendancePin,p_action:'cancel',p_record_id:record.id,p_student_id:student.id,p_student_name:student.name,p_class_name:null,p_day_label:row.clinicDay||'',p_time_slot:null,p_checked_in_at:record.checked_in_at});
+        if(removed.error)throw removed.error;
+      }
       row.attendanceRecord=null;
       row.attendance=dashStatus('miss','미출석',(row.clinicDay||'')+'요일 '+(row.attendanceSlotLabel||''));
       notify(student.name+' 학생을 미출석 처리했어요.','info');
@@ -3026,6 +3034,10 @@ function dashBuildImmediateRows(){
 }
 
 async function dashLoadAttendance(run){
+  if(!classAttendancePin){
+    dashPerformanceRows.forEach(function(r){r.attendance=dashStatus('locked','출결 잠김','교사 PIN을 입력하면 출석·미출석을 조회합니다.');});
+    dashRenderPerformance();return;
+  }
   try{
     var now=new Date(),start=weekMonday(now),end=new Date(start);end.setDate(end.getDate()+7);
     var dayIndex={'일':0,'월':1,'화':2,'수':3,'목':4,'금':5,'토':6};
