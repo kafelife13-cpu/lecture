@@ -523,8 +523,8 @@ input,button{font-family:var(--font)}
         </div>
         <!-- 현재 권한 목록 -->
         <div class="card">
-          <div class="card-head" style="gap:10px;flex-wrap:wrap"><h3>현재 시청 권한 목록 <span id="access-granted-count" style="font-size:11px;color:var(--text2);font-weight:600"></span></h3><button class="btn btn-sm" id="access-granted-toggle" type="button" onclick="toggleAccessGranted()" aria-expanded="false">목록 열어보기 ▼</button></div>
-          <div id="access-granted-list" style="display:none"></div>
+          <div class="card-head" style="gap:10px;flex-wrap:wrap"><h3>현재 시청 권한 목록 <span id="access-granted-count" style="font-size:11px;color:var(--text2);font-weight:600"></span></h3><button class="btn btn-sm" id="access-granted-toggle" type="button" onclick="toggleAccessGranted()" aria-expanded="true">목록 접기 ▲</button></div>
+          <div id="access-granted-list"></div>
         </div>
       </div>
 
@@ -3672,7 +3672,7 @@ async function setStudentPhone(id,val){
   if(u)u.student_phone=phone||null;
   notify('학생 연락처가 저장됐어요.','success');
 }
-let accessGrantedOpen=false;
+let accessGrantedOpen=true;
 function toggleAccessGranted(){
   accessGrantedOpen=!accessGrantedOpen;
   const list=document.getElementById('access-granted-list');
