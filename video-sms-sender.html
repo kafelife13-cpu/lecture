@@ -1,0 +1,49 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>영상강의 미시청 문자 발송</title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:720px;margin:40px auto;padding:0 20px;color:#172033}h1{font-size:24px}.card{border:1px solid #d9dfeb;border-radius:12px;padding:18px;margin:14px 0}.recipient{padding:8px 0;border-bottom:1px solid #eee}.recipient:last-child{border:0}pre{white-space:pre-wrap;background:#f6f8fb;padding:14px;border-radius:8px}input,button{font:inherit;padding:10px 12px;border-radius:8px}input{border:1px solid #aeb8c8;width:180px}button{border:0;background:#2457d6;color:#fff;font-weight:700;cursor:pointer}button:disabled{opacity:.5}#status{font-weight:700;margin-left:10px}.ok{color:#087443}.err{color:#c62828}
+</style>
+<h1>영상강의 미시청 문자 발송</h1>
+<div class="card"><b>발송 대상</b><div id="recipients">불러오는 중…</div></div>
+<div class="card"><b>발송 문구</b><pre id="preview"></pre></div>
+<div class="card"><label>문자 발송 비밀번호 <input id="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="숫자 6자리"></label> <button id="send" disabled>4건 발송</button><span id="status"></span></div>
+<script>
+const BASE='https://zniwzwanlvvmzkkcmikh.supabase.co';
+const KEY='sb_publishable_IbfVcXs5TmXfumrnK4Somg_7MzygCdh';
+const targets=['9743','6253'];
+const textFor=name=>`[영상강의 미시청 안내]\n${name} 학생은 내신대비 1주차 영상강의 3강이 모두 미시청 상태이며, 현재 수행률은 0%입니다. 이번 주 일요일까지 영상강의를 완료하지 않을 경우 수업 후 자습실에 남아 학원 패드로 강의를 시청해야 합니다. 부득이한 사정이 있는 경우 학부모님께 해당 내용을 확인하겠습니다.`;
+let messages=[];
+const digits=v=>String(v||'').replace(/\D/g,'');
+const masked=v=>{const n=digits(v);return n?`***-****-${n.slice(-4)}`:'없음'};
+async function init(){
+  try{
+    const res=await fetch(`${BASE}/rest/v1/users?select=id,name,student_phone,parent_phone&id=in.(${targets.join(',')})`,{headers:{apikey:KEY,Authorization:`Bearer ${KEY}`}});
+    if(!res.ok)throw new Error('학생 연락처를 불러오지 못했습니다.');
+    const users=await res.json();
+    const rows=[];
+    for(const id of targets){
+      const u=users.find(x=>String(x.id)===id);if(!u)throw new Error(`학생 ID ${id}를 찾지 못했습니다.`);
+      for(const [label,raw] of [['학생',u.student_phone],['학부모',u.parent_phone]]){
+        const phone=digits(raw);if(!/^01\d{8,9}$/.test(phone))throw new Error(`${u.name} ${label} 연락처를 확인해 주세요.`);
+        messages.push({to:phone,text:textFor(u.name)});rows.push(`<div class="recipient"><b>${u.name} ${label}</b> · ${masked(phone)} · 수행률 0%</div>`);
+      }
+    }
+    if(new Set(messages.map(x=>x.to)).size!==4)throw new Error('중복 연락처가 있어 4건으로 발송할 수 없습니다.');
+    document.querySelector('#recipients').innerHTML=rows.join('');
+    document.querySelector('#preview').textContent=textFor('○○');
+    document.querySelector('#send').disabled=false;
+  }catch(e){document.querySelector('#recipients').textContent=e.message;document.querySelector('#recipients').className='err'}
+}
+document.querySelector('#send').onclick=async()=>{
+  const pin=document.querySelector('#pin').value.trim(),btn=document.querySelector('#send'),status=document.querySelector('#status');
+  if(!/^\d{6}$/.test(pin)){status.className='err';status.textContent='숫자 6자리를 입력해 주세요.';return}
+  btn.disabled=true;status.className='';status.textContent='발송 중…';
+  try{
+    const res=await fetch(`${BASE}/functions/v1/send-solapi`,{method:'POST',headers:{apikey:KEY,Authorization:`Bearer ${KEY}`,'Content-Type':'application/json'},body:JSON.stringify({sendPin:pin,messages})});
+    const data=await res.json().catch(()=>({}));if(!res.ok||data.error)throw new Error(data.error||data.message||`발송 실패 (${res.status})`);
+    document.querySelector('#pin').value='';status.className='ok';status.textContent='4건 발송 요청 완료';btn.textContent='발송 완료';
+  }catch(e){status.className='err';status.textContent=e.message;btn.disabled=false}
+};
+init();
+</script>
