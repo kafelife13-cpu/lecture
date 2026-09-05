@@ -454,7 +454,7 @@ input,button{font-family:var(--font)}
             <div class="frow">
               <div><label class="flabel">이름</label><input id="s-name" class="form-input" style="width:120px" placeholder="학생 이름"/></div>
               <div><label class="flabel">아이디</label><input id="s-id" class="form-input" style="width:120px" placeholder="로그인 아이디"/></div>
-              <div><label class="flabel">비밀번호</label><input id="s-pw" class="form-input" type="password" style="width:110px" placeholder="비밀번호"/></div>
+              <div><label class="flabel">비밀번호 4자리</label><input id="s-pw" class="form-input" type="password" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" style="width:110px" placeholder="숫자 4자리"/></div>
               <div><label class="flabel">학교</label><select id="s-school" class="form-input" style="width:110px"><option value="">미배정</option></select></div>
               <div style="display:flex;align-items:flex-end"><button class="btn blue" onclick="addStudent()" style="height:40px">등록</button></div>
             </div>
@@ -3261,7 +3261,7 @@ async function addStudent(){
   const school_id=(schoolEl&&schoolEl.value)||null;
   if(!name||!id||!pw){notify('모든 항목을 입력하세요.','error');return;}
   if(!/^[a-zA-Z0-9_]+$/.test(id)){notify('아이디는 영문·숫자·밑줄만 사용할 수 있어요.','error');return;}
-  if(pw.length<8){notify('새 학생 비밀번호는 8자 이상으로 설정해 주세요.','error');return;}
+  if(!/^\d{4}$/.test(pw)){notify('새 학생 비밀번호는 숫자 4자리로 설정해 주세요.','error');return;}
   if(db.users.find(u=>u.id===id)){notify('이미 존재하는 아이디입니다.','error');return;}
   const{error}=await sb.from('users').insert({id,name,pw,role:'student',status:'active',school_id});
   if(error){notify('등록 실패: '+error.message,'error');return;}
