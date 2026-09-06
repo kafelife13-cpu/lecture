@@ -50,7 +50,7 @@ window.CLASSICAL_VOCAB_UNITS=[
       },
       {
         "no": 7,
-        "word": "즈ᇫ",
+        "word": "즈ᇫ",
         "meaning": "모습",
         "example": "ᄂᆞᄆᆡ 브롤 즈ᅀᅳᆯ 디녀 나샷다.",
         "source": "고려가요, ‘동동’",
@@ -244,7 +244,7 @@ window.CLASSICAL_VOCAB_UNITS=[
         "no": 31,
         "word": "녀름",
         "meaning": "여름",
-        "example": "긴 녀르ᇝ 강촌애 일마다 유심ᄒᆞ도다",
+        "example": "긴 녀르ᇝ 강촌애 일마다 유심ᄒᆞ도다",
         "source": "두보, ‘강촌’",
         "modern_explanation": "이 문맥에서 빈칸의 고어는 현대어로 ‘여름’라는 뜻입니다."
       },
@@ -292,7 +292,7 @@ window.CLASSICAL_VOCAB_UNITS=[
         "no": 37,
         "word": "잣",
         "meaning": "성",
-        "example": "잣 아ᇇ 보ᄆᆡ 플와 나모ᄲᅮᆫ 기펫도다",
+        "example": "잣 아ᇇ 보ᄆᆡ 플와 나모ᄲᅮᆫ 기펫도다",
         "source": "두보, ‘춘망’",
         "modern_explanation": "이 문맥에서 빈칸의 고어는 현대어로 ‘성’라는 뜻입니다."
       },
