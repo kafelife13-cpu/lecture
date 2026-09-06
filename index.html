@@ -6050,7 +6050,7 @@ async function callTextAI(prompt,maxTokens){
 async function loadQaData(){
   try{
     var s=await sb.from('qa_schools').select('*').order('created_at');
-    var w=await sb.from('qa_weeks').select('*').order('created_at');
+    var w=await sb.from('qa_weeks').select('*').order('created_at',{ascending:false});
     var q=await sb.from('qa_questions').select('*').order('created_at',{ascending:false});
     var m=await sb.from('qa_materials').select('*').order('created_at');
     qaDb.schools=s.data||[];
@@ -6187,7 +6187,7 @@ async function addQaWeek(){
       item.created_at=new Date().toISOString();
       var res2=await sb.from('qa_weeks').insert(item);
       if(res2.error){notify('등록 실패: '+res2.error.message,'error');return;}
-      qaDb.weeks.push(item);
+      qaDb.weeks.unshift(item);
       notify(name+' 추가됐습니다.','success');
     }
     closeQaWeekModal();
