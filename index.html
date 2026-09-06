@@ -6295,7 +6295,10 @@ function qaGroupedWeeksHtml(weeks,renderRow){
       return '<section style="grid-column:1/-1"><h3 style="margin:14px 0 10px">'+(Number(n)?n+'주':'기타 과제')+'</h3><div style="display:grid;gap:10px">'+grouped[n].sort(function(a,b){return String(a.name).localeCompare(String(b.name),'ko',{numeric:true});}).map(renderRow).join('')+'</div></section>';
     }).join('');
   }
-  return groups(current)+(past.length?'<details style="grid-column:1/-1;margin-top:16px"><summary style="cursor:pointer;font-weight:700;padding:12px 0">지난달 보기 · 8월 ('+past.length+')</summary>'+groups(past)+'</details>':'');
+  var latest=Math.max.apply(null,current.map(qaWeekNumber));
+  var active=current.filter(function(w){return qaWeekNumber(w)===latest;});
+  var earlier=current.filter(function(w){return qaWeekNumber(w)!==latest;});
+  return groups(active)+(earlier.length?'<details style="grid-column:1/-1;margin-top:12px"><summary style="cursor:pointer;font-weight:700;padding:12px 0">이전 주차 보기</summary>'+groups(earlier)+'</details>':'')+(past.length?'<details style="grid-column:1/-1;margin-top:16px"><summary style="cursor:pointer;font-weight:700;padding:12px 0">지난달 보기 · 8월 ('+past.length+')</summary>'+groups(past)+'</details>':'');
 }
 
 function renderTQaWeekList(){
