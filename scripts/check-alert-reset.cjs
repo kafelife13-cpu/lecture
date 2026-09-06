@@ -1,0 +1,13 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
+const c={session:{id:'student'},announceDb:{reads:[]}};vm.createContext(c);
+vm.runInContext(html.slice(html.indexOf('function isAnnounceRead(id)'),html.indexOf('function announceReadCount')),c);
+const old={id:'old',created_at:'2026-09-06T23:45:56.246+09:00'};
+const latest={id:'latest',created_at:'2026-09-06T23:45:56.247+09:00'};
+const next={id:'next',created_at:'2026-09-07T00:00:00+09:00'};
+assert.equal(c.isAnnounceAlert(old),false);assert.equal(c.isAnnounceRead(old.id),false);
+assert.equal(c.isAnnounceAlert(latest),true);assert.equal(c.isAnnounceAlert(next),true);
+c.announceDb.reads.push({announcement_id:'latest',student_id:'student'});
+assert.equal(c.isAnnounceAlert(latest),false);
+c.session={id:'other'};assert.equal(c.isAnnounceAlert(latest),true);assert.equal(c.isAnnounceAlert(old),false);
+assert.equal(c.announceDb.reads.length,1);console.log('PASS: old alerts cleared for all students, latest/future preserved, real read receipts unchanged');

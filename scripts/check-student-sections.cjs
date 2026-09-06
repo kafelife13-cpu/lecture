@@ -28,6 +28,7 @@ const {replacement,noticeMatches}=require('../student-sections.js');
  await c.renderSExam('clinic');assert.equal(c.sExamClinicCache.length,1);assert.equal(els['s-exam-list-homework'].closest().hidden,true);assert.doesNotMatch(els['s-exam-list-homework'].innerHTML,/homework/);
  await c.renderSExam('homework');assert.equal(c.sExamClinicCache.length,0);assert.match(els['s-exam-list-homework'].innerHTML,/homework/);assert.equal(els['s-exam-clinic-groups'].closest().hidden,true);
  els['s-announce-list']={};els['s-clinic-notice-list']={};c.myAnnounceItems=()=>[{id:'general',title:'과제 공지',created_at:'2026-09-06'},{id:'clinic',title:'클리닉 준비물',notice_kind:'clinic',created_at:'2026-09-06'}];c.isAnnounceRead=()=>false;c.announceImageUrls=()=>[];
+ vm.runInContext(html.slice(html.indexOf('function isAnnounceAlert(item)'),html.indexOf('function announceReadCount')),c);
  const noticeStart=html.indexOf('function renderSAnnounceList(kind)'),noticeEnd=html.indexOf('async function openAnnounceView',noticeStart);assert.ok(noticeEnd>noticeStart);vm.runInContext(html.slice(noticeStart,noticeEnd),c);
  c.renderSAnnounceList();c.renderSAnnounceList('clinic');assert.match(els['s-announce-list'].innerHTML,/과제 공지/);assert.doesNotMatch(els['s-announce-list'].innerHTML,/클리닉 준비물/);assert.match(els['s-clinic-notice-list'].innerHTML,/클리닉 준비물/);
  const {PGlite}=require(process.env.PGLITE_PATH||'@electric-sql/pglite');const db=new PGlite();

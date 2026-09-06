@@ -2631,7 +2631,7 @@ async function renderWeeklyStudentDashboard(){
 function renderHomeAnnounceBanner(){
   var el=document.getElementById('home-announce-banner');
   if(!el)return;
-  var unread=myAnnounceItems().filter(function(a){return !isAnnounceRead(a.id);});
+  var unread=myAnnounceItems().filter(isAnnounceAlert);
   if(!unread.length){el.innerHTML='';return;}
   var latest=unread[0]; // items는 최신순 정렬되어 로드됨
   el.innerHTML='<div class="card" style="margin-bottom:1rem;border-color:var(--accent);cursor:pointer" onclick="openAnnounceView(\''+latest.id+'\')">'+
@@ -4381,6 +4381,11 @@ function isAnnounceRead(id){
   if(!session)return true;
   return announceDb.reads.some(function(r){return r.announcement_id===id&&r.student_id===session.id;});
 }
+// One-time teacher-requested alert reset. Keep the latest homework notice and future notices.
+// Dismissing an alert must not fabricate student read receipts.
+function isAnnounceAlert(item){
+  return !!item&&Date.parse(item.created_at)>=Date.parse('2026-09-06T23:45:56.247+09:00')&&!isAnnounceRead(item.id);
+}
 function announceReadCount(id){
   return announceDb.reads.filter(function(r){return r.announcement_id===id;}).length;
 }
@@ -4518,7 +4523,7 @@ function renderSAnnounceList(kind){
   var items=myAnnounceItems().filter(function(a){return (a.notice_kind||'general')===kind;});
   if(!items.length){el.innerHTML='<div style="padding:2rem;text-align:center;color:var(--text3);font-size:13px">아직 안내가 없어요.</div>';return;}
   el.innerHTML=items.map(function(a){
-    var unread=!isAnnounceRead(a.id);
+    var unread=isAnnounceAlert(a);
     var dateLabel=new Date(a.created_at).toLocaleString('ko-KR',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
     return '<div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="openAnnounceView(\''+a.id+'\')">'+
       (unread?'<span style="width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0"></span>':'<span style="width:8px;flex-shrink:0"></span>')+
@@ -4553,7 +4558,7 @@ async function openAnnounceView(id){
 }
 function updateAnnounceBadge(){
   if(!session||session.role!=='student')return;
-  var allUnread=myAnnounceItems().filter(function(a){return !isAnnounceRead(a.id);});
+  var allUnread=myAnnounceItems().filter(isAnnounceAlert);
   var unread=allUnread.filter(a=>(a.notice_kind||'general')==='general').length;
   setBadge('primary-clinic-s',allUnread.filter(a=>a.notice_kind==='clinic').length,'s');
   setBadge('nav-announce-s',unread,'s');
