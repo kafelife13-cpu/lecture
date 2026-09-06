@@ -28,7 +28,7 @@
 <script src="classical-course.js"></script>
 <script src="classical-translations.js"></script>
 <script src="student-sections.js?v=1"></script>
-<script src="weekly-homework.js?v=1"></script>
+<script src="weekly-homework.js?v=2"></script>
 <script>
 (function(){
   var tag=document.createElement('script');
@@ -1353,6 +1353,11 @@ input,button{font-family:var(--font)}
               </div>
               <div style="padding:0 1.25rem 1.25rem">
                 <div style="font-size:12px;color:var(--text2);margin-bottom:10px">틀린 문제 번호를 클릭하세요</div>
+                <div id="s-homework-wrong-input" hidden style="margin-bottom:12px">
+                  <label for="s-homework-wrong-numbers">오답 번호만 입력</label>
+                  <input id="s-homework-wrong-numbers" class="form-input" placeholder="예: 2, 5, 12" onchange="sHomeworkApplyWrongNumbers()">
+                  <p style="font-size:12px;color:var(--text2)">쉼표나 공백으로 구분해요. 아래 번호를 눌러도 돼요. 모두 맞았으면 비워 두고 제출하세요.</p>
+                </div>
                 <div id="s-exam-q-grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:10px"></div>
                 <div style="display:flex;gap:14px;font-size:11px;color:var(--text3)">
                   <span>□ 미선택</span>
@@ -10042,7 +10047,30 @@ async function renderSExam(scope){
   renderSExamClinicGroups();
   if(mockEl)mockEl.innerHTML=renderSExamListCards(mock,sExamRespCache,'등록된 모의고사가 없어요');
   if(miniMockEl)miniMockEl.innerHTML=renderSExamListCards(miniMock,sExamRespCache,'등록된 미니모의고사가 없어요');
-  if(homeworkEl)homeworkEl.innerHTML=renderSExamListCards(homework,sExamRespCache,'등록된 과제가 없어요');
+  if(homeworkEl)homeworkEl.innerHTML=renderHomeworkEntry(homework,sExamRespCache);
+}
+
+function sHomeworkAllowsWrongOnly(exam){return !!exam&&exam.category==='homework'&&Number(exam.total_q)!==40;}
+function sHomeworkWrongOnly(exam){return sHomeworkAllowsWrongOnly(exam)&&sExamCheckMode==='wrongonly';}
+function renderHomeworkEntry(list,responses){
+  return '<section><h3>1) 필수 40문항 입력</h3><p>40문항의 답안을 모두 입력하세요.</p>'+renderSExamListCards(list.filter(function(e){return Number(e.total_q)===40;}),responses,'등록된 필수 40문항 과제가 없어요')+'</section>'+
+    '<section style="margin-top:20px"><h3>2) 나머지 과제 입력</h3><p>전체 답안 입력 또는 오답 번호만 입력 중 선택하세요.</p>'+renderSExamListCards(list.filter(function(e){return Number(e.total_q)!==40;}),responses,'등록된 나머지 과제가 없어요')+'</section>';
+}
+function parseHomeworkWrongNumbers(value,total){
+  var tokens=String(value).trim().split(/[\s,，]+/).filter(Boolean),numbers=[];
+  tokens.forEach(function(token){
+    if(!/^\d+$/.test(token)||Number(token)<1||Number(token)>total)throw new Error('오답 번호는 1~'+total+' 사이의 정수로 입력해주세요.');
+    var index=Number(token)-1;if(numbers.indexOf(index)===-1)numbers.push(index);
+  });
+  return numbers.sort(function(a,b){return a-b;});
+}
+function sHomeworkApplyWrongNumbers(){
+  if(!sHomeworkWrongOnly(sExamData))return true;
+  try{
+    var indices=parseHomeworkWrongNumbers(document.getElementById('s-homework-wrong-numbers').value,Number(sExamData.total_q));
+    sWrongChecked={};indices.forEach(function(i){sWrongChecked[i]=true;});
+    document.getElementById('s-exam-check-err').textContent='';renderSExamAnswerGrid();return true;
+  }catch(error){document.getElementById('s-exam-check-err').textContent=error.message;return false;}
 }
 
 function renderSExamClinicGroups(){
@@ -10094,11 +10122,11 @@ function renderSExamListCards(list,respMap,emptyLabel){
     var safeName=(e.name||'').replace(/'/g,"\\'");
     var actionHtml;
     if(!resp){
-      actionHtml='<button class="btn blue btn-sm" onclick="sExamOpenForGrading(\''+e.id+'\')">바로 채점하기</button>';
+      actionHtml='<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn blue btn-sm" onclick="sExamOpenForGrading(\''+e.id+'\')">'+(sHomeworkAllowsWrongOnly(e)?'전체 답안 입력':e.category==='homework'?'40문항 입력':'바로 채점하기')+'</button>'+(sHomeworkAllowsWrongOnly(e)?'<button class="btn btn-sm" onclick="sExamOpenForGrading(\''+e.id+'\',\'wrongonly\')">오답 번호만 입력</button>':'')+'</div>';
     } else if(resp.regrade_approved){
       actionHtml='<div style="display:flex;gap:6px">'+
         '<button class="btn btn-sm" onclick="sExamViewResult(\''+e.id+'\')">결과보기</button>'+
-        '<button class="btn btn-sm green" onclick="sExamOpenForGrading(\''+e.id+'\')">🔓 재채점하기</button>'+
+        '<button class="btn btn-sm green" onclick="sExamOpenForGrading(\''+e.id+'\')">🔓 재채점하기</button>'+(sHomeworkAllowsWrongOnly(e)?'<button class="btn btn-sm" onclick="sExamOpenForGrading(\''+e.id+'\',\'wrongonly\')">오답 번호만 입력</button>':'')+
       '</div>';
     } else if(resp.regrade_requested){
       actionHtml='<div style="display:flex;align-items:center;gap:6px">'+
@@ -10127,7 +10155,7 @@ function showSExamView(v){
   ['entry','check','loading','result'].forEach(n=>document.getElementById('s-exam-'+n).style.display=n===v?'block':'none');
 }
 
-async function sExamOpenForGrading(examId){
+async function sExamOpenForGrading(examId,entryMode){
   const myName=session.name||session.id;
   const [{data:found,error:e1},{data:resp}]=await Promise.all([
     sb.from('exams').select('*').eq('id',examId).single(),
@@ -10142,9 +10170,10 @@ async function sExamOpenForGrading(examId){
   }
   sExamData=found;sExamPriorResponse=resp||null;
   sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;sWrongChecked={};sExamFullAnswers={};
-  // 과제 채점도 클리닉 테스트처럼 모든 문항의 답을 입력해 자동 채점한다.
-  // 틀린 번호만 체크하는 방식은 내신시험지 분석에만 사용한다.
-  sExamCheckMode=found.category==='naeshin'?'wrongonly':'full';
+  sExamCheckMode=found.category==='naeshin'||(entryMode==='wrongonly'&&sHomeworkAllowsWrongOnly(found))?'wrongonly':'full';
+  document.getElementById('s-homework-wrong-input').hidden=!sHomeworkWrongOnly(found);
+  document.getElementById('s-homework-wrong-numbers').value='';
+  document.getElementById('s-wrong-details').innerHTML='';
   const icon=found.category==='mock'?'📝 ':found.category==='mini_mock'?'🧩 ':found.category==='naeshin'?'📚 ':found.category==='homework'?'📒 ':'🏫 ';
   document.getElementById('s-exam-check-title').textContent=icon+found.name;
   const fullEl=document.getElementById('s-exam-check-full');
@@ -10241,6 +10270,7 @@ async function sExamSubmitFull(forceSubmit){
   const objIdxs=[];
   sExamData.questions.forEach(function(q,i){if(isObjectiveAnswer(q.answer))objIdxs.push(i);});
   const unanswered=objIdxs.filter(function(i){return !sExamFullAnswers[i];}).map(function(i){return i+1;});
+  if(sExamData.category==='homework'&&Number(total)===40&&unanswered.length){alert('필수 40문항의 답안을 모두 입력해주세요. 남은 문항: '+unanswered.join(', '));return;}
   if(unanswered.length&&!forceSubmit){
     if(!confirm(unanswered.length+'문항 답을 아직 선택 안 했어요 ('+unanswered.slice(0,8).join(',')+(unanswered.length>8?'...':'')+'). 그래도 제출할까요?'))return;
   }
@@ -10432,6 +10462,7 @@ function renderSExamAnswerGrid(){
       (i+1)+'</button>';
   }).join('');
   updateWrongCountLabel();
+  if(sHomeworkWrongOnly(sExamData))document.getElementById('s-homework-wrong-numbers').value=Object.keys(sWrongChecked).map(Number).sort(function(a,b){return a-b;}).map(function(i){return i+1;}).join(', ');
 }
 
 function sToggleWrong(idx){
@@ -10450,6 +10481,7 @@ function updateWrongCountLabel(){
 function renderWrongDetails(){
   var el=document.getElementById('s-wrong-details');
   if(!el)return;
+  if(sHomeworkWrongOnly(sExamData)){el.innerHTML='';return;}
   var wrongIdxs=Object.keys(sWrongChecked).map(Number).sort(function(a,b){return a-b;});
   if(!wrongIdxs.length){el.innerHTML='';return;}
   el.innerHTML=wrongIdxs.map(function(idx){
@@ -10521,6 +10553,7 @@ function sExamUploadPhotoLocal(idx,input){
 
 async function sExamSubmitScore(){
   if(!sExamData||!session){return;}
+  if(sHomeworkWrongOnly(sExamData)&&!sHomeworkApplyWrongNumbers())return;
   var total=sExamData.total_q;
   var wrongIdxs=Object.keys(sWrongChecked).map(Number);
   document.getElementById('s-exam-check-err').textContent='';

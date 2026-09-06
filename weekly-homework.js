@@ -64,10 +64,10 @@
   // Show the exact assigned links instead of leaving students to guess a homework list.
   if(key==='omr'){
    const target=el('s-weekly-links');
-   target.innerHTML='<strong>이번 주 필수 과제 OMR</strong><p>지정된 과제를 선택해 답안을 입력하세요.</p>';
-   const r=await sb.from('exams').select('id,name').in('id',plan.config.exam_ids);
+   target.innerHTML='<strong>이번 주 과제 OMR 입력</strong>';
+   const r=await sb.from('exams').select('id,name,category,total_q').in('id',plan.config.exam_ids);
    if(r.error){target.textContent='필수 과제 목록을 불러오지 못했어요.';return;}
-   target.innerHTML+=(r.data||[]).map(e=>actionButton('exam',esc(e.name),'data-exam="'+esc(e.id)+'"')).join('');target.hidden=false;
+   target.innerHTML+=renderHomeworkEntry(r.data||[],sExamRespCache);target.hidden=false;
   }
  }
  function renderNotebook(){
