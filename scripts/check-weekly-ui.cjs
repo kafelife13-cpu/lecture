@@ -17,13 +17,23 @@ const root=path.join(__dirname,'..'),html=fs.readFileSync(path.join(root,'index.
   window.startVocabUnit=n=>{window.startedUnit=n;};
   window.renderStudentClassAttendance=()=>{};
   window.plan={id:'00000000-0000-0000-0000-000000000001',title:'이번 주 필수 과제',week_start:'2026-09-07',group_id:'class',config:{exam_ids:['e'],vocab_units:[1],qa_week_id:'q',video_id:'v',questions:[{prompt:'수업 개념 확인 문항 (화면 검증용)'}]},students:[{id:session.id,name:session.name,states:{vocab:{status:'done',done:1,total:1},omr:{status:'todo',done:0,total:1},qa:{status:'todo',done:2,total:5},notebook:{status:'todo'},study:{status:'done',done:2,total:2},concept:{status:'todo'}},work:{}}]};
+  window.fixtureExams=[
+   {id:'e',name:'지난 과제',category:'homework',total_q:40,questions:[{text:'훈민정음 창제 원리',answer:'1',explanation:'해설'}]},
+   {id:'c',name:'클리닉 시험',category:'school',total_q:1,questions:[{text:'중세국어 개념',answer:'1',explanation:'해설'}]}
+  ];
   window.sb={rpc:async(name,args)=>{
    window.lastRpc=args;
    if(args.p_action==='list')return {data:[window.plan]};
    if(args.p_action==='concept'){plan.students[0].states.concept={status:'approved'};plan.students[0].work.concept={status:'approved'};return {data:{score:1,total:1,questions:[{answer:'O',explanation:'검증용 해설'}]}};}
    if(args.p_action==='notebook'){plan.students[0].states.notebook={status:'pending'};plan.students[0].work.notebook={status:'pending',data:{mode:'clinic',photos:[]}};return {data:{ok:true}};}
    return {data:{ok:true}};
-  },from:()=>({select:()=>({eq:async()=>({data:[{id:'e',name:'필수 과제'}]}),then:resolve=>resolve({data:[{id:'q',name:'질문 주차',school_id:'school'}]})})}),storage:{from:()=>({upload:async()=>({}),getPublicUrl:()=>({data:{publicUrl:'https://invalid.test/photo.png'}})})}};
+  },from:table=>{
+   if(table==='exams')return {select:()=>({in:()=>({order:async()=>({data:window.fixtureExams})})})};
+   if(table==='exam_responses')return {select:()=>({eq:async()=>({data:[{student_name:'학생',answers:{0:'2'}}]})})};
+   return {select:async()=>({data:[{id:'q',name:'질문 주차',school_id:'school'}]})};
+  },storage:{from:()=>({upload:async()=>({}),getPublicUrl:()=>({data:{publicUrl:'https://invalid.test/photo.png'}})})}};
+  window.repIsWrong=(r,i,e)=>Object.prototype.hasOwnProperty.call(r.answers||{},i)&&String(r.answers[i])!==String(e.questions[i].answer);
+  window.callClaudeServer=async()=>({content:[{text:'[{"prompt":"훈민정음은 음소 문자이다.","answer":"O","explanation":"초성을 기준으로 합용한다."}]'}]});
   for(const name of ['renderLectures','renderClinicLectures','renderStudentReview','renderMyPage','renderSQaSchoolList','renderSQaMyList','clearQaBadge','renderSCertList','renderSClinicList','renderSStudy','renderSOxReview','renderSExam','renderSGrades','renderVocabEntry','renderSAnnounceList','renderSHome'])window[name]=()=>{};
  });
  const start=html.indexOf("document.addEventListener('keydown',function(e){var menu=document.getElementById('student-menu')");
@@ -61,6 +71,14 @@ const root=path.join(__dirname,'..'),html=fs.readFileSync(path.join(root,'index.
  await page.locator('#weekly-create-form').waitFor();
  assert.equal(await page.locator('#weekly-create-form [name="group_id"]').inputValue(),'class');
  assert.match(await page.locator('#weekly-create-form [name="questions"]').inputValue(),/교사 편집 검증/);
+ assert.equal(await page.locator('#weekly-ox-source option').count(),1);
+ await page.locator('#weekly-ox-count').fill('1');
+ await page.locator('#weekly-ox-source-kind').selectOption('clinic');
+ assert.match(await page.locator('#weekly-ox-source').inputValue(),/c/);
+ await page.locator('#weekly-ox-count').fill('3');
+ await page.evaluate(()=>{callClaudeServer=async()=>({content:[{text:'[{"prompt":"개념1","answer":"O","explanation":"해설1"},{"prompt":"개념2","answer":"X","explanation":"해설2"},{"prompt":"개념3","answer":"O","explanation":"해설3"}]'}]});});
+ await page.locator('[data-weekly-action="generate-ox"]').click();
+ await page.waitForFunction(()=>document.querySelector('[name="questions"]').value.includes('개념3 | O | 해설3'));
  await page.locator('#weekly-create-form [type="submit"]').click();
  await page.waitForFunction(()=>window.lastNotice==='필수 과제를 등록했어요.');
  await page.evaluate(async()=>{
