@@ -1,0 +1,11 @@
+const fs=require('node:fs'),assert=require('node:assert/strict');
+const source=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
+const helper=source.slice(source.indexOf('function qaWeekNumber('),source.indexOf('function renderTQaWeekList('));
+const {group,number}=new Function(helper+'return {group:qaGroupedWeeksHtml,number:qaWeekNumber};')();
+assert.equal(number({name:'내신 2주차 과제 (1) 25문항'}),2);
+const html=group([{name:'내신대비 1주차',created_at:'2026-08-31'},{name:'내신 2주차 (1)'},{name:'8월 3주차'},{name:'중세 문법',created_at:'2026-08-23'}],w=>w.name);
+assert.ok(html.indexOf('2주</h3>')<html.indexOf('1주</h3>'));
+assert.ok(html.includes('지난달 보기 · 8월 (2)'));
+assert.ok(!html.includes('<details open'));
+assert.ok(html.indexOf('8월 3주차')>html.indexOf('<details'));
+console.log('QnA grouping checks passed');
