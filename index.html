@@ -27,6 +27,8 @@
 <script src="classical-vocab.js"></script>
 <script src="classical-course.js"></script>
 <script src="classical-translations.js"></script>
+<script src="student-sections.js?v=1"></script>
+<script src="weekly-homework.js?v=1"></script>
 <script>
 (function(){
   var tag=document.createElement('script');
@@ -253,6 +255,8 @@ input,button{font-family:var(--font)}
 .mobile-tab.active{color:var(--accent)}
 .mobile-tab.active svg{fill:var(--accent)}
 </style>
+<link rel="stylesheet" href="student-ui.css?v=3">
+<link rel="stylesheet" href="weekly-homework.css?v=1">
 </head>
 <body>
 <div id="loading-screen"><div class="spinner"></div><div class="loading-text">서버에 연결 중...</div></div>
@@ -324,7 +328,7 @@ input,button{font-family:var(--font)}
         <div class="avatar teacher" id="t-avatar">T</div>
         <div class="sidebar-user-info"><p id="t-name">강사</p><span class="badge teacher-role" style="font-size:10px">강사</span></div>
       </div>
-      <nav class="sidebar-nav">
+      <nav class="sidebar-nav"><div class="nav-item" onclick="tNav('weekly')" data-p="weekly">이번 주 필수 과제</div>
         <div class="nav-item active" onclick="tNav('dashboard')" data-p="dashboard"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>대시보드</div>
         <div class="nav-item" onclick="tNav('announce')" data-p="announce" id="nav-announce"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>과제 안내</div>
         <div class="nav-item" onclick="tNav('videos')" data-p="videos"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의 관리</div>
@@ -332,7 +336,7 @@ input,button{font-family:var(--font)}
         <div class="nav-item" onclick="tNav('students')" data-p="students" id="nav-students"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>학생 관리</div>
         <div class="nav-item" onclick="tNav('student-preview')" data-p="student-preview"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5C21.27 7.61 17 4.5 12 4.5zm0 12.5a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-2a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>학생 화면 확인</div>
         <div class="nav-item" onclick="tNav('access')" data-p="access" id="nav-access"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습 신청 관리</div>
-        <div class="nav-item" onclick="tNav('review-performance')" data-p="review-performance"><svg viewBox="0 0 24 24"><path d="M3 3h18v2H3V3zm0 4h18v14H3V7zm4 3v2h10v-2H7zm0 4v2h7v-2H7z"/></svg>영상 보강 시청관리</div>
+        <div class="nav-item" onclick="tNav('review-performance')" data-p="review-performance"><svg viewBox="0 0 24 24"><path d="M3 3h18v2H3V3zm0 4h18v14H3V7zm4 3v2h10v-2H7zm0 4v2h7v-2H7z"/></svg>영상대체 시청관리</div>
         <div class="nav-item" onclick="tNav('progress')" data-p="progress"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>진도 현황</div>
         <div class="nav-item" onclick="tNav('qa')" data-p="qa" id="nav-qa" style="position:relative"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>과제 QnA 관리</div>
         <div class="nav-item" onclick="tNav('cert')" data-p="cert"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증 관리</div>
@@ -348,6 +352,10 @@ input,button{font-family:var(--font)}
       </div>
     </div>
     <div class="main"><div class="main-inner">
+      <div class="panel" id="panel-weekly"><div class="page-header"><h1>이번 주 필수 과제</h1><p>6개 과제를 모두 마치면 전체 완료예요. 제출 기록이 자동으로 연결됩니다.</p></div>
+        <div class="weekly-toolbar"><label>확인할 주 <input type="date" id="t-weekly-date" data-weekly-date></label><button class="btn" data-weekly-action="refresh">현황 새로고침</button><button class="btn blue" data-weekly-action="create">주간 과제 등록</button></div>
+        <div id="t-weekly-body" aria-live="polite"></div><div id="t-weekly-editor" class="weekly-detail" hidden></div><div id="t-weekly-review" class="weekly-detail" hidden></div></div>
+
 
       <!-- 대시보드 -->
       <div class="panel active" id="panel-dashboard">
@@ -507,12 +515,14 @@ input,button{font-family:var(--font)}
         </div>
         <!-- 직접 권한 부여 -->
         <div class="card" style="margin-bottom:1rem">
-          <div class="card-head"><h3>학생에게 직접 권한 부여</h3><span style="font-size:11px;color:var(--text2)">학생 신청 없이 바로 부여</span></div>
+          <div class="card-head"><h3>미등원 학생 영상대체 지정</h3><span style="font-size:11px;color:var(--text2)">여러 학생 선택 가능 · 지정 후 학생에게 바로 표시</span></div>
           <div class="card-body">
             <div class="frow">
-              <div style="flex:1"><label class="flabel">학생</label><select id="access-grant-student" class="form-select"></select></div>
-              <div style="flex:1"><label class="flabel">복습 영상</label><select id="access-grant-video" class="form-select"></select></div>
-              <div style="display:flex;align-items:flex-end"><button class="btn blue" onclick="grantAccessDirect()" style="height:40px">부여</button></div>
+              <div style="flex:1"><label class="flabel">학생</label><select id="access-grant-student" class="form-select" multiple size="6" aria-label="영상대체할 학생 여러 명 선택"></select></div>
+              <div style="flex:1"><label class="flabel">지정할 강의</label><select id="access-grant-video" class="form-select"></select></div>
+              <div><label class="flabel">지정 구분</label><select id="access-grant-kind" class="form-select"><option value="replacement">미등원 영상대체</option><option value="review">복습 시청 권한</option></select></div>
+              <div><label class="flabel">미등원 날짜 (영상대체 필수)</label><input type="date" id="access-absence-date" class="form-input"></div>
+              <div style="display:flex;align-items:flex-end"><button id="access-grant-submit" class="btn blue" onclick="grantAccessDirect()" style="height:40px">선택 학생에게 지정</button></div>
             </div>
           </div>
         </div>
@@ -528,9 +538,9 @@ input,button{font-family:var(--font)}
         </div>
       </div>
 
-      <!-- 영상 보강 시청관리 -->
+      <!-- 영상대체 시청관리 -->
       <div class="panel" id="panel-review-performance">
-        <div class="page-header"><h1>📺 영상 보강 시청관리</h1><p>이번 주에 배정한 보강영상의 시청 현황을 반별로 확인하세요</p></div>
+        <div class="page-header"><h1>📺 영상대체 시청관리</h1><p>이번 주에 지정한 영상대체 강의의 시청 현황을 반별로 확인하세요</p></div>
         <button id="t-alert-subscribe" class="btn blue" onclick="subscribeTeacherAlerts()" style="width:100%;margin-bottom:10px">🔔 자리 이탈 알림 받기</button>
         <div class="card" style="border:2px solid var(--red)">
           <div class="card-body">
@@ -1025,7 +1035,7 @@ input,button{font-family:var(--font)}
         <div class="card" style="margin-bottom:1rem">
           <div class="card-head"><h3>새 과제 안내 작성</h3></div>
           <div style="padding:0 1.25rem 1.25rem">
-            <div class="form-group" style="margin-bottom:8px"><label>대상 학교</label><select class="form-select" id="an-school"><option value="">전체 (모든 학교)</option></select></div>
+            <div class="form-group" style="margin-bottom:8px"><label>안내 종류</label><select id="an-kind" class="form-select"><option value="general">과제 안내</option><option value="clinic">클리닉 공지</option></select><label>대상 학교</label><select class="form-select" id="an-school"><option value="">전체 (모든 학교)</option></select></div>
             <div class="form-group" style="margin-bottom:8px"><label>제목</label><input class="form-input" id="an-title" placeholder="예: 8월 1주차 과제 안내"></div>
             <div class="form-group" style="margin-bottom:8px"><label>내용</label><textarea class="form-input" id="an-content" rows="5" placeholder="과제 내용을 입력하세요"></textarea></div>
             <div class="form-group" style="margin-bottom:12px">
@@ -1049,7 +1059,7 @@ input,button{font-family:var(--font)}
 
     </div></div>
   </div>
-  <div class="mobile-tabbar" id="t-tabbar" style="overflow-x:auto">
+  <div class="mobile-tabbar" id="t-tabbar" style="overflow-x:auto"><button class="mobile-tab" onclick="tNav('weekly')" data-mt="weekly" style="min-width:80px">필수 과제 현황</button>
     <button class="mobile-tab active" onclick="tNav('dashboard')" data-mt="dashboard" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>대시보드</button>
     <button class="mobile-tab" onclick="tNav('announce')" data-mt="announce" id="mt-announce-t" style="position:relative;min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>과제</button>
     <button class="mobile-tab" onclick="tNav('videos')" data-mt="videos" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-02-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의</button>
@@ -1072,6 +1082,22 @@ input,button{font-family:var(--font)}
 
 <!-- STUDENT -->
 <div id="page-student" class="page">
+  <header class="student-header">
+    <div class="student-header-row">
+      <div class="student-brand">국어왕 김까까<small id="student-current-menu" aria-live="polite">나의 공부 홈</small></div>
+      <div class="student-header-actions">
+        <button type="button" onclick="sNav('home')" aria-label="공부 홈으로 이동">홈</button>
+        <details class="student-menu" id="student-menu"><summary>전체 메뉴</summary><nav class="mobile-tabbar" id="s-tabbar" aria-label="학생 전체 메뉴"><button class="mobile-tab" onclick="sNav('weekly')" data-ms="weekly" style="grid-column:1/-1">과제수행 · 이번 주 6가지 할 일</button><button class="mobile-tab" onclick="sNav('clinic-hub')" data-ms="clinic-hub">클리닉 · 일정과 시험</button><button class="mobile-tab" onclick="sNav('video-hub')" data-ms="video-hub">영상강의</button><button class="mobile-tab" onclick="sNav('replacement')" data-ms="replacement">영상대체 강의</button><div class="student-menu-heading">과제수행 바로가기</div><button class="mobile-tab" onclick="sNav('notice-hub')" data-ms="notice-hub" id="mt-announce-s" style="position:relative;min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>공지사항</button><button class="mobile-tab" onclick="sNav('exam')" data-ms="exam" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>답안 제출 · 채점</button><button class="mobile-tab" onclick="sNav('cert')" data-ms="cert" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>과제 사진 제출</button><button class="mobile-tab" onclick="sNav('study')" data-ms="study" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>공부 타이머</button><button class="mobile-tab" onclick="sNav('vocab')" data-ms="vocab" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 13.5L4.24 12.5 2 11.15v3.7L12 20l10-5.15v-3.7l-2.24 1.35L12 16.5z"/></svg>오늘의 어휘</button><button class="mobile-tab" onclick="sNav('oxreview')" data-ms="oxreview" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>오답재풀이</button><div class="student-menu-heading">강의 · 질문</div><button class="mobile-tab" onclick="sNav('lectures')" data-ms="lectures" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의</button><button class="mobile-tab" onclick="sNav('clinic-lectures')" data-ms="clinic-lectures" style="min-width:68px"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4V4zm6 3v10l7-5-7-5z"/></svg>클리닉강의</button><button class="mobile-tab" onclick="sNav('review')" data-ms="review" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습신청</button><button class="mobile-tab" onclick="sNav('qa')" data-ms="qa" id="mt-qa-s" style="position:relative" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>질문하기</button><div class="student-menu-heading">내 기록 · 일정</div><button class="mobile-tab" onclick="sNav('scores')" data-ms="scores" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-8 14H8v-7h3v7zm5 0h-3V7h3v10z"/></svg>성적</button><button class="mobile-tab" onclick="sNav('mypage')" data-ms="mypage" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>내 진도</button><button class="mobile-tab" onclick="sNav('clinic')" data-ms="clinic" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉 일정 변경</button><div class="student-menu-heading">도움말 · 계정</div><button class="mobile-tab" onclick="openStudentGuide()">사용 방법</button><button class="mobile-tab" id="s-logout-btn-mobile" onclick="doLogout()" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>로그아웃</button></nav></details>
+      </div>
+    </div>
+    <nav class="student-primary-nav" aria-label="학생 주요 섹션">
+      <button onclick="sNav('weekly')" data-student-section="weekly">과제수행</button>
+      <button onclick="sNav('clinic-hub')" data-student-section="clinic-hub" id="primary-clinic-s" style="position:relative">클리닉</button>
+      <button onclick="sNav('notice-hub')" data-student-section="announce" id="primary-announce-s" style="position:relative">공지사항</button>
+      <button onclick="sNav('video-hub')" data-student-section="video-hub">영상강의</button>
+    </nav>
+  </header>
+
   <div class="app-layout">
     <div class="sidebar">
       <div class="sidebar-logo"><h2>국어왕 김까까</h2><span>서로국어 김이내T</span></div>
@@ -1079,22 +1105,7 @@ input,button{font-family:var(--font)}
         <div class="avatar student" id="s-avatar">S</div>
         <div class="sidebar-user-info"><p id="s-name-disp">학생</p><span class="badge student-role" style="font-size:10px">학생</span></div>
       </div>
-      <nav class="sidebar-nav">
-        <div class="nav-item active" onclick="sNav('home')" data-p="home"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>홈</div>
-        <div class="nav-item" onclick="sNav('announce')" data-p="announce" id="nav-announce-s" style="position:relative"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>과제 안내</div>
-        <div class="nav-item" onclick="sNav('lectures')" data-p="lectures"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의 목록</div>
-        <div class="nav-item" onclick="sNav('clinic-lectures')" data-p="clinic-lectures"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4V4zm6 3v10l7-5-7-5z"/></svg>클리닉 강의</div>
-        <div class="nav-item" onclick="sNav('review')" data-p="review"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습 신청</div>
-        <div class="nav-item" onclick="sNav('mypage')" data-p="mypage"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>내 진도</div>
-        <div class="nav-item" onclick="sNav('qa')" data-p="qa" id="nav-qa-s" style="position:relative"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>과제 QnA</div>
-        <div class="nav-item" onclick="sNav('cert')" data-p="cert"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증</div>
-        <div class="nav-item" onclick="sNav('clinic')" data-p="clinic"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉 변동</div>
-        <div class="nav-item" onclick="sNav('study')" data-p="study"><svg viewBox="0 0 24 24"><path d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>과제 인증 타이머</div>
-        <div class="nav-item" onclick="sNav('oxreview')" data-p="oxreview"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>오답 재풀이</div>
-        <div class="nav-item" onclick="sNav('exam')" data-p="exam"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>온라인 채점</div>
-        <div class="nav-item" onclick="sNav('scores')" data-p="scores"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-8 14H8v-7h3v7zm5 0h-3V7h3v10z"/></svg>내 성적</div>
-        <div class="nav-item" onclick="sNav('vocab')" data-p="vocab"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 13.5L4.24 12.5 2 11.15v3.7L12 20l10-5.15v-3.7l-2.24 1.35L12 16.5z"/></svg>오늘의 어휘</div>
-      </nav>
+      <nav class="sidebar-nav"><div class="nav-item active" onclick="sNav('home')" data-p="home"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>홈</div><div class="nav-item" onclick="sNav('weekly')" data-p="weekly">과제수행</div><div class="nav-item" onclick="sNav('clinic-hub')" data-p="clinic-hub">클리닉</div><div class="nav-item" onclick="sNav('notice-hub')" data-p="notice-hub" id="nav-announce-s" style="position:relative"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>공지사항</div><div class="nav-item" onclick="sNav('video-hub')" data-p="video-hub">영상강의</div><details class="student-sidebar-more"><summary>다른 기능</summary><div class="nav-item" onclick="sNav('lectures')" data-p="lectures"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의 목록</div><div class="nav-item" onclick="sNav('clinic-lectures')" data-p="clinic-lectures"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4V4zm6 3v10l7-5-7-5z"/></svg>클리닉 강의</div><div class="nav-item" onclick="sNav('review')" data-p="review"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습 신청</div><div class="nav-item" onclick="sNav('mypage')" data-p="mypage"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>내 진도</div><div class="nav-item" onclick="sNav('qa')" data-p="qa" id="nav-qa-s" style="position:relative"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>과제 QnA</div><div class="nav-item" onclick="sNav('cert')" data-p="cert"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증</div><div class="nav-item" onclick="sNav('clinic')" data-p="clinic"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉 변동</div><div class="nav-item" onclick="sNav('study')" data-p="study"><svg viewBox="0 0 24 24"><path d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>과제 인증 타이머</div><div class="nav-item" onclick="sNav('oxreview')" data-p="oxreview"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>오답 재풀이</div><div class="nav-item" onclick="sNav('exam')" data-p="exam"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>온라인 채점</div><div class="nav-item" onclick="sNav('scores')" data-p="scores"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-8 14H8v-7h3v7zm5 0h-3V7h3v10z"/></svg>내 성적</div><div class="nav-item" onclick="sNav('vocab')" data-p="vocab"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 13.5L4.24 12.5 2 11.15v3.7L12 20l10-5.15v-3.7l-2.24 1.35L12 16.5z"/></svg>오늘의 어휘</div></details></nav>
       <div class="sidebar-footer">
         <button onclick="openStudentGuide()" style="width:100%;margin-bottom:6px;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.3);color:var(--purple);border-radius:var(--radius-sm);padding:8px;font-size:12px;cursor:pointer;font-family:inherit">📖 사용설명서 · 인쇄</button>
         <button id="pwa-install-btn-t" onclick="installPWA()" style="display:none;width:100%;margin-bottom:6px;background:rgba(79,124,255,0.1);border:1px solid rgba(79,124,255,0.3);color:var(--accent);border-radius:var(--radius-sm);padding:8px;font-size:12px;cursor:pointer;font-family:inherit">📲 앱으로 설치</button>
@@ -1103,17 +1114,42 @@ input,button{font-family:var(--font)}
       </div>
     </div>
     <div class="main"><div class="main-inner">
+      <div class="panel" id="panel-clinic-hub"><div class="page-header"><h1>클리닉</h1><p>시간 변경, 클리닉 공지와 시험지 채점을 확인해요.</p></div>
+        <div id="home-class-attendance" class="card" style="margin-bottom:16px"></div>
+        <div class="student-clinic-actions">
+          <button onclick="sNav('clinic')"><strong>클리닉 시간 변경</strong><span>내 일정 확인 · 변경 신청</span></button>
+          <button onclick="sNav('clinic-notices')"><strong>클리닉 공지</strong><span>클리닉 준비물과 전달 사항</span></button>
+          <button onclick="sNav('exam','clinic')"><strong>클리닉 시험지 채점</strong><span>시험 답안 입력하고 결과 확인</span></button>
+        </div></div>
+      <div class="panel" id="panel-clinic-notices"><div class="page-header"><h1>클리닉 공지</h1></div><div class="card" id="s-clinic-notice-list" style="padding:16px"></div></div>
+      <div class="panel" id="panel-notice-hub"><div class="page-header"><h1>공지사항</h1><p>과제 안내와 나에게 지정된 인증을 확인해요.</p></div><div class="student-clinic-actions">
+        <button onclick="sNav('announce')"><strong>과제 안내</strong><span>이번 과제 범위와 제출 안내</span></button>
+        <button onclick="sNav('cert')"><strong>개별 인증 안내</strong><span>나에게 지정된 인증 · 사진 제출 · 확인 결과</span></button>
+      </div></div>
+      <div class="panel" id="panel-video-hub"><div class="page-header"><h1>영상강의</h1><p>필요한 강의 종류를 선택해주세요.</p></div><div class="student-clinic-actions">
+        <button onclick="sNav('clinic-lectures')"><strong>클리닉 해설강의</strong><span>클리닉 시험 문제의 해설 보기</span></button>
+        <button onclick="sNav('replacement')"><strong>영상대체 강의</strong><span>선생님이 지정한 미등원 대체 수업</span></button>
+        <button onclick="sNav('review')"><strong>복습 신청강의</strong><span>관심 있는 강의를 골라 신청하기</span></button>
+      </div></div>
+      <div class="panel" id="panel-replacement"><div class="page-header"><h1>영상대체 강의</h1><p>미등원한 수업 대신 선생님이 지정한 강의를 시청해요.</p></div><div id="student-replacement-list"></div></div>
+      <div class="panel" id="panel-weekly"><div class="page-header"><h1>과제수행</h1><p>6개 과제를 모두 마치면 전체 완료예요. 제출 기록이 자동으로 연결됩니다.</p></div>
+        <div class="weekly-toolbar"><label>확인할 주 <input type="date" id="s-weekly-date" data-weekly-date></label><button class="btn" data-weekly-action="refresh">현황 새로고침</button></div>
+        <div id="s-weekly-body" aria-live="polite"></div></div>
+<div class="panel" id="panel-weekly-notebook"><div class="page-header"><h1>클리닉 오답 노트</h1><button class="btn" onclick="sNav('weekly')">← 필수 과제로</button></div><div id="s-weekly-notebook" class="weekly-detail"></div></div>
+<div class="panel" id="panel-weekly-concept"><div class="page-header"><h1>개념 복습 OX</h1><button class="btn" onclick="sNav('weekly')">← 필수 과제로</button></div><div id="s-weekly-concept" class="weekly-detail"></div></div>
       <div class="panel active" id="panel-home">
         <div class="page-header"><h1>안녕하세요, <span id="home-greet-name">학생</span>님 👋</h1><p>오늘 할 일을 확인해보세요</p></div>
-        <section id="home-push-banner" class="card" aria-label="휴대폰 알림 설정" style="display:block;margin-bottom:16px;border:2px solid var(--green);background:linear-gradient(135deg,rgba(34,197,94,.18),rgba(79,124,255,.10));box-shadow:0 8px 24px rgba(34,197,94,.12)"><div style="padding:18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap"><div style="font-size:32px">🔔</div><div style="flex:1;min-width:180px"><div style="font-size:17px;font-weight:900">휴대폰 알림</div><div style="font-size:13px;color:var(--text2);margin-top:4px">과제·시험 안내를 카카오톡처럼 휴대폰 알림으로 받아보세요.</div></div><button class="btn green" onclick="subscribeToPush()" style="font-size:15px;padding:11px 18px">알림 받기</button></div></section>
-        <button onclick="openStudentGuide()" style="width:100%;margin-bottom:12px;padding:13px 16px;border:1px solid rgba(167,139,250,.35);border-radius:var(--radius);background:linear-gradient(135deg,rgba(79,124,255,.16),rgba(167,139,250,.14));color:var(--text);text-align:left;cursor:pointer;font-family:inherit">
-          <strong style="display:block;font-size:14px">📖 국어왕 앱 사용설명서</strong>
-          <span style="display:block;margin-top:3px;font-size:12px;color:var(--text2)">로그인부터 과제·채점·인증·복습강의까지 확인하기 →</span>
-        </button>
+        <div class="student-section-cards" aria-label="학생 주요 섹션">
+          <button class="student-section-card assignments" onclick="sNav('weekly')"><span class="student-section-icon" aria-hidden="true">✓</span><span><strong>과제수행</strong><small>이번 주 6가지 과제와 완료 현황</small><em>어휘 · OMR · 질문 · 오답 노트 · 공부 인증 · 개념 OX</em></span><span class="student-section-arrow" aria-hidden="true">→</span></button>
+          <button class="student-section-card" onclick="sNav('clinic-hub')"><span class="student-section-icon" aria-hidden="true">◷</span><span><strong>클리닉</strong><small>시간 변경과 클리닉 안내, 시험지 채점</small><em>시간 변경 · 클리닉 공지 · 시험지 채점</em></span><span class="student-section-arrow" aria-hidden="true">→</span></button>
+          <button class="student-section-card" onclick="sNav('notice-hub')"><span class="student-section-icon" aria-hidden="true">!</span><span><strong>공지사항</strong><small>선생님이 전하는 중요한 안내</small><em>과제 안내 · 개별 인증 안내</em></span><span class="student-section-arrow" aria-hidden="true">→</span></button>
+          <button class="student-section-card" onclick="sNav('video-hub')"><span class="student-section-icon" aria-hidden="true">▷</span><span><strong>영상강의</strong><small>수업 해설과 필요한 강의를 한곳에서</small><em>클리닉 해설 · 영상대체 · 복습 신청</em></span><span class="student-section-arrow" aria-hidden="true">→</span></button>
+        </div>
         <div id="home-cert-alert"></div>
         <div id="home-announce-banner"></div>
-        <div id="home-class-attendance" class="card" style="margin-bottom:16px"></div>
-        <div id="home-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px"></div>
+
+        <details class="student-weekly"><summary>이번 주 학습 현황 보기</summary><div id="home-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px"></div></details>
+        <section id="home-push-banner" class="card" aria-label="휴대폰 알림 설정" style="display:block;margin-bottom:16px;border:2px solid var(--green);background:linear-gradient(135deg,rgba(34,197,94,.18),rgba(79,124,255,.10));box-shadow:0 8px 24px rgba(34,197,94,.12)"><div style="padding:18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap"><div style="font-size:32px">🔔</div><div style="flex:1;min-width:180px"><div style="font-size:17px;font-weight:900">휴대폰 알림</div><div style="font-size:13px;color:var(--text2);margin-top:4px">과제·시험 안내를 카카오톡처럼 휴대폰 알림으로 받아보세요.</div></div><button class="btn green" onclick="subscribeToPush()" style="font-size:15px;padding:11px 18px">알림 받기</button></div></section>
       </div>
       <div class="panel" id="panel-lectures">
         <div class="page-header"><h1>일반 강의</h1><p>원하는 일반 강의를 자유롭게 시청할 수 있습니다</p></div>
@@ -1199,7 +1235,7 @@ input,button{font-family:var(--font)}
       </div>
       <!-- 인증 탭 -->
       <div class="panel" id="panel-cert">
-        <div class="page-header"><h1>인증</h1><p>선생님이 지정한 인증 항목을 제출하세요</p></div>
+        <div class="page-header"><h1>개별 인증 안내</h1><p>선생님이 지정한 인증 항목을 제출하세요</p></div>
         <div id="s-cert-list"></div>
       </div>
       <div class="panel" id="panel-clinic">
@@ -1209,7 +1245,7 @@ input,button{font-family:var(--font)}
 
       <!-- 공부 타이머 (학생) -->
       <div class="panel" id="panel-study">
-        <div class="page-header"><h1>과제 인증 타이머</h1><p>공부 시작/종료할 때 사진을 찍어서 인증해요. 하루 60분 챌린지!</p></div>
+        <div class="page-header"><h1>과제 인증 타이머</h1><p>과제와 오답 정리를 함께 하고, 한 번에 40분 이상 공부한 뒤 시작·종료 사진으로 인증해요.</p></div>
         <div class="card" style="margin-bottom:1rem">
           <div style="padding:1.25rem;text-align:center">
             <div style="font-size:12px;color:var(--text2);margin-bottom:4px">오늘 누적 공부시간</div>
@@ -1248,7 +1284,7 @@ input,button{font-family:var(--font)}
       </div>
 
       <!-- 시험 분석 (학생) -->
-      <div class="panel" id="panel-exam">
+      <div class="panel" id="panel-exam"><div id="s-weekly-links" class="weekly-detail" hidden></div>
         <div class="page-header"><h1>온라인 채점</h1><p>목록에서 시험을 선택하면 바로 채점할 수 있어요</p></div>
         <!-- 시험 목록 -->
         <div id="s-exam-entry">
@@ -1393,7 +1429,7 @@ input,button{font-family:var(--font)}
 
       <!-- 과제 안내 (학생) -->
       <div class="panel" id="panel-announce">
-        <div class="page-header"><h1>과제 안내</h1><p>선생님이 올린 과제 안내예요</p></div>
+        <div class="page-header"><h1>공지사항</h1><p>과제 안내와 수업 소식, 중요한 전달 사항을 확인해요.</p></div>
         <div class="card">
           <div id="s-announce-list" style="padding:0 1.25rem 0.5rem"></div>
         </div>
@@ -1401,23 +1437,7 @@ input,button{font-family:var(--font)}
 
     </div></div>
   </div>
-  <div class="mobile-tabbar" id="s-tabbar" style="overflow-x:auto">
-    <button class="mobile-tab active" onclick="sNav('home')" data-ms="home" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>홈</button>
-    <button class="mobile-tab" onclick="sNav('announce')" data-ms="announce" id="mt-announce-s" style="position:relative;min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>과제</button>
-    <button class="mobile-tab" onclick="sNav('lectures')" data-ms="lectures" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의</button>
-    <button class="mobile-tab" onclick="sNav('clinic-lectures')" data-ms="clinic-lectures" style="min-width:68px"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4V4zm6 3v10l7-5-7-5z"/></svg>클리닉강의</button>
-    <button class="mobile-tab" onclick="sNav('review')" data-ms="review" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>복습신청</button>
-    <button class="mobile-tab" onclick="sNav('mypage')" data-ms="mypage" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>내 진도</button>
-    <button class="mobile-tab" onclick="sNav('qa')" data-ms="qa" id="mt-qa-s" style="position:relative" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>과제QnA</button>
-    <button class="mobile-tab" onclick="sNav('cert')" data-ms="cert" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>인증</button>
-    <button class="mobile-tab" onclick="sNav('clinic')" data-ms="clinic" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>클리닉</button>
-    <button class="mobile-tab" onclick="sNav('study')" data-ms="study" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>타이머</button>
-    <button class="mobile-tab" onclick="sNav('oxreview')" data-ms="oxreview" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>오답재풀이</button>
-    <button class="mobile-tab" onclick="sNav('exam')" data-ms="exam" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M9 5H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2s-2 .9-2 2zm2-1c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-3-3 1.41-1.41L9 15.17l5.59-5.59L16 11l-7 7z"/></svg>시험</button>
-    <button class="mobile-tab" onclick="sNav('scores')" data-ms="scores" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-8 14H8v-7h3v7zm5 0h-3V7h3v10z"/></svg>성적</button>
-    <button class="mobile-tab" onclick="sNav('vocab')" data-ms="vocab" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 13.5L4.24 12.5 2 11.15v3.7L12 20l10-5.15v-3.7l-2.24 1.35L12 16.5z"/></svg>어휘</button>
-    <button class="mobile-tab" id="s-logout-btn-mobile" onclick="doLogout()" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>로그아웃</button>
-  </div>
+
 </div>
 
 <!-- PLAYER MODAL -->
@@ -1930,7 +1950,7 @@ function accessExpiry(a){
 }
 function isAccessExpired(a){const exp=accessExpiry(a);return !isNaN(exp)&&new Date()>exp;}
 function hasAccess(sid,vid){return db.access.some(a=>a.student_id===sid&&a.video_id===vid&&!isAccessExpired(a));}
-function hasRequested(sid,vid){return db.requests.some(r=>r.student_id===sid&&r.video_id===vid);}
+function hasRequested(sid,vid){return db.requests.some(r=>r.student_id===sid&&r.video_id===vid&&r.status==='pending');}
 function pctColor(p){return p>=100?'var(--green)':p>=50?'var(--amber)':'var(--red)';}
 function pctClass(p){return p>=100?'green':p>=50?'amber':'muted';}
 function pctBadge(p){return p>=100?'done':p>0?'partial':'none';}
@@ -2035,6 +2055,7 @@ function selectRole(r){
   var remember=document.getElementById('login-remember');
   if(r==='student'&&remember&&!localStorage.getItem(STUDENT_REMEMBER_KEY))remember.checked=true;
 }
+var weeklyLogin=null;
 const STUDENT_REMEMBER_KEY='lms_remember_student';
 const STUDENT_VAULT_DB='kukeo_student_login_v1';
 function studentVaultOpen(){
@@ -2069,15 +2090,19 @@ async function studentVaultClear(){
 }
 async function saveRememberedStudentLogin(id,pw){
   var checked=document.getElementById('login-remember')&&document.getElementById('login-remember').checked;
-  if(!checked){localStorage.removeItem(STUDENT_REMEMBER_KEY);await studentVaultClear();return;}
+  if(!checked){localStorage.removeItem(STUDENT_REMEMBER_KEY);localStorage.removeItem('lms_sess');await studentVaultClear();return;}
   localStorage.setItem(STUDENT_REMEMBER_KEY,id);
   localStorage.setItem('lms_sess',JSON.stringify({id:id,role:'student',saved_at:new Date().toISOString()}));
   try{await studentVaultPut(id,pw);}catch(e){}
   if('credentials' in navigator&&window.PasswordCredential){
-    try{await navigator.credentials.store(new PasswordCredential({id:id,password:pw,name:id}));}catch(e){}
+    try{navigator.credentials.store(new PasswordCredential({id:id,password:pw,name:id})).catch(function(){});}catch(e){}
   }
 }
+var studentRestoreRunning=false,studentRestoreRetry=false;
 async function restoreRememberedStudentLogin(){
+  if(studentRestoreRunning||session||padMode||studentPreviewMode||document.getElementById('login-btn').disabled)return;
+  studentRestoreRunning=true;
+  try{
   var id=localStorage.getItem(STUDENT_REMEMBER_KEY);
   if(!id){
     try{var hint=JSON.parse(localStorage.getItem('lms_sess')||'null');if(hint&&hint.role==='student')id=hint.id||'';}catch(e){}
@@ -2088,17 +2113,22 @@ async function restoreRememberedStudentLogin(){
   if(idEl)idEl.value=id;
   if(check)check.checked=true;
   var saved=null;
-  if('credentials' in navigator){
+  try{saved=await studentVaultGet();}catch(e){}
+  if((!saved||saved.id!==id)&&'credentials' in navigator){
     try{var cred=await navigator.credentials.get({password:true,mediation:'optional'});if(cred&&cred.id===id&&cred.password)saved={id:cred.id,pw:cred.password};}catch(e){}
   }
-  if(!saved)try{saved=await studentVaultGet();}catch(e){}
-  if(saved&&saved.id===id&&saved.pw){document.getElementById('login-pw').value=saved.pw;await doLogin();}
+  if(saved&&saved.id===id&&saved.pw){document.getElementById('login-pw').value=saved.pw;await doLogin(true);}
+  }finally{studentRestoreRunning=false;}
 }
-async function doLogin(){
+window.addEventListener('online',function(){if(studentRestoreRetry)restoreRememberedStudentLogin();});
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&studentRestoreRetry&&navigator.onLine)restoreRememberedStudentLogin();});
+async function doLogin(automatic){
   const id=document.getElementById('login-id').value.trim();
   const pw=document.getElementById('login-pw').value;
   const err=document.getElementById('login-err');
   const btn=document.getElementById('login-btn');
+  if(btn.disabled)return;
+  studentRestoreRetry=false;
   err.textContent='';
   if(!id||!pw){err.textContent='아이디와 비밀번호를 입력하세요.';return;}
   const lockUntil=Number(sessionStorage.getItem('login_lock_until')||0);
@@ -2107,7 +2137,8 @@ async function doLogin(){
   try{
     const result=await sb.rpc('authenticate_user',{p_id:id,p_password:pw,p_role:currentRole});
     const user=result.data;
-    if(result.error||!user){
+    if(result.error)throw result.error;
+    if(!user){
       const failures=Number(sessionStorage.getItem('login_failures')||0)+1;sessionStorage.setItem('login_failures',String(failures));
       if(failures>=5){sessionStorage.setItem('login_lock_until',String(Date.now()+5*60*1000));sessionStorage.removeItem('login_failures');err.textContent='로그인에 5회 실패해 5분 동안 잠겼습니다.';}
       else err.textContent='아이디 또는 비밀번호가 올바르지 않습니다. ('+failures+'/5)';
@@ -2116,7 +2147,10 @@ async function doLogin(){
     if(user.status==='pending'){err.textContent='강사 승인 대기 중입니다.';return;}
     sessionStorage.removeItem('login_failures');sessionStorage.removeItem('login_lock_until');
     session=user;
-    if(user.role==='student')await saveRememberedStudentLogin(id,pw);
+    weeklyLogin={id:id,pw:pw,role:user.role};
+    if(user.role==='student'){
+      try{await saveRememberedStudentLogin(id,pw);}catch(e){notify('이 기기에 로그인을 저장하지 못했어요. 다시 열면 로그인이 필요할 수 있어요.','info');}
+    }
     await loadAll();
     await loadQaData();
     await loadCertData();
@@ -2124,7 +2158,7 @@ async function doLogin(){
     await loadStudyData();
     await loadAnnounceData();
     if(user.role==='teacher')launchTeacher();else{launchStudent();sendStudentActivity('로그인','학생 앱 접속');}
-  }catch(e){err.textContent='연결 오류: '+e.message;}
+  }catch(e){studentRestoreRetry=automatic===true&&!session;err.textContent='연결 오류: 잠시 후 다시 시도해 주세요. 저장된 로그인 정보는 유지됩니다.';}
   finally{btn.disabled=false;btn.textContent='로그인';}
 }
 function showSignup(){document.getElementById('form-login').style.display='none';document.getElementById('form-signup').style.display='block';}
@@ -2155,8 +2189,11 @@ async function doSignup(){
   finally{btn.disabled=false;btn.textContent='가입 신청';}
 }
 function doLogout(){
+  studentRestoreRetry=false;
   closePlay();
   if(studentPreviewMode){returnFromStudentPreview();return;}
+  weeklyLogin=null;
+  if(window.weeklyHomeReset)weeklyHomeReset();
   if(padMode){
     // 패드 모드에서는 완전 로그아웃 대신 학생 선택 화면으로 돌아가요 (다음 학생 차례)
     session=null;classAttendancePin='';
@@ -2444,29 +2481,7 @@ function renderSHome(){
   if(greet)greet.textContent=session.name||'학생';
   var grid=document.getElementById('home-grid');
   if(!grid)return;
-  var cards=[
-    ['📢','과제 안내','공지 확인','announce'],
-    ['🎬','일반 강의','자유롭게 시청','lectures'],
-    ['🏫','클리닉 강의','클리닉 해설 시청','clinic-lectures'],
-    ['🔁','복습 신청','신청·시청','review'],
-    ['📈','내 진도','시청률 확인','mypage'],
-    ['💬','과제 QnA','질문하기','qa'],
-    ['✅','인증','사진·완료 제출','cert'],
-    ['🏫','클리닉 변동','시간 변경 신청','clinic'],
-    ['⏱','과제 인증 타이머','순공 인증','study'],
-    ['🔁','오답 재풀이','OX 재시험','oxreview'],
-    ['📝','온라인 채점','시험·OMR 채점','exam'],
-    ['📊','내 성적 확인하기','점수·성적표 보기','scores'],
-    ['🔤','오늘의 어휘','단어 시험','vocab']
-  ];
-  grid.innerHTML=cards.map(function(c){
-    return '<div class="card" style="cursor:pointer" onclick="sNav(\''+c[3]+'\')">'+
-      '<div style="padding:1.5rem 1rem;text-align:center">'+
-        '<div style="font-size:30px;margin-bottom:8px">'+c[0]+'</div>'+
-        '<div style="font-size:14px;font-weight:700">'+c[1]+'</div>'+
-        '<div style="font-size:11px;color:var(--text2);margin-top:3px">'+c[2]+'</div>'+
-      '</div></div>';
-  }).join('');
+  grid.innerHTML='';
   renderStudentCertAlert();
   renderHomeAnnounceBanner();
   renderWeeklyStudentDashboard();
@@ -2498,7 +2513,6 @@ function renderStudentCertAlert(){
 async function renderWeeklyStudentDashboard(){
   var grid=document.getElementById('home-grid');
   if(!grid||!session)return;
-  var menuHtml=grid.innerHTML;
   var weekStart=weekMonday(new Date()),weekEnd=new Date(weekStart);weekEnd.setDate(weekEnd.getDate()+7);
   var clinicReq=effectiveClinicRequest(session.id,weekStart);
   var clinicSlot=clinicReq?clinicDb.slots.find(function(s){return s.id===clinicReq.slot_id;}):null;
@@ -2506,14 +2520,14 @@ async function renderWeeklyStudentDashboard(){
   var clinicLessons=studentClinicVideosForWeek(session,new Date());
   // '들어야 할 강의'는 교사가 복습 권한을 승인한 영상만 해당한다.
   // 기본강의와 주간 클리닉 해설은 각각의 메뉴/카드에서 따로 보여준다.
-  var assignedLessons=reviewVideos().filter(function(v){return hasAccess(session.id,v.id);});
+  var assignedLessons=reviewVideos().filter(function(v){return isReplacementAccess(session.id,v.id);});
   var needed=assignedLessons.filter(function(v){return getPct(session.id,v.id)<100;});
   var clinicAssigned=clinicLessons.filter(function(v){return hasAccess(session.id,v.id);});
   var clinicNeeded=clinicAssigned.filter(function(v){return getPct(session.id,v.id)<100;});
   // 주간 과제는 실제 수행 주간보다 앞선 금·토에 미리 게시될 수 있다.
   // 게시 날짜로 이번 주를 잘라내면 월요일이 지난 뒤 과제가 사라지므로,
   // 학생 학교에 맞는 가장 최근 과제 안내를 현재 과제로 보여준다.
-  var myAssignments=myAnnounceItems();
+  var myAssignments=myAnnounceItems().filter(a=>(a.notice_kind||'general')==='general');
   var assignments=myAssignments.length?[myAssignments[0]]:[];
   function dashboardSafeText(value){
     return String(value||'').replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});
@@ -2590,7 +2604,7 @@ async function renderWeeklyStudentDashboard(){
     ['🏫','이번 주 클리닉',clinicSlot?((clinicSlot.day_of_week?clinicSlot.day_of_week+'요일 ':'')+(clinicSlot.start_time||clinicSlot.label||'')):'아직 확정된 시간이 없어요','clinic'],
     ['⏱','이번 주 학습시간',fmtTime(weeklyStudy),'study'],
     ['✅','공부 인증',('월~수 '+(mwDone?'완료':'필요'))+' · '+('목~금 '+(tfDone?'완료':'필요')),'study'],
-    ['🎬','들어야 할 강의',needed.length?needed.length+'개 남음':'모두 완료했어요','lectures'],
+    ['🎬','영상대체 강의',needed.length?needed.length+'개 남음':'남은 영상이 없어요','replacement'],
     ['🏫','이번 주 클리닉 해설',clinicSummary,'clinic-lectures'],
     ['📢','이번 주 과제',assignmentSummary,'announce'],
     ['🔤','이번 주 단어시험',vocabLeft.length?vocabLeft.join(', ')+'강 남음':'모두 완료했어요','vocab'],
@@ -2607,7 +2621,7 @@ async function renderWeeklyStudentDashboard(){
     return '<div class="card" style="cursor:pointer;border-left:4px solid var(--accent);box-shadow:0 3px 12px rgba(0,0,0,.05)" onclick="sNav(\''+c[3]+'\')"><div style="padding:1rem"><div style="font-size:12px;color:var(--text2);margin-bottom:6px">'+c[0]+' '+c[1]+'</div><div style="font-size:14px;font-weight:800;line-height:1.45">'+c[2]+'</div></div></div>';
   }).join('')+
   '<div class="card" style="grid-column:1/-1;border-color:'+(urgent.length?'var(--amber)':'var(--green)')+'"><div style="padding:1rem 1.15rem"><div style="font-size:14px;font-weight:800;margin-bottom:7px">'+(urgent.length?'⚠️ 이번 주 남은 할 일':'🎉 이번 주 필수 항목 완료')+'</div><div style="font-size:13px;line-height:1.7;color:var(--text2)">'+(urgent.length?urgent.map(function(x){return '• '+x;}).join('<br>'):'현재 남은 필수 항목이 없어요.')+'</div></div></div>'+
-  '<div style="grid-column:1/-1;font-size:15px;font-weight:800;margin:12px 0 0">전체 메뉴</div>'+menuHtml;
+  '';
 }
 function renderHomeAnnounceBanner(){
   var el=document.getElementById('home-announce-banner');
@@ -2619,7 +2633,7 @@ function renderHomeAnnounceBanner(){
     '<div style="padding:14px 1.25rem;display:flex;align-items:center;gap:10px">'+
     '<div style="font-size:22px">📢</div>'+
     '<div style="flex:1;min-width:0">'+
-      '<div style="font-size:13px;font-weight:700;color:var(--accent)">새 과제 안내'+(unread.length>1?' 외 '+(unread.length-1)+'건':'')+'</div>'+
+      '<div style="font-size:13px;font-weight:700;color:var(--accent)">새 안내'+(unread.length>1?' 외 '+(unread.length-1)+'건':'')+'</div>'+
       '<div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+latest.title+'</div>'+
     '</div>'+
     '<span style="color:var(--accent);font-size:13px;font-weight:600">확인 →</span>'+
@@ -2631,6 +2645,7 @@ function tNav(panel){
   document.querySelectorAll('#page-teacher .nav-item').forEach(n=>n.classList.toggle('active',n.dataset.p===panel));
   document.querySelectorAll('#page-teacher .panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+panel));
   document.querySelectorAll('#t-tabbar .mobile-tab').forEach(b=>b.classList.toggle('active',b.dataset.mt===panel));
+  if(panel==='weekly')renderWeeklyHomework();
   if(panel==='dashboard'){renderDashboard();initClassAttendance();if(session&&session.role==='teacher')updateTQaBadge();}
   if(panel==='videos')renderVideos();
   if(panel==='clinic-videos')renderClinicVideos();
@@ -3012,7 +3027,7 @@ function dashBuildImmediateRows(){
   return activeStudents().map(function(student){
     var videoStatus,studyStatus,certStatus;
     try{
-      var activeAccess=(db.access||[]).filter(function(a){return a.student_id===student.id&&!isAccessExpired(a);});
+      var activeAccess=(db.access||[]).filter(function(a){return a.student_id===student.id&&!isAccessExpired(a)&&(a.access_kind==='replacement'||db.videos.some(v=>v.id===a.video_id&&v.category==='clinic'));});
       var missingVideos=activeAccess.map(function(a){var v=(db.videos||[]).find(function(x){return x.id===a.video_id;});return v&&getPct(student.id,a.video_id)<100?{title:v.title||'제목 없음',pct:getPct(student.id,a.video_id)}:null;}).filter(Boolean);
       videoStatus=!activeAccess.length?dashStatus('na','배정 없음'):missingVideos.length?dashStatus('miss',missingVideos.length+'개 미시청',missingVideos.map(function(v){return v.title+(v.pct?' '+v.pct+'%':'');}).join(', ')):dashStatus('ok','시청 완료');
     }catch(e){videoStatus=dashStatus('error','확인 필요','영상 기록');}
@@ -3484,11 +3499,15 @@ async function approveAccess(reqId, sid, vid){
   const existing=db.access.find(a=>a.student_id===sid&&a.video_id===vid);
   const accessId=existing?existing.id:'ac'+Date.now();
   const grantedAt=new Date().toISOString();
-  await sb.from('video_access').upsert({id:accessId,student_id:sid,video_id:vid,granted_at:grantedAt},{onConflict:'student_id,video_id'});
-  await sb.from('access_requests').update({status:'approved'}).eq('id',reqId);
-  logVideoAccessGrant(sid,vid,grantedAt);
-  if(existing)existing.granted_at=grantedAt;
-  else db.access.push({id:accessId,student_id:sid,video_id:vid,granted_at:grantedAt});
+  const kind=existing&&existing.access_kind==='replacement'&&!isAccessExpired(existing)?'replacement':'review';
+  const row={id:accessId,student_id:sid,video_id:vid,granted_at:grantedAt,expires_at:null,access_kind:kind,absence_date:kind==='replacement'?existing.absence_date:null};
+  const grant=await sb.from('video_access').upsert(row,{onConflict:'student_id,video_id'});
+  if(grant.error){notify('승인 실패: '+grant.error.message,'error');return;}
+  const approval=await sb.from('access_requests').update({status:'approved'}).eq('id',reqId);
+  logVideoAccessGrant(sid,vid,grantedAt,kind,row.absence_date);
+  if(existing)Object.assign(existing,row);
+  else db.access.push(row);
+  if(approval.error){notify('시청 권한은 저장됐지만 신청 상태를 갱신하지 못했어요. 다시 승인해주세요.','error');renderAccessPanel();return;}
   const req=db.requests.find(r=>r.id===reqId);
   if(req)req.status='approved';
   notify(`${s.name}에게 "${v.title}" 시청 권한을 부여했습니다.`,'success');
@@ -3518,9 +3537,9 @@ async function revokeAccess(sid, vid){
    시 덮어써지므로, "언제 누구한테 줬었는지" 주차별 이력은 이 로그 테이블에
    서 따로 관리한다. 해제해도 이 로그는 지우지 않고 revoked_at만 채운다.
    테이블이 아직 없으면(마이그레이션 전) 조용히 무시된다. */
-async function logVideoAccessGrant(sid,vid,grantedAt){
+async function logVideoAccessGrant(sid,vid,grantedAt,kind,absenceDate){
   try{
-    const row={id:'acl_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),student_id:sid,video_id:vid,granted_at:grantedAt,revoked_at:null};
+    const row={id:'acl_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),student_id:sid,video_id:vid,granted_at:grantedAt,revoked_at:null,access_kind:kind||'review',absence_date:absenceDate||null};
     const res=await sb.from('video_access_log').insert(row);
     if(!res.error)db.accessLog.unshift(row);
   }catch(e){console.error('access log insert error',e);}
@@ -3534,25 +3553,7 @@ async function markVideoAccessRevoked(sid,vid){
     openLog.revoked_at=revokedAt;
   }catch(e){console.error('access log revoke error',e);}
 }
-async function grantAccessDirect(){
-  const sid=document.getElementById('access-grant-student').value;
-  const vid=document.getElementById('access-grant-video').value;
-  if(!sid||!vid){notify('학생과 영상을 선택하세요.','error');return;}
-  if(hasAccess(sid,vid)){notify('이미 시청 권한이 있습니다.','error');return;}
-  const s=db.users.find(u=>u.id===sid);
-  const v=db.videos.find(x=>x.id===vid);
-  // 예전에(마감된 뒤라도) 한 번이라도 권한을 받았던 영상이면 같은 행을 upsert
-  const existing=db.access.find(a=>a.student_id===sid&&a.video_id===vid);
-  const accessId=existing?existing.id:'ac'+Date.now();
-  const grantedAt=new Date().toISOString();
-  const res=await sb.from('video_access').upsert({id:accessId,student_id:sid,video_id:vid,granted_at:grantedAt},{onConflict:'student_id,video_id'});
-  if(res.error){notify('권한 부여 실패: '+res.error.message,'error');return;}
-  logVideoAccessGrant(sid,vid,grantedAt);
-  if(existing)existing.granted_at=grantedAt;
-  else db.access.push({id:accessId,student_id:sid,video_id:vid,granted_at:grantedAt});
-  notify(`${s.name}에게 "${v.title}" 시청 권한을 부여했습니다.`,'success');
-  renderAccessPanel();renderDashboard();
-}
+async function grantAccessDirect(){return grantVideoAssignment();}
 /* 권한을 줬는데 아직 다 안 본(진도 100% 미만) 학생 명단 — 현재 열려있는
    것과 이미 마감된 것 둘 다 보여주되, 마감된 건 흐리게 표시한다. */
 var accessUnwatchedOpen=false;
@@ -3603,10 +3604,10 @@ function renderAccessPanel(){
   const gStu=document.getElementById('access-grant-student');
   const gVid=document.getElementById('access-grant-video');
   if(gStu&&gVid){
-    const curStu=gStu.value,curVid=gVid.value;
-    gStu.innerHTML='<option value="">학생 선택</option>'+activeStudents().map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+    const curStudents=Array.from(gStu.selectedOptions).map(o=>o.value),curVid=gVid.value;
+    gStu.innerHTML=activeStudents().map(s=>`<option value="${s.id}">${s.name} · ${studentClassLabel(s.group_id)}</option>`).join('');
     gVid.innerHTML='<option value="">영상 선택</option>'+reviewVideos().map(v=>`<option value="${v.id}">${v.title}</option>`).join('');
-    if(curStu)gStu.value=curStu;
+    Array.from(gStu.options).forEach(o=>o.selected=curStudents.includes(o.value));
     if(curVid)gVid.value=curVid;
   }
   const pending=db.requests.filter(r=>r.status==='pending');
@@ -3655,7 +3656,7 @@ function renderAccessPanel(){
         <div style="font-size:13px;font-weight:600">${s.name} <span style="font-weight:400;color:var(--text2)">→</span> ${v.title}</div>
         <div style="display:flex;align-items:center;gap:8px;margin-top:3px">
           <div class="pbar" style="width:80px"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div>
-          <span class="badge ${pctBadge(p)}">${pctLabel(p)}</span>
+          <span class="badge ${pctBadge(p)}">${pctLabel(p)}</span><span class="badge partial">${a.access_kind==='replacement'?'영상대체':v.category==='clinic'?'클리닉 필수':'복습'}</span>
           ${expired?'<span class="badge" style="background:var(--red-bg);color:var(--red)">마감됨</span>':(expLabel?`<span style="font-size:11px;color:var(--text2)">${expLabel} 마감</span>`:'')}
         </div>
       </div>
@@ -3843,24 +3844,41 @@ function openDetail(sid,vid){
 function closeDetail(){document.getElementById('modal-detail').classList.remove('show');}
 
 /* ===== STUDENT NAV ===== */
-function sNav(panel){
+document.addEventListener('keydown',function(e){var menu=document.getElementById('student-menu');if(e.key==='Escape'&&menu&&menu.open){menu.open=false;menu.querySelector('summary').focus();}});
+function sNav(panel,examScope){
   if(padMode&&panel!=='exam'){panel='exam';notify('패드 모드에서는 온라인 채점만 이용할 수 있어요.','info');}
   document.querySelectorAll('#page-student .nav-item').forEach(n=>n.classList.toggle('active',n.dataset.p===panel));
   document.querySelectorAll('#page-student .panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+panel));
   document.querySelectorAll('#s-tabbar .mobile-tab').forEach(b=>b.classList.toggle('active',b.dataset.ms===panel));
+  var menu=document.getElementById('student-menu');
+  if(menu)menu.open=false;
+  var current=document.getElementById('student-current-menu');
+  var activePanel=document.querySelector('#page-student #panel-'+panel);
+  if(current)current.textContent=panel==='home'?'나의 공부 홈':(activePanel&&activePanel.querySelector('h1')?activePanel.querySelector('h1').textContent:'학습');
+  document.querySelectorAll('#s-tabbar [data-ms]').forEach(function(b){if(b.dataset.ms===panel)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
+  var main=document.querySelector('#page-student .main');
+  if(main)main.scrollTop=0;
+  window.scrollTo(0,0);
   if(panel==='lectures')renderLectures();
   if(panel==='clinic-lectures')renderClinicLectures();
   if(panel==='review')renderStudentReview();
+  if(panel==='replacement')renderReplacementLectures();
+  if(panel==='clinic-notices')renderSAnnounceList('clinic');
   if(panel==='mypage')renderMyPage();
   if(panel==='qa'){renderSQaSchoolList();renderSQaMyList();clearQaBadge();}
   if(panel==='cert')renderSCertList();
   if(panel==='clinic')renderSClinicList();
   if(panel==='study')renderSStudy();
   if(panel==='oxreview')renderSOxReview();
-  if(panel==='exam')renderSExam();
+  if(panel==='exam'){var links=document.getElementById('s-weekly-links');if(links)links.hidden=true;renderSExam(examScope);}
   if(panel==='scores')renderSGrades();
   if(panel==='vocab')renderVocabEntry();
   if(panel==='announce')renderSAnnounceList();
+  var section=['announce','notice-hub','cert'].includes(panel)?'announce':(['clinic-hub','clinic','clinic-notices','scores','oxreview'].includes(panel)?'clinic-hub':(['video-hub','replacement','clinic-lectures','review','lectures','mypage'].includes(panel)?'video-hub':(['weekly','weekly-notebook','weekly-concept','vocab','qa','study'].includes(panel)?'weekly':null)));
+  if(panel==='exam')section=document.querySelector('.student-primary-nav [aria-current="page"]')?.dataset.studentSection||'clinic-hub';
+  document.querySelectorAll('[data-student-section]').forEach(function(b){var active=b.dataset.studentSection===section;b.classList.toggle('active',active);if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
+  if(panel==='clinic-hub')renderStudentClassAttendance();
+  if(panel==='weekly')renderWeeklyHomework();
   if(panel==='home')renderSHome();
 }
 
@@ -3925,7 +3943,7 @@ function renderReviewPerformance(){
   const source=(db.accessLog&&db.accessLog.length)?db.accessLog:db.access;
   const assignments=source.filter(a=>{
     const granted=new Date(a.granted_at),video=db.videos.find(v=>v.id===a.video_id);
-    return video&&video.category==='review'&&!isNaN(granted)&&granted>=start&&granted<end;
+    return video&&a.access_kind==='replacement'&&!isNaN(granted)&&granted>=start&&granted<end;
   });
   const byStudent={};assignments.forEach(a=>{(byStudent[a.student_id]||(byStudent[a.student_id]=[])).push(a);});
   const rows=activeStudents().filter(s=>byStudent[s.id]&&(!reviewPerformanceClass||s.group_id===reviewPerformanceClass)).map(s=>{
@@ -3989,23 +4007,9 @@ async function sShowMyGradeReport(responseId){
 /* ===== 학생: 일반 강의 ===== */
 function renderLectures(){
   const el=document.getElementById('student-lectures');
-  const approved=reviewVideos().filter(v=>hasAccess(session.id,v.id)).sort((a,b)=>{
-    const pa=getPct(session.id,a.id),pb=getPct(session.id,b.id);
-    if((pa>=100)!==(pb>=100))return pa>=100?1:-1;
-    const ga=db.access.find(x=>x.student_id===session.id&&x.video_id===a.id);
-    const gb=db.access.find(x=>x.student_id===session.id&&x.video_id===b.id);
-    return new Date((gb&&gb.granted_at)||0)-new Date((ga&&ga.granted_at)||0);
-  });
   // 최근에 새로 열어준 강의가 맨 위에 뜨도록 최신순 정렬
   const vids=normalVideos().slice().sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
-  if(!vids.length&&!approved.length){el.innerHTML='<div class="empty"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg><p>등록된 일반 강의가 없습니다.</p></div>';return;}
-  const approvedHtml=approved.length?'<div class="card" style="margin-bottom:16px;border:2px solid var(--amber);background:rgba(245,158,11,.06)"><div class="card-head"><h3>⭐ 지금 봐야 할 승인 영상</h3><span style="font-size:11px;color:var(--amber);font-weight:700">선생님이 열어준 영상</span></div><div style="padding:0 12px 8px">'+approved.map(v=>{
-    const p=getPct(session.id,v.id),lp=getLastPos(session.id,v.id),t=thumb(v.url);
-    return`<div class="lecture-item" style="border-color:${p>=100?'var(--green)':'var(--amber)'}">
-      <div class="lecture-thumb">${t?`<img src="${t}" alt="">`:'▶'}</div>
-      <div class="lecture-body"><h4>${v.title} <span class="badge ${p>=100?'done':'partial'}">${p>=100?'시청 완료':'승인 영상'}</span></h4><div class="lmeta">${v.description||'선생님이 시청하도록 승인한 영상입니다'}</div><div style="display:flex;align-items:center;gap:8px"><div class="pbar" style="width:110px"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div><span class="badge ${pctBadge(p)}">${pctLabel(p)}</span></div></div>
-      <button class="btn amber btn-sm" onclick="openPlay('${v.id}')">▶ ${lp>0&&p<100?'이어보기':'바로 보기'}</button></div>`;
-  }).join('')+'</div></div>':'';
+  if(!vids.length){el.innerHTML='<div class="empty"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg><p>등록된 일반 강의가 없습니다.</p></div>';return;}
   const normalTitle=vids.length?'<div style="font-size:16px;font-weight:800;margin:18px 0 8px">📚 일반 강의</div>':'';
   const normalHtml=vids.map(v=>{
     const p=getPct(session.id,v.id),ws=getWatchSec(session.id,v.id),lp=getLastPos(session.id,v.id);
@@ -4025,7 +4029,7 @@ function renderLectures(){
       <button class="btn blue btn-sm" onclick="openPlay('${v.id}')">▶ ${lp>0&&p<100?'이어보기':'시청하기'}</button>
     </div>`;
   }).join('');
-  el.innerHTML=approvedHtml+normalTitle+normalHtml;
+  el.innerHTML=normalTitle+normalHtml;
 }
 
 function renderClinicLectures(){
@@ -4053,10 +4057,11 @@ async function requestReview(vid){
   if(!v||(!reviewVideoVisible(v)&&!hasRequested(session.id,vid)&&!hasAccess(session.id,vid))){notify('현재 신청할 수 없는 영상입니다.','info');return;}
   if(hasRequested(session.id,vid)){notify('이미 신청한 영상입니다.','info');return;}
   if(hasAccess(session.id,vid)){notify('이미 시청 권한이 있습니다.','info');return;}
-  const id='req'+Date.now();
-  const{error}=await sb.from('access_requests').insert({id,student_id:session.id,video_id:vid,status:'pending'});
+  const existing=db.requests.find(r=>r.student_id===session.id&&r.video_id===vid);
+  const id=existing?existing.id:'req'+Date.now();
+  const{error}=await sb.from('access_requests').upsert({id,student_id:session.id,video_id:vid,status:'pending'});
   if(error){notify('신청 실패: '+error.message,'error');return;}
-  db.requests.push({id,student_id:session.id,video_id:vid,status:'pending'});
+  if(existing)existing.status='pending';else db.requests.push({id,student_id:session.id,video_id:vid,status:'pending'});
   sendStudentActivity('복습강의 신청',v.title);
   notify(`"${v.title}" 복습 신청이 완료됐습니다. 강사 승인을 기다려주세요.`,'success');
   renderStudentReview();
@@ -4065,7 +4070,7 @@ async function requestReview(vid){
 function renderStudentReview(){
   const el=document.getElementById('student-review-list');
   // 시청 권한이 (마감 안 되고) 열려있는 영상을 맨 위로, 그중에서도 최근에 열어준 순서대로 정렬
-  const vids=reviewVideos().filter(v=>reviewVideoVisible(v)||hasRequested(session.id,v.id)||hasAccess(session.id,v.id)).sort((a,b)=>{
+  const vids=reviewVideos().filter(v=>!isReplacementAccess(session.id,v.id)&&(reviewVideoVisible(v)||hasRequested(session.id,v.id)||hasAccess(session.id,v.id))).sort((a,b)=>{
     const accA=hasAccess(session.id,a.id),accB=hasAccess(session.id,b.id);
     if(accA&&accB){
       const gA=db.access.find(x=>x.student_id===session.id&&x.video_id===a.id);
@@ -4294,7 +4299,7 @@ async function closePlay(){
   document.getElementById('yt-player').innerHTML='';
   document.getElementById('modal-play').classList.remove('show');
   currentVid=null;currentStartPos=0;watchedSet=new Set();lastPos=-1;totalDur=0;maxRateSeen=1;
-  if(session&&session.role==='student'){renderLectures();renderClinicLectures();renderStudentReview();}
+  if(session&&session.role==='student'){renderLectures();renderClinicLectures();renderStudentReview();renderReplacementLectures();}
 }
 
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closePlay();closeDetail();closeResume();}});
@@ -4389,6 +4394,7 @@ async function postAnnouncement(){
   var title=document.getElementById('an-title').value.trim();
   var content=document.getElementById('an-content').value.trim();
   var schoolId=document.getElementById('an-school').value||null;
+  var noticeKind=document.getElementById('an-kind').value;
   if(!title){notify('제목을 입력해주세요.','error');return;}
   try{
     var imageUrls=[];
@@ -4401,7 +4407,7 @@ async function postAnnouncement(){
       imageUrls.push(sb.storage.from('qa-files').getPublicUrl(path).data.publicUrl);
     }
     if(announceEditingId){
-      var patch={title:title,content:content,school_id:schoolId};
+      var patch={title:title,content:content,school_id:schoolId,notice_kind:noticeKind};
       if(imageUrls.length){patch.image_url=imageUrls[0]||null;patch.image_urls=JSON.stringify(imageUrls);}
       var updated=await sb.from('announcements').update(patch).eq('id',announceEditingId);
       if(updated.error){notify('수정 실패: '+updated.error.message,'error');return;}
@@ -4412,7 +4418,7 @@ async function postAnnouncement(){
       return;
     }
     var id='an_'+Date.now();
-    var row={id:id,title:title,content:content,image_url:imageUrls[0]||null,image_urls:imageUrls.length?JSON.stringify(imageUrls):null,school_id:schoolId,created_at:new Date().toISOString()};
+    var row={id:id,title:title,content:content,image_url:imageUrls[0]||null,image_urls:imageUrls.length?JSON.stringify(imageUrls):null,school_id:schoolId,notice_kind:noticeKind,created_at:new Date().toISOString()};
     var res=await sb.from('announcements').insert(row);
     if(res.error){notify('게시 실패: '+res.error.message,'error');return;}
     announceDb.items.unshift(row);
@@ -4424,6 +4430,7 @@ async function postAnnouncement(){
 }
 function resetAnnouncementForm(){
   announceEditingId=null;
+  document.getElementById('an-kind').value='general';
   document.getElementById('an-title').value='';
   document.getElementById('an-content').value='';
   document.getElementById('an-image-input').value='';
@@ -4438,6 +4445,7 @@ function editAnnouncement(id){
   if(!a)return;
   announceEditingId=id;
   document.getElementById('an-school').value=a.school_id||'';
+  document.getElementById('an-kind').value=a.notice_kind||'general';
   document.getElementById('an-title').value=a.title||'';
   document.getElementById('an-content').value=a.content||'';
   var submit=document.getElementById('an-submit-btn');if(submit)submit.textContent='💾 수정 저장';
@@ -4498,10 +4506,11 @@ function myAnnounceItems(){
   var mySchool=session.school_id||null;
   return announceDb.items.filter(function(a){return !a.school_id||a.school_id===mySchool;});
 }
-function renderSAnnounceList(){
-  var el=document.getElementById('s-announce-list');
+function renderSAnnounceList(kind){
+  kind=kind||'general';
+  var el=document.getElementById(kind==='clinic'?'s-clinic-notice-list':'s-announce-list');
   if(!el)return;
-  var items=myAnnounceItems();
+  var items=myAnnounceItems().filter(function(a){return (a.notice_kind||'general')===kind;});
   if(!items.length){el.innerHTML='<div style="padding:2rem;text-align:center;color:var(--text3);font-size:13px">아직 안내가 없어요.</div>';return;}
   el.innerHTML=items.map(function(a){
     var unread=!isAnnounceRead(a.id);
@@ -4532,15 +4541,19 @@ async function openAnnounceView(id){
       sendStudentActivity('공지 확인',a.title);
       updateAnnounceBadge();
       renderSAnnounceList();
+      renderSAnnounceList('clinic');
       renderHomeAnnounceBanner();
     }catch(e){console.error('announce read save error',e);}
   }
 }
 function updateAnnounceBadge(){
   if(!session||session.role!=='student')return;
-  var unread=myAnnounceItems().filter(function(a){return !isAnnounceRead(a.id);}).length;
+  var allUnread=myAnnounceItems().filter(function(a){return !isAnnounceRead(a.id);});
+  var unread=allUnread.filter(a=>(a.notice_kind||'general')==='general').length;
+  setBadge('primary-clinic-s',allUnread.filter(a=>a.notice_kind==='clinic').length,'s');
   setBadge('nav-announce-s',unread,'s');
   setBadge('mt-announce-s',unread,'s');
+  setBadge('primary-announce-s',unread,'s');
 }
 
 /* ===== 공부 타이머 ===== */
@@ -4605,7 +4618,7 @@ function renderSStudy(){
   var todaySec=studyTodaySeconds(session.id);
   document.getElementById('s-study-today-time').textContent=fmtTime(todaySec);
   var goalEl=document.getElementById('s-study-goal-badge');
-  goalEl.innerHTML=todaySec>=3600?'<span class="badge done">✓ 오늘 60분 달성!</span>':'<span class="badge partial">'+Math.floor(todaySec/60)+'분 / 60분</span>';
+  goalEl.innerHTML='<span class="badge partial">과제 + 오답 정리 · 한 번에 40분 이상</span>';
   if(studyActiveSession){
     document.getElementById('s-study-idle-card').style.display='none';
     document.getElementById('s-study-active-card').style.display='';
@@ -7289,6 +7302,7 @@ async function tSaveVocabStart(){
   const reportId=new URLSearchParams(location.search).get('report');
   if(reportId){await renderStandaloneReportCard(reportId);return;}
   if(!navigator.onLine){
+    studentRestoreRetry=true;
     document.querySelector('.loading-text').textContent='인터넷 연결을 확인해주세요.';
     setTimeout(function(){hideLoading();showPage('page-login');},2000);
     return;
@@ -7306,6 +7320,7 @@ async function tSaveVocabStart(){
     }
   }
   if(!connected){
+    studentRestoreRetry=true;
     document.querySelector('.loading-text').textContent='서버 연결 실패. 새로고침해주세요.';
     setTimeout(function(){hideLoading();showPage('page-login');},2500);
     return;
@@ -9998,7 +10013,9 @@ function sExamVisibleForStudent(exam){
   return !mySchool||exam.clinic_school===mySchool;
 }
 
-async function renderSExam(){
+var studentExamScope=null;
+async function renderSExam(scope){
+  if(arguments.length)studentExamScope=scope||null;
   sExamData=null;sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;sWrongChecked={};sExamPriorResponse=null;sExamCurrentThoughts={};sMockWrongNotes={};
   showSExamView('entry');
   const clinicEl=document.getElementById('s-exam-clinic-groups');
@@ -10016,7 +10033,8 @@ async function renderSExam(){
   ]);
   sExamRespCache={};
   (myResponses||[]).forEach(function(r){sExamRespCache[r.exam_id]=r;});
-  const list=(exams||[]).filter(sExamVisibleForStudent);
+  const list=(exams||[]).filter(sExamVisibleForStudent).filter(e=>studentExamScope==='clinic'?(e.category||'school')==='school':studentExamScope==='homework'?e.category==='homework':true);
+  [clinicEl,homeworkEl,miniMockEl,mockEl].forEach((el,i)=>{if(el)el.closest('.card').hidden=!!studentExamScope&&(studentExamScope==='clinic'?i!==0:i!==1);});
   sExamClinicCache=list.filter(function(e){return (e.category||'school')==='school';});
   const mock=list.filter(function(e){return e.category==='mock';});
   const miniMock=list.filter(function(e){return e.category==='mini_mock';});
@@ -10984,6 +11002,8 @@ if('serviceWorker' in navigator){
   window.addEventListener('load', function(){
     var refreshing=false;
     navigator.serviceWorker.addEventListener('controllerchange',function(){
+      // 사용 중인 수업/타이머를 끊지 않고 다음 실행 때 새 버전을 적용한다.
+      if(session||studentRestoreRunning||document.getElementById('login-btn').disabled)return;
       if(refreshing)return;refreshing=true;location.reload();
     });
     navigator.serviceWorker.register('sw.js?v=84', {scope:'/lecture/',updateViaCache:'none'})
@@ -11050,4 +11070,3 @@ function installPWA(){
 </script>
 </body>
 </html>
-
