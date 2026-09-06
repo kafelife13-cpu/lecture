@@ -6276,12 +6276,34 @@ function selectTQaSchool(sid){
   renderTQaSchoolTabs();renderTQaWeekList();renderQaWeekFilter();renderQaMaterialsList();
 }
 
+function qaWeekNumber(w){
+  var match=String(w.name||'').match(/(\d+)\s*주/);
+  return match?Number(match[1]):0;
+}
+function qaGroupedWeeksHtml(weeks,renderRow){
+  var current=[],past=[];
+  weeks.forEach(function(w){
+    var name=String(w.name||'');
+    // August legacy sets include an undated middle-Korean set.
+    var archived=/8\s*월/.test(name)||(!/내신/.test(name)&&String(w.created_at||'')<'2026-09-01'&&!!w.created_at);
+    (archived?past:current).push(w);
+  });
+  function groups(items){
+    var grouped={};
+    items.forEach(function(w){var n=qaWeekNumber(w);(grouped[n]||(grouped[n]=[])).push(w);});
+    return Object.keys(grouped).sort(function(a,b){return Number(b)-Number(a);}).map(function(n){
+      return '<section style="grid-column:1/-1"><h3 style="margin:14px 0 10px">'+(Number(n)?n+'주':'기타 과제')+'</h3><div style="display:grid;gap:10px">'+grouped[n].sort(function(a,b){return String(a.name).localeCompare(String(b.name),'ko',{numeric:true});}).map(renderRow).join('')+'</div></section>';
+    }).join('');
+  }
+  return groups(current)+(past.length?'<details style="grid-column:1/-1;margin-top:16px"><summary style="cursor:pointer;font-weight:700;padding:12px 0">지난달 보기 · 8월 ('+past.length+')</summary>'+groups(past)+'</details>':'');
+}
+
 function renderTQaWeekList(){
   var el=document.getElementById('t-qa-week-list');
   if(!el)return;
   var weeks=qaDb.weeks.filter(function(w){return w.school_id===qaState.school;});
   if(!weeks.length){el.innerHTML='<div style="padding:1rem 0;font-size:13px;color:var(--text3)">등록된 주차가 없습니다.</div>';return;}
-  el.innerHTML=weeks.map(function(w){
+  el.innerHTML=qaGroupedWeeksHtml(weeks,function(w){
     var qCount=qaDb.questions.filter(function(q){return q.week_id===w.id;}).length;
     var pCount=qaDb.questions.filter(function(q){return q.week_id===w.id&&q.status==='pending';}).length;
     return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">'+
@@ -6293,7 +6315,7 @@ function renderTQaWeekList(){
       '</div></div>'+
       '<button class="btn btn-sm" onclick="openQaWeekEditModal(\''+w.id+'\')">✏️ 수정</button>'+
       '<button class="btn red btn-sm" onclick="deleteQaWeek(\''+w.id+'\')">삭제</button></div>';
-  }).join('');
+  });
 }
 
 function renderQaWeekFilter(){
@@ -6395,15 +6417,15 @@ function renderSQaWeekList(){
   if(!el)return;
   var weeks=qaDb.weeks.filter(function(w){return w.school_id===qaState.school;});
   if(!weeks.length){el.innerHTML='<div style="text-align:center;color:var(--text3);font-size:13px;padding:2rem">등록된 주차가 없습니다.</div>';return;}
-  el.innerHTML=weeks.map(function(w){
+  el.innerHTML=qaGroupedWeeksHtml(weeks,function(w){
     var myQs=session?qaDb.questions.filter(function(q){return q.week_id===w.id&&q.student_id===session.id;}).length:0;
     return '<div onclick="selectSQaWeek(\''+w.id+'\')" style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;cursor:pointer;display:flex;align-items:center;gap:14px">'+
       '<div style="width:42px;height:42px;border-radius:var(--radius-sm);background:rgba(79,124,255,.15);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0">'+
-      (w.name.replace(/[^0-9]/g,'')||'?')+'주</div>'+
+      (qaWeekNumber(w)?qaWeekNumber(w)+'주':'과제')+'</div>'+
       '<div style="flex:1"><div style="font-size:14px;font-weight:600;margin-bottom:3px">'+w.name+'</div>'+
       '<div style="font-size:11px;color:var(--text2)">문제 '+w.prob_count+'개'+(myQs?' · 내 질문 '+myQs+'건':'')+(w.sol_text?' · <span style="color:var(--green)">해설지 있음</span>':'')+'</div></div>'+
       '<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:var(--text3)"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>';
-  }).join('');
+  });
 }
 
 function selectSQaWeek(wid){
