@@ -10063,18 +10063,26 @@ function renderHomeworkEntry(list,responses){
   return '<section><h3>1) 필수 40문항 입력</h3><p>40문항의 답안을 모두 입력하세요.</p>'+renderSExamListCards(list.filter(function(e){return Number(e.total_q)===40;}),responses,'등록된 필수 40문항 과제가 없어요')+'</section>'+
     '<section style="margin-top:20px"><h3>2) 나머지 과제 입력</h3><p>전체 답안 입력 또는 오답 번호만 입력 중 선택하세요.</p>'+renderSExamListCards(list.filter(function(e){return Number(e.total_q)!==40;}),responses,'등록된 나머지 과제가 없어요')+'</section>';
 }
-function parseHomeworkWrongNumbers(value,total){
+function examQuestionNumber(exam,index){
+  var num=Number(exam&&exam.questions&&exam.questions[index]&&exam.questions[index].num);
+  return Number.isInteger(num)&&num>0?num:index+1;
+}
+function parseHomeworkWrongNumbers(value,totalOrExam){
+  var exam=typeof totalOrExam==='object'?totalOrExam:null;
+  var total=exam?Number(exam.total_q):Number(totalOrExam);
+  var labels=Array.from({length:total},function(_,i){return examQuestionNumber(exam,i);});
   var tokens=String(value).trim().split(/[\s,，]+/).filter(Boolean),numbers=[];
   tokens.forEach(function(token){
-    if(!/^\d+$/.test(token)||Number(token)<1||Number(token)>total)throw new Error('오답 번호는 1~'+total+' 사이의 정수로 입력해주세요.');
-    var index=Number(token)-1;if(numbers.indexOf(index)===-1)numbers.push(index);
+    var index=labels.indexOf(Number(token));
+    if(!/^\d+$/.test(token)||index<0)throw new Error('과제에 있는 문제 번호('+labels[0]+'~'+labels[labels.length-1]+')를 입력해주세요.');
+    if(numbers.indexOf(index)===-1)numbers.push(index);
   });
   return numbers.sort(function(a,b){return a-b;});
 }
 function sHomeworkApplyWrongNumbers(){
   if(!sHomeworkWrongOnly(sExamData))return true;
   try{
-    var indices=parseHomeworkWrongNumbers(document.getElementById('s-homework-wrong-numbers').value,Number(sExamData.total_q));
+    var indices=parseHomeworkWrongNumbers(document.getElementById('s-homework-wrong-numbers').value,sExamData);
     sWrongChecked={};indices.forEach(function(i){sWrongChecked[i]=true;});
     document.getElementById('s-exam-check-err').textContent='';renderSExamAnswerGrid();return true;
   }catch(error){document.getElementById('s-exam-check-err').textContent=error.message;return false;}
@@ -10180,6 +10188,7 @@ async function sExamOpenForGrading(examId,entryMode){
   sExamCheckMode=found.category==='naeshin'||(entryMode==='wrongonly'&&sHomeworkAllowsWrongOnly(found))?'wrongonly':'full';
   document.getElementById('s-homework-wrong-input').hidden=!sHomeworkWrongOnly(found);
   document.getElementById('s-homework-wrong-numbers').value='';
+  document.getElementById('s-homework-wrong-numbers').placeholder='예: '+examQuestionNumber(found,0)+', '+examQuestionNumber(found,Math.min(4,found.total_q-1));
   document.getElementById('s-wrong-details').innerHTML='';
   const icon=found.category==='mock'?'📝 ':found.category==='mini_mock'?'🧩 ':found.category==='naeshin'?'📚 ':found.category==='homework'?'📒 ':'🏫 ';
   document.getElementById('s-exam-check-title').textContent=icon+found.name;
@@ -10243,17 +10252,18 @@ function renderSExamFullGrid(){
   if(!el)return;
   el.innerHTML=Array.from({length:total},function(_,i){
     const q=sExamData.questions[i]||{};
+    var heading=q.domain&&(i===0||q.domain!==(sExamData.questions[i-1]||{}).domain)?'<h3 style="margin:16px 0 8px;font-size:14px">'+escHtml(q.domain)+'</h3>':'';
     if(!isObjectiveAnswer(q.answer)){
-      return '<div class="card" style="margin-bottom:8px;border-left:3px solid var(--amber)">'+
+      return heading+'<div class="card" style="margin-bottom:8px;border-left:3px solid var(--amber)">'+
         '<div style="padding:0.75rem 1rem;display:flex;align-items:center;gap:8px">'+
-          '<span style="min-width:34px;font-size:13px;font-weight:700;color:var(--amber)">'+(i+1)+'번</span>'+
+          '<span style="min-width:34px;font-size:13px;font-weight:700;color:var(--amber)">'+examQuestionNumber(sExamData,i)+'번</span>'+
           '<span style="font-size:12px;color:var(--text2)">서술형·주관식 문항이에요 (자동채점 대상 아님, 선생님이 별도로 확인해요)</span>'+
         '</div></div>';
     }
     const my=sExamFullAnswers[i];
-    return '<div class="card" style="margin-bottom:8px">'+
+    return heading+'<div class="card" style="margin-bottom:8px">'+
       '<div style="padding:0.75rem 1rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap">'+
-        '<span style="min-width:34px;font-size:13px;font-weight:700;color:var(--accent)">'+(i+1)+'번</span>'+
+        '<span style="min-width:34px;font-size:13px;font-weight:700;color:var(--accent)">'+examQuestionNumber(sExamData,i)+'번</span>'+
         '<div style="display:flex;gap:6px">'+
         [1,2,3,4,5].map(function(n){
           const sel=String(my)===String(n);
@@ -10276,7 +10286,7 @@ async function sExamSubmitFull(forceSubmit){
   const total=sExamData.total_q;
   const objIdxs=[];
   sExamData.questions.forEach(function(q,i){if(isObjectiveAnswer(q.answer))objIdxs.push(i);});
-  const unanswered=objIdxs.filter(function(i){return !sExamFullAnswers[i];}).map(function(i){return i+1;});
+  const unanswered=objIdxs.filter(function(i){return !sExamFullAnswers[i];}).map(function(i){return examQuestionNumber(sExamData,i);});
   if(sExamData.category==='homework'&&Number(total)===40&&unanswered.length){alert('필수 40문항의 답안을 모두 입력해주세요. 남은 문항: '+unanswered.join(', '));return;}
   if(unanswered.length&&!forceSubmit){
     if(!confirm(unanswered.length+'문항 답을 아직 선택 안 했어요 ('+unanswered.slice(0,8).join(',')+(unanswered.length>8?'...':'')+'). 그래도 제출할까요?'))return;
@@ -10460,16 +10470,18 @@ function renderSExamAnswerGrid(){
   grid.style.gridTemplateColumns='repeat('+Math.min(6,total)+',1fr)';
   grid.innerHTML=Array.from({length:total},function(_,i){
     var isWrong=sWrongChecked[i];
-    return '<button type="button" '+
+    var q=sExamData.questions[i]||{};
+    var heading=q.domain&&(i===0||q.domain!==(sExamData.questions[i-1]||{}).domain)?'<div style="grid-column:1/-1;text-align:left;margin-top:12px;font-weight:700">'+escHtml(q.domain)+'</div>':'';
+    return heading+'<button type="button" '+
       'onclick="sToggleWrong('+i+')" '+
       'style="border:none;padding:10px 4px;text-align:center;cursor:pointer;font-size:13px;font-weight:600;border-radius:8px;transition:all 0.15s;user-select:none;-webkit-tap-highlight-color:transparent;'+
       'background:'+(isWrong?'var(--red)':'var(--card)')+';'+
       'color:'+(isWrong?'white':'var(--text2)')+';'+
       'box-shadow:'+(isWrong?'0 2px 8px rgba(239,68,68,0.4)':'none')+'">'+
-      (i+1)+'</button>';
+      examQuestionNumber(sExamData,i)+'</button>';
   }).join('');
   updateWrongCountLabel();
-  if(sHomeworkWrongOnly(sExamData))document.getElementById('s-homework-wrong-numbers').value=Object.keys(sWrongChecked).map(Number).sort(function(a,b){return a-b;}).map(function(i){return i+1;}).join(', ');
+  if(sHomeworkWrongOnly(sExamData))document.getElementById('s-homework-wrong-numbers').value=Object.keys(sWrongChecked).map(Number).sort(function(a,b){return a-b;}).map(function(i){return examQuestionNumber(sExamData,i);}).join(', ');
 }
 
 function sToggleWrong(idx){
@@ -10497,7 +10509,7 @@ function renderWrongDetails(){
     var photo=sExamPhotos[idx];
     return '<div class="card" style="margin-bottom:10px;border-left:3px solid var(--red)" id="wrong-detail-'+idx+'">'+
       '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">'+
-        '<span style="background:var(--red);color:white;font-size:12px;font-weight:700;padding:3px 10px;border-radius:8px">'+(idx+1)+'번 오답</span>'+
+        '<span style="background:var(--red);color:white;font-size:12px;font-weight:700;padding:3px 10px;border-radius:8px">'+examQuestionNumber(sExamData,idx)+'번 오답</span>'+
         (q&&q.type?'<span style="font-size:11px;color:var(--text2)">'+q.type+'</span>':'')+'</div>'+
       // 학생은 자신의 답만 확인하고 정답은 다시 풀기 전까지 보지 않는다.
       '<div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap">'+
@@ -10650,7 +10662,7 @@ function renderSResWrongList(wrong){
     wrongEl.innerHTML='<div class="card-head"><h3>📝 온라인 오답노트 ('+wrong.length+'문항)</h3></div><div style="padding:0 1.25rem 0.75rem"><div style="font-size:12px;color:var(--text2);line-height:1.6;padding:10px 0">정답은 먼저 공개되지 않습니다. 오답 이유를 정리하고 다시 답을 고른 뒤 저장하세요. 다시 맞힌 문항은 공식 해설을 확인할 수 있습니다.</div>'+wrong.map(function(w){
       var idx=w.idx,q=w.q,note=sMockWrongNotes[idx]||{},retry=note.retry||'',passed=String(retry)===String(q.answer);
       return '<div class="card" style="margin:10px 0;border-left:3px solid '+(passed?'var(--green)':'var(--red)')+'"><div style="padding:12px">'+
-        '<div style="display:flex;gap:8px;align-items:center;margin-bottom:10px"><span style="background:var(--red-bg);color:var(--red);font-size:12px;font-weight:700;padding:3px 9px;border-radius:8px">'+(idx+1)+'번</span><span style="font-size:12px;color:var(--text2)">처음 답 <strong style="color:var(--red)">'+escHtml(w.my)+'번</strong></span>'+(q.domain?'<span style="margin-left:auto;font-size:11px;color:var(--text3)">'+escHtml(q.domain)+'</span>':'')+'</div>'+
+        '<div style="display:flex;gap:8px;align-items:center;margin-bottom:10px"><span style="background:var(--red-bg);color:var(--red);font-size:12px;font-weight:700;padding:3px 9px;border-radius:8px">'+examQuestionNumber(sExamData,idx)+'번</span><span style="font-size:12px;color:var(--text2)">처음 답 <strong style="color:var(--red)">'+escHtml(w.my)+'번</strong></span>'+(q.domain?'<span style="margin-left:auto;font-size:11px;color:var(--text3)">'+escHtml(q.domain)+'</span>':'')+'</div>'+
         '<label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">왜 틀렸는지 정리</label><textarea class="form-input" style="min-height:72px;font-size:12px;margin-bottom:10px" placeholder="지문 근거, 헷갈린 개념, 선택지를 잘못 판단한 이유를 적어보세요" oninput="sMockSetWrongNote('+idx+',\'reason\',this.value)">'+escHtml(note.reason||'')+'</textarea>'+
         '<label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">답을 다시 선택</label><div style="display:flex;gap:6px;margin-bottom:10px">'+[1,2,3,4,5].map(function(n){var sel=String(retry)===String(n);return '<button type="button" onclick="sMockPickRetry('+idx+','+n+')" style="width:36px;height:36px;border-radius:50%;cursor:pointer;font-weight:700;border:1.5px solid '+(sel?'var(--accent)':'var(--border)')+';background:'+(sel?'var(--accent)':'var(--card)')+';color:'+(sel?'white':'var(--text2)')+'">'+n+'</button>';}).join('')+'</div>'+
         (retry?(passed?'<div style="padding:10px;border-radius:8px;background:var(--green-bg);color:var(--green);font-size:12px;line-height:1.55;margin-bottom:10px">✅ 다시 풀기 통과'+(q.explanation?'<br><span style="color:var(--text2)"><strong>공식 해설</strong> '+escHtml(q.explanation)+'</span>':'')+'</div>':'<div style="padding:9px;border-radius:8px;background:var(--red-bg);color:var(--red);font-size:12px;margin-bottom:10px">아직 정답이 아닙니다. 정답은 공개하지 않으니 다시 검토하세요.</div>'):'')+
@@ -10661,7 +10673,7 @@ function renderSResWrongList(wrong){
   }
   if(!isClinic){
     wrongEl.innerHTML='<div class="card-head"><h3>틀린 문제 ('+wrong.length+'개)</h3></div><div style="padding:0 1.25rem 0.5rem">'+wrong.map(function(w){
-      return '<div style="display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border)"><span style="background:var(--red-bg);color:var(--red);font-size:12px;font-weight:600;padding:2px 10px;border-radius:8px">'+(w.idx+1)+'번</span><span style="font-size:13px;color:var(--text2)">내 답: <strong style="color:var(--red)">'+w.my+'번</strong></span><span style="font-size:12px;color:var(--text3);margin-left:auto">정답은 숨김</span></div>';
+      return '<div style="display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border)"><span style="background:var(--red-bg);color:var(--red);font-size:12px;font-weight:600;padding:2px 10px;border-radius:8px">'+examQuestionNumber(sExamData,w.idx)+'번</span><span style="font-size:13px;color:var(--text2)">내 답: <strong style="color:var(--red)">'+w.my+'번</strong></span><span style="font-size:12px;color:var(--text3);margin-left:auto">정답은 숨김</span></div>';
     }).join('')+'</div>';
     return;
   }
@@ -10669,7 +10681,7 @@ function renderSResWrongList(wrong){
     var idx=w.idx,q=w.q,picked=sResRetryAnswers[idx],passed=!!sResRetryPassed[idx];
     var feedback=sResWrongFeedback[idx];
     return '<div class="card" style="margin:10px 0;border-left:3px solid '+(passed?'var(--green)':'var(--red)')+'"><div style="padding:12px">'+
-      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="background:'+(passed?'var(--green-bg)':'var(--red-bg)')+';color:'+(passed?'var(--green)':'var(--red)')+';font-size:12px;font-weight:600;padding:2px 10px;border-radius:8px">'+(idx+1)+'번</span><span style="font-size:13px;color:var(--text2)">처음 답: <strong style="color:var(--red)">'+w.my+'번</strong></span></div>'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="background:'+(passed?'var(--green-bg)':'var(--red-bg)')+';color:'+(passed?'var(--green)':'var(--red)')+';font-size:12px;font-weight:600;padding:2px 10px;border-radius:8px">'+examQuestionNumber(sExamData,idx)+'번</span><span style="font-size:13px;color:var(--text2)">처음 답: <strong style="color:var(--red)">'+w.my+'번</strong></span></div>'+
       (!passed?'<div style="background:var(--red-bg);border-radius:8px;padding:10px;font-size:12.5px;color:var(--text2);line-height:1.6;margin-bottom:10px">💡 <strong>내 답이 틀린 이유</strong><br>'+(feedback?escHtml(feedback):'오답 이유를 분석하고 있어요...')+'</div>':'')+
       (passed?'<div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:8px">✅ 다시 풀기 통과</div>'+(q.explanation?'<div style="background:var(--green-bg);border-radius:8px;padding:10px;font-size:12.5px;color:var(--text2);line-height:1.6">📖 <strong>통과 후 해설</strong><br>'+escHtml(q.explanation)+'</div>':''):
         '<div><div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px">답안을 다시 입력하세요</div><div style="display:flex;gap:6px;flex-wrap:wrap">'+[1,2,3,4,5].map(function(n){var sel=String(picked)===String(n);return '<button type="button" onclick="sResRetryPick('+idx+','+n+')" style="width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:14px;font-weight:700;border:1.5px solid '+(sel?'var(--accent)':'var(--border)')+';background:'+(sel?'var(--accent)':'var(--card)')+';color:'+(sel?'white':'var(--text2)')+'">'+n+'</button>';}).join('')+'</div>'+(picked?'<div style="font-size:12px;color:var(--red);margin-top:8px">❌ 아직 틀렸어요. 정답은 공개되지 않습니다. 다시 선택하세요.</div>':'')+'</div>')+
@@ -10681,7 +10693,7 @@ function sResRetryPick(idx,n){
   var row=sExamLastWrong.find(function(w){return w.idx===idx;});
   if(row&&String(n)===String(row.q.answer)){
     sResRetryPassed[idx]=true;
-    sendStudentActivity('클리닉 오답 재풀이 통과',(sExamData?sExamData.name:'시험')+' · '+(idx+1)+'번');
+    sendStudentActivity('클리닉 오답 재풀이 통과',(sExamData?sExamData.name:'시험')+' · '+examQuestionNumber(sExamData,idx)+'번');
   }
   renderSResWrongList(sExamLastWrong);
 }
@@ -10796,7 +10808,7 @@ function renderSExamGrid(){
       border-radius:8px;padding:8px 4px;text-align:center;cursor:pointer;font-size:13px;font-weight:500;
       background:${isSel?'rgba(79,124,255,0.15)':isCorrect?'var(--green-bg)':isWrong?'var(--red-bg)':'var(--bg)'};
       color:${isSel?'var(--accent)':isCorrect?'var(--green)':isWrong?'var(--red)':'var(--text2)'};
-      transition:all 0.1s;user-select:none">${i+1}번</div>`;
+      transition:all 0.1s;user-select:none">${examQuestionNumber(sExamData,i)}번</div>`;
   }).join('');
 }
 
@@ -10816,7 +10828,7 @@ function renderSExamQDetail(idx){
   const el=document.getElementById('s-exam-q-detail');
   el.innerHTML=`<div class="card">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-      <span style="background:rgba(79,124,255,0.15);color:var(--accent);font-size:11px;padding:2px 8px;border-radius:10px;font-weight:500">${idx+1}번</span>
+      <span style="background:rgba(79,124,255,0.15);color:var(--accent);font-size:11px;padding:2px 8px;border-radius:10px;font-weight:500">${examQuestionNumber(sExamData,idx)}번</span>
       <span style="font-size:11px;color:var(--text2)">${q.type}</span>
       ${isWrong?`<span style="background:var(--red-bg);color:var(--red);font-size:11px;padding:2px 8px;border-radius:8px">✗ 오답 — 내 답: ${my}번 · 정답은 숨김</span>`:''}
     </div>
@@ -10904,7 +10916,7 @@ async function sExamAnalyze(){
 
   const wrongCount=wrongs.length;
   const accuracy=Math.round(((sExamData.total_q-wrongCount)/sExamData.total_q)*100);
-  const wrongText=wrongs.map(({idx,q,my})=>`- ${idx+1}번 (${q.type}): 내 답 ${my}번 → 정답 ${q.answer}번 | 해설: ${q.explanation||'없음'}${sExamThoughts[idx]?' | 학생 사고과정: '+sExamThoughts[idx]:''}`).join('\n');
+  const wrongText=wrongs.map(({idx,q,my})=>`- ${examQuestionNumber(sExamData,idx)}번 (${q.type}): 내 답 ${my}번 → 정답 ${q.answer}번 | 해설: ${q.explanation||'없음'}${sExamThoughts[idx]?' | 학생 사고과정: '+sExamThoughts[idx]:''}`).join('\n');
 
   const contentBlocks=[];
   // 사진 첨부
