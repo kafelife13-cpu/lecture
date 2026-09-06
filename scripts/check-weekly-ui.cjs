@@ -63,6 +63,19 @@ const root=path.join(__dirname,'..'),html=fs.readFileSync(path.join(root,'index.
  assert.match(await page.locator('#weekly-create-form [name="questions"]').inputValue(),/교사 편집 검증/);
  await page.locator('#weekly-create-form [type="submit"]').click();
  await page.waitForFunction(()=>window.lastNotice==='필수 과제를 등록했어요.');
+ await page.evaluate(async()=>{
+  session={id:'student',role:'student'};weeklyLogin={id:'student',role:'student',pw:'test-only'};
+  document.getElementById('page-teacher').classList.remove('active');document.getElementById('page-student').classList.add('active');
+  sb.rpc=async()=>({data:[]});window.renderSExam=scope=>{window.openedExamScope=scope;};
+  sNav('weekly');await renderWeeklyHomework();
+ });
+ assert.equal(await page.locator('[data-weekly-action="browse-task"]').count(),6);
+ await page.locator('[data-weekly-action="browse-task"][data-task="omr"]').click();
+ assert.equal(await page.evaluate(()=>window.openedExamScope),'homework');
+ await page.evaluate(async()=>{sb.rpc=async()=>({error:{message:'test connection error'}});sNav('weekly');await renderWeeklyHomework();});
+ assert.equal(await page.locator('[data-weekly-action="browse-task"]').count(),6);
+ await page.locator('[data-weekly-action="browse-task"][data-task="study"]').click();
+ assert.ok(await page.locator('#page-student #panel-study').isVisible());
  assert.deepEqual(errors,[]);
  console.log('PASS: six tasks, mobile layout, OX submission, notebook photo submission, teacher table/review');
  }finally{await browser.close();}

@@ -27,6 +27,9 @@
  function myRow(plan){return plan.students.find(s=>s.id===session.id);}
  function planById(id){return plans.find(p=>p.id===id);}
  const actionButton=(action,text,attrs='')=>'<button class="btn" data-weekly-action="'+action+'" '+attrs+'>'+text+'</button>';
+ function availableTasks(){
+  return '<section class="weekly-plan"><h2>과제수행</h2><p>아래에서 등록된 과제를 확인하고 수행하세요. 주간 완료 현황은 선생님이 과제를 묶어 배정하면 표시돼요.</p><div class="weekly-tasks">'+tasks.map(([key,title,desc],i)=>'<button class="weekly-task" data-weekly-action="browse-task" data-task="'+key+'"><span class="weekly-number">'+(i+1)+'</span><span class="weekly-task-copy"><strong>'+esc(title)+'</strong><small>'+esc(desc)+'</small><span class="weekly-status">'+(['notebook','concept'].includes(key)?'주간 과제 배정 필요':'등록된 과제 보기')+'</span></span><span aria-hidden="true">→</span></button>').join('')+'</div></section>';
+ }
  root.renderWeeklyHomework=async function(){
   const run=++loadRun,who=session?.id,host=el(prefix()+'-weekly-body');
   if(!host)return;
@@ -37,11 +40,11 @@
    const data=await rpc('list',{week_start:week});
    if(run!==loadRun||session?.id!==who)return;
    plans=data||[];render();
-  }catch(e){if(run===loadRun)host.innerHTML='<div class="weekly-empty" role="alert">'+esc(e.message)+'<p>확인하지 못한 기록은 미완료로 처리하지 않아요.</p>'+actionButton('refresh','다시 확인')+'</div>';}
+  }catch(e){if(run===loadRun&&session?.id===who)host.innerHTML='<div class="weekly-empty" role="alert">'+esc(e.message)+'<p>확인하지 못한 기록은 미완료로 처리하지 않아요.</p>'+actionButton('refresh','다시 확인')+'</div>'+(!teacher()?availableTasks():'');}
  };
  function render(){
   const host=el(prefix()+'-weekly-body');
-  if(!plans.length){host.innerHTML='<div class="weekly-empty">이 주에 등록된 필수 과제가 없어요.'+(teacher()?'<p>반과 과제 목록을 지정해 등록해주세요.</p>':'<p>선생님이 과제를 등록하면 6가지 할 일이 표시돼요.</p>')+'</div>';return;}
+  if(!plans.length){host.innerHTML=teacher()?'<div class="weekly-empty">이 주에 등록된 필수 과제가 없어요.<p>반과 과제 목록을 지정해 등록해주세요.</p></div>':availableTasks();return;}
   host.innerHTML=plans.map(plan=>{
    const heading=(teacher()?actionButton('edit','과제 설정 수정','data-plan="'+plan.id+'"'):'')+'<div class="weekly-plan-head"><div><h2>'+esc(plan.title)+'</h2><p>'+esc(plan.week_start)+' 주간 · '+esc((STUDENT_CLASSES.find(c=>c.id===plan.group_id)||{}).label||plan.group_id)+'</p></div></div>';
    if(teacher())return '<section class="weekly-plan">'+heading+'<div class="weekly-table-wrap"><table class="weekly-table"><thead><tr><th>학생</th>'+tasks.map(t=>'<th>'+esc(t[1])+'</th>').join('')+'<th>전체</th></tr></thead><tbody>'+plan.students.map(row=>'<tr><th>'+esc(row.name)+'</th>'+tasks.map(([key])=>'<td>'+badge(row.states[key])+(key==='notebook'&&row.work.notebook?'<br>'+actionButton('review','사진 확인','data-plan="'+plan.id+'" data-student="'+esc(row.id)+'"'):'')+'</td>').join('')+'<td><strong>'+progress(row)+'/6</strong><br>'+(complete(row)?'전체 완료':'진행 중')+'</td></tr>').join('')+'</tbody></table></div></section>';
@@ -137,6 +140,11 @@
    if(a==='create')await editor();
    if(a==='edit')await editor(planById(b.dataset.plan));
    if(a==='task')await openTask(planById(b.dataset.plan),b.dataset.task);
+   if(a==='browse-task'){
+    const task=tasks.find(t=>t[0]===b.dataset.task);if(!task)return;
+    if(['notebook','concept'].includes(task[0]))notify('이 항목은 선생님이 주간 과제에 배정하면 제출할 수 있어요.','info');
+    else sNav(task[3],task[0]==='omr'?'homework':undefined);
+   }
    if(a==='review')review(planById(b.dataset.plan),b.dataset.student);
    if(a==='approve'||a==='reject'){await rpc('review',{plan_id:b.dataset.plan,student_id:b.dataset.student,status:a==='approve'?'approved':'rejected',feedback:el('weekly-review-feedback').value});el('t-weekly-review').hidden=true;await root.renderWeeklyHomework();}
    if(a==='video'){sNav('clinic-lectures');openPlay(b.dataset.video);}
