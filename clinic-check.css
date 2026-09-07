@@ -1,0 +1,17 @@
+#clinic-check-card{padding:20px;margin-bottom:20px}
+.clinic-check-controls{display:flex;flex-wrap:wrap;gap:12px;margin:16px 0}
+.clinic-check-controls label{display:flex;flex:1 1 145px;flex-direction:column;gap:6px;font-size:13px}
+.clinic-check-controls input,.clinic-check-controls select{min-height:44px;width:100%;min-width:0}
+#clinic-check-summary{font-weight:700;line-height:1.8}
+#clinic-check-message{min-height:26px;line-height:1.6;color:var(--text2)}
+.clinic-check-group{margin:18px 0;border-top:1px solid var(--border);padding-top:16px}
+.clinic-check-group>p{font-size:13px;color:var(--text2);margin:6px 0 12px}
+.clinic-check-student{padding:14px;margin:10px 0;border:1px solid var(--border);border-radius:12px;display:grid;grid-template-columns:minmax(150px,1fr) minmax(220px,1fr);gap:12px;align-items:center}
+.clinic-check-name{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.clinic-check-name>span:not(.badge){font-size:12px;color:var(--text2)}
+.clinic-check-student label{font-size:13px;display:grid;gap:6px}
+.clinic-check-student select{min-height:44px;width:100%}
+.clinic-check-student .clinic-check-complete{display:flex;align-items:center;gap:8px;min-height:44px}
+.clinic-check-complete input{width:22px;height:22px}
+.clinic-check-student small{color:var(--text2);line-height:1.5}
+@media(max-width:600px){#clinic-check-card{padding:14px}.clinic-check-student{grid-template-columns:minmax(0,1fr)}.clinic-check-controls{gap:10px}}

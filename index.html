@@ -29,6 +29,8 @@
 <script src="classical-translations.js"></script>
 <script src="student-sections.js?v=1"></script>
 <script src="weekly-homework.js?v=4"></script>
+<link rel="stylesheet" href="clinic-check.css?v=1">
+<script src="clinic-check.js?v=1"></script>
 <script>
 (function(){
   var tag=document.createElement('script');
@@ -647,6 +649,20 @@ input,button{font-family:var(--font)}
       <!-- 클리닉 관리 -->
       <div class="panel" id="panel-clinic">
         <div class="page-header"><h1>클리닉 관리</h1><p>학교별 클리닉 시간대와 정원을 설정하고 신청 현황을 확인하세요</p></div>
+        <div class="card" id="clinic-check-card">
+          <h2>귀가 전 수행 체크</h2>
+          <p style="color:var(--text2);margin-top:8px">클리닉을 마치고 귀가하기 전에 학생별 수행 방식을 선택해주세요. 선택하면 주차별로 저장됩니다.</p>
+          <div class="clinic-check-controls">
+            <label>주차 (월요일 기준)<input id="clinic-check-week" type="date" class="form-input"></label>
+            <label>클리닉 시간대<select id="clinic-check-slot" class="form-select"><option value="all">모든 시간대</option></select></label>
+            <label>수행 상태<select id="clinic-check-filter" class="form-select"><option value="all">전체</option><option value="unchecked">미확인</option><option value="home">가정 수행 중</option><option value="done">수행 완료</option></select></label>
+            <label>학생 찾기<input id="clinic-check-search" class="form-input" type="search" placeholder="학생 이름"></label>
+          </div>
+          <button class="btn" onclick="renderClinicCheckout()">수행 기록 새로고침</button>
+          <p id="clinic-check-summary"></p>
+          <p id="clinic-check-message" role="status" aria-live="polite"></p>
+          <div id="clinic-check-body"></div>
+        </div>
         <div class="card" style="margin-bottom:1rem">
           <div class="card-head"><h3>📋 신청 현황 한눈에 보기</h3><span style="font-size:11px;color:var(--text2)">수·목·금 / 한백·치동</span></div>
           <div id="t-clinic-summary-table" style="overflow-x:auto"></div>
@@ -2663,7 +2679,7 @@ function tNav(panel){
   if(panel==='progress')renderProgress();
   if(panel==='qa'){renderTQaSchoolTabs();renderTQaWeekList();renderQaWeekFilter();renderQaReview();renderQaMaterialsList();}
   if(panel==='cert'){renderTCertSchoolTabs();renderTCertWeekList();}
-  if(panel==='clinic')renderTClinicSchoolTabs();
+  if(panel==='clinic'){renderTClinicSchoolTabs();renderClinicCheckout();}
   if(panel==='study')renderTStudy();
   if(panel==='exam')renderTExam();
   if(panel==='weakness')loadWeaknessAnalysis(false);
