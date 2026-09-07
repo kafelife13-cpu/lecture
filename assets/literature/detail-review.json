@@ -1,0 +1,182 @@
+{
+  "version": "2026-09-08-v1",
+  "pages": [
+    {
+      "page": 94,
+      "sha256": "8f36e22fcc1d7de0cb07f6f68277c25d0def730d3e76894f5eea308db0dca578",
+      "reviewed": true
+    },
+    {
+      "page": 95,
+      "sha256": "6ad9907f6e16b5cc3c25f0df6e5fd6277c782370ba55e0261dbc39c21aa5de92",
+      "reviewed": true
+    },
+    {
+      "page": 96,
+      "sha256": "8c32d8ebef0af51b812465b16203609ebd99f2e37c509c66fd8a6a245cfa0eff",
+      "reviewed": true
+    },
+    {
+      "page": 97,
+      "sha256": "4cf22e66c9797c8237340758cef2f5507919026132c69678b56f99a51ae97b66",
+      "reviewed": true
+    },
+    {
+      "page": 98,
+      "sha256": "8788eec7e8cdf6a564fcd34d7c7c9da7ceae3dd59a98bb3ca436be212d32062d",
+      "reviewed": true
+    },
+    {
+      "page": 99,
+      "sha256": "9d92906b2eb52715762d2562daf80d1a9344122d191131167ba93cd29be4a85b",
+      "reviewed": true
+    },
+    {
+      "page": 100,
+      "sha256": "c5450ea8e0fedf1325039b0bc3aa396819f638519bd6105f1d5810a2370cf5cc",
+      "reviewed": true
+    },
+    {
+      "page": 101,
+      "sha256": "4e124c906067993e185dd19deb8719ebe7925b85616b2e639f3c569b4682860c",
+      "reviewed": true
+    },
+    {
+      "page": 102,
+      "sha256": "1feef3188b6df16204f3d9aa39cb92bfa9e4f3bc64c5ac6b3cee97d7c5984a0a",
+      "reviewed": true
+    },
+    {
+      "page": 103,
+      "sha256": "e814cfdc23119e660c75e9270f71c4ce2b520520033cccb7a87908839507c003",
+      "reviewed": true
+    },
+    {
+      "page": 104,
+      "sha256": "093e07c01e2bd2b9c9e1fc9048e388960fcfe309795c3ebf88f1215b5628b8d9",
+      "reviewed": true
+    },
+    {
+      "page": 105,
+      "sha256": "e6e1592f779976e7f7404dcb7608665073ee884244ec9161f997447227b1267a",
+      "reviewed": true
+    },
+    {
+      "page": 106,
+      "sha256": "c68a7d4d3dfce2292f15590fc62f1b3e6176d5941d32972ae98b1a3cff8a3a1f",
+      "reviewed": true
+    },
+    {
+      "page": 107,
+      "sha256": "336fe292fd1c695361d6c601205522c1a798b9ac9e38c07b0ccd9992435b8b73",
+      "reviewed": true
+    },
+    {
+      "page": 108,
+      "sha256": "978298a6ab69cf57c7c8411c3df656a0c3c8cd1488387777243b22805eaff435",
+      "reviewed": true
+    },
+    {
+      "page": 109,
+      "sha256": "308a5ecf71eeb4e8afc5b0b0eb6b79365b8428edb3566d83a97ca3f982628b70",
+      "reviewed": true
+    },
+    {
+      "page": 110,
+      "sha256": "25035ad1c4e6e27f5ce8cf447e2a3efac614d3190ed0942e88503429084fdbe8",
+      "reviewed": true
+    },
+    {
+      "page": 111,
+      "sha256": "b5eb08a8d0437c64a043d2e2bc8f766ffe7b518c65bafbc3b8d258f34f63189a",
+      "reviewed": true
+    },
+    {
+      "page": 112,
+      "sha256": "f4fe78e0f4af890c6945fdb486e13f2174788cd49e8df4b4b7d6a2f6c3139ac7",
+      "reviewed": true
+    },
+    {
+      "page": 113,
+      "sha256": "7632fb6542972efbb13cf907840307e84682b4acab69c02b63e7f98bbb072555",
+      "reviewed": true
+    },
+    {
+      "page": 114,
+      "sha256": "bbe9f2927e0d7ffc0e5e84e99b3bf4d47a86232b62e801526d35b4968e32420d",
+      "reviewed": true
+    },
+    {
+      "page": 115,
+      "sha256": "6c35310ae9476f7168991ff52da6e099a4d8c0ce8c3b5ebd1a0ff5ff24ff1a58",
+      "reviewed": true
+    },
+    {
+      "page": 116,
+      "sha256": "ae4afb57412e731cbeecbdfe70b6816de1a6ec7055feae4397724f215946d4b3",
+      "reviewed": true
+    },
+    {
+      "page": 117,
+      "sha256": "26aa46e6042ec1093155c0ca7ada6a6ca6b7f6b387836c0acd39d29106c369ba",
+      "reviewed": true
+    },
+    {
+      "page": 118,
+      "sha256": "c2665bdf33cb451b92f05f628bb991d7563245c7b980cbc761e06bd51bf15bef",
+      "reviewed": true
+    },
+    {
+      "page": 119,
+      "sha256": "840cdb6a86f7e674928cf5e8d5dd1273cf1f0f9e8d63b6b116a5876b54d7dbc3",
+      "reviewed": true
+    },
+    {
+      "page": 120,
+      "sha256": "5d5c6e2017bc480ff47ba87753e618daddd1d83de2919b1d1405289429712a53",
+      "reviewed": true
+    },
+    {
+      "page": 121,
+      "sha256": "11c4d4a809978e90cf775ec4acc3671895753a0f9c4b4b84e59fdff21ec6128e",
+      "reviewed": true
+    },
+    {
+      "page": 122,
+      "sha256": "b62a0a98f17420e114776dbec66e34f9ff2459ab1a01c9318d8fcf7557337f42",
+      "reviewed": true
+    },
+    {
+      "page": 123,
+      "sha256": "8046c0aaed5756544192d9b3ee65c7019616917fb4a4ac4ba73656e563e9dc32",
+      "reviewed": true
+    },
+    {
+      "page": 124,
+      "sha256": "ec68c57d77ff2081e2c0d894209253e1251214278925b6bd548516ee4f7589be",
+      "reviewed": true
+    },
+    {
+      "page": 125,
+      "sha256": "8a5773af6361bd593c52fc0cbb31649071526792dfcbd93fcc618a44a2aa4416",
+      "reviewed": true
+    },
+    {
+      "page": 126,
+      "sha256": "970f7199865ec012c967e1b0ea0878b62802e733c561889bdeba989c16a54a4a",
+      "reviewed": true
+    },
+    {
+      "page": 127,
+      "sha256": "0ae8cac64353027cbd5dfad8d06b02723a6179a78d637c44783546c63315e32a",
+      "reviewed": true
+    },
+    {
+      "page": 128,
+      "sha256": "cbc79b027dd7f2f4625f5300f00bca99143d49d4eaf3d41480c6692f122e0d65",
+      "reviewed": true
+    }
+  ],
+  "questionCount": 170,
+  "roundCount": 10
+}

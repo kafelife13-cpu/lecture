@@ -1,0 +1,25 @@
+name: Literature grading and text checks
+on:
+  push:
+    paths: ['index.html', 'literature*', 'clinic-check.js', 'assets/literature/**', 'docs/literature-proofread/**', 'scripts/check-literature*', '.github/workflows/literature-check.yml']
+  pull_request:
+    paths: ['index.html', 'literature*', 'clinic-check.js', 'assets/literature/**', 'docs/literature-proofread/**', 'scripts/check-literature*', '.github/workflows/literature-check.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - run: node scripts/check-literature.cjs
+      - run: node scripts/check-literature-study.cjs
+      - run: node scripts/check-literature-study-flow.cjs
+      - run: node scripts/check-literature-details.cjs
