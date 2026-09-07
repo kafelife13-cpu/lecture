@@ -2400,6 +2400,7 @@ function launchTeacher(){
   setTimeout(updateTeacherAlertButton,300);
 }
 function launchStudent(){
+  studentPushPromptShown=false;
   showPage('page-student');
   document.getElementById('s-name-disp').textContent=session.name;
   document.getElementById('s-avatar').textContent=session.name[0];
@@ -2429,19 +2430,22 @@ function urlBase64ToUint8Array(base64String){
   return outputArray;
 }
 async function subscribeToPush(){
+  if(padMode){notify('개인 휴대폰에서 알림을 설정해주세요.','info');return;}
   if(!session||session.role!=='student'){notify('학생 계정으로 이용해주세요.','error');return;}
-  if(!('serviceWorker' in navigator)||!('PushManager' in window)){alert('이 브라우저(기기)는 웹 알림을 지원하지 않아요. (아이폰은 홈화면에 앱 추가 후 iOS 16.4+ 에서 가능해요)');return;}
+  if(typeof Notification==='undefined'||!('serviceWorker' in navigator)||!('PushManager' in window)){alert('이 브라우저(기기)는 웹 알림을 지원하지 않아요. (아이폰은 홈화면에 앱 추가 후 iOS 16.4+ 에서 가능해요)');return;}
   // 이미 차단(denied) 상태면 requestPermission()을 불러도 브라우저가 팝업을 다시 띄워주지 않고
   // 조용히 'denied'만 돌려줌 — 이 경우를 미리 구분해서 정확한 안내를 보여줌
   if(typeof Notification!=='undefined'&&Notification.permission==='denied'){
     alert('🔕 이 기기에서 알림이 이미 차단되어 있어요.\n\n안드로이드: 설정 → 앱 → "국어왕 김까까"(또는 Chrome) → 알림 → 켜기\n아이폰: 설정 → 이 앱 이름 → 알림 → 허용\n\n켠 다음 이 버튼을 다시 눌러주세요.');
     return;
   }
+  const studentId=session.id;
   try{
     const perm=await Notification.requestPermission();
     if(perm!=='granted'){alert('알림 권한 요청 결과: "'+perm+'"\n\n허용을 누르지 않으면 알림을 받을 수 없어요. 팝업이 아예 안 떴다면, 폰 설정 → 앱 → 알림에서 이 앱의 알림을 켜주세요.');return;}
     const reg=await navigator.serviceWorker.ready;
-    const sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)});
+    const sub=await reg.pushManager.getSubscription()||await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)});
+    if(!session||session.role!=='student'||session.id!==studentId)return;
     const j=sub.toJSON();
     const {error}=await sb.from('push_subscriptions').upsert({
       id:'ps_'+session.id+'_'+Date.now(),
@@ -2453,6 +2457,7 @@ async function subscribeToPush(){
     if(error){notify('구독 저장 실패: '+error.message,'error');return;}
     sendStudentActivity('앱 알림 허용','이 기기에서 웹 알림 사용 시작');
     notify('🔔 알림 켜졌어요! 새 소식이 오면 바로 알려드릴게요.','success');
+    const dialog=document.getElementById('student-push-dialog');if(dialog&&dialog.open)dialog.close();
     updatePushBtnState();
   }catch(e){
     notify('알림 설정 실패: '+e.message,'error');
@@ -2477,28 +2482,57 @@ async function updateTeacherAlertButton(){
   if(!('serviceWorker' in navigator)||!('PushManager' in window)){btn.style.display='none';return;}
   try{const reg=await navigator.serviceWorker.ready,sub=await reg.pushManager.getSubscription();btn.textContent=sub?'🔔 자리 이탈 알림 켜짐':'🔔 자리 이탈 알림 받기';}catch(e){}
 }
-async function updatePushBtnState(){
-  const btn=document.getElementById('s-push-btn');
-  const banner=document.getElementById('home-push-banner');
-  if(!btn&&!banner)return;
-  if(!('serviceWorker' in navigator)||!('PushManager' in window)){if(btn)btn.style.display='none';if(banner)banner.style.display='none';return;}
-  if(btn){btn.style.display='block';btn.textContent='🔔 알림 받기';}
-  if(banner){
-    banner.style.display='block';
-    banner.innerHTML='<div style="padding:12px 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><div style="flex:1;min-width:180px"><div style="font-size:14px;font-weight:800">🔔 과제·시험 알림 받기</div><div style="font-size:12px;color:var(--text2);margin-top:3px">한 번 허용하면 앱을 닫아도 카카오톡처럼 휴대폰 알림으로 안내를 받을 수 있어요.</div></div><button class="btn green" onclick="subscribeToPush()">알림 켜기</button></div>';
-  }
-  try{
-    const reg=await navigator.serviceWorker.ready;
-    const sub=await reg.pushManager.getSubscription();
-    if(btn)btn.textContent=sub?'🔔 알림 켜짐':'🔔 알림 받기';
-    if(banner){
-      banner.style.display='block';
-      banner.innerHTML=sub
-        ? '<div style="padding:18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap"><div style="font-size:32px">🔔</div><div style="flex:1;min-width:180px"><div style="font-size:17px;font-weight:900">휴대폰 알림</div><div style="font-size:13px;color:var(--text2);margin-top:4px">과제·시험 알림을 받을 수 있도록 설정되었습니다.</div></div><button class="btn green" disabled style="opacity:1">✓ 알림 켜짐</button></div>'
-        : '<div style="padding:18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap"><div style="font-size:32px">🔔</div><div style="flex:1;min-width:180px"><div style="font-size:17px;font-weight:900">휴대폰 알림</div><div style="font-size:13px;color:var(--text2);margin-top:4px">과제·시험 안내를 카카오톡처럼 휴대폰 알림으로 받아보세요.</div></div><button class="btn green" onclick="subscribeToPush()" style="font-size:15px;padding:11px 18px">알림 받기</button></div>';
-    }
-  }catch(e){}
+var studentPushPromptShown=false;
+function studentPushInfo(state){
+  if(state==='enabled')return {title:'이 기기 알림 켜짐',text:'과제·시험 안내를 받을 수 있어요. 휴대폰 설정에서도 잠금화면·배너·소리를 켜주세요.',button:'설정 안내'};
+  if(state==='unsupported')return {title:'휴대폰에서 알림을 켜주세요',text:'아이폰은 Safari에서 공유 → 홈 화면에 추가 후 앱을 열어주세요. 지원되는 최신 브라우저와 운영체제가 필요해요.',button:'설정 방법 보기'};
+  if(state==='denied')return {title:'알림이 차단되어 있어요',text:'휴대폰 설정에서 국어왕 또는 사용 중인 브라우저의 알림을 허용하고, 잠금화면·배너·소리도 켜주세요.',button:'설정 방법 보기'};
+  return {title:'과제·시험 알림을 켜주세요',text:'아래 버튼을 누른 뒤 휴대폰 팝업에서 ‘허용’을 선택해주세요. 이 휴대폰에서 한 번 설정하면 됩니다.',button:'지금 알림 켜기'};
 }
+function showStudentPushPrompt(state){
+  if(!session||session.role!=='student'||padMode)return;
+  const info=studentPushInfo(state);
+  let dialog=document.getElementById('student-push-dialog');
+  if(!dialog){
+    dialog=document.createElement('dialog');dialog.id='student-push-dialog';
+    dialog.setAttribute('aria-labelledby','student-push-title');
+    dialog.style.cssText='width:calc(100% - 32px);max-width:420px;box-sizing:border-box;border:2px solid var(--green);border-radius:20px;padding:24px;background:var(--bg2);color:var(--text);';
+    document.body.appendChild(dialog);
+  }
+  dialog.innerHTML='<div style="font-size:36px">🔔</div><h2 id="student-push-title" style="font-size:21px">'+info.title+'</h2><p style="line-height:1.7;color:var(--text2)">'+info.text+'</p><p style="font-size:12px;color:var(--text2)">배너·소리 표시는 휴대폰의 알림 및 방해금지 설정에 따라 달라집니다.</p>'+
+    (state==='needed'?'<button class="btn green" style="width:100%;padding:14px;margin-bottom:10px" onclick="subscribeToPush()">지금 알림 켜기 → 허용</button>':'')+
+    '<button class="btn" style="width:100%;padding:12px" onclick="document.getElementById(&quot;student-push-dialog&quot;).close()">'+(state==='needed'?'나중에':'확인')+'</button>';
+  if(!dialog.open)dialog.showModal();
+}
+async function updatePushBtnState(){
+  const btn=document.getElementById('s-push-btn'),banner=document.getElementById('home-push-banner');
+  if(!session||session.role!=='student'||padMode){if(banner)banner.style.display='none';if(btn)btn.style.display='none';return;}
+  const studentId=session.id;
+  let state='needed';
+  if(typeof Notification==='undefined'||!('serviceWorker' in navigator)||!('PushManager' in window))state='unsupported';
+  else if(Notification.permission==='denied')state='denied';
+  else if(Notification.permission==='granted'){
+    try{
+      const reg=await navigator.serviceWorker.ready,sub=await reg.pushManager.getSubscription();
+      if(sub){
+        const saved=await sb.from('push_subscriptions').select('student_id').eq('endpoint',sub.endpoint).eq('student_id',studentId).maybeSingle();
+        if(!saved.error&&saved.data)state='enabled';
+      }
+    }catch(e){}
+  }
+  if(!session||session.role!=='student'||session.id!==studentId||padMode)return;
+  const info=studentPushInfo(state);
+  if(btn){btn.style.display='block';btn.textContent='🔔 '+info.title;btn.onclick=function(){state==='needed'?subscribeToPush():showStudentPushPrompt(state);};}
+  if(banner){
+    // One shared banner stays above every student panel, including homework and clinic.
+    const main=document.querySelector('#page-student .main');if(main&&banner.parentElement!==main)main.prepend(banner);
+    banner.style.display='block';
+    banner.innerHTML='<div style="padding:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><div style="flex:1;min-width:160px"><strong>🔔 '+info.title+'</strong><div style="font-size:12px;color:var(--text2);margin-top:5px">'+info.text+'</div></div><button class="btn green">'+info.button+'</button></div>';
+    banner.querySelector('button').onclick=function(){state==='needed'?subscribeToPush():showStudentPushPrompt(state);};
+  }
+  if(state!=='enabled'&&!studentPushPromptShown){studentPushPromptShown=true;showStudentPushPrompt(state);}
+}
+window.addEventListener('focus',function(){if(session&&session.role==='student')updatePushBtnState();});
 
 function renderSHome(){
   renderStudentClassAttendance();
