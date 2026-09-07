@@ -4689,11 +4689,11 @@ function renderSStudyLog(){
     var dur=end?Math.floor((end-start)/1000):Math.floor((Date.now()-start)/1000);
     var timeLabel=start.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+(end?' ~ '+end.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}):' ~ 진행중');
     var awaySec=s.away_seconds||0;
-    var awayCnt=(function(){try{return (JSON.parse(s.away_log||'[]')||[]).length;}catch(e){return 0;}})();
+    var awayCnt=(function(){try{return (JSON.parse(s.away_log||'[]')||[]).filter(function(e){return e.sec>0;}).length;}catch(e){return 0;}})();
     return '<div style="padding:10px 1.25rem;border-bottom:1px solid var(--border)">'+
       '<div style="font-size:13px;font-weight:600">'+timeLabel+'</div>'+
       '<div style="font-size:11px;color:var(--text2);margin-bottom:8px">'+fmtTime(dur)+(end?'':' (진행중)')+
-      (awaySec>0?' · <span style="color:var(--amber)">⚠️ 이탈 '+awayCnt+'회 '+fmtTime(awaySec)+'</span>':'')+'</div>'+
+      (awaySec>0?' · <span style="color:var(--amber)">⚠️ 이탈 '+awayCnt+'회 '+fmtTime(awaySec)+'</span>':'')+studyHiddenLabel(s)+'</div>'+
       '<div style="display:flex;gap:8px">'+
       (s.start_photo_url?'<a href="'+s.start_photo_url+'" target="_blank"><img src="'+s.start_photo_url+'" style="width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid var(--border)"></a>':'')+
       (s.end_photo_url?'<a href="'+s.end_photo_url+'" target="_blank"><img src="'+s.end_photo_url+'" style="width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid var(--border)"></a>':'')+
@@ -4814,19 +4814,20 @@ async function handleStudyPhotoFile(file,action){
       var res=await sb.from('study_sessions').insert(row);
       if(res.error){notify('시작 실패: '+res.error.message,'error');return;}
       studyDb.sessions.unshift(row);
+      studyActiveSession=row;
       requestStudyWakeLock();
       sendStudentActivity('과제 타이머 시작','공부 시작');
-      notify('공부를 시작했어요! 화이팅 💪 (화면 벗어나면 자동으로 기록돼요)','success');
+      notify('공부를 시작했어요! 화이팅 💪 (화면 꺼짐은 이탈로 처리하지 않아요)','success');
     }else{
-      await resolvePendingStudyAway();
-      releaseStudyWakeLock();
+      if(await resolvePendingStudyAway()===false)return;
       var updates={end_time:new Date().toISOString(),end_photo_url:url,away_log:studyActiveSession.away_log||'[]',away_seconds:studyActiveSession.away_seconds||0};
       var res2=await sb.from('study_sessions').update(updates).eq('id',studyActiveSession.id);
       if(res2.error){notify('종료 실패: '+res2.error.message,'error');return;}
       Object.assign(studyActiveSession,updates);
+      releaseStudyWakeLock();
       var durSec=Math.floor((new Date(updates.end_time)-new Date(studyActiveSession.start_time))/1000);
       var awaySec=updates.away_seconds;
-      var awayCnt=(function(){try{return (JSON.parse(updates.away_log||'[]')||[]).length;}catch(e){return 0;}})();
+      var awayCnt=(function(){try{return (JSON.parse(updates.away_log||'[]')||[]).filter(function(e){return e.sec>0;}).length;}catch(e){return 0;}})();
       sendStudentActivity('과제 타이머 완료',fmtTime(durSec)+(awaySec>0?' · 이탈 '+awayCnt+'회 총 '+fmtTime(awaySec):''));
       notify('수고하셨어요! 공부가 기록됐어요 🎉','success');
     }
@@ -4834,80 +4835,116 @@ async function handleStudyPhotoFile(file,action){
   }catch(err){notify('오류: '+err.message,'error');}
 }
 
-/* ── 이탈 감지: 공부 세션 진행 중 이 화면을 벗어나면(다른 앱/탭 전환, 화면
-   잠금) 그 구간을 자동으로 기록한다. 폰이 백그라운드에서 페이지를 통째로
-   꺼버려도(특히 아이폰에서 자주 그럼) 놓치지 않도록, "나간 시각"을
-   메모리가 아니라 localStorage에 저장해두고, 돌아왔을 때는 물론 페이지가
-   다시 켜져서 새로 로드됐을 때도(renderSStudy에서) 확인해서 기록한다.
-   물리적으로 못 하게 막을 수는 없지만, 벗어난 시간이 그대로 남는다는 걸
-   학생도 알기 때문에 억제 효과가 있다. */
-var STUDY_AWAY_KEY='studyAwayPending';
+/* 화면 잠금과 앱 전환은 브라우저에서 구분할 수 없다.
+   ponytail: visibility만으로 이탈을 단정하지 않고 중립 기록을 남긴다.
+   실제 이탈 판정이 필요하면 별도 확인 수단을 먼저 마련해야 한다. */
+var STUDY_AWAY_KEY='studyAwayPending',studyAwaySaving=null;
+function studyAwayEntries(row){
+  try{var log=JSON.parse(row.away_log||'[]');return Array.isArray(log)?log:[];}catch(e){return [];}
+}
 function studyAwaySecondsTotal(){
-  if(!studyActiveSession)return 0;
-  try{return (JSON.parse(studyActiveSession.away_log||'[]')||[]).reduce(function(sum,e){return sum+e.sec;},0);}catch(e){return 0;}
+  return studyActiveSession?studyAwayEntries(studyActiveSession).reduce(function(sum,e){return sum+(Number(e.sec)||0);},0):0;
 }
-function markStudyAwayStart(){
-  if(!studyActiveSession)return;
-  try{localStorage.setItem(STUDY_AWAY_KEY,JSON.stringify({sessionId:studyActiveSession.id,start:Date.now()}));}catch(e){}
+function studyHiddenLabel(row){
+  var sec=studyAwayEntries(row).reduce(function(sum,e){return sum+(e.kind==='screen_hidden'?(Number(e.elapsed_sec)||0):0);},0);
+  return sec>0?' · 화면 비활성 '+fmtTime(sec)+' (화면 잠금·앱 전환 등 / 이탈 제외)':'';
 }
-async function resolvePendingStudyAway(){
-  var raw=null;
-  try{raw=localStorage.getItem(STUDY_AWAY_KEY);}catch(e){}
-  if(!raw)return;
-  try{localStorage.removeItem(STUDY_AWAY_KEY);}catch(e){}
-  var pending;
-  try{pending=JSON.parse(raw);}catch(e){return;}
-  if(!studyActiveSession||!pending||pending.sessionId!==studyActiveSession.id)return;
-  var awaySec=Math.round((Date.now()-pending.start)/1000);
-  if(awaySec<10)return;
-  var log=[];
-  try{log=JSON.parse(studyActiveSession.away_log||'[]')||[];}catch(e){log=[];}
-  log.push({start:new Date(pending.start).toISOString(),end:new Date().toISOString(),sec:awaySec});
-  var away_seconds=log.reduce(function(sum,e){return sum+e.sec;},0);
-  var away_log=JSON.stringify(log);
+function studyHiddenDetails(row){
+  return studyAwayEntries(row).filter(function(e){return e.kind==='screen_hidden';}).map(function(e){
+    var start=new Date(e.start),end=new Date(e.end);
+    if(!Number.isFinite(start.getTime())||!Number.isFinite(end.getTime()))return '';
+    var signals=(Array.isArray(e.signals)?e.signals:[]).map(function(s){return {hidden:'화면 숨김',blur:'창 포커스 벗어남',pagehide:'페이지 벗어남'}[s]||'';}).filter(Boolean).join(' · ');
+    return '<div style="font-size:11px;color:var(--text2)">'+start.toLocaleTimeString('ko-KR')+' ~ '+end.toLocaleTimeString('ko-KR')+' · '+fmtTime(Number(e.elapsed_sec)||0)+(signals?' · '+signals:'')+'</div>';
+  }).join('');
+}
+function markStudyAwayStart(signal){
+  if(!studyActiveSession||studyActiveSession.end_time)return;
   try{
-    await sb.from('study_sessions').update({away_log:away_log,away_seconds:away_seconds}).eq('id',studyActiveSession.id);
-  }catch(e){console.error('away log save error',e);}
-  studyActiveSession.away_log=away_log;studyActiveSession.away_seconds=away_seconds;
-  var idx=studyDb.sessions.findIndex(function(s){return s.id===studyActiveSession.id;});
-  if(idx!==-1){studyDb.sessions[idx].away_log=away_log;studyDb.sessions[idx].away_seconds=away_seconds;}
-  notify('⚠️ 자리를 비운 시간 '+fmtTime(awaySec)+'이 기록됐어요.','info');
+    var old=JSON.parse(localStorage.getItem(STUDY_AWAY_KEY)||'null');
+    if(old&&old.sessionId===studyActiveSession.id){
+      old.signals=old.signals||[];
+      if(signal&&old.signals.indexOf(signal)===-1)old.signals.push(signal);
+      localStorage.setItem(STUDY_AWAY_KEY,JSON.stringify(old));return;
+    }
+    localStorage.setItem(STUDY_AWAY_KEY,JSON.stringify({sessionId:studyActiveSession.id,start:Date.now(),signals:[signal||'hidden']}));
+  }catch(e){}
+}
+function resolvePendingStudyAway(){
+  if(studyAwaySaving)return studyAwaySaving;
+  studyAwaySaving=savePendingStudyVisibility().finally(function(){studyAwaySaving=null;});
+  return studyAwaySaving;
+}
+async function savePendingStudyVisibility(){
+  if(document.hidden||!document.hasFocus())return true;
+  var raw,pending;
+  try{raw=localStorage.getItem(STUDY_AWAY_KEY);pending=JSON.parse(raw);}catch(e){return true;}
+  var active=studyActiveSession;
+  if(!pending||!active||active.end_time||pending.sessionId!==active.id)return true;
+  var now=Date.now(),sec=Math.round((now-pending.start)/1000);
+  if(!Number.isFinite(sec)||sec<10){
+    try{localStorage.removeItem(STUDY_AWAY_KEY);}catch(e){}
+    return true;
+  }
+  var log=studyAwayEntries(active);
+  // A retry after a lost response replaces the same interval instead of duplicating it.
+  var start=new Date(pending.start).toISOString();
+  log=log.filter(function(e){return !(e.kind==='screen_hidden'&&e.start===start);});
+  log.push({start:start,end:new Date(now).toISOString(),kind:'screen_hidden',sec:0,elapsed_sec:sec,signals:pending.signals||['hidden']});
+  var updates={away_log:JSON.stringify(log),away_seconds:log.reduce(function(sum,e){return sum+(Number(e.sec)||0);},0)};
+  try{
+    var result=await sb.from('study_sessions').update(updates).eq('id',active.id);
+    if(result.error)throw result.error;
+  }catch(e){
+    console.error('visibility log save error',e);
+    notify('화면 상태 기록을 저장하지 못했어요. 연결을 확인하고 다시 시도해 주세요.','error');
+    return false;
+  }
+  Object.assign(active,updates);
+  var saved=studyDb.sessions.find(function(s){return s.id===active.id;});
+  if(saved)Object.assign(saved,updates);
+  try{if(localStorage.getItem(STUDY_AWAY_KEY)===raw)localStorage.removeItem(STUDY_AWAY_KEY);}catch(e){}
+  if(document.hidden&&studyActiveSession===active)markStudyAwayStart();
   renderSStudyLog();
+  return true;
 }
 function onStudyVisibilityChange(){
   if(!studyActiveSession)return;
-  if(document.hidden){
-    markStudyAwayStart();
-  }else{
-    resolvePendingStudyAway();
-    requestStudyWakeLock(); // 화면이 다시 보일 때마다 재요청 (hidden되면 자동 해제되므로)
-  }
+  if(document.hidden){markStudyAwayStart();releaseStudyWakeLock();}
+  else{resolvePendingStudyAway();requestStudyWakeLock();}
 }
 document.addEventListener('visibilitychange',onStudyVisibilityChange);
 window.addEventListener('pageshow',function(){if(studyActiveSession){resolvePendingStudyAway();requestStudyWakeLock();}});
+window.addEventListener('blur',function(){markStudyAwayStart('blur');});
+window.addEventListener('pagehide',function(){markStudyAwayStart('pagehide');});
+window.addEventListener('focus',function(){resolvePendingStudyAway();requestStudyWakeLock();});
 
-/* ── 화면 자동 꺼짐 방지(Wake Lock): 공부 세션 중엔 안 만져도 폰이 저절로
-   잠기지 않게 붙잡아둔다. 그러면 이 상태에서 화면이 꺼지는 건 학생이
-   직접 전원버튼을 눌렀거나 다른 앱으로 나간 경우뿐이라, "그냥 자동으로
-   꺼짐"과 "진짜 이탈"을 사실상 구분할 수 있게 된다. 지원 안 하는
-   브라우저(구형 iOS 등)에서는 조용히 무시되고 기존 방식으로만 동작한다. */
-var studyWakeLock=null,studyWakeLockWarned=false;
+/* Wake Lock is best effort; battery saving and the OS can reject or release it. */
+var studyWakeLock=null,studyWakeLockWarned=false,studyWakeLockRequest=null,studyWakeLockGeneration=0;
 async function requestStudyWakeLock(){
-  if(studyWakeLock)return;
-  if(!('wakeLock' in navigator)){
-    if(!studyWakeLockWarned){studyWakeLockWarned=true;notify('이 브라우저/기기는 화면 자동 꺼짐 방지를 지원하지 않아요. 화면이 꺼지지 않게 신경 써주세요.','info');}
-    return;
-  }
-  try{
-    studyWakeLock=await navigator.wakeLock.request('screen');
-    studyWakeLock.addEventListener('release',function(){studyWakeLock=null;});
-  }catch(e){
-    console.warn('wake lock failed',e);
-    if(!studyWakeLockWarned){studyWakeLockWarned=true;notify('화면 자동 꺼짐 방지를 켤 수 없었어요. 화면이 꺼지지 않게 신경 써주세요.','info');}
+  if(document.hidden||!studyActiveSession||studyActiveSession.end_time)return;
+  if(studyWakeLock&&!studyWakeLock.released)return;
+  if(studyWakeLockRequest)return studyWakeLockRequest;
+  var active=studyActiveSession,generation=studyWakeLockGeneration;
+  studyWakeLockRequest=(async function(){
+    try{
+      if(!navigator.wakeLock)throw new Error('Wake Lock unavailable');
+      var lock=await navigator.wakeLock.request('screen');
+      if(document.hidden||active!==studyActiveSession||active.end_time||generation!==studyWakeLockGeneration){await lock.release();return;}
+      studyWakeLock=lock;
+      lock.addEventListener('release',function(){if(studyWakeLock===lock)studyWakeLock=null;});
+    }catch(e){
+      if(!studyWakeLockWarned){studyWakeLockWarned=true;notify('화면 꺼짐 방지를 사용할 수 없어요. 화면이 꺼져도 이탈로 처리하지 않습니다.','info');}
+    }
+  })();
+  try{await studyWakeLockRequest;}finally{
+    studyWakeLockRequest=null;
+    if(generation!==studyWakeLockGeneration&&!document.hidden&&studyActiveSession&&!studyActiveSession.end_time)requestStudyWakeLock();
   }
 }
 function releaseStudyWakeLock(){
-  if(studyWakeLock){try{studyWakeLock.release();}catch(e){}studyWakeLock=null;}
+  studyWakeLockGeneration++;
+  var lock=studyWakeLock;studyWakeLock=null;
+  if(lock){try{Promise.resolve(lock.release()).catch(function(){});}catch(e){}}
 }
 
 function renderTStudy(){
@@ -5009,12 +5046,13 @@ async function openStudyStudentDetail(sid){
     var dur=end?Math.floor((end-start)/1000):Math.floor((Date.now()-start)/1000);
     var dateLabel=start.toLocaleDateString('ko-KR')+' '+start.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+(end?' ~ '+end.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}):' (진행중)');
     var awaySec=x.away_seconds||0;
-    var awayCnt=(function(){try{return (JSON.parse(x.away_log||'[]')||[]).length;}catch(e){return 0;}})();
+    var awayCnt=(function(){try{return (JSON.parse(x.away_log||'[]')||[]).filter(function(e){return e.sec>0;}).length;}catch(e){return 0;}})();
     return '<div style="padding:12px 0;border-bottom:1px solid var(--border)">'+
       '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
       '<span style="font-size:13px;font-weight:600">'+dateLabel+'</span>'+
       '<span class="badge '+(end?'done':'partial')+'" style="margin-left:auto">'+fmtTime(dur)+'</span></div>'+
       (awaySec>0?'<div style="font-size:12px;color:var(--amber);margin-bottom:8px">⚠️ 이탈 '+awayCnt+'회 · 총 '+fmtTime(awaySec)+'</div>':'')+
+      '<div style="font-size:12px;color:var(--text2);margin-bottom:8px">'+studyHiddenLabel(x)+studyHiddenDetails(x)+'</div>'+
       '<div style="display:flex;gap:8px">'+
       (x.start_photo_url?'<a href="'+x.start_photo_url+'" target="_blank"><img src="'+x.start_photo_url+'" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--border)"></a>':'')+
       (x.end_photo_url?'<a href="'+x.end_photo_url+'" target="_blank"><img src="'+x.end_photo_url+'" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--border)"></a>':'')+
