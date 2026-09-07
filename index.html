@@ -29,7 +29,7 @@
 <script src="classical-translations.js"></script>
 <script src="student-sections.js?v=1"></script>
 <script src="weekly-homework.js?v=4"></script>
-<link rel="stylesheet" href="clinic-check.css?v=1">
+<link rel="stylesheet" href="clinic-check.css?v=2">
 <script src="clinic-check.js?v=1"></script>
 <script>
 (function(){
@@ -333,6 +333,7 @@ input,button{font-family:var(--font)}
         <div class="sidebar-user-info"><p id="t-name">강사</p><span class="badge teacher-role" style="font-size:10px">강사</span></div>
       </div>
       <nav class="sidebar-nav"><div class="nav-item" onclick="tNav('weekly')" data-p="weekly">이번 주 필수 과제</div>
+        <button class="nav-item clinic-check-nav" onclick="openClinicCheckout()" data-p="clinic">✓ 귀가 전 수행 체크</button>
         <div class="nav-item active" onclick="tNav('dashboard')" data-p="dashboard"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>대시보드</div>
         <div class="nav-item" onclick="tNav('announce')" data-p="announce" id="nav-announce"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>과제 안내</div>
         <div class="nav-item" onclick="tNav('videos')" data-p="videos"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의 관리</div>
@@ -364,6 +365,7 @@ input,button{font-family:var(--font)}
       <!-- 대시보드 -->
       <div class="panel active" id="panel-dashboard">
         <div class="page-header"><h1>대시보드</h1><p>오늘과 이번 주에 확인해야 할 학생을 한눈에 보세요 <span id="dash-date" style="display:none"></span></p></div>
+        <button class="clinic-check-launch" onclick="openClinicCheckout()"><span class="clinic-check-launch-icon" aria-hidden="true">✓</span><span><strong>귀가 전 수행 체크</strong><small>시간대별 학생 확인 · 현장 완료 · 가정 수행</small></span><span aria-hidden="true">→</span></button>
         <div class="stats-row" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))" id="t-stats"></div>
         <!-- Q&A 미답변 알림 -->
         <div id="dash-qa-alert" style="display:none;margin-bottom:1rem">
@@ -1077,7 +1079,7 @@ input,button{font-family:var(--font)}
 
     </div></div>
   </div>
-  <div class="mobile-tabbar" id="t-tabbar" style="overflow-x:auto"><button class="mobile-tab" onclick="tNav('weekly')" data-mt="weekly" style="min-width:80px">필수 과제 현황</button>
+  <div class="mobile-tabbar" id="t-tabbar" style="overflow-x:auto"><button class="mobile-tab clinic-check-nav" onclick="openClinicCheckout()" data-mt="clinic" style="min-width:110px"><span aria-hidden="true">✓</span>귀가 전 체크</button><button class="mobile-tab" onclick="tNav('weekly')" data-mt="weekly" style="min-width:80px">필수 과제 현황</button>
     <button class="mobile-tab active" onclick="tNav('dashboard')" data-mt="dashboard" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>대시보드</button>
     <button class="mobile-tab" onclick="tNav('announce')" data-mt="announce" id="mt-announce-t" style="position:relative;min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>과제</button>
     <button class="mobile-tab" onclick="tNav('videos')" data-mt="videos" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-02-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의</button>
@@ -2884,6 +2886,11 @@ function dashStatusCell(status){
   var color=status.state==='error'?'color:var(--red);border:1px solid var(--red);':'';
   return'<div><span class="badge '+cls+'" style="'+color+'">'+dashSafeText(status.label)+'</span>'+
     (status.detail?'<div style="font-size:10px;color:var(--text3);margin-top:3px;max-width:180px;white-space:normal;line-height:1.4">'+dashSafeText(status.detail)+'</div>':'')+'</div>';
+}
+
+function openClinicCheckout(){
+  tNav('clinic');
+  document.getElementById('clinic-check-card').scrollIntoView({block:'start'});
 }
 function dashAttendanceCell(row){
   var html=dashStatusCell(row&&row.attendance);
