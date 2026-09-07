@@ -15,7 +15,7 @@ assert.equal(checkoutDay({slot_id:null,slot_label:'미배정'}),null);
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');for(const m of html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g))if(m[1].trim())new vm.Script(m[1]);
 function source(a,b){return html.slice(html.indexOf(a),html.indexOf(b,html.indexOf(a)));}
 const fields=new Proxy({}, {get:(o,k)=>o[k]||(o[k]={style:{},textContent:'',innerHTML:''})});let saved,rendered,fail=false;
-const c={sExamData:exams[0],session:{id:'fixture',name:'Fixture'},sExamFullAnswers:{},isObjectiveAnswer:x=>/^[1-5]$/.test(x),examQuestionNumber:(e,i)=>e.questions[i].num,document:{getElementById:id=>fields[id]},sExamPriorResponse:null,sOmrCurrentPhoto:null,confirm:()=>true,alert:m=>{throw Error(m);},sendStudentActivity:()=>{},sExamTimerStop:()=>{},showSExamView:()=>{},renderSExamResultView:(...args)=>rendered=args,sb:{from:()=>({upsert:async payload=>{if(fail)return {error:{message:'offline'}};saved=payload;return {};}})}};
+const c={sExamData:exams[0],isLiteratureExam,finishLiteratureStudy:async()=>{},session:{id:'fixture',name:'Fixture'},sExamFullAnswers:{},isObjectiveAnswer:x=>/^[1-5]$/.test(x),examQuestionNumber:(e,i)=>e.questions[i].num,document:{getElementById:id=>fields[id]},sExamPriorResponse:null,sOmrCurrentPhoto:null,confirm:()=>true,alert:m=>{throw Error(m);},sendStudentActivity:()=>{},sExamTimerStop:()=>{},showSExamView:()=>{},renderSExamResultView:(...args)=>rendered=args,sb:{from:()=>({upsert:async payload=>{if(fail)return {error:{message:'offline'}};saved=payload;return {};}})}};
 vm.createContext(c);vm.runInContext(source('async function sExamSubmitFull(forceSubmit)','/* 학생 OMR 사진 촬영 채점'),c);
 (async()=>{
  for(const q of exams[0].questions)c.sExamFullAnswers[q.num-1]=q.answer;

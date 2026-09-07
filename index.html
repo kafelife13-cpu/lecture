@@ -31,7 +31,8 @@
 <script src="weekly-homework.js?v=4"></script>
 <link rel="stylesheet" href="clinic-check.css?v=2">
 <script src="clinic-check.js?v=2"></script>
-<script src="literature.js?v=1"></script>
+<script src="literature.js?v=2"></script>
+<script src="literature-study.js?v=1"></script>
 <link rel="stylesheet" href="literature.css?v=1">
 <script>
 (function(){
@@ -4732,7 +4733,7 @@ function renderSStudyLog(){
     var awaySec=s.away_seconds||0;
     var awayCnt=(function(){try{return (JSON.parse(s.away_log||'[]')||[]).filter(function(e){return e.sec>0;}).length;}catch(e){return 0;}})();
     return '<div style="padding:10px 1.25rem;border-bottom:1px solid var(--border)">'+
-      '<div style="font-size:13px;font-weight:600">'+timeLabel+'</div>'+
+      '<div style="font-size:13px;font-weight:600">'+timeLabel+(String(s.id).startsWith('lit_')?' · 문학모의고사 풀이':'')+'</div>'+
       '<div style="font-size:11px;color:var(--text2);margin-bottom:8px">'+fmtTime(dur)+(end?'':' (진행중)')+
       (awaySec>0?' · <span style="color:var(--amber)">⚠️ 이탈 '+awayCnt+'회 '+fmtTime(awaySec)+'</span>':'')+studyHiddenLabel(s)+'</div>'+
       '<div style="display:flex;gap:8px">'+
@@ -4786,7 +4787,7 @@ function stampPhotoWithTime(file){
    강제 정책 때문에 이 방식으로도 완전히 막지 못할 수 있음). 카메라 접근이
    안 되면 기존 파일 선택(기본 카메라 앱) 방식으로 자동 대체된다. */
 var studyCamStream=null;
-function startStudySession(){openStudyCamera('start');}
+async function startStudySession(){try{if(await literatureStudyBusy()){notify('문학모의고사 타이머를 먼저 일시정지해주세요.','info');return;}openStudyCamera('start');}catch(e){notify('타이머 상태 확인 실패: '+e.message,'error');}}
 function endStudySession(){
   if(!studyActiveSession){notify('진행중인 공부 세션이 없어요.','error');return;}
   openStudyCamera('end');
@@ -10136,7 +10137,7 @@ function sExamTimerStop(clearSaved){
 function sExamTimerStart(exam){
   sExamTimerStop(false);
   const el=document.getElementById('s-exam-timer');
-  if(!sExamIsTimedMock(exam)){if(el)el.style.display='none';return;}
+  if(!sExamIsTimedMock(exam)&&!isLiteratureExam(exam)){if(el)el.style.display='none';return;}
   // 모의고사는 이미 치른 시험을 채점하는 화면이므로 제한 시간을 두지 않는다.
   // 답안 임시 저장만 유지하여 화면을 벗어났다가 돌아와도 입력값이 남게 한다.
   sessionStorage.removeItem(sExamTimerKey(exam));
@@ -10404,7 +10405,7 @@ function renderSExamFullGrid(){
 
 function sExamPickFullAnswer(idx,n){
   sExamFullAnswers[idx]=String(n);
-  if(sExamIsTimedMock(sExamData))sessionStorage.setItem(sExamAnswerKey(sExamData),JSON.stringify(sExamFullAnswers));
+  if(sExamIsTimedMock(sExamData)||isLiteratureExam(sExamData))sessionStorage.setItem(sExamAnswerKey(sExamData),JSON.stringify(sExamFullAnswers));
   renderSExamFullGrid();
 }
 
@@ -10457,6 +10458,7 @@ async function sExamSubmitFull(forceSubmit){
   },{onConflict:'exam_id,student_name'});
   if(saveRes.error){alert('채점 결과 저장에 실패했어요: '+saveRes.error.message+'\n선생님께 알려주세요.');return;}
   sendStudentActivity(sExamData.category==='homework'?'숙제 채점 제출':'시험 채점 제출',sExamData.name+' · '+score+'점 ('+correct+'/'+objIdxs.length+')');
+  if(isLiteratureExam(sExamData))await finishLiteratureStudy();
   sExamTimerStop(true);
   sExamPriorResponse=null;sOmrCurrentPhoto=null;sExamCurrentThoughts={};sMockWrongNotes={};
   showSExamView('result');
@@ -10786,7 +10788,7 @@ function renderSResWrongList(wrong){
   var isClinic=sExamData&&(sExamData.category||'school')==='school';
   var isMock=sExamData&&(sExamData.category==='mock'||isLiteratureExam(sExamData));
   if(isMock){
-    wrongEl.innerHTML='<div class="card-head"><h3>📝 온라인 오답노트 ('+wrong.length+'문항)</h3></div><div style="padding:0 1.25rem 0.75rem"><div style="font-size:12px;color:var(--text2);line-height:1.6;padding:10px 0">정답은 먼저 공개되지 않습니다. 오답 이유를 정리하고 다시 답을 고른 뒤 저장하세요. 다시 맞힌 문항은 공식 해설을 확인할 수 있습니다.</div>'+wrong.map(function(w){
+    wrongEl.innerHTML='<div class="card-head"><h3>📝 온라인 오답노트 ('+wrong.length+'문항)</h3></div><div style="padding:0 1.25rem 0.75rem"><div style="font-size:12px;color:var(--text2);line-height:1.6;padding:10px 0">'+(isLiteratureExam(sExamData)?'위 피드백에서 문항별 해설을 확인할 수 있어요. 오답 이유와 다음에 기억할 핵심을 정리하고, 다시 답을 고른 뒤 저장하세요.':'정답은 먼저 공개되지 않습니다. 오답 이유를 정리하고 다시 답을 고른 뒤 저장하세요. 다시 맞힌 문항은 공식 해설을 확인할 수 있습니다.')+'</div>'+wrong.map(function(w){
       var idx=w.idx,q=w.q,note=sMockWrongNotes[idx]||{},retry=note.retry||'',passed=String(retry)===String(q.answer);
       return '<div class="card" style="margin:10px 0;border-left:3px solid '+(passed?'var(--green)':'var(--red)')+'"><div style="padding:12px">'+
         '<div style="display:flex;gap:8px;align-items:center;margin-bottom:10px"><span style="background:var(--red-bg);color:var(--red);font-size:12px;font-weight:700;padding:3px 9px;border-radius:8px">'+examQuestionNumber(sExamData,idx)+'번</span><span style="font-size:12px;color:var(--text2)">처음 답 <strong style="color:var(--red)">'+escHtml(w.my)+'번</strong></span>'+(q.domain?'<span style="margin-left:auto;font-size:11px;color:var(--text3)">'+escHtml(q.domain)+'</span>':'')+'</div>'+
@@ -10866,6 +10868,7 @@ function renderSExamResultView(score,correct,wrong,total){
   sExamLastWrong=wrong;sResRetryAnswers={};sResRetryPassed={};sResWrongFeedback={};
   renderSResWrongList(wrong);
   renderLiteratureExamTools();
+  renderLiteratureFeedback(wrong);
   if(wrong.length&&sExamData&&(sExamData.category||'school')==='school')loadSResWrongFeedback(wrong);
   const reportEl=document.getElementById('s-res-report-card');
   if(padMode){

@@ -56,7 +56,7 @@
   try{const m=await manifest(),r=m.rounds.find(x=>x.round===n);if(!r)return;
    // Show the existing exam panel without starting an overlapping exam-list fetch.
    sNav('literature-exam');
-   if(result)await sExamViewResult(r.id);else await sExamOpenForGrading(r.id);
+   if(result)await sExamViewResult(r.id);else {await sExamOpenForGrading(r.id);if(sExamData?.id===r.id&&document.getElementById('s-exam-check').style.display!=='none')sExamFullManualStart();}
    renderLiteratureExamTools();
   }catch(e){notify(e.message,'error');}
  };
@@ -64,9 +64,16 @@
   document.querySelectorAll('.lit-exam-tools').forEach(x=>x.remove());if(!isLiteratureExam(sExamData))return;
   const n=Number(sExamData.name.match(/모의고사 (\d+)회/)?.[1]);if(!n)return;
   const view=document.getElementById(document.getElementById('s-exam-result').style.display!=='none'?'s-exam-result':'s-exam-check');
-  const el=document.createElement('div');el.className='lit-exam-tools card';el.innerHTML='<div class="lit-actions"><button class="btn" onclick="sNav(\'literature\')">문학모의고사 목록</button>'+links(n,view.id==='s-exam-result')+'</div><p>문제지는 새 창에서 확대해서 볼 수 있어요.</p>';view.prepend(el);
+  const el=document.createElement('div');el.className='lit-exam-tools card';el.innerHTML='<div class="lit-actions"><button class="btn" onclick="sNav(\'literature\')">문학모의고사 목록</button>'+links(n,view.id==='s-exam-result')+'</div><p>문제지는 새 창에서 확대해서 볼 수 있어요.</p>';view.prepend(el);renderLiteratureStudy();
  };
  root.literatureQuestionResources=function(q){if(q?.collection!==marker)return '';return '<details class="lit-question"><summary>문제 원문 다시 보기 · '+q.sourcePage+'쪽</summary><p class="lit-ocr">'+esc(q.text)+'</p>'+q.images.map(x=>'<img loading="lazy" alt="'+q.num+'번 원본 문제" src="'+base+encodeURIComponent(x)+'">').join('')+'</details>'+(q.concepts||[]).map(c=>'<details class="lit-question"><summary>개념 확인 · '+esc(c.title)+'</summary><p>'+esc(c.definition)+'</p><small>더오름 문학개념어 참고</small></details>').join('');};
+ root.renderLiteratureFeedback=function(wrong){
+  document.getElementById('lit-feedback')?.remove();if(!isLiteratureExam(sExamData))return;
+  const el=document.createElement('div');el.id='lit-feedback';el.className='card lit-detail';
+  const types=new Map();wrong.forEach(w=>{const t=w.q.type||'문학 감상';types.set(t,(types.get(t)||0)+1);});
+  el.innerHTML='<h3>문학 풀이 피드백</h3><p>'+(!wrong.length?'모든 문항을 맞혔어요. 해설의 근거와 내 풀이를 비교해 보세요.':wrong.length+'문항을 다시 확인해 보세요. '+wrong.filter(w=>w.my==='미선택').length+'문항은 답이 선택되지 않았어요.')+'</p>'+[...types].map(([t,n])=>'<p><strong>'+esc(t)+' · '+n+'문항</strong><br>'+(/표현|서술/.test(t)?'선택지의 표현 기법이 실제로 나타나는 구절을 찾고, 그 효과까지 지문과 맞는지 확인하세요.':/인물|사건/.test(t)?'누가 어떤 상황에서 말하고 행동했는지, 사건 전후의 변화를 함께 확인하세요.':/보기|감상|외적/.test(t)?'보기의 관점을 먼저 정리한 뒤, 선택지의 해석을 뒷받침하는 지문 근거를 찾으세요.':'선택지의 대상·상황·태도를 각각 지문과 비교하고, 틀린 선택지의 어긋난 표현을 짚어보세요.')+'</p>').join('')+'<details><summary>전체 문항 정답·핵심 해설 확인</summary>'+sExamData.questions.map((q,i)=>'<details><summary>'+q.num+'번 · '+(wrong.some(w=>w.idx===i)?'다시 확인':'정답')+' · 정답 '+q.answer+'</summary><p>'+esc(q.explanation)+'</p>'+literatureQuestionResources(q)+'</details>').join('')+'</details><p>아래 오답노트에 틀린 이유를 적고 다시 답을 선택한 뒤 저장하세요.</p>';
+  document.querySelector('.lit-exam-tools')?.after(el);
+ };
  root.showLiteratureText=async function(n){
   try{const d=await data(n),el=document.getElementById('lit-detail');el.hidden=false;el.innerHTML='<h2>'+n+'회 지문·문제 텍스트</h2><p>옛한글과 기호는 글자 인식에 오류가 남을 수 있습니다. 원본 PDF를 함께 확인해주세요.</p>'+d.problemPages.map(p=>'<details><summary>원본 '+p.page+'쪽</summary><pre>'+esc(p.text)+'</pre></details>').join('');el.scrollIntoView({behavior:'smooth'});}catch(e){notify(e.message,'error');}
  };

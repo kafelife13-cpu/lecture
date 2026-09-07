@@ -1,0 +1,13 @@
+const assert=require('node:assert/strict');
+const {elapsed,advance,payload,LIMIT}=require('../literature-study.js');
+const s={student:'fixture',exam:'exam',title:'문학 1회',segments:[{id:'lit_fixture',start:100000,end:100000}],running:true,beat:100000};
+advance(s,160000);assert.equal(elapsed(s,160000),60000);
+s.running=false;assert.equal(elapsed(s,500000),60000,'pause is excluded');
+s.segments.push({id:'lit_fixture2',start:500000,end:500000});s.running=true;
+advance(s,620000);assert.equal(elapsed(s,620000),180000);
+const row=payload(s,s.segments[1]);assert.equal(new Date(row.end_time)-new Date(row.start_time),120000);
+assert.equal(row.student_id,'fixture');assert.equal(row.id,'lit_fixture2');assert.equal(JSON.parse(row.away_log)[0].kind,'literature');
+const stored=new Map();for(let i=0;i<3;i++)stored.set(row.id,row);assert.equal(stored.size,1,'retry uses the same study session');
+advance(s,9999999);assert.equal(elapsed(s,9999999),LIMIT);assert.equal(s.running,false,'30 minute cap');
+const restored=JSON.parse(JSON.stringify(s));assert.equal(elapsed(restored,99999999),LIMIT);
+console.log('PASS start, pause/resume, actual study durations, stable save id, reload and 30-minute cap');
