@@ -1476,6 +1476,7 @@ input,button{font-family:var(--font)}
     <div class="modal-head"><h3 id="play-title">강의 시청</h3><button class="modal-close" onclick="closePlay()">×</button></div>
     <div class="modal-body">
       <div class="player-wrap"><div id="yt-player"></div></div>
+      <section id="play-chapters" hidden aria-label="문제별 영상 목차" style="margin:14px 0;padding:14px;border:1px solid var(--border);border-radius:12px"></section>
       <div class="tracking-bar">
         <div class="track-header">
           <div class="track-title"><span class="live-dot" id="live-dot"></span>실시간 시청 추적</div>
@@ -1925,6 +1926,10 @@ let db={users:[],videos:[],progress:[],access:[],requests:[],accessLog:[]};
 var sharedAISettings=null;
 let ytPlayer=null,ytApiReady=false,currentVid=null,currentStartPos=0;
 let watchedSet=new Set(),trackTimer=null,saveTimer=null,lastPos=-1,totalDur=0,maxRateSeen=1;
+let chapterWatchedSet=new Set(),chapterSaveWarning=false;
+let chapterRecords=[],chapterDetailRequest=0;
+let chapterTrackingEnabled=false,chapterNextSaveAt=0,chapterSavedCount=0;
+let playRequest=0;
 let videoPresenceStream=null,videoPresenceDetector=null,videoPresenceTimer=null,videoPresenceBusy=false,videoPresenceMissingAt=0,videoPresenceLastAlert=0,videoPresenceHiddenAt=0;
 
 window.onYouTubeIframeAPIReady=function(){ytApiReady=true;};
@@ -3892,7 +3897,40 @@ function openDetail2(vid){
     const p=getPct(s.id,vid),ws=getWatchSec(s.id,vid),lp=getLastPos(s.id,vid),mr=getMaxRate(s.id,vid);
     return`<div class="prog-row"><div class="prog-name">${s.name}</div><div class="prog-bar-wrap"><div class="pbar"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div></div><div class="prog-pct ${pctClass(p)}">${p}%</div><span class="badge ${pctBadge(p)}" style="margin-left:6px">${pctLabel(p)}</span>${lp>0?`<span class="time-badge" style="margin-left:4px">${p>=100?'완료':fmtTime(lp)+'까지'}</span>`:''}${ws>0?`<span style="font-size:11px;color:var(--text2);margin-left:4px">(${fmtTime(ws)})</span>`:''}${mr>1.05?`<span style="font-size:11px;color:var(--amber);margin-left:4px">⚡${fmtRate(mr)}</span>`:''}<button class="btn btn-sm" style="margin-left:auto" onclick="openDetail('${s.id}','${vid}')">상세</button></div>`;
   }).join('')||'<p style="color:var(--text2);font-size:13px">'+(v.category==='review'?'권한을 받은 학생이 없습니다.':'학생이 없습니다.')+'</p>';
+  appendChapterProgress(vid,sts);
   document.getElementById('modal-detail').classList.add('show');
+}
+async function chapterWatchRpc(action,payload){
+  if(!weeklyLogin||!session||weeklyLogin.id!==session.id||padMode||studentPreviewMode)throw Error('본인 계정 로그인이 필요합니다.');
+  const result=await sb.rpc('video_chapter_watch_rpc',{p_id:weeklyLogin.id,p_password:weeklyLogin.pw,p_role:weeklyLogin.role,p_action:action,p_payload:payload});
+  if(result.error)throw result.error;
+  return result.data;
+}
+async function appendChapterProgress(vid,students){
+  const request=++chapterDetailRequest;
+  const video=db.videos.find(function(v){return v.id===vid;}),source=video&&ytId(video.url);
+  if(!KkakkaVideoChapters.get(source).length)return;
+  const box=document.createElement('section');
+  box.style.cssText='margin-top:20px;border-top:1px solid var(--border);padding-top:14px';
+  const title=document.createElement('h3');title.textContent='문제별 시청 기록';
+  const help=document.createElement('p');
+  help.textContent='각 풀이 구간의 95% 이상을 실제 재생하면 완료로 표시합니다. 이전의 전체 진도만으로는 문제별 기록을 알 수 없습니다.';
+  help.style.cssText='font-size:12px;color:var(--text2);line-height:1.6';box.append(title,help);
+  document.getElementById('detail-body').appendChild(box);
+  const loading=document.createElement('p');loading.textContent='문제별 시청 기록을 불러오는 중...';box.appendChild(loading);
+  let records;
+  try{records=await chapterWatchRpc('read',{video_id:vid,source_id:source});}
+  catch(error){loading.textContent='문제별 기록을 불러오지 못했습니다. 다시 로그인하거나 잠시 후 재시도해 주세요.';return;}
+  if(request!==chapterDetailRequest)return;
+  loading.remove();
+  students.forEach(function(student){
+    const record=records.find(function(p){return p.student_id===student.id;});
+    const name=document.createElement('strong');name.textContent=student.name;
+    const row=document.createElement('div');row.style.cssText='padding:12px 0;border-bottom:1px solid var(--border)';
+    const detail=document.createElement('p');detail.style.cssText='font-size:12px;line-height:1.8;margin:6px 0';
+    detail.textContent=KkakkaVideoChapters.summary(source,record&&{youtubeId:record.source_id,seconds:record.seconds},KkakkaVideoChapters.duration(source));
+    row.append(name,detail);box.appendChild(row);
+  });
 }
 function openDetail(sid,vid){
   const s=db.users.find(u=>u.id===sid);
@@ -3909,6 +3947,7 @@ function openDetail(sid,vid){
     </div>
     <div class="pbar" style="height:10px;margin-bottom:10px"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div>
     <div style="font-size:12px;padding:10px;background:var(--bg3);border-radius:var(--radius-sm);color:var(--text2)">${p>=100?`✅ 강의 전체를 완료했습니다. (실제 시청: ${fmtTime(ws)})`:lp>0?`▶ <strong style="color:var(--text)">${fmtTime(lp)}</strong> 지점까지 시청했습니다.`:'⬜ 아직 시청하지 않았습니다.'}${mr>1.05?` <strong style="color:var(--amber)">${fmtRate(mr)} 배속</strong>으로 시청한 기록이 있습니다.`:''}</div>`;
+  appendChapterProgress(vid,[s]);
   document.getElementById('modal-detail').classList.add('show');
 }
 function closeDetail(){document.getElementById('modal-detail').classList.remove('show');}
@@ -4262,6 +4301,8 @@ document.addEventListener('visibilitychange',function(){
 });
 
 async function openPlay(vid, forceStart){
+  const request=++playRequest,studentId=session&&session.id;
+  if(!studentId)return;
   const v=db.videos.find(x=>x.id===vid);
   if(!v)return;
   if(v.category==='review'&&!hasAccess(session.id,vid)){notify('시청 권한이 없습니다.','error');return;}
@@ -4272,23 +4313,47 @@ async function openPlay(vid, forceStart){
     showResumeModal(vid, v.title, lp);
     return;
   }
+  const chapterSource=ytId(v.url);
+  let records=[];
+  if(KkakkaVideoChapters.get(chapterSource).length&&session.role==='student'&&!studentPreviewMode){
+    try{records=await chapterWatchRpc('read',{video_id:vid,source_id:chapterSource});}
+    catch(error){notify('이전 문제별 시청 기록을 불러오지 못했습니다. 이번 시청 기록은 다시 저장을 시도합니다.','error');}
+  }
+  if(request!==playRequest||!session||session.id!==studentId)return;
+  chapterRecords=records;
   currentVid=vid;
   currentStartPos=(forceStart===true)?0:lp;
   const id=ytId(v.url);
   if(!id){notify('유효하지 않은 유튜브 URL입니다.','error');return;}
   const presenceReady=await startVideoPresenceMonitor(v);
+  if(request!==playRequest||!session||session.id!==studentId)return;
   if(!presenceReady){currentVid=null;currentStartPos=0;return;}
   sendStudentActivity('강의 시청 시작',v.title);
   document.getElementById('play-title').textContent=v.title;
+  KkakkaVideoChapters.render(document.getElementById('play-chapters'),id,function(seconds){
+    if(currentVid!==vid||!ytPlayer||typeof ytPlayer.seekTo!=='function'||!totalDur||
+       typeof ytPlayer.getVideoData!=='function'||ytPlayer.getVideoData().video_id!==id){
+      notify('영상이 준비된 뒤 번호를 다시 눌러주세요.','info');return false;
+    }
+    if(!Number.isFinite(seconds)||seconds<0||seconds>=totalDur)return false;
+    lastPos=-1; // A chapter jump must not count the skipped interval as watched.
+    ytPlayer.seekTo(seconds,true);
+    ytPlayer.playVideo();
+    return true;
+  });
   document.getElementById('modal-play').classList.add('show');
   let tries=0;
-  const tryInit=()=>{if(ytApiReady){initYT(id);}else if(tries++<20){setTimeout(tryInit,300);}else{notify('YouTube 플레이어 로드 실패. 새로고침해주세요.','error');}};
+  const tryInit=()=>{if(request!==playRequest||currentVid!==vid)return;if(ytApiReady){initYT(id);}else if(tries++<20){setTimeout(tryInit,300);}else{notify('YouTube 플레이어 로드 실패. 새로고침해주세요.','error');}};
   tryInit();
 }
 function initYT(videoId){
   if(ytPlayer){try{ytPlayer.destroy();}catch(e){}ytPlayer=null;}
   document.getElementById('yt-player').innerHTML='';
   watchedSet=new Set();lastPos=-1;totalDur=0;maxRateSeen=1;
+  const chapterRecord=chapterRecords.find(function(p){return session&&p.student_id===session.id&&p.video_id===currentVid;});
+  chapterWatchedSet=KkakkaVideoChapters.restore(chapterRecord&&{youtubeId:chapterRecord.source_id,seconds:chapterRecord.seconds},videoId);
+  chapterSaveWarning=false;
+  chapterTrackingEnabled=KkakkaVideoChapters.get(videoId).length>0;chapterNextSaveAt=0;chapterSavedCount=chapterWatchedSet.size;
   updateTrackUI(0);
   // 이어보기 위치는 seekTo로 나중에 이동시키는 대신, 유튜브 플레이어를
   // 로드하는 시점에 start 파라미터로 바로 지정한다. 로드 후 seekTo로
@@ -4310,7 +4375,8 @@ function onYTReady(e){
       document.getElementById('trk-total').textContent=fmtTime(totalDur);
       if(!currentVid||!session)return;
       const pct=getPct(session.id,currentVid);
-      if(pct>0){const ws=Math.floor((pct/100)*totalDur);for(let i=0;i<ws;i++)watchedSet.add(i);updateTrackUI(pct);}
+      if(chapterTrackingEnabled){watchedSet=new Set(chapterWatchedSet);updateTrackUI(Math.min(100,Math.round(watchedSet.size/totalDur*100)));}
+      else if(pct>0){const ws=Math.floor((pct/100)*totalDur);for(let i=0;i<ws;i++)watchedSet.add(i);updateTrackUI(pct);}
     } else if(attempts>0){setTimeout(()=>tryDur(attempts-1),500);}
   };
   tryDur(10);
@@ -4319,7 +4385,8 @@ function onYTState(e){
   const dot=document.getElementById('live-dot');
   if(e.data===YT.PlayerState.PLAYING){dot.classList.add('active');startTracking();}
   else{dot.classList.remove('active');stopTracking();
-    if(e.data===YT.PlayerState.ENDED){if(totalDur>0)for(let i=0;i<=Math.floor(totalDur);i++)watchedSet.add(i);updateTrackUI(100);scheduleSave();}
+    if(e.data===YT.PlayerState.ENDED){if(!chapterTrackingEnabled&&totalDur>0)for(let i=0;i<=Math.floor(totalDur);i++)watchedSet.add(i);updateTrackUI(totalDur?Math.min(100,Math.round(watchedSet.size/totalDur*100)):0);scheduleSave();}
+    if(chapterTrackingEnabled&&(e.data===YT.PlayerState.PAUSED||e.data===YT.PlayerState.ENDED))doAutoSave(true);
   }
 }
 function startTracking(){
@@ -4328,7 +4395,9 @@ function startTracking(){
     if(!ytPlayer||!ytPlayer.getCurrentTime)return;
     if(totalDur===0){try{totalDur=ytPlayer.getDuration()||0;}catch(e){}if(totalDur===0)return;document.getElementById('trk-total').textContent=fmtTime(totalDur);}
     const cur=Math.floor(ytPlayer.getCurrentTime());
-    if(lastPos>=0&&cur>lastPos&&cur-lastPos<=3){for(let i=lastPos;i<=cur;i++)watchedSet.add(i);}
+    KkakkaVideoChapters.observe(chapterWatchedSet,lastPos,cur,totalDur);
+    if(chapterTrackingEnabled){watchedSet=new Set(chapterWatchedSet);}
+    else if(lastPos>=0&&cur>lastPos&&cur-lastPos<=3){for(let i=lastPos;i<=cur;i++)watchedSet.add(i);}
     else{watchedSet.add(cur);}
     lastPos=cur;
     try{const rate=ytPlayer.getPlaybackRate();if(rate>maxRateSeen)maxRateSeen=rate;}catch(e){}
@@ -4336,17 +4405,25 @@ function startTracking(){
     updateTrackUI(pct);scheduleSave();
   },1000);
 }
-function stopTracking(){if(trackTimer){clearInterval(trackTimer);trackTimer=null;}}
+function stopTracking(){if(trackTimer){clearInterval(trackTimer);trackTimer=null;}lastPos=-1;}
 function scheduleSave(){
   if(saveTimer)return;
   saveTimer=setTimeout(async()=>{saveTimer=null;await doAutoSave();},2000);
 }
-async function doAutoSave(){
+async function doAutoSave(forceChapterSave){
   if(!currentVid||!session||totalDur===0)return;
   const pct=Math.min(Math.round((watchedSet.size/totalDur)*100),100);
   const curPct=getPct(session.id,currentVid);
   const curPos=ytPlayer?Math.floor(ytPlayer.getCurrentTime()):0;
-  if(pct>0||curPct>0){await upsertProgress(session.id,currentVid,Math.max(pct,curPct),watchedSet.size,curPos,maxRateSeen);}
+  const progressSave={sid:session.id,vid:currentVid,pct:Math.max(pct,curPct),seconds:watchedSet.size,position:curPos,rate:maxRateSeen};
+  const video=db.videos.find(function(v){return v.id===currentVid;}),source=video&&ytId(video.url);
+  const chapterWatch=KkakkaVideoChapters.get(source).length&&session.role==='student'&&!studentPreviewMode?{video_id:currentVid,source_id:source,seconds:Array.from(chapterWatchedSet).sort(function(a,b){return a-b;})}:null;
+  if(chapterWatch&&chapterWatch.seconds.length!==chapterSavedCount&&(forceChapterSave||Date.now()>=chapterNextSaveAt)){
+    chapterNextSaveAt=Date.now()+30000;
+    try{await chapterWatchRpc('save',chapterWatch);if(currentVid===progressSave.vid&&session&&session.id===progressSave.sid)chapterSavedCount=chapterWatch.seconds.length;}
+    catch(error){if(!chapterSaveWarning){chapterSaveWarning=true;notify('문제별 시청 기록 저장에 실패했습니다. 연결을 확인해 주세요. 자동으로 다시 시도합니다.','error');}}
+  }
+  if(pct>0||curPct>0){await upsertProgress(progressSave.sid,progressSave.vid,progressSave.pct,progressSave.seconds,progressSave.position,progressSave.rate);}
 }
 function updateTrackUI(pct){
   document.getElementById('trk-pct').textContent=pct+'%';
@@ -4359,15 +4436,11 @@ function updateTrackUI(pct){
   else badge.innerHTML='<span class="badge none">미시청</span>';
 }
 async function closePlay(){
+  playRequest++;
   stopTracking();
   await stopVideoPresenceMonitor();
   if(saveTimer){clearTimeout(saveTimer);saveTimer=null;}
-  if(currentVid&&session&&totalDur>0){
-    const pct=Math.min(Math.round((watchedSet.size/totalDur)*100),100);
-    const curPct=getPct(session.id,currentVid);
-    const curPos=ytPlayer?Math.floor(ytPlayer.getCurrentTime()):0;
-    if(pct>=curPct)await upsertProgress(session.id,currentVid,pct,watchedSet.size,curPos,maxRateSeen);
-  }
+  if(currentVid&&session&&totalDur>0)await doAutoSave(true);
   if(ytPlayer){try{ytPlayer.stopVideo();ytPlayer.destroy();}catch(e){}ytPlayer=null;}
   document.getElementById('yt-player').innerHTML='';
   document.getElementById('modal-play').classList.remove('show');
@@ -11259,5 +11332,6 @@ function installPWA(){
 }
 </script>
 <script src="app-navigation.js?v=1"></script>
+<script src="video-chapters.js?v=1"></script>
 </body>
 </html>
