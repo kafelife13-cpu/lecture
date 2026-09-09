@@ -3916,6 +3916,7 @@ function closeDetail(){document.getElementById('modal-detail').classList.remove(
 /* ===== STUDENT NAV ===== */
 document.addEventListener('keydown',function(e){var menu=document.getElementById('student-menu');if(e.key==='Escape'&&menu&&menu.open){menu.open=false;menu.querySelector('summary').focus();}});
 function sNav(panel,examScope){
+  if(panel==='notice-hub')renderMockScoreNotice();
   var literatureOnly=panel==='literature-exam';if(literatureOnly)panel='exam';
   if(panel==='literature')renderLiterature();
   if(padMode&&panel!=='exam'){panel='exam';notify('패드 모드에서는 온라인 채점만 이용할 수 있어요.','info');}
@@ -4609,6 +4610,12 @@ async function openAnnounceView(id){
   document.getElementById('an-view-date').textContent=new Date(a.created_at).toLocaleString('ko-KR');
   document.getElementById('an-view-image').innerHTML=announceImageUrls(a).map(function(u){return '<img src="'+u+'" style="max-width:100%;border-radius:8px;margin-bottom:10px;display:block">';}).join('');
   document.getElementById('an-view-content').textContent=a.content||'';
+  var oldScoreLink=document.getElementById('announce-mock-score-link');if(oldScoreLink)oldScoreLink.remove();
+  if(a.id==='an_mock_score_202609'){
+    var scoreLink=document.createElement('button');scoreLink.id='announce-mock-score-link';scoreLink.className='btn blue';scoreLink.textContent='🔢 모의고사 성적 입력 / 확인';
+    scoreLink.onclick=function(){document.getElementById('modal-announce-view').classList.remove('show');sNav('exam','mock');};
+    document.getElementById('an-view-content').after(scoreLink);
+  }
   document.getElementById('modal-announce-view').classList.add('show');
   if(session&&session.role==='student'&&!isAnnounceRead(id)){
     var row={id:'anr_'+Date.now(),announcement_id:id,student_id:session.id,read_at:new Date().toISOString()};
