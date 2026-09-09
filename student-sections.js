@@ -9,7 +9,7 @@
   const panel=document.querySelector('#page-student #panel-notice-hub');
   if(!panel||document.getElementById('mock-score-notice'))return;
   const card=document.createElement('section');card.id='mock-score-notice';card.className='weekly-plan';
-  card.innerHTML='<h2>고1 9월 모의고사 성적 입력</h2><p>9월 13일(일)까지 모든 학생이 점수를 확인해 주세요. 아직 입력하지 않았다면 채점 후 0~100점 숫자로 입력하세요. 선생님이 이미 입력한 점수는 중복 제출하지 않아도 됩니다.</p><button class="btn blue">🔢 성적 입력 / 확인</button>';
+  card.innerHTML='<h2>고1 9월 모의고사 성적 입력</h2><p>9월 11일(금)까지 모든 학생이 점수를 확인해 주세요. 아직 입력하지 않았다면 채점 후 0~100점 숫자로 입력하세요. 선생님이 이미 입력한 점수는 중복 제출하지 않아도 됩니다.</p><button class="btn blue">🔢 성적 입력 / 확인</button>';
   card.querySelector('button').onclick=()=>sNav('exam','mock');
   panel.querySelector('.page-header').after(card);
  };
