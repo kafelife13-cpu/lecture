@@ -10180,8 +10180,8 @@ async function renderSExam(scope){
   ]);
   sExamRespCache={};
   (myResponses||[]).forEach(function(r){sExamRespCache[r.exam_id]=r;});
-  const list=(exams||[]).filter(sExamVisibleForStudent).filter(e=>studentExamScope==='clinic'?(e.category||'school')==='school':studentExamScope==='homework'?e.category==='homework':true);
-  [clinicEl,homeworkEl,miniMockEl,mockEl].forEach((el,i)=>{if(el)el.closest('.card').hidden=!!studentExamScope&&(studentExamScope==='clinic'?i!==0:i!==1);});
+  const list=(exams||[]).filter(sExamVisibleForStudent).filter(e=>studentExamScope==='clinic'?(e.category||'school')==='school':studentExamScope==='homework'?e.category==='homework':studentExamScope==='mock'?e.category==='mock':true);
+  [clinicEl,homeworkEl,miniMockEl,mockEl].forEach((el,i)=>{if(el)el.closest('.card').hidden=!!studentExamScope&&(studentExamScope==='clinic'?i!==0:studentExamScope==='mock'?i!==3:i!==1);});
   sExamClinicCache=list.filter(function(e){return (e.category||'school')==='school';});
   const mock=list.filter(function(e){return e.category==='mock';});
   const miniMock=list.filter(function(e){return e.category==='mini_mock';});
