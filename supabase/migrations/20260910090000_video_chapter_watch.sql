@@ -43,7 +43,7 @@ begin
     insert into public.video_chapter_watch as saved(student_id,video_id,source_id,seconds)
       values(p_id,vid,source,incoming)
       on conflict(student_id,video_id,source_id) do update
-      set seconds=(select array_agg(distinct s order by s) from unnest(saved.seconds||excluded.seconds) as s),updated_at=now()
+      set seconds=coalesce((select array_agg(distinct s order by s) from unnest(saved.seconds||excluded.seconds) as s),'{}'::integer[]),updated_at=now()
       returning to_jsonb(saved) into output;
     return output;
   end if;

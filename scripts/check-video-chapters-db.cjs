@@ -20,6 +20,8 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
   assert.deepEqual((await call('student-a','student','save',{seconds:[960,961,961]})).seconds,[960,961]);
   assert.deepEqual((await call('student-a','student','save',{seconds:[961,962],student_id:'student-b'})).seconds,[960,961,962]);
   assert.deepEqual(await call('student-b','student','read'),[],'students cannot read each other');
+  assert.deepEqual((await call('student-b','student','save',{seconds:[]})).seconds,[]);
+  assert.deepEqual((await call('student-b','student','save',{seconds:[]})).seconds,[],'empty retries remain valid');
   assert.equal((await call('teacher-a','teacher','read'))[0].student_id,'student-a');
   await assert.rejects(call('teacher-a','teacher','save',{seconds:[0]}),/Action not permitted/);
   await assert.rejects(call('student-a','student','read',{},'wrong'),/Authentication required/);
