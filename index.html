@@ -1380,9 +1380,10 @@ input,button{font-family:var(--font)}
                 <div style="font-size:12px;color:var(--text2);margin-bottom:10px">틀린 문제 번호를 클릭하세요</div>
                 <div id="s-homework-wrong-input" hidden style="margin-bottom:12px">
                   <label for="s-homework-wrong-numbers">오답 번호만 입력</label>
-                  <input id="s-homework-wrong-numbers" class="form-input" placeholder="예: 2, 5, 12" onchange="sHomeworkApplyWrongNumbers()">
+                  <input id="s-homework-wrong-numbers" class="form-input" placeholder="예: 2, 5, 12" oninput="sHomeworkApplyWrongNumbers(true)" onchange="sHomeworkApplyWrongNumbers()">
                   <p style="font-size:12px;color:var(--text2)">쉼표나 공백으로 구분해요. 아래 번호를 눌러도 돼요. 선택한 문제마다 학생이 고른 틀린 답도 입력하세요. 모두 맞았으면 비워 두고 제출하세요.</p>
                 </div>
+                <div id="s-wrong-details" aria-live="polite"></div>
                 <div id="s-exam-q-grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:10px"></div>
                 <div style="display:flex;gap:14px;font-size:11px;color:var(--text3)">
                   <span>□ 미선택</span>
@@ -1391,7 +1392,6 @@ input,button{font-family:var(--font)}
               </div>
             </div>
             <!-- 선택된 오답 상세 입력 -->
-            <div id="s-wrong-details"></div>
             <div id="s-exam-check-err" class="err-msg"></div>
             <button class="btn blue" style="width:100%;margin-bottom:8px" onclick="sExamSubmitScore()">📊 제출하기</button>
             <p style="font-size:12px;color:var(--text3);text-align:center">틀린 문제가 없으면 그냥 제출해도 돼요</p>
@@ -10287,12 +10287,13 @@ function parseHomeworkWrongNumbers(value,totalOrExam){
   });
   return numbers.sort(function(a,b){return a-b;});
 }
-function sHomeworkApplyWrongNumbers(){
+function sHomeworkApplyWrongNumbers(live){
   if(!sHomeworkWrongOnly(sExamData))return true;
   try{
-    var indices=parseHomeworkWrongNumbers(document.getElementById('s-homework-wrong-numbers').value,sExamData);
+    var input=document.getElementById('s-homework-wrong-numbers'),raw=input.value;
+    var indices=parseHomeworkWrongNumbers(raw,sExamData);
     sWrongChecked={};indices.forEach(function(i){sWrongChecked[i]=true;});
-    document.getElementById('s-exam-check-err').textContent='';renderSExamAnswerGrid();renderWrongDetails();return true;
+    document.getElementById('s-exam-check-err').textContent='';renderSExamAnswerGrid();if(live)input.value=raw;renderWrongDetails();return true;
   }catch(error){document.getElementById('s-exam-check-err').textContent=error.message;return false;}
 }
 

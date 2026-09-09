@@ -34,6 +34,10 @@ vm.runInContext(source('async function sExamSubmitScore','// 클리닉 오답 �
  for(const input of ['0','51','-1','2.5','1-3','abc'])assert.throws(()=>c.parseHomeworkWrongNumbers(input,50));
  c.sExamData={...other,id:'test-exam',questions:Array.from({length:50},()=>({answer:1,points:1}))};
  fields['s-homework-wrong-numbers']={value:'2, 5, 50'};
+ fields['s-homework-wrong-numbers'].value='2, ';c.sHomeworkApplyWrongNumbers(true);assert.equal(fields['s-homework-wrong-numbers'].value,'2, ');
+ fields['s-homework-wrong-numbers'].value='2, 5, 50';
+ assert.ok(html.indexOf('id="s-wrong-details"')<html.indexOf('id="s-exam-q-grid"'));
+ assert.match(html,/oninput="sHomeworkApplyWrongNumbers\(true\)"/);
  await c.sExamSubmitScore();assert.equal(saved,undefined);assert.match(fields['s-exam-check-err'].textContent,/선택한 답/);
  c.sExamAnswers={1:'1',4:'2',49:'3'};await c.sExamSubmitScore();assert.equal(saved,undefined);assert.match(fields['s-exam-check-err'].textContent,/일치하지/);
  c.sExamAnswers={1:'4',4:'2',49:'3'};
