@@ -49,6 +49,7 @@
   if(!host)return;
   if(!week)week=dateKey(new Date());
   el(prefix()+'-weekly-date').value=week;
+  if(!teacher())renderWeeklyExtras(week);
   host.innerHTML='<p role="status">제출 기록을 확인하고 있어요…</p>';
   try{
    const data=await rpc('list',{week_start:week});

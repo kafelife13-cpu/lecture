@@ -61,7 +61,7 @@ async function main() {
     for (const sub of subs) {
       const pushSub = { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } };
       try {
-        await webpush.sendNotification(pushSub, JSON.stringify({ title: job.title, body: job.body }));
+        await webpush.sendNotification(pushSub, JSON.stringify({ title: job.title, body: job.body, url: /과제|인증/.test(job.title+' '+job.body)?'/lecture/#homework':'/lecture/' }));
         ok++;
       } catch (e) {
         fail++;

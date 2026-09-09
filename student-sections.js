@@ -5,6 +5,33 @@
  if(typeof module!=='undefined')module.exports={replacement,noticeMatches};
  if(typeof document==='undefined')return;
  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ root.renderWeeklyExtras=function(week){
+  let host=document.getElementById('s-weekly-extras');
+  if(!host){host=document.createElement('div');host.id='s-weekly-extras';document.getElementById('s-weekly-body').before(host);}
+  const end=new Date(week+'T00:00:00');end.setDate(end.getDate()+7);
+  const notices=myAnnounceItems().filter(a=>(a.notice_kind||'general')==='general'&&new Date(a.created_at)<end);
+  const notice=notices[0];
+  const items=certDb.items.filter(i=>(certDb.targets[i.id]||[]).includes(session.id)&&new Date(i.created_at)<end);
+  const cards=items.map(i=>{
+   const sub=certDb.submissions.find(s=>s.item_id===i.id&&s.student_id===session.id);
+   const status=sub?.status||'none';
+   const current=new Date(i.created_at)>=new Date(week+'T00:00:00');
+   if(!current&&['approved','pending'].includes(status))return '';
+   return '<button class="weekly-task" data-cert-open="'+esc(i.id)+'"><span class="weekly-task-copy"><strong>'+esc(certDisplayTitle(i))+'</strong><small>'+esc((certDb.weeks.find(w=>w.id===i.week_id)||{}).name||'사진 인증')+'</small><span class="weekly-status">'+({approved:'완료',pending:'선생님 확인 대기',rejected:'다시 제출',none:'사진 제출 필요'}[status]||'확인 필요')+'</span></span><span>→</span></button>';
+  }).join('');
+  host.innerHTML=(notice?'<section class="weekly-plan"><h2>'+esc(notice.title)+'</h2><div style="white-space:pre-wrap;line-height:1.8">'+esc(notice.content)+'</div><button class="btn" data-homework-notice>첨부자료와 안내 보기</button></section>':'')+(cards?'<section class="weekly-plan"><h2>사진 인증 할 일</h2><p>이번 주 인증과 아직 제출하지 않은 인증을 함께 확인해요.</p><div class="weekly-tasks">'+cards+'</div></section>':'');
+ };
+ root.openAssignedCert=function(id){
+  if(!session||!(certDb.targets[id]||[]).includes(session.id))return;
+  sNav('cert');
+  requestAnimationFrame(()=>document.getElementById('cert-task-'+id)?.scrollIntoView({block:'start'}));
+ };
+ document.addEventListener('click',e=>{const b=e.target.closest('[data-cert-open]');if(b)openAssignedCert(b.dataset.certOpen);if(e.target.closest('[data-homework-notice]'))sNav('announce');});
+ if('serviceWorker' in navigator)navigator.serviceWorker.addEventListener('message',e=>{
+  if(e.data?.type!=='OPEN_HOMEWORK')return;
+  if(session?.role==='student'&&!padMode)sNav('weekly');
+  else location.hash='homework';
+ });
  root.isReplacementAccess=function(sid,vid){return db.access.some(a=>a.student_id===sid&&a.video_id===vid&&replacement(a)&&!isAccessExpired(a));};
  root.renderReplacementLectures=function(){
   const el=document.getElementById('student-replacement-list');

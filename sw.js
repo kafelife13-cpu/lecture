@@ -1,7 +1,7 @@
 // CACHE_NAME을 배포할 때마다 바꿔주면(v1→v2→...) 예전 캐시가 자동 폐기되고
 // 브라우저가 새 index.html을 다시 받아옵니다. 코드 수정 후에도 화면이 안
 // 바뀌어 보이면 이 버전을 한 칸 올려서 다시 배포하세요.
-const CACHE_NAME = 'kukeo-wang-v134';
+const CACHE_NAME = 'kukeo-wang-v135';
 const URLS_TO_CACHE = [
   '/lecture/literature.js?v=4',
   '/lecture/literature-study.js?v=1',
@@ -89,7 +89,10 @@ self.addEventListener('notificationclick', function(e) {
   e.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(list) {
       for (var i = 0; i < list.length; i++) {
-        if (list[i].url.indexOf('/lecture/') >= 0 && 'focus' in list[i]) return list[i].focus();
+        if (list[i].url.indexOf('/lecture/') >= 0 && 'focus' in list[i]) {
+          if(url.indexOf('#homework')>=0)list[i].postMessage({type:'OPEN_HOMEWORK'});
+          return list[i].focus();
+        }
       }
       if (clients.openWindow) return clients.openWindow(url);
     })
