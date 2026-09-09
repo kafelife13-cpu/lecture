@@ -1381,7 +1381,7 @@ input,button{font-family:var(--font)}
                 <div id="s-homework-wrong-input" hidden style="margin-bottom:12px">
                   <label for="s-homework-wrong-numbers">오답 번호만 입력</label>
                   <input id="s-homework-wrong-numbers" class="form-input" placeholder="예: 2, 5, 12" onchange="sHomeworkApplyWrongNumbers()">
-                  <p style="font-size:12px;color:var(--text2)">쉼표나 공백으로 구분해요. 아래 번호를 눌러도 돼요. 모두 맞았으면 비워 두고 제출하세요.</p>
+                  <p style="font-size:12px;color:var(--text2)">쉼표나 공백으로 구분해요. 아래 번호를 눌러도 돼요. 선택한 문제마다 학생이 고른 틀린 답도 입력하세요. 모두 맞았으면 비워 두고 제출하세요.</p>
                 </div>
                 <div id="s-exam-q-grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:10px"></div>
                 <div style="display:flex;gap:14px;font-size:11px;color:var(--text3)">
@@ -8769,7 +8769,7 @@ function tResBuildPrintHTML(name,r,exam){
       const thought=r.thoughts?.[idx]||'';
       return `<div style="border:1px solid #ddd;border-radius:8px;padding:14px;margin-bottom:12px;page-break-inside:avoid">
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap">
-          <span style="background:#e8eeff;color:#2d5fa6;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:600">${idx+1}번</span>
+          <span style="background:#e8eeff;color:#2d5fa6;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:600">${examQuestionNumber(exam,idx)}번</span>
           <span style="font-size:12px;color:#666">${q.type}</span>
           <span style="background:#fee;color:#c0392b;padding:2px 8px;border-radius:6px;font-size:12px">내 답 ${my}번 → 정답 ${q.answer}번</span>
         </div>
@@ -10292,7 +10292,7 @@ function sHomeworkApplyWrongNumbers(){
   try{
     var indices=parseHomeworkWrongNumbers(document.getElementById('s-homework-wrong-numbers').value,sExamData);
     sWrongChecked={};indices.forEach(function(i){sWrongChecked[i]=true;});
-    document.getElementById('s-exam-check-err').textContent='';renderSExamAnswerGrid();return true;
+    document.getElementById('s-exam-check-err').textContent='';renderSExamAnswerGrid();renderWrongDetails();return true;
   }catch(error){document.getElementById('s-exam-check-err').textContent=error.message;return false;}
 }
 
@@ -10709,7 +10709,6 @@ function updateWrongCountLabel(){
 function renderWrongDetails(){
   var el=document.getElementById('s-wrong-details');
   if(!el)return;
-  if(sHomeworkWrongOnly(sExamData)){el.innerHTML='';return;}
   var wrongIdxs=Object.keys(sWrongChecked).map(Number).sort(function(a,b){return a-b;});
   if(!wrongIdxs.length){el.innerHTML='';return;}
   el.innerHTML=wrongIdxs.map(function(idx){
@@ -10785,6 +10784,16 @@ async function sExamSubmitScore(){
   var total=sExamData.total_q;
   var wrongIdxs=Object.keys(sWrongChecked).map(Number);
   document.getElementById('s-exam-check-err').textContent='';
+  if(sHomeworkWrongOnly(sExamData)){
+    var missing=wrongIdxs.filter(function(i){return !/^[1-5]$/.test(String(sExamAnswers[i]||''));});
+    var matching=wrongIdxs.filter(function(i){return String(sExamAnswers[i])===String(sExamData.questions[i]?.answer);});
+    if(missing.length||matching.length){
+      document.getElementById('s-exam-check-err').textContent=missing.length?
+        missing.map(function(i){return examQuestionNumber(sExamData,i);}).join(', ')+'번: 학생이 선택한 답을 입력해주세요.':
+        matching.map(function(i){return examQuestionNumber(sExamData,i);}).join(', ')+'번: 오답 표시와 선택한 답이 일치하지 않아요. 답안이나 오답 번호를 확인해주세요.';
+      return;
+    }
+  }
   // 오답 기준으로 점수 계산 (문항별 배점 반영)
   var wrongCount=wrongIdxs.length;
   var correct=total-wrongCount;

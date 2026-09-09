@@ -6,7 +6,7 @@ const exam={id:'test',category:'homework',total_q:69,questions:Array.from({lengt
 exam.questions[31].answer='';
 const c={sExamData:exam,sExamFullAnswers:{},sExamCheckMode:'wrongonly',sWrongChecked:{},sExamAnswers:{},sExamPhotos:{},sExamThoughts:{},sExamPriorResponse:null,session:{id:'test'},
  document:{getElementById:id=>fields[id]||(fields[id]={value:'',innerHTML:'',style:{}})},escHtml:s=>s,isObjectiveAnswer:a=>/^[1-5]$/.test(a),updateWrongCountLabel:()=>{},
- sendStudentActivity:()=>{},showSExamView:()=>{},renderSExamResultView:()=>{},sb:{from:()=>({upsert:async row=>{saved=row;return {};}})}};
+ renderWrongDetails:()=>{},sendStudentActivity:()=>{},showSExamView:()=>{},renderSExamResultView:()=>{},sb:{from:()=>({upsert:async row=>{saved=row;return {};}})}};
 vm.createContext(c);
 vm.runInContext(source('function sHomeworkAllowsWrongOnly','function renderSExamClinicGroups'),c);
 vm.runInContext(source('function renderSExamFullGrid()','function sExamPickFullAnswer'),c);
@@ -22,7 +22,7 @@ vm.runInContext(source('async function sExamSubmitScore','// 클리닉 오답 �
  assert.ok(full.includes('sExamPickFullAnswer(0,4)'));
  c.sWrongChecked={0:true,68:true};c.renderSExamAnswerGrid();assert.equal(fields['s-homework-wrong-numbers'].value,'41, 109');
  assert.ok(fields['s-exam-q-grid'].innerHTML.includes('>109</button>'));
- fields['s-homework-wrong-numbers'].value='41,109';await c.sExamSubmitScore();assert.deepEqual(Object.keys(saved.answers),['0','68']);assert.equal(saved.correct_count,67);
+ c.sExamAnswers={0:'2',68:'3'};fields['s-homework-wrong-numbers'].value='41,109';await c.sExamSubmitScore();assert.deepEqual(Object.keys(saved.answers),['0','68']);assert.equal(saved.correct_count,67);
  fields['s-homework-wrong-numbers'].value='1';saved=null;await c.sExamSubmitScore();assert.equal(saved,null);
  for(const m of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g))new vm.Script(m[1]);
  console.log('PASS: paper numbers 41–109, three sections, subjective label, validation, index-safe storage, inline syntax');

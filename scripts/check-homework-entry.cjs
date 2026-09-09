@@ -5,7 +5,7 @@ const fields={};let saved;
 const c={document:{getElementById:id=>fields[id]||(fields[id]={value:'',textContent:'',innerHTML:''})},
   session:{id:'test',name:'test'},sExamCheckMode:'full',sWrongChecked:{},sExamAnswers:{},sExamPhotos:{},sExamThoughts:{},sExamPriorResponse:null,
   alert:msg=>{throw Error(msg)},sendStudentActivity:()=>{},showSExamView:()=>{},renderSExamResultView:()=>{},
-  renderSExamAnswerGrid:()=>{},renderSExamListCards:list=>list.map(x=>x.name).join(','),
+  renderWrongDetails:()=>{},renderSExamAnswerGrid:()=>{},renderSExamListCards:list=>list.map(x=>x.name).join(','),
   sb:{from:()=>({upsert:async row=>{saved=row;return {};}})}};
 vm.createContext(c);
 vm.runInContext(source('function sHomeworkAllowsWrongOnly','function renderSExamClinicGroups'),c);
@@ -34,11 +34,17 @@ vm.runInContext(source('async function sExamSubmitScore','// 클리닉 오답 �
  for(const input of ['0','51','-1','2.5','1-3','abc'])assert.throws(()=>c.parseHomeworkWrongNumbers(input,50));
  c.sExamData={...other,id:'test-exam',questions:Array.from({length:50},()=>({answer:1,points:1}))};
  fields['s-homework-wrong-numbers']={value:'2, 5, 50'};
- await c.sExamSubmitScore();assert.deepEqual(Object.keys(saved.answers),['1','4','49']);assert.equal(saved.correct_count,47);assert.equal(saved.score,94);
+ await c.sExamSubmitScore();assert.equal(saved,undefined);assert.match(fields['s-exam-check-err'].textContent,/선택한 답/);
+ c.sExamAnswers={1:'1',4:'2',49:'3'};await c.sExamSubmitScore();assert.equal(saved,undefined);assert.match(fields['s-exam-check-err'].textContent,/일치하지/);
+ c.sExamAnswers={1:'4',4:'2',49:'3'};
+ await c.sExamSubmitScore();assert.equal(saved.answers[1],'4');assert.deepEqual(Object.keys(saved.answers),['1','4','49']);assert.equal(saved.correct_count,47);assert.equal(saved.score,94);
  fields['s-homework-wrong-numbers'].value='';await c.sExamSubmitScore();assert.equal(saved.score,100);assert.equal(Object.keys(saved.answers).length,0);
  saved=null;fields['s-homework-wrong-numbers'].value='51';await c.sExamSubmitScore();assert.equal(saved,null);
  const full=source('async function sExamSubmitFull(forceSubmit)','  const savedAnswers={};');
  c.sExamData={...required,questions:Array.from({length:40},()=>({answer:1}))};c.sExamFullAnswers={};c.isObjectiveAnswer=()=>true;
  vm.runInContext(full+'}',c);await assert.rejects(c.sExamSubmitFull(true),/필수 40문항/);
+ vm.runInContext(source('function tResBuildPrintHTML','function tResPrintHTML'),c);
+ const printed=c.tResBuildPrintHTML('test',{answers:{0:'4'}},{name:'test',total_q:1,questions:[{num:41,answer:2,type:'객관식'}]});assert.match(printed,/41번/);assert.match(printed,/내 답 4번/);
+ assert.doesNotMatch(source('function renderWrongDetails','function sExamPickAnswer'),/sHomeworkWrongOnly/);
  console.log('PASS: 40-question routing, clinic unchanged, wrong-number validation/deduplication, saved errors, all-correct and required-answer guard');
 })().catch(e=>{console.error(e);process.exitCode=1;});
