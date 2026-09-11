@@ -1,10 +1,10 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 const ctx={};vm.createContext(ctx);
-for(const name of ['isObjectiveAnswer','examQuestionNumber','homeworkMissingAnswers','homeworkWrittenAnswers','renderHomeworkWrittenAnswers']){
+for(const name of ['isObjectiveAnswer','sHomeworkRequired','sHomeworkAllowsWrongOnly','examQuestionNumber','homeworkMissingAnswers','homeworkWrittenAnswers','renderHomeworkWrittenAnswers']){
  const start=html.indexOf('function '+name+'('),end=html.indexOf('\n}',start)+2;
  // isObjectiveAnswer is a one-line function.
- const code=name==='isObjectiveAnswer'?html.slice(start,html.indexOf('\n',start)):html.slice(start,end);
+ const code=['isObjectiveAnswer','sHomeworkRequired','sHomeworkAllowsWrongOnly'].includes(name)?html.slice(start,html.indexOf('\n',start)):html.slice(start,end);
  vm.runInContext(code,ctx);
 }
 ctx.escHtml=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -35,10 +35,14 @@ console.log('PASS: required written answer, numbering, storage, escaping, script
  const c={};vm.createContext(c);
  for(const name of ['isObjectiveAnswer','sExamSubmitScore']){
   const start=html.indexOf((name==='sExamSubmitScore'?'async ':'')+'function '+name+'(');
-  const end=name==='isObjectiveAnswer'?html.indexOf('\n',start):html.indexOf('\n}',start)+2;
+  const end=['isObjectiveAnswer','sHomeworkRequired','sHomeworkAllowsWrongOnly'].includes(name)?html.indexOf('\n',start):html.indexOf('\n}',start)+2;
   vm.runInContext(html.slice(start,end),c);
  }
  let saved;Object.assign(c,{session:{name:'local test'},sExamData:{category:'homework',total_q:3,questions:[{num:41,answer:'1',points:2},{num:42,answer:'2',points:2},{num:43,answer:'',points:1}]},sWrongChecked:{1:true},sExamAnswers:{1:'3'},sExamPhotos:{},sExamThoughts:{},sExamPriorResponse:{thoughts:{_subjective_answers:{2:'keep'}}},sHomeworkWrongOnly:()=>true,sHomeworkApplyWrongNumbers:()=>true,document:{getElementById:()=>({})},alert:()=>{},sb:{from:()=>({upsert:async data=>{saved=data;return {error:{message:'stop after payload'}};}})}});
  await c.sExamSubmitScore();assert.equal(saved.total_q,2);assert.equal(saved.score,50);assert.equal(saved.points_total,4);assert.equal(saved.thoughts._subjective_answers[2],'keep');
  console.log('PASS: wrong-only scoring excludes subjective items and preserves written answers');
 })().catch(e=>{console.error(e);process.exitCode=1;});
+
+assert.equal(ctx.sHomeworkRequired({category:"homework",name:"한백고 필수 50문항",total_q:50}),true);
+assert.equal(ctx.sHomeworkAllowsWrongOnly({category:"homework",name:"한백고 자유 77문항",total_q:77}),true);
+assert.equal(ctx.sHomeworkRequired({category:"homework",total_q:40}),true);

@@ -10289,11 +10289,13 @@ async function renderSExam(scope){
   if(homeworkEl)homeworkEl.innerHTML=renderHomeworkEntry(homework,sExamRespCache);
 }
 
-function sHomeworkAllowsWrongOnly(exam){return !!exam&&exam.category==='homework'&&Number(exam.total_q)!==40;}
+// ponytail: 제목의 필수 표시와 기존 40문항 규칙을 사용한다. 개별 필수 설정이 필요해지면 전용 필드를 추가한다.
+function sHomeworkRequired(exam){return !!exam&&exam.category==='homework'&&(/필수/.test(exam.name||'')||Number(exam.total_q)===40);}
+function sHomeworkAllowsWrongOnly(exam){return !!exam&&exam.category==='homework'&&!sHomeworkRequired(exam);}
 function sHomeworkWrongOnly(exam){return sHomeworkAllowsWrongOnly(exam)&&sExamCheckMode==='wrongonly';}
 function renderHomeworkEntry(list,responses){
-  return '<section><h3>1) 필수 40문항 입력</h3><p>40문항의 답안을 모두 입력하세요.</p>'+renderSExamListCards(list.filter(function(e){return Number(e.total_q)===40;}),responses,'등록된 필수 40문항 과제가 없어요')+'</section>'+
-    '<section style="margin-top:20px"><h3>2) 나머지 과제 입력</h3><p>전체 답안 입력 또는 오답 번호만 입력 중 선택하세요.</p>'+renderSExamListCards(list.filter(function(e){return Number(e.total_q)!==40;}),responses,'등록된 나머지 과제가 없어요')+'</section>';
+  return '<section><h3>1) 필수 과제 입력</h3><p>지정된 필수 과제의 답안을 모두 입력하세요.</p>'+renderSExamListCards(list.filter(function(e){return sHomeworkRequired(e);}),responses,'등록된 필수 과제가 없어요')+'</section>'+
+    '<section style="margin-top:20px"><h3>2) 나머지 과제 입력</h3><p>전체 답안 입력 또는 오답 번호만 입력 중 선택하세요.</p>'+renderSExamListCards(list.filter(function(e){return !sHomeworkRequired(e);}),responses,'등록된 나머지 과제가 없어요')+'</section>';
 }
 function examQuestionNumber(exam,index){
   var num=Number(exam&&exam.questions&&exam.questions[index]&&exam.questions[index].num);
@@ -10371,7 +10373,7 @@ function renderSExamListCards(list,respMap,emptyLabel){
     var safeName=(e.name||'').replace(/'/g,"\\'");
     var actionHtml;
     if(!resp){
-      actionHtml='<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn blue btn-sm" onclick="sExamOpenForGrading(\''+e.id+'\')">'+(sHomeworkAllowsWrongOnly(e)?'전체 답안 입력':e.category==='homework'?'40문항 입력':'바로 채점하기')+'</button>'+(sHomeworkAllowsWrongOnly(e)?'<button class="btn btn-sm" onclick="sExamOpenForGrading(\''+e.id+'\',\'wrongonly\')">오답 번호만 입력</button>':'')+'</div>';
+      actionHtml='<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn blue btn-sm" onclick="sExamOpenForGrading(\''+e.id+'\')">'+(sHomeworkAllowsWrongOnly(e)?'전체 답안 입력':e.category==='homework'?e.total_q+'문항 입력':'바로 채점하기')+'</button>'+(sHomeworkAllowsWrongOnly(e)?'<button class="btn btn-sm" onclick="sExamOpenForGrading(\''+e.id+'\',\'wrongonly\')">오답 번호만 입력</button>':'')+'</div>';
     } else if(resp.regrade_approved){
       actionHtml='<div style="display:flex;gap:6px">'+
         '<button class="btn btn-sm" onclick="sExamViewResult(\''+e.id+'\')">결과보기</button>'+
@@ -10490,7 +10492,7 @@ function renderSExamFullGrid(){
     var heading=q.domain&&(i===0||q.domain!==(sExamData.questions[i-1]||{}).domain)?'<h3 style="margin:16px 0 8px;font-size:14px">'+escHtml(q.domain)+'</h3>':'';
     if(!isObjectiveAnswer(q.answer)){
       if(sExamData.category==='homework')return heading+'<div class="card" style="padding:12px;margin-bottom:8px;border-left:3px solid var(--amber)">'+
-        '<label for="s-written-'+i+'" style="font-weight:700">'+examQuestionNumber(sExamData,i)+'번 · 주관식'+(Number(total)===40?' (필수 입력)':' (선택 입력)')+'</label>'+
+        '<label for="s-written-'+i+'" style="font-weight:700">'+examQuestionNumber(sExamData,i)+'번 · 주관식'+(sHomeworkRequired(sExamData)?' (필수 입력)':' (선택 입력)')+'</label>'+
         '<p style="font-size:12px;color:var(--text2)">답안을 적어 주세요. 선생님이 확인하며 자동 점수에는 포함되지 않습니다.</p>'+
         '<textarea id="s-written-'+i+'" class="form-input" rows="3" maxlength="5000" oninput="sExamFullAnswers['+i+']=this.value">'+escHtml(sExamFullAnswers[i]||'')+'</textarea></div>';
       return heading+'<div class="card" style="margin-bottom:8px;border-left:3px solid var(--amber)">'+
@@ -10526,9 +10528,9 @@ async function sExamSubmitFull(forceSubmit){
   const objIdxs=[];
   sExamData.questions.forEach(function(q,i){if(isObjectiveAnswer(q.answer))objIdxs.push(i);});
   const unanswered=objIdxs.filter(function(i){return !sExamFullAnswers[i];}).map(function(i){return examQuestionNumber(sExamData,i);});
-  if(sExamData.category==='homework'&&Number(total)===40){
+  if(sHomeworkRequired(sExamData)){
     var missing=homeworkMissingAnswers(sExamData,sExamFullAnswers);
-    if(missing.length){alert('필수 40문항의 답안을 모두 입력해주세요. 남은 문항: '+missing.join(', '));return;}
+    if(missing.length){alert('필수 '+total+'문항의 답안을 모두 입력해주세요. 남은 문항: '+missing.join(', '));return;}
   }
   if(unanswered.length&&!forceSubmit){
     if(!confirm(unanswered.length+'문항 답을 아직 선택 안 했어요 ('+unanswered.slice(0,8).join(',')+(unanswered.length>8?'...':'')+'). 그래도 제출할까요?'))return;
