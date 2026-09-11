@@ -10316,6 +10316,7 @@ function sHomeworkApplyWrongNumbers(live){
   try{
     var input=document.getElementById('s-homework-wrong-numbers'),raw=input.value;
     var indices=parseHomeworkWrongNumbers(raw,sExamData);
+    if(indices.some(function(i){return !isObjectiveAnswer(sExamData.questions[i].answer);}))throw new Error('주관식 답안은 전체 답안 입력에서 작성해주세요. 오답 번호에는 객관식만 입력할 수 있어요.');
     sWrongChecked={};indices.forEach(function(i){sWrongChecked[i]=true;});
     document.getElementById('s-exam-check-err').textContent='';renderSExamAnswerGrid();if(live)input.value=raw;renderWrongDetails();return true;
   }catch(error){document.getElementById('s-exam-check-err').textContent=error.message;return false;}
@@ -10714,6 +10715,7 @@ function renderSExamAnswerGrid(){
     var isWrong=sWrongChecked[i];
     var q=sExamData.questions[i]||{};
     var heading=q.domain&&(i===0||q.domain!==(sExamData.questions[i-1]||{}).domain)?'<div style="grid-column:1/-1;text-align:left;margin-top:12px;font-weight:700">'+escHtml(q.domain)+'</div>':'';
+    if(sExamData.category==='homework'&&!isObjectiveAnswer(q.answer))return heading+'<span style="padding:10px 4px;text-align:center;color:var(--text3);font-size:12px">'+examQuestionNumber(sExamData,i)+' · 주관식<br>전체 답안에서 입력</span>';
     return heading+'<button type="button" '+
       'onclick="sToggleWrong('+i+')" '+
       'style="border:none;padding:10px 4px;text-align:center;cursor:pointer;font-size:13px;font-weight:600;border-radius:8px;transition:all 0.15s;user-select:none;-webkit-tap-highlight-color:transparent;'+
@@ -10814,7 +10816,8 @@ function sExamUploadPhotoLocal(idx,input){
 async function sExamSubmitScore(){
   if(!sExamData||!session){return;}
   if(sHomeworkWrongOnly(sExamData)&&!sHomeworkApplyWrongNumbers())return;
-  var total=sExamData.total_q;
+  var gradedQuestions=sExamData.questions.filter(function(q){return sExamData.category!=='homework'||isObjectiveAnswer(q.answer);});
+  var total=sExamData.category==='homework'?gradedQuestions.length:sExamData.total_q;
   var wrongIdxs=Object.keys(sWrongChecked).map(Number);
   document.getElementById('s-exam-check-err').textContent='';
   if(sHomeworkWrongOnly(sExamData)){
@@ -10830,8 +10833,8 @@ async function sExamSubmitScore(){
   // 오답 기준으로 점수 계산 (문항별 배점 반영)
   var wrongCount=wrongIdxs.length;
   var correct=total-wrongCount;
-  var pointsTotal=sExamData.questions.reduce(function(s,q){return s+(q.points||1);},0)||total;
-  var pointsEarned=sExamData.questions.reduce(function(s,q,i){return s+(wrongIdxs.indexOf(i)>=0?0:(q.points||1));},0);
+  var pointsTotal=gradedQuestions.reduce(function(s,q){return s+(q.points||1);},0)||total;
+  var pointsEarned=sExamData.questions.reduce(function(s,q,i){return s+(sExamData.category==='homework'&&!isObjectiveAnswer(q.answer)?0:wrongIdxs.indexOf(i)>=0?0:(q.points||1));},0);
   var score=pointsTotal?Math.round(pointsEarned/pointsTotal*100):Math.round(correct/total*100);
   var wrong=wrongIdxs.map(function(idx){
     return {idx:idx,q:sExamData.questions[idx]||{},my:sExamAnswers[idx]||'?'};
