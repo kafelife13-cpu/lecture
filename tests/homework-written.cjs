@@ -45,4 +45,8 @@ console.log('PASS: required written answer, numbering, storage, escaping, script
 
 assert.equal(ctx.sHomeworkRequired({category:"homework",name:"한백고 필수 50문항",total_q:50}),true);
 assert.equal(ctx.sHomeworkAllowsWrongOnly({category:"homework",name:"한백고 자유 77문항",total_q:77}),true);
+assert.equal(ctx.sHomeworkAllowsWrongOnly({category:"homework",name:"[한백고1] 내신 3주차 필수 과제 1~50번",total_q:50}),true);
+assert.equal(ctx.sHomeworkAllowsWrongOnly({category:"homework",name:"[한백고1] 내신 3주차 자유 과제 51~127번",total_q:77}),true);
+assert.equal(ctx.sHomeworkAllowsWrongOnly({category:"homework",name:"[치동고1] 내신 3주차 필수 과제 1~40번",total_q:40}),true);
+assert.equal(ctx.sHomeworkAllowsWrongOnly({category:"homework",name:"[치동고1] 내신 3주차 자유 과제 41~100번",total_q:60}),true);
 assert.equal(ctx.sHomeworkRequired({category:"homework",total_q:40}),true);

@@ -10291,11 +10291,12 @@ async function renderSExam(scope){
 
 // ponytail: 제목의 필수 표시와 기존 40문항 규칙을 사용한다. 개별 필수 설정이 필요해지면 전용 필드를 추가한다.
 function sHomeworkRequired(exam){return !!exam&&exam.category==='homework'&&(/필수/.test(exam.name||'')||Number(exam.total_q)===40);}
-function sHomeworkAllowsWrongOnly(exam){return !!exam&&exam.category==='homework'&&!sHomeworkRequired(exam);}
+// 필수 여부는 전체 답안 입력의 검증에만 쓰고, 종이로 채점한 뒤 오답만 입력하는 방식은 모든 과제에서 허용한다.
+function sHomeworkAllowsWrongOnly(exam){return !!exam&&exam.category==='homework';}
 function sHomeworkWrongOnly(exam){return sHomeworkAllowsWrongOnly(exam)&&sExamCheckMode==='wrongonly';}
 function renderHomeworkEntry(list,responses){
-  return '<section><h3>1) 필수 과제 입력</h3><p>지정된 필수 과제의 답안을 모두 입력하세요.</p>'+renderSExamListCards(list.filter(function(e){return sHomeworkRequired(e);}),responses,'등록된 필수 과제가 없어요')+'</section>'+
-    '<section style="margin-top:20px"><h3>2) 나머지 과제 입력</h3><p>전체 답안 입력 또는 오답 번호만 입력 중 선택하세요.</p>'+renderSExamListCards(list.filter(function(e){return !sHomeworkRequired(e);}),responses,'등록된 나머지 과제가 없어요')+'</section>';
+  return '<section><h3>1) 필수 과제 입력</h3><p>전체 답안을 입력하거나, 문제지 채점을 마쳤다면 틀린 문제만 입력하세요.</p>'+renderSExamListCards(list.filter(function(e){return sHomeworkRequired(e);}),responses,'등록된 필수 과제가 없어요')+'</section>'+
+    '<section style="margin-top:20px"><h3>2) 나머지 과제 입력</h3><p>전체 답안 입력 또는 틀린 문제만 입력 중 선택하세요.</p>'+renderSExamListCards(list.filter(function(e){return !sHomeworkRequired(e);}),responses,'등록된 나머지 과제가 없어요')+'</section>';
 }
 function examQuestionNumber(exam,index){
   var num=Number(exam&&exam.questions&&exam.questions[index]&&exam.questions[index].num);
@@ -10373,11 +10374,11 @@ function renderSExamListCards(list,respMap,emptyLabel){
     var safeName=(e.name||'').replace(/'/g,"\\'");
     var actionHtml;
     if(!resp){
-      actionHtml='<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn blue btn-sm" onclick="sExamOpenForGrading(\''+e.id+'\')">'+(sHomeworkAllowsWrongOnly(e)?'전체 답안 입력':e.category==='homework'?e.total_q+'문항 입력':'바로 채점하기')+'</button>'+(sHomeworkAllowsWrongOnly(e)?'<button class="btn btn-sm" onclick="sExamOpenForGrading(\''+e.id+'\',\'wrongonly\')">오답 번호만 입력</button>':'')+'</div>';
+      actionHtml='<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn blue btn-sm" onclick="sExamOpenForGrading(\''+e.id+'\')">'+(sHomeworkAllowsWrongOnly(e)?'전체 답안 입력':e.category==='homework'?e.total_q+'문항 입력':'바로 채점하기')+'</button>'+(sHomeworkAllowsWrongOnly(e)?'<button class="btn btn-sm" onclick="sExamOpenForGrading(\''+e.id+'\',\'wrongonly\')">틀린 문제만 입력</button>':'')+'</div>';
     } else if(resp.regrade_approved){
       actionHtml='<div style="display:flex;gap:6px">'+
         '<button class="btn btn-sm" onclick="sExamViewResult(\''+e.id+'\')">결과보기</button>'+
-        '<button class="btn btn-sm green" onclick="sExamOpenForGrading(\''+e.id+'\')">🔓 재채점하기</button>'+(sHomeworkAllowsWrongOnly(e)?'<button class="btn btn-sm" onclick="sExamOpenForGrading(\''+e.id+'\',\'wrongonly\')">오답 번호만 입력</button>':'')+
+        '<button class="btn btn-sm green" onclick="sExamOpenForGrading(\''+e.id+'\')">🔓 재채점하기</button>'+(sHomeworkAllowsWrongOnly(e)?'<button class="btn btn-sm" onclick="sExamOpenForGrading(\''+e.id+'\',\'wrongonly\')">틀린 문제만 입력</button>':'')+
       '</div>';
     } else if(resp.regrade_requested){
       actionHtml='<div style="display:flex;align-items:center;gap:6px">'+
@@ -11316,7 +11317,7 @@ if('serviceWorker' in navigator){
       if(session||studentRestoreRunning||document.getElementById('login-btn').disabled)return;
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=84', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=85', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });
