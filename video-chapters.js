@@ -4,6 +4,14 @@
   'use strict';
   // Seconds refer to the uploaded videos; cue just before each explanation.
   const catalogue={
+    Mml3RyA1TwU:[
+      ['1번',0],['2번',252],['3번',346],['4번',484],['5번',687],
+      ['6번',935],['7번',1000],['8번',1267],['9번',1752],['10번',1844],
+      ['11번',2001],['12번',2245],['13번',2343],['14번',2652],['15번',2725],
+      ['16번',2815],['17번',2939],['18번',3327],['19번',3596],['20번',3983],
+      ['21번',4255],['22번',4409],['23번',4647],['24번',4768],['25번',5178],
+      ['26번',5215],['27번',5302],['28번',5347],['29번',5451],['30번',5474]
+    ],
     sJsIw7F6r_w:[
       ['작품 설명',0],['1번',960],['2번',1000],['3번',1150],['4번',1640],
       ['5번',1995],['6번',2270],['7번',2495],['8번',2730]
@@ -76,6 +84,6 @@
       return status+': '+(selected.length?selected.map(function(row){return row.label+(status==='일부 시청'?' ('+row.percent+'%)':'');}).join(', '):'없음');
     }).join(' / ');
   }
-  function duration(videoId){return videoId==='sJsIw7F6r_w'?2928:videoId==='8TwCCPBPyrA'?2839:0;}
+  function duration(videoId){return videoId==='Mml3RyA1TwU'?5635:videoId==='sJsIw7F6r_w'?2928:videoId==='8TwCCPBPyrA'?2839:0;}
   root.KkakkaVideoChapters={get:get,render:render,restore:restore,observe:observe,stats:stats,summary:summary,duration:duration};
 })(typeof window==='undefined'?globalThis:window);
