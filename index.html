@@ -9799,7 +9799,7 @@ async function tResPrintOxForStudent(){
 // 성적표(리포트) 생성 — 영역별 점수·레이더차트·문항채점표
 // ════════════════════════════════════════════
 
-// 답이 1~5 중 하나로 명확한 객관식 문항인지 (서술형·주관식 등은 자동채점 대상에서 제외)
+// 단일정답 또는 명시적으로 등록한 복수정답만 자동채점한다.
 function isObjectiveAnswer(ans){return /^[1-5]$/.test(String(ans))||/^all:[1-5](,[1-5])+$/.test(String(ans));}
 // Explicit prefixes preserve existing written/homework answers such as '1,4'.
 function examAnswerMatches(value,key){
@@ -9822,7 +9822,7 @@ function examAnswerSelected(value,n){return String(value||'').split(',').indexOf
 function homeworkMissingAnswers(exam,answers){
   return exam.questions.reduce(function(missing,q,i){
     var answer=String(answers[i]||'').trim();
-    if(isObjectiveAnswer(q.answer)?! /^[1-5](,[1-5])*$/.test(answer):!answer)missing.push(examQuestionNumber(exam,i));
+    if(isObjectiveAnswer(q.answer)?!(String(q.answer).indexOf('all:')===0?/^[1-5](,[1-5])*$/:/^[1-5]$/).test(answer):!answer)missing.push(examQuestionNumber(exam,i));
     return missing;
   },[]);
 }
@@ -10849,7 +10849,7 @@ async function sExamSubmitScore(){
   var wrongIdxs=Object.keys(sWrongChecked).map(Number);
   document.getElementById('s-exam-check-err').textContent='';
   if(sHomeworkWrongOnly(sExamData)){
-    var missing=wrongIdxs.filter(function(i){return !/^[1-5](,[1-5])*$/.test(String(sExamAnswers[i]||''));});
+    var missing=wrongIdxs.filter(function(i){return !(String(sExamData.questions[i].answer).indexOf('all:')===0?/^[1-5](,[1-5])*$/:/^[1-5]$/).test(String(sExamAnswers[i]||''));});
     var matching=wrongIdxs.filter(function(i){return examAnswerMatches(sExamAnswers[i],sExamData.questions[i]?.answer);});
     if(missing.length||matching.length){
       document.getElementById('s-exam-check-err').textContent=missing.length?
