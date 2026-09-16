@@ -7766,6 +7766,7 @@ function renderTeditQList(){
             color:${String(n)===String(q.answer)?'white':'var(--text2)'};transition:all 0.12s">${n}</div>`).join('')}
         </div>
       </div>
+      <label style="display:block;font-size:11px;color:var(--text2);margin-bottom:6px">정답 직접 입력 (모두 맞혀야 함: all:1,4)<input id="eqanswer-${i}" class="form-input" value="${escHtml(String(q.answer||''))}" style="font-size:12px;width:180px" onchange="editingQuestions[${i}].answer=this.value.trim()"></label>
       <div style="font-size:11px;color:var(--text2);margin-bottom:3px">지문 (가)(나)(다) 등 — 이 문항이 딸린 읽기 지문 원문</div>
       <textarea id="eqpassage-${i}" class="form-input" placeholder="지문 없음(단독 문법/어휘 문제 등)" style="font-size:12px;min-height:70px;resize:vertical;margin-bottom:6px;white-space:pre-wrap" onchange="editingQuestions[${i}].passage=this.value">${q.passage||''}</textarea>
       <textarea id="eqtext-${i}" class="form-input" style="font-size:12px;min-height:70px;resize:vertical;margin-bottom:6px" onchange="editingQuestions[${i}].text=this.value">${q.text||''}</textarea>
@@ -7775,6 +7776,7 @@ function renderTeditQList(){
 
 function eSelectAnswer(qIdx,num){
   editingQuestions[qIdx].answer=String(num);
+  document.getElementById('eqanswer-'+qIdx).value=String(num);
   for(let n=1;n<=5;n++){
     const el=document.getElementById(`eqa-${qIdx}-${n}`);
     if(!el)continue;
@@ -7789,10 +7791,12 @@ async function saveTExamEdit(){
   if(!name){alert('시험 이름을 입력해 주세요.');return;}
   // sync textareas to array
   editingQuestions.forEach((q,i)=>{
+    q.answer=(document.getElementById('eqanswer-'+i)?.value||String(q.answer||'')).trim();
     q.text=document.getElementById('eqtext-'+i)?.value||q.text||'';
     q.explanation=document.getElementById('eqexp-'+i)?.value||q.explanation||'';
     q.type=document.getElementById('eqt-'+i)?.value||q.type||'기타';
   });
+  if(editingQuestions.some(q=>/^all:/.test(q.answer)&&!isObjectiveAnswer(q.answer))){alert('복수정답 형식을 확인해주세요.');return;}
   const {error}=await sb.from('exams').update({
     name,
     questions:editingQuestions,
@@ -8020,11 +8024,12 @@ function renderTexStep3(){
           <span style="font-size:11px;color:var(--text2)">정답:</span>
           ${[1,2,3,4,5].map(n=>`<div id="rqa-${i}-${n}" onclick="rSelectAnswer(${i},${n})"
             style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;cursor:pointer;font-size:12px;font-weight:500;
-            border:1.5px solid ${n===q.answer?'var(--green)':'var(--border)'};
-            background:${n===q.answer?'var(--green)':''};
-            color:${n===q.answer?'white':'var(--text2)'};transition:all 0.12s">${n}</div>`).join('')}
+            border:1.5px solid ${String(n)===String(q.answer)?'var(--green)':'var(--border)'};
+            background:${String(n)===String(q.answer)?'var(--green)':''};
+            color:${String(n)===String(q.answer)?'white':'var(--text2)'};transition:all 0.12s">${n}</div>`).join('')}
         </div>
       </div>
+      <label style="display:block;font-size:11px;color:var(--text2);margin-bottom:6px">정답 직접 입력 (모두 맞혀야 함: all:1,4)<input id="rqanswer-${i}" class="form-input" value="${escHtml(String(q.answer||''))}" style="font-size:12px;width:180px" onchange="parsedQuestions[${i}].answer=this.value.trim()"></label>
       <div style="font-size:11px;color:var(--text2);margin-bottom:3px">지문 (가)(나)(다) 등 — 이 문항이 딸린 읽기 지문 원문</div>
       <textarea id="rqpassage-${i}" class="form-input" placeholder="지문 없음(단독 문법/어휘 문제 등)" style="font-size:12px;min-height:70px;resize:vertical;margin-bottom:6px;white-space:pre-wrap">${q.passage||''}</textarea>
       <div style="font-size:11px;color:var(--text2);margin-bottom:3px">문제 물음</div>
@@ -8035,6 +8040,7 @@ function renderTexStep3(){
 
 function rSelectAnswer(qIdx,num){
   parsedQuestions[qIdx].answer=num;
+  document.getElementById('rqanswer-'+qIdx).value=String(num);
   for(let n=1;n<=5;n++){
     const el=document.getElementById(`rqa-${qIdx}-${n}`);
     if(!el)continue;
@@ -8053,11 +8059,12 @@ async function saveTExam(){
     type:document.getElementById('rqt-'+i)?.value||q.type||'기타',
     domain:document.getElementById('rqd-'+i)?.value||q.domain||'',
     points:parseInt(document.getElementById('rqp-'+i)?.value)||q.points||1,
-    answer:String(q.answer||''),
+    answer:(document.getElementById('rqanswer-'+i)?.value||String(q.answer||'')).trim(),
     passage:document.getElementById('rqpassage-'+i)?.value||q.passage||'',
     text:document.getElementById('rqtext-'+i)?.value||q.text||'',
     explanation:document.getElementById('rqexp-'+i)?.value||q.explanation||''
   }));
+  if(questions.some(q=>/^all:/.test(q.answer)&&!isObjectiveAnswer(q.answer))){alert('복수정답 형식을 확인해주세요. 예: all:1,4');return;}
   if(!questions.some(q=>q.answer)){alert('정답이 설정된 문항이 없어요. 정답을 확인해 주세요.');return;}
   const category=document.getElementById('tex-category')?.value||'school';
   const {error}=await sb.from('exams').insert({
@@ -8253,12 +8260,12 @@ function renderTResOverview(){
     if(!r.answers)return;
     Object.entries(r.answers).forEach(([idx,my])=>{
       const q=exam.questions[idx];
-      if(q&&my!==String(q.answer))freq[idx]=(freq[idx]||0)+1;
+      if(q&&!examAnswerMatches(my,q.answer))freq[idx]=(freq[idx]||0)+1;
     });
   });
   const top=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,5);
   const avgAcc=Math.round(responses.reduce((acc,r)=>{
-    const wc=r.answers?Object.entries(r.answers).filter(([idx,my])=>my!==String(exam.questions[idx]?.answer)).length:0;
+    const wc=r.answers?Object.entries(r.answers).filter(([idx,my])=>!examAnswerMatches(my,exam.questions[idx]?.answer)).length:0;
     return acc+((exam.total_q-wc)/exam.total_q*100);
   },0)/responses.length);
   statsEl.innerHTML=`
@@ -8291,7 +8298,7 @@ function renderTResOverview(){
         <span style="font-size:12px;color:var(--red);font-weight:600">${cnt}명 (${pct}%)</span>
       </div>`;}).join('')||'<span style="color:var(--text3);font-size:12px">없음</span>'}`;
   studentsEl.innerHTML=responses.map(r=>{
-    const wrongCnt=r.answers?Object.entries(r.answers).filter(([idx,my])=>my!==String(exam.questions[idx]?.answer)).length:0;
+    const wrongCnt=r.answers?Object.entries(r.answers).filter(([idx,my])=>!examAnswerMatches(my,exam.questions[idx]?.answer)).length:0;
     const acc=Math.round(((exam.total_q-wrongCnt)/exam.total_q)*100);
     const hasThoughts=r.thoughts&&Object.keys(r.thoughts).length>0;
     return `<div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer"
@@ -8759,7 +8766,7 @@ function closeTExamResults(){
 function tResBuildPrintHTML(name,r,exam){
   const wrongs=exam.questions.reduce((acc,q,i)=>{
     const my=r.answers?.[i];
-    if(my&&my!==String(q.answer))acc.push({idx:i,q,my});
+    if(my&&!examAnswerMatches(my,q.answer))acc.push({idx:i,q,my});
     return acc;
   },[]);
   const acc=Math.round(((exam.total_q-wrongs.length)/exam.total_q)*100);
@@ -9164,7 +9171,7 @@ async function omrManualEntry(){
   omrExistingResponse=data||null;
   if(omrExistingResponse){
     exam.questions.forEach(function(q,i){
-      if(isObjectiveAnswer(q.answer))omrReadAnswers[i]=String(q.answer);
+      if(isObjectiveAnswer(q.answer))omrReadAnswers[i]=String(q.answer).replace(/^all:/,'');
     });
     Object.keys(omrExistingResponse.answers||{}).forEach(function(i){
       omrReadAnswers[i]=String(omrExistingResponse.answers[i]||'');
@@ -9350,7 +9357,7 @@ function renderOmrBatchList(){
   el.innerHTML=omrBatchResults.map(function(r,idx){
     const wrongCount=Object.keys(r.answers).filter(function(qi){
       const q=exam.questions[qi];
-      return q&&isObjectiveAnswer(q.answer)&&r.answers[qi]&&String(r.answers[qi])!==String(q.answer);
+      return q&&isObjectiveAnswer(q.answer)&&r.answers[qi]&&!examAnswerMatches(r.answers[qi],q.answer);
     }).length;
     const answeredCount=Object.values(r.answers).filter(Boolean).length;
     const uncertainCnt=Object.keys(r.uncertain||{}).length;
@@ -9373,11 +9380,11 @@ function omrBatchEditGridHTML(idx,r,exam){
   return '<div style="padding:0 12px 12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:6px">'+
     exam.questions.map(function(q,qi){
       const val=r.answers[qi]||'';
-      const isWrong=val&&isObjectiveAnswer(q.answer)&&String(val)!==String(q.answer);
+      const isWrong=val&&isObjectiveAnswer(q.answer)&&!examAnswerMatches(val,q.answer);
       const borderColor=!val?'var(--border)':(isWrong?'var(--red)':'var(--green)');
       const shadow=(r.uncertain&&r.uncertain[qi])?'box-shadow:0 0 0 2px var(--amber);':'';
       return '<div style="text-align:center"><div style="font-size:9px;color:var(--text2)">'+(qi+1)+'번'+((r.uncertain&&r.uncertain[qi])?' 🟠':'')+'</div>'+
-        '<input type="number" min="1" max="9" value="'+val+'" onchange="omrBatchUpdateAnswer('+idx+','+qi+',this.value)" '+
+        '<input type="text" inputmode="text" placeholder="1,4" value="'+escHtml(val)+'" onchange="omrBatchUpdateAnswer('+idx+','+qi+',this.value)" '+
         'style="width:100%;padding:4px 2px;text-align:center;border-radius:6px;border:1px solid '+borderColor+';color:'+borderColor+';background:var(--bg2);font-size:12px;'+shadow+'"></div>';
     }).join('')+
   '</div>';
@@ -9407,7 +9414,7 @@ async function omrBatchSaveAll(){
     const wrongIdxs=objIdxs.filter(function(i){
       const val=r.answers[i]||'';
       const q=exam.questions[i];
-      return !val||String(val)!==String(q.answer);
+      return !val||!examAnswerMatches(val,q.answer);
     });
     const correct=objIdxs.length-wrongIdxs.length;
     const pointsTotal=objIdxs.reduce(function(s,i){return s+(exam.questions[i].points||1);},0)||objIdxs.length||1;
@@ -9449,7 +9456,7 @@ function renderOmrReview(){
   grid.innerHTML=exam.questions.map(function(q,i){
     const val=omrReadAnswers[i]||'';
     return'<div style="text-align:center"><div style="font-size:10px;color:var(--text2);margin-bottom:2px">'+(i+1)+'번'+(omrReadUncertain[i]?' 🟠':'')+'</div>'+
-      '<input type="number" min="1" max="9" value="'+val+'" data-idx="'+i+'" onchange="omrUpdateAnswer('+i+',this.value)" '+
+      '<input type="text" inputmode="text" placeholder="1,4" value="'+escHtml(val)+'" data-idx="'+i+'" onchange="omrUpdateAnswer('+i+',this.value)" '+
       'style="width:100%;padding:6px 2px;text-align:center;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:13px"></div>';
   }).join('');
   omrColorizeGrid();
@@ -9466,7 +9473,7 @@ function omrColorizeGrid(){
     const q=exam.questions[idx]||{};
     const val=omrReadAnswers[idx]||'';
     if(!val){inp.style.borderColor='var(--border)';inp.style.color='var(--text2)';}
-    else if(String(val)===String(q.answer)){inp.style.borderColor='var(--green)';inp.style.color='var(--green)';}
+    else if(examAnswerMatches(val,q.answer)){inp.style.borderColor='var(--green)';inp.style.color='var(--green)';}
     else{inp.style.borderColor='var(--red)';inp.style.color='var(--red)';}
     inp.style.boxShadow=omrReadUncertain[idx]?'0 0 0 2px var(--amber)':'';
   });
@@ -9481,7 +9488,7 @@ async function omrConfirmScore(){
   for(let i=0;i<total;i++){
     const val=omrReadAnswers[i]||'';
     const q=exam.questions[i]||{};
-    if(!val||String(val)!==String(q.answer))wrongIdxs.push(i);
+    if(!val||!examAnswerMatches(val,q.answer))wrongIdxs.push(i);
   }
   const correct=total-wrongIdxs.length;
   const pointsTotal=exam.questions.reduce(function(s,q){return s+(q.points||1);},0)||total;
@@ -9526,7 +9533,7 @@ function getWrongDomainsForResponse(exam,response){
   var domains={};
   (exam.questions||[]).forEach(function(q,i){
     var hasEntry=!!(response&&response.answers&&Object.prototype.hasOwnProperty.call(response.answers,i));
-    var wrong=hasEntry&&String(response.answers[i])!==String(q.answer);
+    var wrong=hasEntry&&!examAnswerMatches(response.answers[i],q.answer);
     if(wrong){
       var d=q.domain||q.type||'기타';
       if(!domains[d])domains[d]=[];
@@ -9704,7 +9711,7 @@ async function renderSOxReview(){
     const exam=(exams||[]).find(function(e){return e.id===r.exam_id;});
     const wrongList=exam?Object.keys(r.answers).map(Number).filter(function(idx){
       const q=exam.questions[idx];
-      return q&&String(r.answers[idx])!==String(q.answer);
+      return q&&!examAnswerMatches(r.answers[idx],q.answer);
     }).sort(function(a,b){return a-b;}).map(function(idx){
       return{idx:idx,q:exam.questions[idx],my:r.answers[idx]};
     }):[];
@@ -9793,12 +9800,29 @@ async function tResPrintOxForStudent(){
 // ════════════════════════════════════════════
 
 // 답이 1~5 중 하나로 명확한 객관식 문항인지 (서술형·주관식 등은 자동채점 대상에서 제외)
-function isObjectiveAnswer(ans){return ['1','2','3','4','5'].indexOf(String(ans))>=0;}
+function isObjectiveAnswer(ans){return /^[1-5]$/.test(String(ans))||/^all:[1-5](,[1-5])+$/.test(String(ans));}
+// Explicit prefixes preserve existing written/homework answers such as '1,4'.
+function examAnswerMatches(value,key){
+  var expected=String(key),actual=String(value||'').trim();
+  if(!/^all:/.test(expected))return actual===expected;
+  if(!isObjectiveAnswer(expected)||! /^[1-5](\s*,\s*[1-5])*$/.test(actual))return false;
+  var wanted=Array.from(new Set(expected.slice(4).split(','))).sort();
+  var picked=Array.from(new Set(actual.split(/\s*,\s*/))).sort();
+  return picked.join(',')===wanted.join(',');
+}
+function examToggleAnswer(previous,n,key){
+  if(String(key).indexOf('all:')!==0)return String(n);
+  var picks=String(previous||'').split(',').filter(Boolean),value=String(n),at=picks.indexOf(value);
+  if(at<0)picks.push(value);else picks.splice(at,1);
+  return picks.sort().join(',');
+}
+function examAnswerSelected(value,n){return String(value||'').split(',').indexOf(String(n))>=0;}
+
 
 function homeworkMissingAnswers(exam,answers){
   return exam.questions.reduce(function(missing,q,i){
     var answer=String(answers[i]||'').trim();
-    if(isObjectiveAnswer(q.answer)?!isObjectiveAnswer(answer):!answer)missing.push(examQuestionNumber(exam,i));
+    if(isObjectiveAnswer(q.answer)?! /^[1-5](,[1-5])*$/.test(answer):!answer)missing.push(examQuestionNumber(exam,i));
     return missing;
   },[]);
 }
@@ -9823,7 +9847,7 @@ function repIsWrong(response,idx,exam){
   var q=exam&&exam.questions&&exam.questions[idx];
   if(!q)return true; // 문항 정보를 알 수 없으면(구 형식) 키 존재만으로 오답 처리
   if(!isObjectiveAnswer(q.answer))return false; // 서술형 등은 자동 오답 판정하지 않음
-  return String(response.answers[idx])!==String(q.answer);
+  return !examAnswerMatches(response.answers[idx],q.answer);
 }
 
 // ════════════════════════════════════════════
@@ -10506,9 +10530,10 @@ function renderSExamFullGrid(){
     return heading+'<div class="card" style="margin-bottom:8px">'+
       '<div style="padding:0.75rem 1rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap">'+
         '<span style="min-width:34px;font-size:13px;font-weight:700;color:var(--accent)">'+examQuestionNumber(sExamData,i)+'번</span>'+
+        (String(q.answer).indexOf('all:')===0?'<span style="font-size:12px;color:var(--text2)">복수 선택 · 답을 모두 선택</span>':'')+
         '<div style="display:flex;gap:6px">'+
         [1,2,3,4,5].map(function(n){
-          const sel=String(my)===String(n);
+          const sel=examAnswerSelected(my,n);
           return '<button type="button" onclick="sExamPickFullAnswer('+i+','+n+')" style="width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:13px;font-weight:600;border:1.5px solid '+(sel?'var(--accent)':'var(--border)')+';background:'+(sel?'var(--accent)':'var(--card)')+';color:'+(sel?'white':'var(--text2)')+'">'+n+'</button>';
         }).join('')+
         '</div>'+
@@ -10518,7 +10543,7 @@ function renderSExamFullGrid(){
 }
 
 function sExamPickFullAnswer(idx,n){
-  sExamFullAnswers[idx]=String(n);
+  sExamFullAnswers[idx]=examToggleAnswer(sExamFullAnswers[idx],n,sExamData.questions[idx].answer);
   if(sExamIsTimedMock(sExamData)||isLiteratureExam(sExamData))sessionStorage.setItem(sExamAnswerKey(sExamData),JSON.stringify(sExamFullAnswers));
   renderSExamFullGrid();
 }
@@ -10543,14 +10568,14 @@ async function sExamSubmitFull(forceSubmit){
   objIdxs.forEach(function(i){
     const q=sExamData.questions[i];
     const my=savedAnswers[i];
-    if(my&&String(my)===String(q.answer))correct++;
+    if(my&&examAnswerMatches(my,q.answer))correct++;
     else wrong.push({idx:i,q:q,my:my||'미선택'});
   });
   const pointsTotal=objIdxs.reduce(function(s,i){return s+(sExamData.questions[i].points||1);},0)||objIdxs.length||1;
   const pointsEarned=objIdxs.reduce(function(s,i){
     const q=sExamData.questions[i];
     const my=savedAnswers[i];
-    return s+((my&&String(my)===String(q.answer))?(q.points||1):0);
+    return s+((my&&examAnswerMatches(my,q.answer))?(q.points||1):0);
   },0);
   const score=pointsTotal?Math.round(pointsEarned/pointsTotal*100):0;
   const nextAttempt=(sExamPriorResponse&&sExamPriorResponse.attempt_count)?sExamPriorResponse.attempt_count+1:1;
@@ -10646,7 +10671,7 @@ async function sOmrReadWithAI(previewUrl){
   }
   document.getElementById('s-exam-full-loading').style.display='none';
   document.getElementById('s-exam-full-grid-wrap').style.display='block';
-  document.getElementById('s-omr-photo-preview').innerHTML=previewUrl?'<img src="'+previewUrl+'" style="width:100%;border-radius:8px;margin-bottom:6px;max-height:200px;object-fit:contain;background:var(--bg2)"><div style="font-size:12px;color:var(--text2);margin-bottom:10px">AI가 읽은 답이에요. 잘못 읽은 문항은 눌러서 고쳐주세요.</div>':'';
+  document.getElementById('s-omr-photo-preview').innerHTML=previewUrl?'<img src="'+previewUrl+'" style="width:100%;border-radius:8px;margin-bottom:6px;max-height:200px;object-fit:contain;background:var(--bg2)"><div style="font-size:12px;color:var(--text2);margin-bottom:10px">AI가 읽은 답이에요. 잘못 읽은 문항은 눌러서 고쳐주세요. 복수 선택 문항은 종이 답안과 비교해 선택한 번호를 모두 눌러주세요.</div>':'';
   renderSExamFullGrid();
 }
 async function sOmrReadSelectedFile(files){
@@ -10699,7 +10724,7 @@ async function sExamViewResult(examId){
   const answers=resp.answers||{};
   const wrongIdxs=Object.keys(answers).map(Number).filter(function(idx){
     const q=exam.questions[idx];
-    return q&&String(answers[idx])!==String(q.answer);
+    return q&&!examAnswerMatches(answers[idx],q.answer);
   });
   const wrong=wrongIdxs.map(function(idx){return {idx:idx,q:exam.questions[idx]||{},my:answers[idx]||'?'};});
   showSExamView('result');
@@ -10794,14 +10819,14 @@ function renderWrongDetails(){
 }
 
 function sExamPickAnswer(idx,num){
-  sExamAnswers[idx]=String(num);
+  sExamAnswers[idx]=examToggleAnswer(sExamAnswers[idx],num,sExamData.questions[idx].answer);
   // 해당 상세 카드만 버튼 업데이트
   var card=document.getElementById('wrong-detail-'+idx);
   if(card){
     var btns=card.querySelectorAll('button[onclick*="sExamPickAnswer"]');
     btns.forEach(function(btn,ci){
       var n=ci+1;
-      var sel=n===num;
+      var sel=examAnswerSelected(sExamAnswers[idx],n);
       btn.style.borderColor=sel?'var(--accent)':'var(--border)';
       btn.style.background=sel?'var(--accent)':'var(--card)';
       btn.style.color=sel?'white':'var(--text2)';
@@ -10824,8 +10849,8 @@ async function sExamSubmitScore(){
   var wrongIdxs=Object.keys(sWrongChecked).map(Number);
   document.getElementById('s-exam-check-err').textContent='';
   if(sHomeworkWrongOnly(sExamData)){
-    var missing=wrongIdxs.filter(function(i){return !/^[1-5]$/.test(String(sExamAnswers[i]||''));});
-    var matching=wrongIdxs.filter(function(i){return String(sExamAnswers[i])===String(sExamData.questions[i]?.answer);});
+    var missing=wrongIdxs.filter(function(i){return !/^[1-5](,[1-5])*$/.test(String(sExamAnswers[i]||''));});
+    var matching=wrongIdxs.filter(function(i){return examAnswerMatches(sExamAnswers[i],sExamData.questions[i]?.answer);});
     if(missing.length||matching.length){
       document.getElementById('s-exam-check-err').textContent=missing.length?
         missing.map(function(i){return examQuestionNumber(sExamData,i);}).join(', ')+'번: 학생이 선택한 답을 입력해주세요.':
@@ -10917,11 +10942,11 @@ function renderSResWrongList(wrong){
   var isMock=sExamData&&(sExamData.category==='mock'||isLiteratureExam(sExamData));
   if(isMock){
     wrongEl.innerHTML='<div class="card-head"><h3>📝 온라인 오답노트 ('+wrong.length+'문항)</h3></div><div style="padding:0 1.25rem 0.75rem"><div style="font-size:12px;color:var(--text2);line-height:1.6;padding:10px 0">'+(isLiteratureExam(sExamData)?'위 피드백에서 문항별 해설을 확인할 수 있어요. 오답 이유와 다음에 기억할 핵심을 정리하고, 다시 답을 고른 뒤 저장하세요.':'정답은 먼저 공개되지 않습니다. 오답 이유를 정리하고 다시 답을 고른 뒤 저장하세요. 다시 맞힌 문항은 공식 해설을 확인할 수 있습니다.')+'</div>'+wrong.map(function(w){
-      var idx=w.idx,q=w.q,note=sMockWrongNotes[idx]||{},retry=note.retry||'',passed=String(retry)===String(q.answer);
+      var idx=w.idx,q=w.q,note=sMockWrongNotes[idx]||{},retry=note.retry||'',passed=examAnswerMatches(retry,q.answer);
       return '<div class="card" style="margin:10px 0;border-left:3px solid '+(passed?'var(--green)':'var(--red)')+'"><div style="padding:12px">'+
         '<div style="display:flex;gap:8px;align-items:center;margin-bottom:10px"><span style="background:var(--red-bg);color:var(--red);font-size:12px;font-weight:700;padding:3px 9px;border-radius:8px">'+examQuestionNumber(sExamData,idx)+'번</span><span style="font-size:12px;color:var(--text2)">처음 답 <strong style="color:var(--red)">'+escHtml(w.my)+'번</strong></span>'+(q.domain?'<span style="margin-left:auto;font-size:11px;color:var(--text3)">'+escHtml(q.domain)+'</span>':'')+'</div>'+
         literatureQuestionResources(q)+'<label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">왜 틀렸는지 정리</label><textarea class="form-input" style="min-height:72px;font-size:12px;margin-bottom:10px" placeholder="지문 근거, 헷갈린 개념, 선택지를 잘못 판단한 이유를 적어보세요" oninput="sMockSetWrongNote('+idx+',\'reason\',this.value)">'+escHtml(note.reason||'')+'</textarea>'+
-        '<label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">답을 다시 선택</label><div style="display:flex;gap:6px;margin-bottom:10px">'+[1,2,3,4,5].map(function(n){var sel=String(retry)===String(n);return '<button type="button" onclick="sMockPickRetry('+idx+','+n+')" style="width:36px;height:36px;border-radius:50%;cursor:pointer;font-weight:700;border:1.5px solid '+(sel?'var(--accent)':'var(--border)')+';background:'+(sel?'var(--accent)':'var(--card)')+';color:'+(sel?'white':'var(--text2)')+'">'+n+'</button>';}).join('')+'</div>'+
+        '<label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">답을 다시 선택</label><div style="display:flex;gap:6px;margin-bottom:10px">'+[1,2,3,4,5].map(function(n){var sel=examAnswerSelected(retry,n);return '<button type="button" onclick="sMockPickRetry('+idx+','+n+')" style="width:36px;height:36px;border-radius:50%;cursor:pointer;font-weight:700;border:1.5px solid '+(sel?'var(--accent)':'var(--border)')+';background:'+(sel?'var(--accent)':'var(--card)')+';color:'+(sel?'white':'var(--text2)')+'">'+n+'</button>';}).join('')+'</div>'+
         (retry?(passed?'<div style="padding:10px;border-radius:8px;background:var(--green-bg);color:var(--green);font-size:12px;line-height:1.55;margin-bottom:10px">✅ 다시 풀기 통과'+(q.explanation?'<br><span style="color:var(--text2)"><strong>공식 해설</strong> '+escHtml(q.explanation)+'</span>':'')+'</div>':'<div style="padding:9px;border-radius:8px;background:var(--red-bg);color:var(--red);font-size:12px;margin-bottom:10px">아직 정답이 아닙니다. 정답은 공개하지 않으니 다시 검토하세요.</div>'):'')+
         '<label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">다음에 기억할 핵심</label><textarea class="form-input" style="min-height:58px;font-size:12px" placeholder="다음 시험에서 적용할 개념이나 풀이 원칙" oninput="sMockSetWrongNote('+idx+',\'lesson\',this.value)">'+escHtml(note.lesson||'')+'</textarea>'+
       '</div></div>';
@@ -10941,14 +10966,14 @@ function renderSResWrongList(wrong){
       '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="background:'+(passed?'var(--green-bg)':'var(--red-bg)')+';color:'+(passed?'var(--green)':'var(--red)')+';font-size:12px;font-weight:600;padding:2px 10px;border-radius:8px">'+examQuestionNumber(sExamData,idx)+'번</span><span style="font-size:13px;color:var(--text2)">처음 답: <strong style="color:var(--red)">'+w.my+'번</strong></span></div>'+
       (!passed?'<div style="background:var(--red-bg);border-radius:8px;padding:10px;font-size:12.5px;color:var(--text2);line-height:1.6;margin-bottom:10px">💡 <strong>내 답이 틀린 이유</strong><br>'+(feedback?escHtml(feedback):'오답 이유를 분석하고 있어요...')+'</div>':'')+
       (passed?'<div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:8px">✅ 다시 풀기 통과</div>'+(q.explanation?'<div style="background:var(--green-bg);border-radius:8px;padding:10px;font-size:12.5px;color:var(--text2);line-height:1.6">📖 <strong>통과 후 해설</strong><br>'+escHtml(q.explanation)+'</div>':''):
-        '<div><div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px">답안을 다시 입력하세요</div><div style="display:flex;gap:6px;flex-wrap:wrap">'+[1,2,3,4,5].map(function(n){var sel=String(picked)===String(n);return '<button type="button" onclick="sResRetryPick('+idx+','+n+')" style="width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:14px;font-weight:700;border:1.5px solid '+(sel?'var(--accent)':'var(--border)')+';background:'+(sel?'var(--accent)':'var(--card)')+';color:'+(sel?'white':'var(--text2)')+'">'+n+'</button>';}).join('')+'</div>'+(picked?'<div style="font-size:12px;color:var(--red);margin-top:8px">❌ 아직 틀렸어요. 정답은 공개되지 않습니다. 다시 선택하세요.</div>':'')+'</div>')+
+        '<div><div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px">답안을 다시 입력하세요</div><div style="display:flex;gap:6px;flex-wrap:wrap">'+[1,2,3,4,5].map(function(n){var sel=examAnswerSelected(picked,n);return '<button type="button" onclick="sResRetryPick('+idx+','+n+')" style="width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:14px;font-weight:700;border:1.5px solid '+(sel?'var(--accent)':'var(--border)')+';background:'+(sel?'var(--accent)':'var(--card)')+';color:'+(sel?'white':'var(--text2)')+'">'+n+'</button>';}).join('')+'</div>'+(picked?'<div style="font-size:12px;color:var(--red);margin-top:8px">❌ 아직 틀렸어요. 정답은 공개되지 않습니다. 다시 선택하세요.</div>':'')+'</div>')+
       '</div></div>';
   }).join('')+'</div>';
 }
 function sResRetryPick(idx,n){
-  sResRetryAnswers[idx]=String(n);
+  sResRetryAnswers[idx]=examToggleAnswer(sResRetryAnswers[idx],n,sExamData.questions[idx].answer);
   var row=sExamLastWrong.find(function(w){return w.idx===idx;});
-  if(row&&String(n)===String(row.q.answer)){
+  if(row&&examAnswerMatches(sResRetryAnswers[idx],row.q.answer)){
     sResRetryPassed[idx]=true;
     sendStudentActivity('클리닉 오답 재풀이 통과',(sExamData?sExamData.name:'시험')+' · '+examQuestionNumber(sExamData,idx)+'번');
   }
@@ -10960,7 +10985,7 @@ function sMockSetWrongNote(idx,key,value){
   sMockWrongNotes[idx][key]=value;
 }
 function sMockPickRetry(idx,n){
-  sMockSetWrongNote(idx,'retry',String(n));
+  sMockSetWrongNote(idx,'retry',examToggleAnswer((sMockWrongNotes[idx]||{}).retry,n,sExamData.questions[idx].answer));
   renderSResWrongList(sExamLastWrong);
 }
 async function sMockSaveWrongNotes(){
@@ -11059,8 +11084,8 @@ function renderSExamGrid(){
   grid.innerHTML=Array.from({length:sExamData.total_q},(_,i)=>{
     const my=sExamAnswers[i];
     const q=sExamData.questions[i];
-    const isCorrect=my&&my===String(q?.answer);
-    const isWrong=my&&my!==String(q?.answer);
+    const isCorrect=my&&examAnswerMatches(my,q?.answer);
+    const isWrong=my&&!examAnswerMatches(my,q?.answer);
     const isSel=sExamSelectedQ===i;
     return `<div onclick="sExamSelectQ(${i})" style="
       border:${isSel?'2px':'1px'} solid ${isSel?'var(--accent)':isCorrect?'var(--green)':isWrong?'var(--red)':'var(--border)'};
@@ -11081,8 +11106,8 @@ function sExamSelectQ(idx){
 function renderSExamQDetail(idx){
   const q=sExamData.questions[idx];
   const my=sExamAnswers[idx];
-  const isWrong=my&&my!==String(q.answer);
-  const isCorrect=my&&my===String(q.answer);
+  const isWrong=my&&!examAnswerMatches(my,q.answer);
+  const isCorrect=my&&examAnswerMatches(my,q.answer);
   const photo=sExamPhotos[idx];
   const el=document.getElementById('s-exam-q-detail');
   el.innerHTML=`<div class="card">
@@ -11095,7 +11120,7 @@ function renderSExamQDetail(idx){
     <div style="font-size:12px;color:var(--text2);margin-bottom:6px">내가 선택한 답:</div>
     <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:12px">
       ${[1,2,3,4,5].map(n=>{
-        const isMy=String(n)===my;
+        const isMy=examAnswerSelected(my,n);
         return `<div onclick="sExamSelectChoice(${idx},${n})" style="
           border:1.5px solid ${isMy?'var(--accent)':'var(--border)'};
           border-radius:8px;padding:10px 4px;text-align:center;cursor:pointer;font-size:13px;font-weight:${isMy?'600':'400'};
@@ -11134,7 +11159,7 @@ function renderSExamQDetail(idx){
 }
 
 function sExamSelectChoice(idx,n){
-  sExamAnswers[idx]=String(n);
+  sExamAnswers[idx]=examToggleAnswer(sExamAnswers[idx],n,sExamData.questions[idx].answer);
   renderSExamGrid();
   renderSExamQDetail(idx);
 }
@@ -11159,7 +11184,7 @@ async function sExamAnalyze(){
   if(!sExamData)return;
   const wrongs=sExamData.questions.reduce((acc,q,i)=>{
     const my=sExamAnswers[i];
-    if(my&&my!==String(q.answer))acc.push({idx:i,q,my});
+    if(my&&!examAnswerMatches(my,q.answer))acc.push({idx:i,q,my});
     return acc;
   },[]);
   const errEl=document.getElementById('s-exam-check-err');
@@ -11317,7 +11342,7 @@ if('serviceWorker' in navigator){
       if(session||studentRestoreRunning||document.getElementById('login-btn').disabled)return;
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=85', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=86', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });

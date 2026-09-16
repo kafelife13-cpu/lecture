@@ -1,7 +1,7 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 const ctx={};vm.createContext(ctx);
-for(const name of ['isObjectiveAnswer','sHomeworkRequired','sHomeworkAllowsWrongOnly','examQuestionNumber','homeworkMissingAnswers','homeworkWrittenAnswers','renderHomeworkWrittenAnswers']){
+for(const name of ['examAnswerMatches','isObjectiveAnswer','sHomeworkRequired','sHomeworkAllowsWrongOnly','examQuestionNumber','homeworkMissingAnswers','homeworkWrittenAnswers','renderHomeworkWrittenAnswers']){
  const start=html.indexOf('function '+name+'('),end=html.indexOf('\n}',start)+2;
  // isObjectiveAnswer is a one-line function.
  const code=['isObjectiveAnswer','sHomeworkRequired','sHomeworkAllowsWrongOnly'].includes(name)?html.slice(start,html.indexOf('\n',start)):html.slice(start,end);
@@ -33,7 +33,7 @@ console.log('PASS: required written answer, numbering, storage, escaping, script
 })().catch(e=>{console.error(e);process.exitCode=1;});
 (async()=>{
  const c={};vm.createContext(c);
- for(const name of ['isObjectiveAnswer','sExamSubmitScore']){
+ for(const name of ['examAnswerMatches','isObjectiveAnswer','sExamSubmitScore']){
   const start=html.indexOf((name==='sExamSubmitScore'?'async ':'')+'function '+name+'(');
   const end=['isObjectiveAnswer','sHomeworkRequired','sHomeworkAllowsWrongOnly'].includes(name)?html.indexOf('\n',start):html.indexOf('\n}',start)+2;
   vm.runInContext(html.slice(start,end),c);
