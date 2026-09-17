@@ -10391,6 +10391,11 @@ function sExamToggleClinicPast(school){
   renderSExamClinicGroups();
 }
 
+function clinicExplanationNotice(exam,score){
+  if(!exam||exam.category!=='school'||exam.clinic_school!=='한백고'||score==null||String(score).trim()===''||!Number.isFinite(Number(score))||Number(score)<0||Number(score)>70)return '';
+  return '<div role="note" style="margin:10px 0;padding:14px;border:2px solid var(--amber);border-radius:10px;background:var(--amber-bg);line-height:1.7"><strong>★ 70점 이하 · 클리닉 해설 인증 필수</strong><br>클리닉 해설강의를 시청하고, 틀린 모든 문제의 해설과 오답 정리를 시험지에 필기한 뒤 필기 내용을 사진으로 인증해 주세요.<br><button class="btn btn-sm" onclick="sNav(\'clinic-lectures\')">클리닉 해설강의 보기</button></div>';
+}
+
 function renderSExamListCards(list,respMap,emptyLabel){
   if(!list.length)return emptyLabel?'<div style="padding:1rem 0;text-align:center;color:var(--text3);font-size:12px">'+emptyLabel+'</div>':'';
   return list.map(function(e){
@@ -10421,7 +10426,7 @@ function renderSExamListCards(list,respMap,emptyLabel){
           '<div style="font-size:14px;font-weight:600">'+e.name+'</div>'+
           '<div style="font-size:12px;color:var(--text2);margin-top:2px">총 '+e.total_q+'문항'+(resp?' · 제출완료 '+resp.score+'점'+(sExamIsScoreOnlyResponse(resp)?' · 점수만 입력':''):'')+'</div>'+
         '</div>'+
-        actionHtml+
+        actionHtml+clinicExplanationNotice(e,resp?resp.score:null)+
       '</div>'+
     '</div>';
   }).join('');
@@ -11012,7 +11017,7 @@ function renderSExamResultView(score,correct,wrong,total){
   }
   document.getElementById('s-res-header').innerHTML=
     '<div style="font-size:17px;font-weight:600">'+sExamData.name+'</div>'+
-    '<div style="font-size:12px;color:var(--text2);margin-top:2px">'+(session.name||'')+'</div>';
+    '<div style="font-size:12px;color:var(--text2);margin-top:2px">'+(session.name||'')+'</div>'+clinicExplanationNotice(sExamData,score);
   document.getElementById('s-res-stats').innerHTML=
     '<div style="text-align:center;background:var(--bg2);border-radius:8px;padding:12px"><div style="font-size:24px;font-weight:700;color:'+(score>=80?'var(--green)':score>=60?'var(--amber)':'var(--red)')+'">'+score+'점</div><div style="font-size:11px;color:var(--text3);margin-top:2px">점수</div></div>'+
     '<div style="text-align:center;background:var(--bg2);border-radius:8px;padding:12px"><div style="font-size:24px;font-weight:700;color:var(--green)">'+correct+'</div><div style="font-size:11px;color:var(--text3);margin-top:2px">정답</div></div>'+

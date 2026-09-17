@@ -1,0 +1,11 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
+const start=html.indexOf('function clinicExplanationNotice(');
+const ctx={};vm.createContext(ctx);vm.runInContext(html.slice(start,html.indexOf('\n}',start)+2),ctx);
+const exam={category:'school',clinic_school:'한백고'};
+for(const score of [0,69,70,'70'])assert.ok(ctx.clinicExplanationNotice(exam,score).includes('필기'));
+for(const score of [71,null,undefined,'',' ',NaN,-1])assert.equal(ctx.clinicExplanationNotice(exam,score),'');
+assert.equal(ctx.clinicExplanationNotice({...exam,clinic_school:'치동고'},60),'');
+assert.equal(ctx.clinicExplanationNotice({...exam,category:'mock'},60),'');
+assert.equal(ctx.clinicExplanationNotice({...exam,category:'homework'},60),'');
+console.log('Hanbaek clinic notice boundary and school checks passed');
