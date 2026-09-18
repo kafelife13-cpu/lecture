@@ -6,3 +6,8 @@ const out=ctx.renderHomeworkEntry([{name:'치동 3주차',clinic_week:'9월 2주
 assert.ok(out.indexOf('10월 1주차')<out.indexOf('9월 4주차'));assert.ok(out.indexOf('9월 4주차')<out.indexOf('9월 3주차'));assert.equal((out.match(/ open/g)||[]).length,1);assert.ok(ctx.renderHomeworkEntry([],[]).includes('없어요'));
 const e={total_q:4,questions:[{num:51},{num:87},{num:'B1'},{num:'B18'}]};assert.equal(ctx.examQuestionNumber(e,2),'B1');assert.equal(JSON.stringify(ctx.parseHomeworkWrongNumbers('51, b1 B18 51',e)),'[0,2,3]');assert.throws(()=>ctx.parseHomeworkWrongNumbers('1',e));assert.equal(ctx.examQuestionNumber({questions:[{num:'<img>'}]},0),1);
 console.log('PASS: week ordering, latest expanded, empty list, numeric and B question numbers');
+for(const name of ['qaPreparedSolutions','qaProblemNumbers']){let a=html.indexOf('function '+name+'('),b=html.indexOf('\n}',a)+2;vm.runInContext(html.slice(a,b),ctx);}
+assert.equal(JSON.stringify(ctx.qaProblemNumbers({prob_count:2,sol_text:'QA_SOLUTIONS_V1\n'+JSON.stringify({numbers:[87,'B1']})})),'[87,"B1"]');
+assert.equal(JSON.stringify(ctx.qaProblemNumbers({prob_count:2,sol_text:''})),'[1,2]');
+assert.equal(JSON.stringify(ctx.qaProblemNumbers({prob_count:2,sol_text:'QA_SOLUTIONS_V1\n'+JSON.stringify({numbers:['B1','B1']})})),'[1,2]');
+console.log('PASS: QnA original labels and legacy fallback');

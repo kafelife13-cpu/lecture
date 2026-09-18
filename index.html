@@ -6626,6 +6626,13 @@ function selectSQaWeek(wid){
   renderSQaProbGrid();
 }
 
+function qaProblemNumbers(week){
+  var data=qaPreparedSolutions(week),nums=data&&data.numbers;
+  // ponytail: 명시된 원본 번호가 완전할 때만 사용하고 기존 자료는 1부터 표시한다.
+  if(Array.isArray(nums)&&nums.length===Number(week.prob_count)&&new Set(nums.map(String)).size===nums.length&&nums.every(function(n){return /^[A-Z]?[1-9]\d{0,2}$/.test(String(n));}))return nums;
+  return Array.from({length:Number(week.prob_count)||0},function(_,i){return i+1;});
+}
+
 function renderSQaProbGrid(){
   if(!qaState.week||!session)return;
   var week=qaDb.weeks.find(function(w){return w.id===qaState.week;});
@@ -6633,7 +6640,9 @@ function renderSQaProbGrid(){
   var grid=document.getElementById('s-qa-prob-grid');
   if(!grid)return;
   grid.innerHTML='';
-  for(var i=1;i<=week.prob_count;i++){
+  var numbers=qaProblemNumbers(week);
+  for(var j=0;j<numbers.length;j++){
+    var i=numbers[j];
     var q=qaDb.questions.find(function(q){return q.week_id===qaState.week&&q.prob_num===i&&q.student_id===session.id;});
     var btn=document.createElement('button');
     btn.style.cssText='aspect-ratio:1;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg2);font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--mono);transition:all .15s;color:var(--text2)';
