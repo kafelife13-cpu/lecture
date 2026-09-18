@@ -7929,7 +7929,7 @@ function texQuickRegister(){
   if(!aRaw){errEl.textContent='정답지 텍스트를 붙여넣어 주세요.';errEl.style.display='block';return;}
   const circleMap={'①':'1','②':'2','③':'3','④':'4','⑤':'5'};
 
-  const matches=[...aRaw.matchAll(/(\d{1,3})번?\s*[-.:)]?\s*([①②③④⑤]|[1-5]|주관식|서술형)번?/g)];
+  const matches=[...aRaw.matchAll(/([A-Za-z]?\d{1,3})번?\s*[-.:)]?\s*([①②③④⑤]|[1-5]|주관식|서술형)번?/g)];
   if(!matches.length){
     errEl.textContent='정답지에서 번호-정답 쌍을 찾지 못했어요. "1-③ 2-① 3-⑤"처럼 번호와 정답이 붙어있는 형식으로 넣어 주세요.';
     errEl.style.display='block';
@@ -7938,7 +7938,7 @@ function texQuickRegister(){
   const seen={};
   const questions=[];
   matches.forEach(m=>{
-    const num=parseInt(m[1]);
+    const num=/^[A-Za-z]/.test(m[1])?m[1].toUpperCase():parseInt(m[1]);
     const isSubjective=m[2]==='주관식'||m[2]==='서술형';
     const ans=isSubjective?'':(circleMap[m[2]]||m[2]);
     if(!seen[num]){seen[num]=true;questions.push({num,type:'기타',domain:'',points:isSubjective?0:2,answer:String(ans),text:isSubjective?'서술형·주관식 문항 — 선생님 확인 대상':'',explanation:isSubjective?'자동채점 대상이 아니며 선생님이 별도로 확인합니다.':''});}
@@ -10319,11 +10319,26 @@ function sHomeworkRequired(exam){return !!exam&&exam.category==='homework'&&(/�
 function sHomeworkAllowsWrongOnly(exam){return !!exam&&exam.category==='homework';}
 function sHomeworkWrongOnly(exam){return sHomeworkAllowsWrongOnly(exam)&&sExamCheckMode==='wrongonly';}
 function renderHomeworkEntry(list,responses){
-  return '<section><h3>1) 필수 과제 입력</h3><p>전체 답안을 입력하거나, 문제지 채점을 마쳤다면 틀린 문제만 입력하세요.</p>'+renderSExamListCards(list.filter(function(e){return sHomeworkRequired(e);}),responses,'등록된 필수 과제가 없어요')+'</section>'+
-    '<section style="margin-top:20px"><h3>2) 나머지 과제 입력</h3><p>전체 답안 입력 또는 틀린 문제만 입력 중 선택하세요.</p>'+renderSExamListCards(list.filter(function(e){return !sHomeworkRequired(e);}),responses,'등록된 나머지 과제가 없어요')+'</section>';
+  if(!list.length)return '<p>등록된 과제가 없어요.</p>';
+  // ponytail: 과제명 주차를 우선한다. 달력 주차와 교재 주차가 다른 기존 자료도 보존한다.
+  var groups={};
+  list.forEach(function(e){
+    var week=String(e.name||'').match(/(\d+)\s*주/),label=String(e.clinic_week||''),month=label.match(/(\d+)\s*월/);
+    if(!week)week=label.match(/(\d+)\s*주/);
+    var ym=String(e.created_at||'').slice(0,7),year=Number(ym.slice(0,4))||new Date().getFullYear();
+    var m=month?Number(month[1]):Number(ym.slice(5,7))||new Date().getMonth()+1;
+    var n=week?Number(week[1]):0,key=year+'-'+String(m).padStart(2,'0')+'-'+n;
+    if(!groups[key])groups[key]={label:n?m+'월 '+n+'주차 과제':'주차 미지정 과제',order:n?year*1000+m*10+n:0,items:[]};
+    groups[key].items.push(e);
+  });
+  return Object.values(groups).sort(function(a,b){return b.order-a.order;}).map(function(g,i){
+    return '<details class="card"'+(i===0?' open':'')+' style="padding:12px;margin-bottom:12px"><summary style="cursor:pointer;font-weight:700">'+g.label+' · '+g.items.length+'개</summary><p style="font-size:12px;color:var(--text3)">전체 답안 입력 또는 틀린 문제만 입력 중 선택하세요.</p>'+renderSExamListCards(g.items,responses,'')+'</details>';
+  }).join('');
 }
 function examQuestionNumber(exam,index){
-  var num=Number(exam&&exam.questions&&exam.questions[index]&&exam.questions[index].num);
+  var raw=exam&&exam.questions&&exam.questions[index]&&exam.questions[index].num;
+  if(/^[A-Za-z][1-9]\d{0,2}$/.test(String(raw)))return String(raw).toUpperCase();
+  var num=Number(raw);
   return Number.isInteger(num)&&num>0?num:index+1;
 }
 function parseHomeworkWrongNumbers(value,totalOrExam){
@@ -10332,8 +10347,9 @@ function parseHomeworkWrongNumbers(value,totalOrExam){
   var labels=Array.from({length:total},function(_,i){return examQuestionNumber(exam,i);});
   var tokens=String(value).trim().split(/[\s,，]+/).filter(Boolean),numbers=[];
   tokens.forEach(function(token){
-    var index=labels.indexOf(Number(token));
-    if(!/^\d+$/.test(token)||index<0)throw new Error('과제에 있는 문제 번호('+labels[0]+'~'+labels[labels.length-1]+')를 입력해주세요.');
+    var normalized=/^[A-Za-z]/.test(token)?token.toUpperCase():String(Number(token));
+    var index=labels.map(String).indexOf(normalized);
+    if(!/^[A-Za-z]?\d+$/.test(token)||index<0)throw new Error('과제에 있는 문제 번호('+labels[0]+'~'+labels[labels.length-1]+')를 입력해주세요.');
     if(numbers.indexOf(index)===-1)numbers.push(index);
   });
   return numbers.sort(function(a,b){return a-b;});
