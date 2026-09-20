@@ -17,7 +17,7 @@
   let host=document.getElementById('s-weekly-extras');
   if(!host){host=document.createElement('div');host.id='s-weekly-extras';document.getElementById('s-weekly-body').before(host);}
   const end=new Date(week+'T00:00:00');end.setDate(end.getDate()+7);
-  const notices=myAnnounceItems().filter(a=>(a.notice_kind||'general')==='general'&&new Date(a.created_at)<end);
+  const notices=myAnnounceItems().filter(a=>(a.notice_kind||'general')==='general'&&new Date(a.created_at)>=new Date(week+'T00:00:00')&&new Date(a.created_at)>=new Date('2026-09-20T00:00:00+09:00')&&new Date(a.created_at)<end);
   const notice=notices[0];
   const items=certDb.items.filter(i=>(certDb.targets[i.id]||[]).includes(session.id)&&new Date(i.created_at)<end);
   const cards=items.map(i=>{
@@ -27,8 +27,35 @@
    if(!current&&['approved','pending'].includes(status))return '';
    return '<button class="weekly-task" data-cert-open="'+esc(i.id)+'"><span class="weekly-task-copy"><strong>'+esc(certDisplayTitle(i))+'</strong><small>'+esc((certDb.weeks.find(w=>w.id===i.week_id)||{}).name||'사진 인증')+'</small><span class="weekly-status">'+({approved:'완료',pending:'선생님 확인 대기',rejected:'다시 제출',none:'사진 제출 필요'}[status]||'확인 필요')+'</span></span><span>→</span></button>';
   }).join('');
-  host.innerHTML=(notice?'<section class="weekly-plan"><h2>'+esc(notice.title)+'</h2><div style="white-space:pre-wrap;line-height:1.8">'+esc(notice.content)+'</div><button class="btn" data-homework-notice>첨부자료와 안내 보기</button></section>':'')+(cards?'<section class="weekly-plan"><h2>사진 인증 할 일</h2><p>이번 주 인증과 아직 제출하지 않은 인증을 함께 확인해요.</p><div class="weekly-tasks">'+cards+'</div></section>':'');
+  host.innerHTML=sokTaskCard()+(notice?'<section class="weekly-plan"><h2>'+esc(notice.title)+'</h2><div style="white-space:pre-wrap;line-height:1.8">'+esc(notice.content)+'</div><button class="btn" data-homework-notice>첨부자료와 안내 보기</button></section>':'')+(cards?'<section class="weekly-plan"><h2>사진 인증 할 일</h2><p>이번 주 인증과 아직 제출하지 않은 인증을 함께 확인해요.</p><div class="weekly-tasks">'+cards+'</div></section>':'');
  };
+
+ const sokItem='ci_sokmi_20260920',sokVideo='v1789915548297';
+ function sokTaskState(student,targets,sub,now=Date.now()){
+  return {assigned:!!student&&targets.includes(student.id),active:now>=Date.parse('2026-09-20T00:00:00+09:00')&&now<Date.parse('2026-09-28T00:00:00+09:00'),done:!!sub&&['pending','approved'].includes(sub.status)};
+ }
+ if(typeof module!=='undefined')module.exports.sokTaskState=sokTaskState;
+ function sokState(){return sokTaskState(session,certDb.targets[sokItem]||[],certDb.submissions.find(s=>s.item_id===sokItem&&s.student_id===session?.id));}
+ function sokTaskCard(){
+  const state=sokState();if(!state.assigned)return '';
+  return '<section class="weekly-plan"><h2>★ 이번 주 속미인곡 영상 · 필기 사진 인증</h2><p>영상을 듣고 작품 해석과 핵심 개념을 필기한 뒤 사진으로 제출하세요. 다음 클리닉에 필기한 자료를 가져오세요.</p><p>'+(state.done?'✓ 사진 제출 완료 · 제출 내역에서 확인할 수 있어요.':'사진 인증이 필요해요. 시청과 필기를 마치지 못하면 클리닉에서 완료해야 합니다.')+'</p><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn blue" data-sok-video>영상 바로 보기</button><button class="btn green" data-cert-open="'+sokItem+'">'+(state.done?'인증 제출 내역 보기':'듣고 필기 사진 인증하기')+'</button></div></section>';
+ }
+ root.refreshSokTask=async function(showPopup){
+  if(!session||session.role!=='student'||padMode)return;
+  const sid=session.id;
+  const result=await sb.from('cert_submissions').select('*').eq('item_id',sokItem).eq('student_id',sid).order('submitted_at',{ascending:false});
+  if(result.error||session?.id!==sid)return;
+  certDb.submissions=certDb.submissions.filter(s=>s.item_id!==sokItem||s.student_id!==sid).concat(result.data||[]);
+  const state=sokState();let modal=document.getElementById('sok-task-popup');
+  if(!state.assigned||!state.active||state.done){if(modal)modal.remove();return;}
+  if(!showPopup||studentPreviewMode)return;
+  if(!modal){modal=document.createElement('div');modal.id='sok-task-popup';modal.className='modal-bg show';modal.setAttribute('role','dialog');modal.setAttribute('aria-label','속미인곡 필기 사진 인증 안내');modal.innerHTML='<div class="modal" style="max-width:560px"><div class="modal-head"><h3>이번 주 필수 인증</h3><button class="modal-close" data-sok-close aria-label="닫기">×</button></div><div style="padding:20px">'+sokTaskCard()+'</div></div>';document.body.appendChild(modal);}
+ };
+ document.addEventListener('click',e=>{
+  if(e.target.closest('[data-sok-close]'))document.getElementById('sok-task-popup')?.remove();
+  if(e.target.closest('[data-sok-video]')){document.getElementById('sok-task-popup')?.remove();openPlay(sokVideo);}
+  if(e.target.closest('[data-cert-open]'))document.getElementById('sok-task-popup')?.remove();
+ });
  root.openAssignedCert=function(id){
   if(!session||!(certDb.targets[id]||[]).includes(session.id))return;
   sNav('cert');

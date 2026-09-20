@@ -27,7 +27,7 @@
 <script src="classical-vocab.js?v=2"></script>
 <script src="classical-course.js"></script>
 <script src="classical-translations.js"></script>
-<script src="student-sections.js?v=1"></script>
+<script src="student-sections.js?v=20260920-sok"></script>
 <script src="weekly-homework.js?v=4"></script>
 <link rel="stylesheet" href="clinic-check.css?v=2">
 <script src="clinic-check.js?v=2"></script>
@@ -2596,7 +2596,7 @@ async function renderWeeklyStudentDashboard(){
   // 주간 과제는 실제 수행 주간보다 앞선 금·토에 미리 게시될 수 있다.
   // 게시 날짜로 이번 주를 잘라내면 월요일이 지난 뒤 과제가 사라지므로,
   // 학생 학교에 맞는 가장 최근 과제 안내를 현재 과제로 보여준다.
-  var myAssignments=myAnnounceItems().filter(a=>(a.notice_kind||'general')==='general');
+  var myAssignments=myAnnounceItems().filter(a=>(a.notice_kind||'general')==='general'&&new Date(a.created_at)>=weekStart&&new Date(a.created_at)>=new Date('2026-09-20T00:00:00+09:00'));
   var assignments=myAssignments.length?[myAssignments[0]]:[];
   function dashboardSafeText(value){
     return String(value||'').replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});
@@ -3992,6 +3992,7 @@ function sNav(panel,examScope){
   if(panel==='clinic-hub')renderStudentClassAttendance();
   if(panel==='weekly')renderWeeklyHomework();
   if(panel==='home')renderSHome();
+  if(panel==='home'||panel==='weekly')refreshSokTask(true);
 }
 
 function renderClinicRequiredPicker(){
@@ -4525,7 +4526,7 @@ function isAnnounceRead(id){
 // One-time teacher-requested alert reset. Keep the latest homework notice and future notices.
 // Dismissing an alert must not fabricate student read receipts.
 function isAnnounceAlert(item){
-  return !!item&&Date.parse(item.created_at)>=Date.parse('2026-09-06T23:45:56.247+09:00')&&!isAnnounceRead(item.id);
+  return !!item&&Date.parse(item.created_at)>=Date.parse('2026-09-20T00:00:00+09:00')&&!isAnnounceRead(item.id);
 }
 function announceReadCount(id){
   return announceDb.reads.filter(function(r){return r.announcement_id===id;}).length;
@@ -6023,15 +6024,17 @@ async function saveCertSubmission(itemId,photoUrl){
   var id=existing?existing.id:'cs_'+Date.now();
   var sub={id:id,item_id:itemId,student_id:session.id,school_id:item.school_id,status:'pending',photo_url:photoUrl,submitted_at:new Date().toISOString()};
   if(existing){
-    await sb.from('cert_submissions').update({status:'pending',photo_url:photoUrl,submitted_at:sub.submitted_at}).eq('id',id);
+    var saved=await sb.from('cert_submissions').update({status:'pending',photo_url:photoUrl,submitted_at:sub.submitted_at}).eq('id',id);
+    if(saved.error){notify('제출 실패: '+saved.error.message,'error');return;}
     Object.assign(existing,sub);
   }else{
-    await sb.from('cert_submissions').insert(sub);
+    var saved=await sb.from('cert_submissions').insert(sub);
+    if(saved.error){notify('제출 실패: '+saved.error.message,'error');return;}
     certDb.submissions.unshift(sub);
   }
   notify('제출됐어요! 선생님이 확인 후 승인해드릴게요.','success');
   sendStudentActivity(photoUrl?'숙제 인증 파일 제출':'숙제 인증 완료 체크',item.title||item.name||'인증 과제');
-  renderSCertList();
+  renderSCertList();refreshSokTask(false);
 }
 
 document.getElementById('modal-cert-photo').addEventListener('click',function(e){if(e.target===e.currentTarget)document.getElementById('modal-cert-photo').classList.remove('show');});
