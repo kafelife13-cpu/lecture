@@ -2,9 +2,9 @@ const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/st
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 const c={session:{id:'student'},announceDb:{reads:[]}};vm.createContext(c);
 vm.runInContext(html.slice(html.indexOf('function isAnnounceRead(id)'),html.indexOf('function announceReadCount')),c);
-const old={id:'old',created_at:'2026-09-06T23:45:56.246+09:00'};
-const latest={id:'latest',created_at:'2026-09-06T23:45:56.247+09:00'};
-const next={id:'next',created_at:'2026-09-07T00:00:00+09:00'};
+const old={id:'old',created_at:'2026-09-19T23:59:59.999+09:00'};
+const latest={id:'latest',created_at:'2026-09-20T00:00:00.000+09:00'};
+const next={id:'next',created_at:'2026-09-21T00:00:00+09:00'};
 assert.equal(c.isAnnounceAlert(old),false);assert.equal(c.isAnnounceRead(old.id),false);
 assert.equal(c.isAnnounceAlert(latest),true);assert.equal(c.isAnnounceAlert(next),true);
 c.announceDb.reads.push({announcement_id:'latest',student_id:'student'});
