@@ -4684,6 +4684,13 @@ async function openAnnounceView(id){
   document.getElementById('an-view-date').textContent=new Date(a.created_at).toLocaleString('ko-KR');
   document.getElementById('an-view-image').innerHTML=announceImageUrls(a).map(function(u){return '<img src="'+u+'" style="max-width:100%;border-radius:8px;margin-bottom:10px;display:block">';}).join('');
   document.getElementById('an-view-content').textContent=a.content||'';
+  document.getElementById('announce-pdf-downloads')?.remove();
+  var pdfLinks=String(a.content||'').match(/https:\/\/[^\s<>"']+\.pdf(?:\?[^\s<>"']*)?/gi)||[];
+  if(pdfLinks.length){
+    var files=document.createElement('div');files.id='announce-pdf-downloads';files.style.marginTop='16px';
+    pdfLinks.forEach(function(url,i){var link=document.createElement('a');link.href=url;link.target='_blank';link.rel='noopener';link.className='btn blue';link.textContent='📄 PDF 열기 · 다운로드'+(pdfLinks.length>1?' '+(i+1):'');files.appendChild(link);});
+    document.getElementById('an-view-content').after(files);
+  }
   var oldScoreLink=document.getElementById('announce-mock-score-link');if(oldScoreLink)oldScoreLink.remove();
   if(a.id==='an_mock_score_202609'){
     var scoreLink=document.createElement('button');scoreLink.id='announce-mock-score-link';scoreLink.className='btn blue';scoreLink.textContent='🔢 모의고사 성적 입력 / 확인';
