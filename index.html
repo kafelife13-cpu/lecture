@@ -27,7 +27,7 @@
 <script src="classical-vocab.js?v=2"></script>
 <script src="classical-course.js"></script>
 <script src="classical-translations.js"></script>
-<script src="student-sections.js?v=20260920-sok"></script>
+<script src="student-sections.js?v=20260921-sok"></script>
 <script src="weekly-homework.js?v=4"></script>
 <link rel="stylesheet" href="clinic-check.css?v=2">
 <script src="clinic-check.js?v=2"></script>
@@ -3955,7 +3955,6 @@ function closeDetail(){document.getElementById('modal-detail').classList.remove(
 /* ===== STUDENT NAV ===== */
 document.addEventListener('keydown',function(e){var menu=document.getElementById('student-menu');if(e.key==='Escape'&&menu&&menu.open){menu.open=false;menu.querySelector('summary').focus();}});
 function sNav(panel,examScope){
-  if(panel==='notice-hub')renderMockScoreNotice();
   var literatureOnly=panel==='literature-exam';if(literatureOnly)panel='exam';
   if(panel==='literature')renderLiterature();
   if(padMode&&panel!=='exam'){panel='exam';notify('패드 모드에서는 온라인 채점만 이용할 수 있어요.','info');}
@@ -4656,7 +4655,7 @@ function renderTAnnounceList(){
 function myAnnounceItems(){
   if(!session)return announceDb.items;
   var mySchool=session.school_id||null;
-  return announceDb.items.filter(function(a){return !a.school_id||a.school_id===mySchool;});
+  return announceDb.items.filter(function(a){return a.id!=='an_mock_score_202609'&&(!a.school_id||a.school_id===mySchool);});
 }
 function renderSAnnounceList(kind){
   kind=kind||'general';
@@ -4690,12 +4689,6 @@ async function openAnnounceView(id){
     var files=document.createElement('div');files.id='announce-pdf-downloads';files.style.marginTop='16px';
     pdfLinks.forEach(function(url,i){var link=document.createElement('a');link.href=url;link.target='_blank';link.rel='noopener';link.className='btn blue';link.textContent='📄 PDF 열기 · 다운로드'+(pdfLinks.length>1?' '+(i+1):'');files.appendChild(link);});
     document.getElementById('an-view-content').after(files);
-  }
-  var oldScoreLink=document.getElementById('announce-mock-score-link');if(oldScoreLink)oldScoreLink.remove();
-  if(a.id==='an_mock_score_202609'){
-    var scoreLink=document.createElement('button');scoreLink.id='announce-mock-score-link';scoreLink.className='btn blue';scoreLink.textContent='🔢 모의고사 성적 입력 / 확인';
-    scoreLink.onclick=function(){document.getElementById('modal-announce-view').classList.remove('show');sNav('exam','mock');};
-    document.getElementById('an-view-content').after(scoreLink);
   }
   document.getElementById('modal-announce-view').classList.add('show');
   if(session&&session.role==='student'&&!isAnnounceRead(id)){
@@ -11382,7 +11375,7 @@ if('serviceWorker' in navigator){
       if(session||studentRestoreRunning||document.getElementById('login-btn').disabled)return;
       if(refreshing)return;refreshing=true;location.reload();
     });
-    navigator.serviceWorker.register('sw.js?v=86', {scope:'/lecture/',updateViaCache:'none'})
+    navigator.serviceWorker.register('sw.js?v=87', {scope:'/lecture/',updateViaCache:'none'})
       .then(function(reg){console.log('SW registered');reg.update();})
       .catch(function(err){console.log('SW error:', err);});
   });

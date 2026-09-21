@@ -5,14 +5,6 @@
  if(typeof module!=='undefined')module.exports={replacement,noticeMatches};
  if(typeof document==='undefined')return;
  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- root.renderMockScoreNotice=function(){
-  const panel=document.querySelector('#page-student #panel-notice-hub');
-  if(!panel||document.getElementById('mock-score-notice'))return;
-  const card=document.createElement('section');card.id='mock-score-notice';card.className='weekly-plan';
-  card.innerHTML='<h2>★ 고1 9월 모의고사 성적 입력</h2><p>9월 11일(금)까지 모든 학생이 점수를 확인해 주세요. 아직 입력하지 않았다면 채점 후 0~100점 숫자로 입력하세요. 선생님이 이미 입력한 점수는 중복 제출하지 않아도 됩니다.</p><button class="btn blue">🔢 성적 입력 / 확인</button>';
-  card.querySelector('button').onclick=()=>sNav('exam','mock');
-  panel.querySelector('.page-header').after(card);
- };
  root.renderWeeklyExtras=function(week){
   let host=document.getElementById('s-weekly-extras');
   if(!host){host=document.createElement('div');host.id='s-weekly-extras';document.getElementById('s-weekly-body').before(host);}
@@ -32,23 +24,23 @@
 
  const sokItem='ci_sokmi_20260920',sokVideo='v1789915548297';
  function sokTaskState(student,targets,sub,now=Date.now()){
-  return {assigned:!!student&&targets.includes(student.id),active:now>=Date.parse('2026-09-20T00:00:00+09:00')&&now<Date.parse('2026-09-28T00:00:00+09:00'),done:!!sub&&['pending','approved'].includes(sub.status)};
+  return {assigned:!!student&&student.group_id!=='hanbaek_wed_1800'&&(student.school_id==='sc_hanbaek'||String(student.group_id||'').startsWith('hanbaek_')||targets.includes(student.id)),active:now>=Date.parse('2026-09-20T00:00:00+09:00')&&now<Date.parse('2026-09-28T00:00:00+09:00'),done:!!sub&&['pending','approved'].includes(sub.status)};
  }
  if(typeof module!=='undefined')module.exports.sokTaskState=sokTaskState;
  function sokState(){return sokTaskState(session,certDb.targets[sokItem]||[],certDb.submissions.find(s=>s.item_id===sokItem&&s.student_id===session?.id));}
  function sokTaskCard(){
   const state=sokState();if(!state.assigned)return '';
-  return '<section class="weekly-plan"><h2>★ 이번 주 속미인곡 영상 · 필기 사진 인증</h2><p>영상을 듣고 작품 해석과 핵심 개념을 필기한 뒤 사진으로 제출하세요. 다음 클리닉에 필기한 자료를 가져오세요.</p><p>'+(state.done?'✓ 사진 제출 완료 · 제출 내역에서 확인할 수 있어요.':'사진 인증이 필요해요. 시청과 필기를 마치지 못하면 클리닉에서 완료해야 합니다.')+'</p><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn blue" data-sok-video>영상 바로 보기</button><button class="btn green" data-cert-open="'+sokItem+'">'+(state.done?'인증 제출 내역 보기':'듣고 필기 사진 인증하기')+'</button></div></section>';
+  return '<section class="weekly-plan"><h2>★ 이번 주 속미인곡 영상 · 필기 사진 인증</h2><p>속미인곡 영상을 반드시 듣고 <strong>4주차 김까까 과제 앞장에 작품 해석과 핵심 개념을 필기해 오세요.</strong> 영상 시청과 앞장 필기 모두 필수입니다.</p><p>'+(state.done?'✓ 사진 제출 완료 · 제출 내역에서 확인할 수 있어요.':'사진 인증이 필요해요. 시청과 필기를 마치지 못하면 클리닉에서 완료해야 합니다.')+'</p><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn blue" data-sok-video>속미인곡 영상보기</button>'+((certDb.targets[sokItem]||[]).includes(session.id)?'<button class="btn green" data-cert-open="'+sokItem+'">'+(state.done?'인증 제출 내역 보기':'듣고 필기 사진 인증하기')+'</button>':'')+'</div></section>';
  }
  root.refreshSokTask=async function(showPopup){
   if(!session||session.role!=='student'||padMode)return;
   const sid=session.id;
-  const result=await sb.from('cert_submissions').select('*').eq('item_id',sokItem).eq('student_id',sid).order('submitted_at',{ascending:false});
-  if(result.error||session?.id!==sid)return;
-  certDb.submissions=certDb.submissions.filter(s=>s.item_id!==sokItem||s.student_id!==sid).concat(result.data||[]);
+  const result=showPopup?{error:true}:await sb.from('cert_submissions').select('*').eq('item_id',sokItem).eq('student_id',sid).order('submitted_at',{ascending:false});
+  if(session?.id!==sid)return;
+  if(!result.error)certDb.submissions=certDb.submissions.filter(s=>s.item_id!==sokItem||s.student_id!==sid).concat(result.data||[]);
   const state=sokState();let modal=document.getElementById('sok-task-popup');
-  if(!state.assigned||!state.active||state.done){if(modal)modal.remove();return;}
-  if(!showPopup||studentPreviewMode)return;
+  if(!state.assigned||!state.active){if(modal)modal.remove();return;}
+  if(!showPopup)return;
   if(!modal){modal=document.createElement('div');modal.id='sok-task-popup';modal.className='modal-bg show';modal.setAttribute('role','dialog');modal.setAttribute('aria-label','속미인곡 필기 사진 인증 안내');modal.innerHTML='<div class="modal" style="max-width:560px"><div class="modal-head"><h3>이번 주 필수 인증</h3><button class="modal-close" data-sok-close aria-label="닫기">×</button></div><div style="padding:20px">'+sokTaskCard()+'</div></div>';document.body.appendChild(modal);}
  };
  document.addEventListener('click',e=>{

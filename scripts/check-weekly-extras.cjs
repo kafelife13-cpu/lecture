@@ -16,3 +16,22 @@ for(const status of ['pending','approved'])assert.equal(state({id:'a'},['a'],{st
 assert.equal(state({id:'a'},['a'],{status:'rejected'},now).done,false);
 assert.equal(state({id:'b'},['a'],null,now).assigned,false);
 assert.equal(state({id:'a'},['a'],null,Date.parse('2026-09-28T00:00:00+09:00')).active,false);
+
+assert.equal(state({id:'new',school_id:'sc_hanbaek'},[],null,now).assigned,true);
+assert.equal(state({id:'wed',school_id:'sc_hanbaek',group_id:'hanbaek_wed_1800'},['wed'],null,now).assigned,false);
+assert.equal(state({id:'chi',school_id:'sc_chidong'},[],null,now).assigned,false);
+context.session={id:'a',role:'student',school_id:'sc_hanbaek'};
+context.padMode=false;
+context.Date=class extends Date {static now(){return now;}};
+let popup;
+context.document.getElementById=()=>null;
+context.document.createElement=()=>({setAttribute(){}});
+context.document.body={appendChild(el){popup=el;}};
+context.window.refreshSokTask(true).then(()=>{
+ assert.equal(popup.id,'sok-task-popup');
+ assert.match(popup.innerHTML,/4주차 김까까 과제 앞장/);
+ assert.match(popup.innerHTML,/속미인곡 영상보기/);
+ assert.doesNotMatch(html,/renderMockScoreNotice|announce-mock-score-link/);
+ assert.match(html,/a.id!=='an_mock_score_202609'/);
+ console.log('PASS: Hanbaek login popup without network wait, Wednesday excluded, retired score notice hidden');
+});
