@@ -19,7 +19,7 @@
    if(!current&&['approved','pending'].includes(status))return '';
    return '<button class="weekly-task" data-cert-open="'+esc(i.id)+'"><span class="weekly-task-copy"><strong>'+esc(certDisplayTitle(i))+'</strong><small>'+esc((certDb.weeks.find(w=>w.id===i.week_id)||{}).name||'사진 인증')+'</small><span class="weekly-status">'+({approved:'완료',pending:'선생님 확인 대기',rejected:'다시 제출',none:'사진 제출 필요'}[status]||'확인 필요')+'</span></span><span>→</span></button>';
   }).join('');
-  host.innerHTML=sokTaskCard()+(notice?'<section class="weekly-plan"><h2>'+esc(notice.title)+'</h2><div style="white-space:pre-wrap;line-height:1.8">'+esc(notice.content)+'</div><button class="btn" data-homework-notice>첨부자료와 안내 보기</button></section>':'')+(cards?'<section class="weekly-plan"><h2>사진 인증 할 일</h2><p>이번 주 인증과 아직 제출하지 않은 인증을 함께 확인해요.</p><div class="weekly-tasks">'+cards+'</div></section>':'');
+  host.innerHTML='<section class="weekly-plan"><h2>내 오답·취약 분석</h2><p>입력한 과제와 클리닉 오답을 모아 복습할 유형과 해설을 확인하세요.</p><button class="btn blue" data-personal-review>내 분석 보기</button></section>'+sokTaskCard()+(notice?'<section class="weekly-plan"><h2>'+esc(notice.title)+'</h2><div style="white-space:pre-wrap;line-height:1.8">'+esc(notice.content)+'</div><button class="btn" data-homework-notice>첨부자료와 안내 보기</button></section>':'')+(cards?'<section class="weekly-plan"><h2>사진 인증 할 일</h2><p>이번 주 인증과 아직 제출하지 않은 인증을 함께 확인해요.</p><div class="weekly-tasks">'+cards+'</div></section>':'');
  };
 
  const sokItem='ci_sokmi_20260920',sokVideo='v1789915548297';
@@ -44,6 +44,7 @@
   if(!modal){modal=document.createElement('div');modal.id='sok-task-popup';modal.className='modal-bg show';modal.setAttribute('role','dialog');modal.setAttribute('aria-label','속미인곡 필기 사진 인증 안내');modal.innerHTML='<div class="modal" style="max-width:560px"><div class="modal-head"><h3>이번 주 필수 인증</h3><button class="modal-close" data-sok-close aria-label="닫기">×</button></div><div style="padding:20px">'+sokTaskCard()+'</div></div>';document.body.appendChild(modal);}
  };
  document.addEventListener('click',e=>{
+  if(e.target.closest('[data-personal-review]'))sNav('scores');
   if(e.target.closest('[data-sok-close]'))document.getElementById('sok-task-popup')?.remove();
   if(e.target.closest('[data-sok-video]')){document.getElementById('sok-task-popup')?.remove();openPlay(sokVideo);}
   if(e.target.closest('[data-cert-open]'))document.getElementById('sok-task-popup')?.remove();

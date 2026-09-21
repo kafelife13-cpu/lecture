@@ -6,7 +6,7 @@ const {replacement,noticeMatches}=require('../student-sections.js');
  assert.equal(noticeMatches({},'general'),true);assert.equal(noticeMatches({notice_kind:'clinic'},'general'),false);
  const els={'access-grant-submit':{disabled:false},'access-grant-student':{selectedOptions:[{value:'s1'},{value:'s2'}]},'access-grant-video':{value:'v'},'access-grant-kind':{value:'replacement'},'access-absence-date':{value:'2026-09-06'},'student-replacement-list':{},'student-review-list':{}};
  const writes=[];let fail=false;
- const c={document:{getElementById:id=>els[id],addEventListener:()=>{}},session:{id:'t',role:'teacher'},studentPreviewMode:false,
+ const c={navigator:{},document:{getElementById:id=>els[id],addEventListener:()=>{}},session:{id:'t',role:'teacher'},studentPreviewMode:false,
  db:{users:[{id:'s1',name:'학생1'},{id:'s2',name:'학생2'}],videos:[{id:'v',title:'대체수업',category:'review'},{id:'r',title:'자율복습',category:'review'}],access:[],requests:[]},
  crypto:require('node:crypto').webcrypto,isAccessExpired:a=>!!a.expired,getPct:()=>25,accessExpiry:()=>new Date('2026-09-14'),
  notify:(msg,type)=>{c.notice={msg,type};},logVideoAccessGrant:async()=>{},renderAccessPanel:()=>{},renderDashboard:()=>{},

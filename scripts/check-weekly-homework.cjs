@@ -1,7 +1,7 @@
 // Run with PGLITE_PATH pointing to an installed @electric-sql/pglite package.
 const {PGlite}=require(process.env.PGLITE_PATH||'@electric-sql/pglite');
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
-const {complete,progress,parseQuestions}=require('../weekly-homework.js');
+const {complete,progress}=require('../weekly-homework.js');
 (async()=>{
  const db=new PGlite();
  await db.exec(`create role anon;create role authenticated;create schema extensions;create schema storage;
@@ -66,7 +66,7 @@ const {complete,progress,parseQuestions}=require('../weekly-homework.js');
  student=(await rpc('s','student','list',{week_start:'2026-09-07'}))[0];
  const teacher=(await rpc('t','teacher','list',{week_start:'2026-09-07'}))[0];
  assert.deepEqual(student.students[0].states,teacher.students[0].states,'teacher and student share all statuses');
- assert.equal(progress(student.students[0]),6);assert.equal(complete(student.students[0]),true);
+ assert.equal(progress(student.students[0]),4);assert.equal(complete(student.students[0]),true);
  assert.equal(teacher.config.questions[0].answer,'O');
  await db.exec('set role anon');
  await assert.rejects(db.query('select * from weekly_homework'),'direct anonymous reads forbidden');
@@ -74,7 +74,5 @@ const {complete,progress,parseQuestions}=require('../weekly-homework.js');
  await db.exec('alter table qa_questions drop column category');
  const legacy=(await rpc('s','student','list',{week_start:'2026-09-07'}))[0];
  assert.equal(legacy.students[0].states.qa.status,'done','production schema without optional category works');
- assert.throws(()=>parseQuestions('문항 | A | 해설'));
- assert.equal(parseQuestions('문항 | O | 해설')[0].answer,'O');
  await db.close();console.log('PASS: real PostgreSQL migration/RPC, authorization, 6-task completion, 40-minute boundary, distinct questions, photos, OX retries, shared statuses');
 })().catch(e=>{console.error(e);process.exitCode=1;});

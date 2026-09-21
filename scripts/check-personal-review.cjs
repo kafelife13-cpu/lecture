@@ -1,0 +1,15 @@
+const assert=require('node:assert/strict');
+const {summarize,render}=require('../personal-review');
+const {tasks,complete,progress}=require('../weekly-homework');
+assert.equal(tasks.length,4);
+const row={states:Object.fromEntries(tasks.map(([k])=>[k,{status:'done'}]))};
+row.states.concept={status:'todo'};row.states.vocab={status:'todo'};
+assert.equal(complete(row),true);assert.equal(progress(row),4);
+const exams={a:{id:'a',name:'<script>',category:'homework',questions:[{answer:'1',num:'B1',type:'조사',explanation:'<img>'}]},b:{id:'b',name:'클리닉',category:'school',questions:[{answer:'1',type:'조사'}]}};
+const wrong=(r,i,e)=>r.answers[i]!==e.questions[i].answer;
+const data=summarize([{exam_id:'a',submitted_at:'2026-09-01',answers:{0:'2'}},{exam_id:'a',submitted_at:'2026-09-02',answers:{0:'1'}},{exam_id:'b',answers:{0:'2'}},{exam_id:'missing',answers:{0:'3'}}],exams,wrong);
+assert.equal(data.submitted,2);assert.equal(data.wrong.length,1);assert.equal(data.types[0].examCount,1);
+const repeated=summarize([{exam_id:'a',answers:{0:'2'}},{exam_id:'b',answers:{0:'2'}}],exams,wrong);
+assert.equal(repeated.types[0].examCount,2);assert.match(render(repeated),/반복 오답/);assert.match(render(repeated),/B1/);assert.doesNotMatch(render(repeated),/<script>|<img>/);
+assert.equal(summarize([{exam_id:'a',answers:{}}],exams,wrong).submitted,0);
+console.log('PASS: four-task completion, latest attempts, missing records, repeated types, original labels, escaping');
