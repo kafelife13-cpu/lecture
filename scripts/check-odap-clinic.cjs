@@ -33,6 +33,9 @@ await assert.rejects(()=>clinic('get',{student_id:'s2',id:result.id}));
 await assert.rejects(()=>rpc('POST /api/publish',{id:b.packet_id,confirmed:true}));
 assert.equal((await rpc('GET /api/packet',{id:b.packet_id})).status,'draft');
 const job=await rpc('worker_claim');assert.equal(job.packet.mode,'record_draft');assert.equal(job.packet.review_only,true);
+await db.query("update odap_questions set status='pending' where id in (select id from odap_questions where id<>$1 order by id limit 3)",[original.id]);
+const scarce=await clinic('generate',{...req,include_supplements:false,request_id:'00000000-0000-4000-8000-000000000008'});
+assert.equal(scarce.body.by_type[0].items.length,2);assert.equal(scarce.body.by_concept[0].items.length,1);
 await db.exec("update odap_questions set status='pending';delete from odap_notes;delete from odap_mappings;update exams set questions=jsonb_set(questions,'{0,concepts}','[]');");
 const insufficient=await clinic('generate',{...req,request_id:'00000000-0000-4000-8000-000000000002'});
 assert.equal(insufficient.body.type_missing,3);assert.equal(insufficient.body.concept_missing,3);assert.equal(insufficient.body.unclassified,1);assert.equal(insufficient.body.generated.length,0);assert.equal(insufficient.body.diagnosis[0].basis,'원인 확인 필요');
@@ -53,6 +56,17 @@ await db.exec(`insert into exam_responses(id,exam_id,student_name,answers,score,
 const other=await clinic('generate',{student_id:'s2',request_id:'00000000-0000-4000-8000-000000000005'});
 assert.equal(other.body.student.id,'s2');assert.equal(other.body.wrongs.length,1);assert.equal(other.body.wrongs[0].student_answer,'3');assert.deepEqual(other.body.wrongs[0].concepts,['관형절']);assert.deepEqual(other.body.wrongs[0].question_types,['조건 적용']);assert.equal(other.body.generated.length,0);assert.equal(other.body.diagnosis[0].basis,'원인 확인 필요');
 await assert.rejects(()=>clinic('tag',{exam_id:'exam',question_index:99,concepts:[],question_types:[]}));
+// Verified originals may reveal a multi-answer key lost in the registered test.
+// Preserve teacher corrections; record both keys and never edit grades or submissions.
+await db.query("update odap_questions set status='approved',body=jsonb_set(body,'{answer}','\"all:1,4\"') where id=$1",[original.id]);
+await rpc('POST /api/mapping',{student_id:'s2',response_id:'r3',question_index:0,question_id:original.id,concepts:['관형절'],verified:true});
+await db.exec(`update exams set questions=jsonb_set(questions,'{0,answer}','"4"') where id='exam';update exam_responses set answers='{"0":"2"}' where id='r3';`);
+const conflict=await clinic('generate',{student_id:'s2',request_id:'00000000-0000-4000-8000-000000000006'});
+assert.equal(conflict.body.wrongs[0].answer,'4');assert.equal(conflict.body.wrongs[0].registered_answer,'4');assert.equal(conflict.body.answer_key_conflicts.length,1);assert.equal(conflict.body.wrongs[0].source_answer,'all:1,4');assert.equal(conflict.body.diagnosis[0].correct,'4');
+assert.equal((await db.query("select questions->0->>'answer' a from exams where id='exam'")).rows[0].a,'4');
+assert.equal((await db.query("select answers->>'0' a from exam_responses where id='r3'")).rows[0].a,'2');
+assert.equal((await db.query("select odap_grade('4,1','all:1,4') ok")).rows[0].ok,true);
+assert.equal((await db.query("select odap_grade('4','all:1,4') ok")).rows[0].ok,false);
 await db.exec('set role anon');await assert.rejects(()=>db.query('select * from odap_clinics'));await db.exec('reset role');
 new vm.Script(fs.readFileSync('odap/clinic.js','utf8'));
 console.log('PASS: five-part clinic, grading exclusions, exact 3+3, cross-part dedup, daily evidence, insufficient-data honesty, idempotency, teacher auth, student isolation, draft-only publication, native queue');

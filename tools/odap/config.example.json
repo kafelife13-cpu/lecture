@@ -1,0 +1,7 @@
+{
+  "supabase_url": "https://YOUR_PROJECT.supabase.co",
+  "supabase_public_key": "YOUR_PUBLISHABLE_KEY",
+  "data_dir": "data",
+  "legacy_bank": "bank",
+  "template": "template/template.hml"
+}

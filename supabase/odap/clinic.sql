@@ -1,4 +1,6 @@
 -- Teacher-only, transactional five-part clinic generation. No student publication.
+-- Restrict each retrieval to classified high-difficulty rows before inspecting large source bodies.
+create index if not exists odap_questions_review_difficulty_idx on public.odap_questions(status,(body->>'difficulty'));
 create table if not exists public.odap_clinics(
  id uuid primary key default gen_random_uuid(),student_id text not null,request_id uuid not null unique,
  created_at timestamptz not null default now(),body jsonb not null
@@ -15,6 +17,7 @@ declare actor jsonb; student jsonb; result jsonb; saved public.odap_clinics%rowt
  wrongs jsonb:='[]'; diagnoses jsonb:='[]'; by_type jsonb:='[]'; by_concept jsonb:='[]'; native_items jsonb:='[]';
  typed jsonb; conceptual jsonb; cs jsonb; question_types jsonb; original_question jsonb; completeness jsonb; pending_type jsonb; pending_concept jsonb; pending_items jsonb; reason text; source_type text; used text[]:='{}'; original_ids uuid[]:='{}';
  type_missing integer:=0; concept_missing integer:=0; unclassified integer:=0; blank_count integer:=0; graded integer:=0;
+ grading_key text; key_conflict boolean; key_conflicts jsonb:='[]';
  run_data jsonb; generated jsonb:='[]'; report jsonb; packet_id uuid; type_packet uuid; concept_packet uuid; stage text; stage_items jsonb; new_packet uuid; chunk_offset integer; slice_items jsonb; packet_ids jsonb:='[]'; type_packets jsonb:='[]'; concept_packets jsonb:='[]'; prior_index integer;
 begin
  actor:=public.authenticate_user(p_id,p_password,'teacher');
@@ -59,9 +62,20 @@ begin
   left join public.odap_notes notes on notes.response_id=r.raw->>'id' and notes.question_index=q.n-1 and notes.student_id=sid
   order by r.raw->>'submitted_at' desc nulls last,e.id,q.n
  loop
-  if public.odap_grade(w.student_answer,w.question->>'answer') is null then blank_count:=blank_count+1;continue;end if;
+  original_question:=w.question;grading_key:=w.question->>'answer';key_conflict:=false;
+  if coalesce((w.mapping->>'verified')::boolean,false) and nullif(w.mapping->>'question_id','') is not null then
+   select * into mapped from public.odap_questions where id=(w.mapping->>'question_id')::uuid and status='approved';
+   if found and coalesce(mapped.body->>'answer','') ~ '^([1-5]|all:[1-5](,[1-5])+|[OX])$' then
+    key_conflict:=(mapped.body->>'answer') is distinct from grading_key;
+    original_question:=public.odap_question_json(mapped)||jsonb_build_object('registered_record',w.question,'original_source_verified',true,'answer_key_conflict',key_conflict,'registered_answer',w.question->>'answer','source_answer',mapped.body->>'answer','source_explanation',mapped.body->>'explanation','answer',grading_key,'explanation',case when key_conflict then w.question->>'explanation' else mapped.body->>'explanation' end);
+   end if;
+  end if;
+  if key_conflict and not exists(select 1 from jsonb_array_elements(key_conflicts)x where x->>'exam_id'=w.exam_id and (x->>'question_index')::integer=w.qi) then
+   key_conflicts:=key_conflicts||jsonb_build_array(jsonb_build_object('exam_id',w.exam_id,'question_index',w.qi,'exam',w.exam_title,'num',coalesce(w.question->>'num',(w.qi+1)::text),'registered_answer',w.question->>'answer','verified_answer',mapped.body->>'answer'));
+  end if;
+  if public.odap_grade(w.student_answer,grading_key) is null then blank_count:=blank_count+1;continue;end if;
   graded:=graded+1;
-  if public.odap_grade(w.student_answer,w.question->>'answer') then continue;end if;
+  if public.odap_grade(w.student_answer,grading_key) then continue;end if;
   select (x.n-1)::integer into prior_index from jsonb_array_elements(wrongs) with ordinality x(v,n) where x.v->>'exam_id'=w.exam_id and (x.v->>'question_index')::integer=w.qi;
   if prior_index is not null then
    wrongs:=jsonb_set(wrongs,array[prior_index::text,'attempts'],(wrongs->prior_index->'attempts')||jsonb_build_array(jsonb_build_object('date',w.submitted_at,'answer',w.student_answer,'archived',w.archived)));continue;
@@ -77,20 +91,14 @@ begin
   question_types:=coalesce(question_types,'[]');
   if cs='[]' then unclassified:=unclassified+1;end if;
   reason:=case when source_type<>'' then '교사 기록: '||source_type||'. '||coalesce(w.note->>'note','') else '답 번호만으로 오답 원인을 확정하지 않았습니다. 선택한 선지의 어느 부분을 맞다고 판단했는지 확인하세요.' end;
-  original_question:=w.question;
-  if coalesce((w.mapping->>'verified')::boolean,false) and nullif(w.mapping->>'question_id','') is not null then
-   select * into mapped from public.odap_questions where id=(w.mapping->>'question_id')::uuid and status='approved';
-   if found and public.odap_grade(mapped.body->>'answer',w.question->>'answer') then
-    original_question:=public.odap_question_json(mapped)||jsonb_build_object('registered_record',w.question,'original_source_verified',true);
-   end if;
-  end if;
   completeness:=case when coalesce((original_question->>'original_source_verified')::boolean,false) then '[]'::jsonb
    when jsonb_array_length(coalesce(original_question->'choices','[]'))=0 and not(coalesce(original_question->>'text','') like '%①%' and coalesce(original_question->>'text','') like '%⑤%')
    then '["등록된 문항에 선택지/보기 원문이 없습니다. 원본 시험지와 연결해야 합니다."]'::jsonb else '["원본 지면의 표·밑줄·옛한글 대조가 필요합니다."]'::jsonb end;
   wrongs:=wrongs||jsonb_build_array(original_question||jsonb_build_object('id',gen_random_uuid(),'selection_type','existing_record','reviewed',false,'source_issues',completeness,'question_types',question_types,'exam_id',w.exam_id,'question_index',w.qi,'response_id',w.response_id,'attempts',jsonb_build_array(jsonb_build_object('date',w.submitted_at,'answer',w.student_answer,'archived',w.archived)),'student_answer',w.student_answer,'source_title',w.exam_title||' · '||coalesce(w.question->>'num',(w.qi+1)::text)||'번','concepts',cs));
-  diagnoses:=diagnoses||jsonb_build_array(jsonb_build_object('exam',w.exam_title,'num',coalesce(w.question->>'num',(w.qi+1)::text),'student_answer',w.student_answer,'correct',w.question->>'answer','concepts',cs,'cause',reason,'basis',case when source_type<>'' then '교사 기록 있음' else '원인 확인 필요' end,'question','이 선지를 고른 근거와, 정답 선지와 다른 점을 설명해 주세요.','next_step',case when cs='[]' then '세부 개념을 먼저 분류하세요.' else '연결된 프린트 근거 확인 → 개념 설명 → 고난도 적용 → 재풀이' end));
+  diagnoses:=diagnoses||jsonb_build_array(jsonb_build_object('exam',w.exam_title,'num',coalesce(w.question->>'num',(w.qi+1)::text),'student_answer',w.student_answer,'correct',grading_key,'registered_answer',w.question->>'answer','answer_key_conflict',key_conflict,'source_answer',original_question->>'source_answer','question_types',question_types,'concepts',cs,'review_focus',coalesce(original_question->>'review_focus',''),'print_references',coalesce((select jsonb_agg(v) from (select jsonb_build_object('source_id',src.id,'source_title',src.title,'page',ev.page,'quote',ev.quote) v from public.odap_evidence ev join public.odap_sources src on src.id=ev.source_id where ev.approved and src.kind='학교 프린트' and src.school=student->>'school' and cs ? ev.concept order by src.title,ev.page limit 2) refs),'[]'),'cause',reason,'basis',case when source_type<>'' then '교사 기록 있음' else '원인 확인 필요' end,'question','이 선지를 고른 근거와, 정답 선지와 다른 점을 설명해 주세요.','next_step',case when cs='[]' then '세부 개념을 먼저 분류하세요.' else '연결된 프린트 근거 확인 → 개념 설명 → 고난도 적용 → 재풀이' end));
   typed:='[]';conceptual:='[]';
-  for stage in select unnest(array['type','concept']) loop
+  -- Alternate scarce candidates so one document cannot consume every shared match.
+  for stage in select unnest(array['type','concept','type','concept','type','concept']) loop
    if (stage='type' and source_type='' and question_types='[]') or (stage='concept' and cs='[]') then continue;end if;
    for candidate in
     select q.* from public.odap_questions q
@@ -106,6 +114,7 @@ begin
     used:=array_append(used,candidate.fingerprint);
     result:=public.odap_question_json(candidate)||jsonb_build_object('selection_type','bank','match_reason',case when stage='type' then concat_ws(' / ',nullif(source_type,''),nullif(question_types::text,'[]')) else cs::text end,'origin_exam',w.exam_title,'origin_num',coalesce(w.question->>'num',(w.qi+1)::text));
     if stage='type' then typed:=typed||jsonb_build_array(result);else conceptual:=conceptual||jsonb_build_array(result);end if;
+    exit;
    end loop;
   end loop;
   pending_type:='[]';pending_concept:='[]';
@@ -137,7 +146,7 @@ begin
  chunk_offset:=0;
  while chunk_offset<jsonb_array_length(wrongs) loop
   select jsonb_agg(v order by n) into slice_items from jsonb_array_elements(wrongs) with ordinality x(v,n) where n>chunk_offset and n<=chunk_offset+100;
-  report:=jsonb_build_object('title',(student->>'name')||' · 누적 오답 모음 '||(chunk_offset/100+1)||' (검수 전)','student_id',sid,'student_name',student->>'name','review_only',true,'mode','record_draft','analysis',diagnoses,'summary','김까까에 남은 전체 답안·보관된 재응시 이력의 오답을 현재 정답 기준으로 모았습니다. 같은 문항은 한 번 싣고 오답 이력을 함께 보관합니다. 과거에 덮어써서 남지 않은 답안은 복원한 것으로 표시하지 않습니다. 현재 등록 본문·원문 지면을 대조한 뒤 배부하세요.','items',slice_items,'created_at',now());
+  report:=jsonb_build_object('title',(student->>'name')||' · 누적 오답 모음 '||(chunk_offset/100+1)||' (검수 전)','student_id',sid,'student_name',student->>'name','review_only',true,'mode','record_draft','analysis',diagnoses,'summary','김까까에 남은 전체 답안·보관된 재응시 이력의 오답을 현재 김까까 등록 정답 기준으로 모았습니다. 원본 정답이 다르면 교사 정정 기록을 보존하고 두 값을 함께 표시합니다. 기존 성적은 변경하지 않습니다. 같은 문항은 한 번 싣고 오답 이력을 함께 보관합니다. 과거에 덮어써서 남지 않은 답안은 복원한 것으로 표시하지 않습니다. 현재 등록 본문·원문 지면을 대조한 뒤 배부하세요.','items',slice_items,'created_at',now());
   insert into public.odap_packets(student_id,title,body) values(sid,report->>'title',report) returning id into new_packet;
   insert into public.odap_jobs(packet_id) values(new_packet);packet_ids:=packet_ids||jsonb_build_array(new_packet);
   if packet_id is null then packet_id:=new_packet;end if;
@@ -158,7 +167,7 @@ begin
    chunk_offset:=chunk_offset+100;
   end loop;
  end loop;
- report:=jsonb_build_object('title',(student->>'name')||' · 누적 오답·고난도 복습','student',student,'scope',exam_filter,'graded',graded,'unknown',blank_count,'wrongs',wrongs,'diagnosis',diagnoses,'unclassified',unclassified,'generated',generated,'daily_run',run_data,'by_type',by_type,'by_concept',by_concept,'type_missing',type_missing,'concept_missing',concept_missing,'packet_id',packet_id,'packet_ids',packet_ids,'type_packets',type_packets,'concept_packets',concept_packets,'type_packet',type_packet,'concept_packet',concept_packet,'notice','교사 확인용 초안입니다. 정밀 원인 분석에는 학생 설명과 세부 개념·오답 유형 검수가 필요합니다.');
+ report:=jsonb_build_object('title',(student->>'name')||' · 누적 오답·고난도 복습','student',student,'scope',exam_filter,'answer_key_conflicts',key_conflicts,'graded',graded,'unknown',blank_count,'wrongs',wrongs,'diagnosis',diagnoses,'unclassified',unclassified,'generated',generated,'daily_run',run_data,'by_type',by_type,'by_concept',by_concept,'type_missing',type_missing,'concept_missing',concept_missing,'packet_id',packet_id,'packet_ids',packet_ids,'type_packets',type_packets,'concept_packets',concept_packets,'type_packet',type_packet,'concept_packet',concept_packet,'notice','교사 확인용 초안입니다. 정밀 원인 분석에는 학생 설명과 세부 개념·오답 유형 검수가 필요합니다.');
  insert into public.odap_clinics(student_id,request_id,body) values(sid,request_key,report) returning * into saved;
  return to_jsonb(saved);
 end $$;
