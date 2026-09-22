@@ -22,3 +22,11 @@ with tempfile.TemporaryDirectory() as td:
  assert len(frag.findall('.//ENDNOTE'))==1 and m.image_signatures(frag)==before
  assert f.read_bytes()==source
 print('PASS: image content/order, contiguous asset IDs, source marker cleanup, original immutability')
+
+# A multi-line stem must stay on one page and with its following passage.
+layout=E.fromstring(b'<HWPML><HEAD><MAPPINGTABLE><STYLELIST><STYLE Id="0" Name="stem" ParaShape="0" CharShape="0"/><STYLE Id="1" Name="choice" ParaShape="0" CharShape="0"/><STYLE Id="2" Name="body" ParaShape="0" CharShape="0"/></STYLELIST><PARASHAPELIST><PARASHAPE Id="0"><PARAMARGIN/></PARASHAPE></PARASHAPELIST><CHARSHAPELIST><CHARSHAPE Id="0"/></CHARSHAPELIST></MAPPINGTABLE></HEAD><BODY><SECTION><P ParaShape="0"><TEXT CharShape="0"><CHAR>Long stem</CHAR><ENDNOTE><PARALIST><P><TEXT><AUTONUM/></TEXT></P></PARALIST></ENDNOTE></TEXT></P></SECTION></BODY></HWPML>')
+for style,name in zip(layout.findall('.//STYLE'),['발문(zb 1)','선택지','본문']):style.set('Name',name)
+assert m.apply_styles(layout)==1
+stem=layout.find('./BODY/SECTION/P');shape=next(x for x in layout.findall('.//PARASHAPE') if x.get('Id')==stem.get('ParaShape'))
+assert shape.get('KeepLines')=='true' and shape.get('KeepWithNext')=='true'
+print('PASS: multi-line question stem stays together')
