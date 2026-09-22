@@ -36,7 +36,7 @@ async function showClinic(){
  clearTimeout(clinicPoll);const run=clinicRun,who=sid,sequence=++clinicViewSequence;
  const selected=[...document.querySelectorAll('[data-clinic-part]:checked')].map(x=>Number(x.dataset.clinicPart));
  const hadSelection=!!document.querySelector('[data-clinic-part]');
- const b=run.body,c=clinicCounts(b),packetGroups=[b.packet_ids||[b.packet_id],[],[],b.type_packets||[],b.concept_packets||[]],packets=await Promise.all(packetGroups.flat().map(id=>api('/api/packet?id='+id))),jobs=await api('/api/clinic?action=jobs&student_id='+encodeURIComponent(sid));
+ const b=run.body,c=clinicCounts(b),packetGroups=[b.packet_ids||[b.packet_id],[],[],b.type_packets||[],b.concept_packets||[]],packets=await Promise.all(packetGroups.flat().map(id=>api('/api/packet?id='+id+'&metadata_only=true'))),jobs=await api('/api/clinic?action=jobs&student_id='+encodeURIComponent(sid));
  if(page!=='clinic'||clinicRun!==run||sid!==who||sequence!==clinicViewSequence)return;
  const activeJobs=jobs.filter(j=>packetGroups.flat().includes(j.packet_id)&&['pending','running'].includes(j.status));
  const verified=b.wrongs.filter(q=>q.original_source_verified===true).length;

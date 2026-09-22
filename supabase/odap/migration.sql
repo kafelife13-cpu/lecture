@@ -126,7 +126,7 @@ begin
  elsif p_action='GET /api/evidence' then select coalesce(jsonb_agg(to_jsonb(e)||jsonb_build_object('title',s.title) order by s.title,e.page),'[]') into result from public.odap_evidence e join public.odap_sources s on s.id=e.source_id;return result;
  elsif p_action='GET /api/generated' then select coalesce(jsonb_agg(to_jsonb(g) order by created_at desc),'[]') into result from public.odap_generated g where student_id=sid;return result;
  elsif p_action='GET /api/packets' then select coalesce(jsonb_agg(to_jsonb(p) order by created_at desc),'[]') into result from public.odap_packets p where student_id=sid;return result;
- elsif p_action='GET /api/packet' then select to_jsonb(p) into result from public.odap_packets p where id=(p_payload->>'id')::uuid;return result;
+ elsif p_action='GET /api/packet' then select case when p_payload->>'metadata_only'='true' then to_jsonb(p)-'body' else to_jsonb(p) end into result from public.odap_packets p where id=(p_payload->>'id')::uuid;return result;
  elsif p_action='GET /api/recommend' then
   select coalesce(jsonb_agg(t order by score desc),'[]') into result from (select public.odap_question_json(q.*) as question,jsonb_agg(w.concept) matched,sum(w.wrong) score from public.odap_questions q join public.odap_weak_concepts(sid) w on q.body->'concepts' ? w.concept where q.status='approved' group by q.id order by sum(w.wrong) desc limit 30) t;return result;
  elsif p_action='POST /api/schedule' then insert into public.odap_settings values('daily',coalesce(p_payload->'enabled','false')) on conflict(key) do update set value=excluded.value;return p_payload;
