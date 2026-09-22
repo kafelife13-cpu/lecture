@@ -160,6 +160,10 @@ begin
    select jsonb_agg(jsonb_build_object('type','bank','id',v->>'id') order by n) into slice_items from jsonb_array_elements(stage_items) with ordinality x(v,n) where n>chunk_offset and n<=chunk_offset+100;
    result:=public.odap_rpc(p_id,p_password,'teacher','POST /api/packet',jsonb_build_object('student_id',sid,'title',(student->>'name')||case when stage='type' then ' · 유형별 고난도 복습 ' else ' · 개념별 고난도 복습 ' end||(chunk_offset/100+1),'items',slice_items));
    new_packet:=(result->>'id')::uuid;
+   update public.odap_packets p set body=p.body||jsonb_build_object(
+    'summary','전체 오답 '||jsonb_array_length(wrongs)||'문항에 대해 기존 DB에서 검수된 고난도 '||jsonb_array_length(stage_items)||'문항을 찾았습니다. 목표 수량보다 '||case when stage='type' then type_missing else concept_missing end||'문항 부족합니다. 부족분을 새로 만들거나 중복 문항으로 채우지 않았습니다. 교사 배부 전 검수용입니다.',
+    'items',(select jsonb_agg(x.v||jsonb_build_object('origin_exam',match->>'origin_exam','origin_num',match->>'origin_num','match_reason',match->>'match_reason') order by x.n) from jsonb_array_elements(p.body->'items') with ordinality x(v,n) join lateral (select z as match from jsonb_array_elements(stage_items) z where z->>'id'=x.v->>'id') linked on true)
+   ) where p.id=new_packet;
    if not exists(select 1 from public.odap_packets p cross join lateral jsonb_array_elements(p.body->'items')x where p.id=new_packet and x->'source_ref' is null) then
     perform public.odap_rpc(p_id,p_password,'teacher','POST /api/render',jsonb_build_object('id',new_packet));
    end if;

@@ -28,6 +28,8 @@ assert.equal(b.wrongs.length,1);assert.equal(b.graded,2);assert.equal(b.unknown,
 assert.equal(b.diagnosis[0].basis,'교사 기록 있음');assert.equal(b.type_missing,0);assert.equal(b.concept_missing,0);
 const ids=[...b.by_type[0].items,...b.by_concept[0].items].map(q=>q.id);assert.equal(new Set(ids).size,6);assert.ok(!ids.includes(original.id));assert.equal(b.generated.length,3);
 assert.ok(b.generated.some(g=>g.kind==='blank'));assert.ok(b.generated.some(g=>g.kind==='ox'));
+const typeBody=(await rpc('GET /api/packet',{id:b.type_packet})).body;
+assert.equal(typeBody.items[0].origin_exam,'시험');assert.equal(typeBody.items[0].origin_num,'1');assert.ok(typeBody.summary.includes('기존 DB'));
 assert.equal((await clinic('generate',req)).id,result.id);assert.equal((await clinic('list',{student_id:'s1'})).length,1);
 await assert.rejects(()=>clinic('get',{student_id:'s2',id:result.id}));
 await assert.rejects(()=>rpc('POST /api/publish',{id:b.packet_id,confirmed:true}));

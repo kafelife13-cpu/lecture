@@ -116,6 +116,19 @@ def apply_styles(root):
     para.set('Count',str(len(para)));char.set('Count',str(len(char)))
     return number
 
+def add_source_label(root,item):
+    """Keep the source content intact and label why this existing question was chosen."""
+    if not item.get('origin_exam'):return
+    table=root.find('./HEAD/MAPPINGTABLE');styles={s.get('Name'):s for s in table.findall('./STYLELIST/STYLE')}
+    base=styles['본문'];chars=table.find('CHARSHAPELIST');listing=table.find('STYLELIST')
+    shape=deepcopy(next(x for x in chars if x.get('Id')==base.get('CharShape')));cid=str(max(int(x.get('Id')) for x in chars)+1)
+    shape.set('Id',cid);shape.set('Height','850');shape.set('TextColor','0')
+    for bold in list(shape.findall('BOLD')):shape.remove(bold)
+    chars.append(shape);chars.set('Count',str(len(chars)))
+    style=deepcopy(base);style.set('Id',str(max(int(x.get('Id')) for x in listing)+1));style.set('Name','복습 연결 안내');style.set('EngName','ReviewSource');style.set('CharShape',cid);listing.append(style);listing.set('Count',str(len(listing)));styles['복습 연결 안내']=style
+    label=str(item['origin_exam'])+' · '+str(item.get('origin_num',''))+'번 오답 연계 / 원문: '+str(item.get('source_title',''))+' '+str(item.get('original_number',''))+'번'
+    root.find('./BODY/SECTION').insert(0,paragraph(styles,'복습 연결 안내',label))
+
 def main():
     import win32com.client
     p=argparse.ArgumentParser();p.add_argument('job',type=Path);p.add_argument('--bank',type=Path,required=True);p.add_argument('--template',type=Path,required=True);p.add_argument('--output',type=Path,required=True);a=p.parse_args()
@@ -128,7 +141,7 @@ def main():
         if sha not in inventory:raise ValueError('Original source is not registered locally')
         source=inventory[sha];path=(a.bank/source['group']/source['file']).resolve()
         if not path.is_relative_to(a.bank.resolve()) or hashlib.sha256(path.read_bytes()).hexdigest()!=sha:raise ValueError('Original source hash changed')
-        frag=fragment(a.bank/'hml'/(sha+'.hml'),ref);fragments.append(frag);checks.append((path,sha))
+        frag=fragment(a.bank/'hml'/(sha+'.hml'),ref);add_source_label(frag,item);fragments.append(frag);checks.append((path,sha))
     template_hash=hashlib.sha256(a.template.read_bytes()).hexdigest()
     a.output.mkdir(parents=True,exist_ok=True);jobid=uuid.uuid4().hex[:12];prefix=a.output/('오답정리-'+jobid)
     h=win32com.client.DispatchEx('HWPFrame.HwpObject')

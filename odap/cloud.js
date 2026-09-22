@@ -7,10 +7,10 @@
  async function request(path,payload){const r=await fetch(BASE+path,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(payload)});const d=await r.json();if(!r.ok||d.error)throw Error(d.code==='PGRST202'?'오답연구소 서버 설치가 아직 완료되지 않았습니다.':d.error?.message||d.error||d.message||'서버에 연결하지 못했습니다.');return d;}
  async function rpc(action,payload={}){if(!auth)throw Error('기존 김까까 교사 계정으로 로그인하세요.');return request('/rest/v1/rpc/odap_rpc',{p_id:auth.id,p_password:auth.pw,p_role:auth.role,p_action:action,p_payload:payload});}
  async function gateway(action,payload={}){return request('/functions/v1/odap-assets',{credentials:auth,action,...payload});}
- function saveFile(name,blob){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}
+ function saveFile(name,blob){const u=URL.createObjectURL(blob),a=document.createElement('a'),notice=document.createElement('p');notice.className='notice';notice.setAttribute('role','status');notice.textContent='파일 준비 완료 · ';a.href=u;a.download=name;a.textContent=name+' 저장';notice.append(a);(document.querySelector('main')||document.body).prepend(notice);a.click();setTimeout(()=>{URL.revokeObjectURL(u);notice.remove();},300000);}
  async function downloadAsset(payload){const v=await gateway('download',payload);const r=await fetch(v.url);if(!r.ok)throw Error('파일을 내려받을 수 없습니다.');saveFile(v.filename||'오답정리.pdf',await r.blob());}
  window.researchDownloadSource=id=>downloadAsset({kind:'source',id});
- window.researchDownloadFile=(packetId,name)=>{const f=fileIndex.get(packetId+'/'+name);if(!f)throw Error('첨부 파일을 새로 불러오세요.');return downloadAsset({path:f.path,filename:f.name});};
+ window.researchDownloadFile=(packetId,name)=>{const f=fileIndex.get(packetId+'/'+name);if(!f)throw Error('첨부 파일을 새로 불러오세요.');return downloadAsset({path:f.path,filename:f.downloadName||f.name});};
  function grade(a,k){a=String(a??'').trim();k=String(k??'').trim();if(/^[1-5]$/.test(k))return /^[1-5]$/.test(a)?a===k:null;if(/^all:[1-5](,[1-5])+$/.test(k)&&/^[1-5](\s*,\s*[1-5])*$/.test(a))return [...new Set(a.split(/\s*,\s*/))].sort().join(',')===[...new Set(k.slice(4).split(','))].sort().join(',');if(['O','X'].includes(k.toUpperCase())&&['O','X'].includes(a.toUpperCase()))return k.toUpperCase()===a.toUpperCase();return null;}
  async function analyze(sid){const d=await rpc('GET /api/records',{student_id:sid});const exams=new Map(d.exams.map(e=>[String(e.id),e])),latest=new Map(),stats=new Map(),wrong=[],history=[];let graded=0,unknown=0;
   for(const r of d.responses.sort((a,b)=>String(a.submitted_at||'').localeCompare(String(b.submitted_at||''))||String(a.id).localeCompare(String(b.id))))latest.set(String(r.exam_id),r);
@@ -33,7 +33,7 @@
   }
   const result=await rpc(method+' '+url.pathname,payload);
   if(['/api/packets','/api/packet'].includes(url.pathname)&&method==='GET'){
-   for(const p of Array.isArray(result)?result:[result]){p.files=(p.files||[]).map(f=>{fileIndex.set(p.id+'/'+f.name,f);return f.name;});if(p.status==='published')p.published=true;}
+   for(const p of Array.isArray(result)?result:[result]){p.files=(p.files||[]).map(f=>{const title=String(p.title||'오답 자료').replace(/[<>:"/\\|?*\x00-\x1f]/g,'-').slice(0,140);fileIndex.set(p.id+'/'+f.name,{...f,downloadName:title+'.'+f.kind});return f.name;});if(p.status==='published')p.published=true;}
   }
   return result;
  };
