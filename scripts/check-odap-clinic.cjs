@@ -58,6 +58,10 @@ await db.exec(`insert into exam_responses(id,exam_id,student_name,answers,score,
 const other=await clinic('generate',{student_id:'s2',request_id:'00000000-0000-4000-8000-000000000005'});
 assert.equal(other.body.student.id,'s2');assert.equal(other.body.wrongs.length,1);assert.equal(other.body.wrongs[0].student_answer,'3');assert.deepEqual(other.body.wrongs[0].concepts,['관형절']);assert.deepEqual(other.body.wrongs[0].question_types,['조건 적용']);assert.equal(other.body.generated.length,0);assert.equal(other.body.diagnosis[0].basis,'원인 확인 필요');
 await assert.rejects(()=>clinic('tag',{exam_id:'exam',question_index:99,concepts:[],question_types:[]}));
+await db.exec(`alter table exam_responses add column thoughts jsonb;update exam_responses set thoughts='{"_mock_wrong_notes":{"0":{"reason":"안긴문장의 주어를 생략할 수 없다고 생각했습니다."}}}' where id='r3';`);
+const explained=await clinic('generate',{student_id:'s2',request_id:'00000000-0000-4000-8000-000000000009'});
+assert.equal(explained.body.diagnosis[0].student_reason,'안긴문장의 주어를 생략할 수 없다고 생각했습니다.');assert.equal(explained.body.diagnosis[0].basis,'학생 진술 있음 · 교사 확인 필요');
+assert.ok(!JSON.stringify(explained.body).includes('학생 설명 확인'));
 // Verified originals may reveal a multi-answer key lost in the registered test.
 // Preserve teacher corrections; record both keys and never edit grades or submissions.
 await db.query("update odap_questions set status='approved',body=jsonb_set(body,'{answer}','\"all:1,4\"') where id=$1",[original.id]);
