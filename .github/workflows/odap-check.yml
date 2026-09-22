@@ -27,3 +27,4 @@ jobs:
       - run: node scripts/check-odap-clinic.cjs
       - run: python -m pip install lxml Pillow
       - run: python scripts/check-odap-native.py
+      - run: python scripts/check-odap-worker.py

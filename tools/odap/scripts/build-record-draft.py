@@ -53,7 +53,7 @@ def main():
    for ref in d.get('print_references') or []:add('복습 근거: '+str(ref.get('source_title',''))+' · '+str(ref.get('page',''))+'쪽 — '+str(ref.get('quote','')))
   add('누적 오답 문제 모음')
   section[-1].set('PageBreak','true')
- def add_image(image):
+ def add_image(image,target=None):
   data=image.get('data','')
   match=re.fullmatch(r'data:image/(png|jpeg);base64,([A-Za-z0-9+/=]+)',data)
   if not match:raise ValueError('원문 그림 형식을 확인하세요.')
@@ -81,7 +81,7 @@ def main():
   rendering=E.SubElement(comp,'RENDERINGINFO')
   for name in ('TRANSMATRIX','SCAMATRIX','ROTMATRIX'):E.SubElement(rendering,name,E1='1',E2='0',E3='0',E4='0',E5='1',E6='0')
   E.SubElement(pic,'IMAGERECT',X0='0',X1=str(width),X2=str(width),X3='0',Y0='0',Y1='0',Y2=str(height),Y3=str(height))
-  E.SubElement(pic,'IMAGECLIP',Bottom=str(height),Left='0',Right=str(width),Top='0');E.SubElement(pic,'INSIDEMARGIN',Bottom='0',Left='0',Right='0',Top='0');E.SubElement(pic,'IMAGEDIM',Height=str(height),Width=str(width));E.SubElement(pic,'IMAGE',Alpha='0',BinItem=ident,Bright='0',Contrast='0',Effect='RealPic');E.SubElement(pic,'EFFECTS');section.append(para)
+  E.SubElement(pic,'IMAGECLIP',Bottom=str(height),Left='0',Right=str(width),Top='0');E.SubElement(pic,'INSIDEMARGIN',Bottom='0',Left='0',Right='0',Top='0');E.SubElement(pic,'IMAGEDIM',Height=str(height),Width=str(width));E.SubElement(pic,'IMAGE',Alpha='0',BinItem=ident,Bright='0',Contrast='0',Effect='RealPic');E.SubElement(pic,'EFFECTS');(section if target is None else target).append(para)
  for i,q in enumerate(items):
   passage=str(q.get('passage') or '')
   is_example=bool(re.match(r'^\s*<보기',passage))
@@ -99,6 +99,10 @@ def main():
   for ch in chars:ch.text=''
   answer='[정답] '+str(q.get('answer') or '확인 필요').replace('all:','모두 선택: ')+' [해설] '+str(q.get('explanation') or '해설 확인 필요')
   chars[0].text=answer;para.find('TEXT').insert(0,note);section.append(para);expected.extend([stem,answer])
+  if q.get('explanation_images'):
+   note_body=note.find('PARALIST')
+   note_body.append(native.paragraph(styles,'오답 분석 본문','원본 '+str(q.get('original_number') or q.get('num') or '')+'번 정답·해설 지면 · 원문 번호 유지'))
+   for picture in q['explanation_images']:add_image(picture,note_body)
   if passage and is_example:add(passage)
   for line in lines[1:]:add(line,'선택지' if re.match(r'^[①②③④⑤]',line.strip()) else '본문')
   for picture in q.get('images') or []:add_image(picture)
