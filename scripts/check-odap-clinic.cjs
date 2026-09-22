@@ -73,6 +73,14 @@ assert.equal((await db.query("select questions->0->>'answer' a from exams where 
 assert.equal((await db.query("select answers->>'0' a from exam_responses where id='r3'")).rows[0].a,'2');
 assert.equal((await db.query("select odap_grade('4,1','all:1,4') ok")).rows[0].ok,true);
 assert.equal((await db.query("select odap_grade('4','all:1,4') ok")).rows[0].ok,false);
+const retryPacket=large.body.packet_ids[0];
+await db.query("update odap_jobs set status='failed',error='test' where packet_id=$1",[retryPacket]);
+await assert.rejects(()=>clinic('retry',{student_id:'s2',packet_id:retryPacket}));
+const beforeRetry=(await rpc('GET /api/packet',{id:retryPacket})).body;
+assert.equal((await clinic('retry',{student_id:'s1',packet_id:retryPacket})).status,'pending');
+await assert.rejects(()=>clinic('retry',{student_id:'s1',packet_id:retryPacket}));
+assert.deepEqual((await rpc('GET /api/packet',{id:retryPacket})).body,beforeRetry);
+assert.equal((await rpc('GET /api/packet',{id:retryPacket})).status,'draft');
 await db.exec('set role anon');await assert.rejects(()=>db.query('select * from odap_clinics'));await db.exec('reset role');
 new vm.Script(fs.readFileSync('odap/clinic.js','utf8'));
 console.log('PASS: five-part clinic, grading exclusions, exact 3+3, cross-part dedup, daily evidence, insufficient-data honesty, idempotency, teacher auth, student isolation, draft-only publication, native queue');

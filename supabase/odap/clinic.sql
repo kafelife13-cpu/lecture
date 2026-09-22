@@ -28,6 +28,16 @@ begin
   if jsonb_array_length(p_payload->'concepts')>20 or jsonb_array_length(p_payload->'question_types')>10 or exists(select 1 from jsonb_array_elements((p_payload->'concepts')||(p_payload->'question_types'))x where jsonb_typeof(x)<>'string' or length(x#>>'{}') not between 1 and 100) then raise exception '분류 이름·개수를 확인하세요.';end if;
   insert into public.odap_exam_tags(exam_id,question_index,concepts,question_types) values(p_payload->>'exam_id',(p_payload->>'question_index')::integer,p_payload->'concepts',p_payload->'question_types') on conflict(exam_id,question_index) do update set concepts=excluded.concepts,question_types=excluded.question_types,updated_at=now();
   return '{"saved":true}';
+ elsif p_action='retry' then
+  if not exists(select 1 from public.odap_packets p join public.odap_clinics c on c.student_id=p.student_id where p.id=(p_payload->>'packet_id')::uuid and p.student_id=sid and p.status='draft' and c.body->'packet_ids' ? p.id::text and p.body->>'mode'='record_draft' and p.body->>'review_only'='true') then
+   if exists(select 1 from public.odap_packets p where p.id=(p_payload->>'packet_id')::uuid and p.student_id=sid and p.status='draft' and exists(select 1 from public.odap_clinics c where c.student_id=sid and ((c.body->'type_packets') ? p.id::text or (c.body->'concept_packets') ? p.id::text))) then
+    return public.odap_rpc(p_id,p_password,'teacher','POST /api/render',jsonb_build_object('id',p_payload->>'packet_id'));
+   end if;
+   raise exception '선택 학생의 비공개 제작 자료가 아닙니다.';
+  end if;
+  update public.odap_jobs j set status='pending',error=null,lease=gen_random_uuid(),updated_at=now() where j.packet_id=(p_payload->>'packet_id')::uuid and j.status='failed' returning jsonb_build_object('packet_id',j.packet_id,'status',j.status) into result;
+  if result is null then raise exception '실패한 제작만 다시 요청할 수 있습니다. 현재 상태를 확인하세요.';end if;
+  return result;
  elsif p_action='jobs' then
   return coalesce((select jsonb_agg(jsonb_build_object('packet_id',j.packet_id,'status',j.status,'error',j.error)) from public.odap_jobs j join public.odap_packets p on p.id=j.packet_id where p.student_id=sid),'[]');
  elsif p_action='list' then
