@@ -100,7 +100,7 @@ def apply_styles(root):
         plain=''.join(p.xpath('./TEXT/CHAR/text()')).strip()
         if p.find('.//ENDNOTE') is not None:
             number+=1;style=styles['발문(zb 1)'];p.set('Style',style.get('Id'));p.set('ParaShape',style.get('ParaShape'));spaced(p,1800,1500,160)
-            next(x for x in para if x.get('Id')==p.get('ParaShape')).set('KeepWithNext','true')
+            stem_shape=next(x for x in para if x.get('Id')==p.get('ParaShape'));stem_shape.set('KeepWithNext','true');stem_shape.set('KeepLines','true')
             for t in p.findall('./TEXT'):
                 if t.find('CHAR') is not None:t.set('CharShape',style.get('CharShape'))
             for auto in p.findall('.//ENDNOTE//AUTONUM'):auto.set('Number',str(number))
