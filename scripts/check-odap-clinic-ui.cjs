@@ -12,3 +12,9 @@ vm.createContext(c);vm.runInContext(source.slice(source.indexOf('async function 
  let release;apiGate=new Promise(r=>release=r);const old=elements['clinic-results'].innerHTML;const stale=c.showClinic();c.sid='s2';c.clinicRun={...run,id:'r2',student_id:'s2'};release();await stale;assert.equal(elements['clinic-results'].innerHTML,old);assert.equal(timer,null);
  console.log('PASS: pending-job polling, completed-job stop, original completeness, stale student-response isolation');
 })().catch(e=>{console.error(e);process.exitCode=1});
+
+const app=fs.readFileSync(path.join(__dirname,'../odap/app.js'),'utf8'),images={};
+vm.createContext(images);vm.runInContext(app.split('\n')[1]+app.slice(app.indexOf('function questionImagesMarkup('),app.indexOf('function questionMarkup(')),images);
+const imageHTML=images.questionImagesMarkup([{data:'https://example.com/private',alt:'external'},{data:'data:image/svg+xml;base64,AAAA',alt:'svg'},{data:'data:image/png;base64,AAAA',alt:'<bad>"'}]);
+assert.equal((imageHTML.match(/<img /g)||[]).length,1);assert.ok(imageHTML.includes('&lt;bad&gt;&quot;'));assert.ok(!imageHTML.includes('https://'));
+console.log('PASS: original-note image preview accepts bounded raster data and escapes labels');

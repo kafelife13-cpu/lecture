@@ -53,7 +53,7 @@ function clinicPreview(parts){
  if(!parts.length){toast('출력할 자료를 선택하세요.');return;}
  const b=clinicRun.body;
  const qs=(items,start=0)=>items.map((q,i)=>`<section class="q"><h3>${start+i+1}. ${E(q.source_title||'')}</h3>${questionMarkup(q,false)}${q.attempts?.length?`<p class="notice">오답 이력: ${q.attempts.map(a=>E(String(a.date||'날짜 미상').slice(0,10))+' · 선택 '+E(a.answer)).join(' / ')}</p>`:''}</section>`).join('');
- const keys=items=>`<section class="answers"><h2>교사용 정답·해설</h2>${items.map((q,i)=>`<section class="q"><b>${i+1}. 정답 ${E(q.answer||'확인 필요')}</b><p>${E(q.explanation||'해설 확인 필요')}</p></section>`).join('')}</section>`;
+ const keys=items=>`<section class="answers"><h2>교사용 정답·해설</h2>${items.map((q,i)=>`<section class="q"><b>${i+1}. 정답 ${E(q.answer||'확인 필요')}</b><p>${E(q.explanation||'해설 확인 필요')}</p>${questionImagesMarkup(q.explanation_images)}</section>`).join('')}</section>`;
  const sections=parts.map(i=>{
   let text='';
   if(i===0)text='<h2>오답 유형 분석</h2>'+b.diagnosis.map(clinicDiagnosisMarkup).join('')+'<h2>전체 누적 오답 문제</h2>'+qs(b.wrongs)+keys(b.wrongs);

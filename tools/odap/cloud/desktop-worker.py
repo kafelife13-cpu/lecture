@@ -46,10 +46,20 @@ def render(client, job):
     source.write_text(json.dumps({'packet': job['packet']}, ensure_ascii=False), encoding='utf-8')
     command = [sys.executable, str(ROOT / 'scripts' / ('build-record-draft.py' if job['packet'].get('mode')=='record_draft' else 'build-review-hangul.py')),str(source),'--template',str((ROOT / CFG['template']).resolve()),'--output',str(dest)]
     if job['packet'].get('mode')!='record_draft':command.extend(['--bank',str((ROOT / CFG['legacy_bank']).resolve())])
-    result = subprocess.run(command,
-        capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=300)
-    (dest / 'build.log').write_text(result.stdout + '\n' + result.stderr, encoding='utf-8')
-    if result.returncode:
+    logs = []
+    for attempt in range(2):
+        result = subprocess.run(command,
+            capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=300)
+        logs.append('Attempt ' + str(attempt + 1) + '\n' + result.stdout + '\n' + result.stderr)
+        (dest / 'build.log').write_text('\n'.join(logs), encoding='utf-8')
+        if not result.returncode:
+            break
+        # Restart only a disconnected Hancom automation process; never retry failed
+        # source/layout validation, and never publish files from the failed attempt.
+        disconnected = 'pywintypes.com_error' in result.stderr and any(
+            code in result.stderr for code in ('-2147023170', '-2147023174', '-2147417848'))
+        if attempt == 0 and disconnected:
+            continue
         raise RuntimeError('한글 제작 실패: 제작 PC의 원문·기준 양식·한글 실행 상태를 확인하세요.')
     report = json.loads(result.stdout.strip().splitlines()[-1])
     files = []
