@@ -11,7 +11,7 @@ create table if not exists public.odap_exam_tags(exam_id text not null,question_
 alter table public.odap_exam_tags enable row level security;
 revoke all on public.odap_exam_tags from public,anon,authenticated;
 create or replace function public.odap_clinic(p_id text,p_password text,p_action text,p_payload jsonb default '{}') returns jsonb
-language plpgsql security definer set search_path=public as $$
+language plpgsql security definer set search_path=public set statement_timeout='30s' as $$
 declare actor jsonb; student jsonb; result jsonb; saved public.odap_clinics%rowtype; sid text:=p_payload->>'student_id';
  exam_filter text:=coalesce(p_payload->>'exam_id',''); request_key uuid; w record; candidate public.odap_questions%rowtype; mapped public.odap_questions%rowtype;
  wrongs jsonb:='[]'; diagnoses jsonb:='[]'; by_type jsonb:='[]'; by_concept jsonb:='[]'; native_items jsonb:='[]';
@@ -173,3 +173,4 @@ begin
 end $$;
 revoke all on function public.odap_clinic(text,text,text,jsonb) from public;
 grant execute on function public.odap_clinic(text,text,text,jsonb) to anon,authenticated;
+notify pgrst, 'reload schema';
