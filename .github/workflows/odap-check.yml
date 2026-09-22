@@ -1,0 +1,25 @@
+name: Odap identity and database checks
+on:
+  pull_request:
+    paths: ['index.html', 'odap/**', 'odap-entry.js', 'supabase/odap/**', 'scripts/check-odap*', '.github/workflows/odap-check.yml']
+  push:
+    paths: ['index.html', 'odap/**', 'odap-entry.js', 'supabase/odap/**', 'scripts/check-odap*', '.github/workflows/odap-check.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - run: node scripts/check-odap.cjs
+      - run: node scripts/check-odap-sync.cjs
+      - run: npm install --no-save --ignore-scripts @electric-sql/pglite@0.5.8
+      - run: node scripts/check-odap-db.cjs

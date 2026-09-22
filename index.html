@@ -2158,6 +2158,15 @@ async function restoreRememberedStudentLogin(){
 }
 window.addEventListener('online',function(){if(studentRestoreRetry)restoreRememberedStudentLogin();});
 document.addEventListener('visibilitychange',function(){if(!document.hidden&&studentRestoreRetry&&navigator.onLine)restoreRememberedStudentLogin();});
+
+async function odapSaveResponse(payload){
+  if(!weeklyLogin||!session||weeklyLogin.id!==session.id||studentPreviewMode||padMode)return {error:{message:'본인 계정으로 다시 로그인해 주세요.'}};
+  var body=Object.assign({},payload);
+  if(session.role==='student')body.student_id=session.id;
+  else if(!body.student_id){var matched=(db.users||[]).filter(function(u){return u.role==='student'&&u.name===body.student_name;});if(matched.length===1)body.student_id=matched[0].id;}
+  return sb.rpc('odap_save_response',{p_id:weeklyLogin.id,p_password:weeklyLogin.pw,p_role:weeklyLogin.role,p_payload:body});
+}
+
 async function doLogin(automatic){
   const id=document.getElementById('login-id').value.trim();
   const pw=document.getElementById('login-pw').value;
@@ -2628,7 +2637,7 @@ async function renderWeeklyStudentDashboard(){
   }catch(e){}
   var recentScores=[];
   try{
-    var scoreRes=await sb.from('exam_responses').select('id,exam_id,score,correct_count,total_q,submitted_at').eq('student_name',session.name||session.id).order('submitted_at',{ascending:false}).limit(3);
+    var scoreRes=await sb.from('exam_responses').select('id,exam_id,score,correct_count,total_q,submitted_at').eq('student_id',session.id).order('submitted_at',{ascending:false}).limit(3);
     var scoreRows=scoreRes.data||[];
     if(scoreRows.length){
       var examIds=scoreRows.map(function(r){return r.exam_id;}).filter(Boolean);
@@ -2651,7 +2660,7 @@ async function renderWeeklyStudentDashboard(){
     if(clinicExams.length){
       var clinicIds=clinicExams.map(function(e){return e.id;});
       var oxData=await Promise.all([
-        sb.from('exam_responses').select('exam_id,answers').eq('student_name',session.name||session.id).in('exam_id',clinicIds),
+        sb.from('exam_responses').select('exam_id,answers').eq('student_id',session.id).in('exam_id',clinicIds),
         sb.from('ox_attempts').select('exam_id').eq('student_id',session.id).in('exam_id',clinicIds)
       ]);
       var responseByExam={};(oxData[0].data||[]).forEach(function(r){responseByExam[r.exam_id]=r;});
@@ -4082,7 +4091,7 @@ async function renderSGrades(){
   const myName=session.name||session.id;
   if(db.users.filter(u=>u.role==='student'&&u.name===myName).length>1){listEl.textContent='동명이인 기록을 확인 중입니다. 선생님께 문의해 주세요.';return;}
   const [{data:responses,error:rErr},{data:exams,error:eErr}]=await Promise.all([
-    sb.from('exam_responses').select('*').eq('student_name',myName).order('submitted_at',{ascending:false}),
+    sb.from('exam_responses').select('*').eq('student_id',session.id).order('submitted_at',{ascending:false}),
     sb.from('exams').select('*')
   ]);
   if(session?.id!==owner)return;
@@ -9445,13 +9454,13 @@ async function omrBatchSaveAll(){
       const up=await sb.storage.from('exam-photos').upload(path,r.blob,{upsert:true,contentType:'image/jpeg'});
       if(!up.error){const urlRes=sb.storage.from('exam-photos').getPublicUrl(path);if(urlRes.data&&urlRes.data.publicUrl)photoUrl=urlRes.data.publicUrl;}
     }catch(e){}
-    const res=await sb.from('exam_responses').upsert({
+    const res=await odapSaveResponse({
       exam_id:exam.id,student_name:r.matchedName,
       answers:savedAnswers,photo_urls:photoUrl?{omr:photoUrl}:{},thoughts:{},
       score:score,correct_count:correct,total_q:objIdxs.length,
       points_earned:pointsEarned,points_total:pointsTotal,
       submitted_at:new Date().toISOString()
-    },{onConflict:'exam_id,student_name'});
+    });
     if(res.error)failCount++;else okCount++;
   }
   notify(okCount+'명 저장 완료'+(failCount?', '+failCount+'명 실패':''),failCount?'error':'success');
@@ -9535,7 +9544,7 @@ async function omrConfirmScore(){
     points_earned:pointsEarned,points_total:pointsTotal,
     submitted_at:new Date().toISOString()
   };
-  const res=await sb.from('exam_responses').upsert(payload,{onConflict:'exam_id,student_name'});
+  const res=await odapSaveResponse(payload);
   if(res.error){notify('채점 저장 실패: '+res.error.message,'error');return;}
   closeOmrModal();
   notify(name+' 학생 채점 완료! ('+score+'점)','success');
@@ -9622,7 +9631,7 @@ async function openOxQuizForExamId(examId){
   if(!session)return;
   const[{data:exam},{data:resp}]=await Promise.all([
     sb.from('exams').select('*').eq('id',examId).single(),
-    sb.from('exam_responses').select('*').eq('exam_id',examId).eq('student_name',session.name||session.id).single()
+    sb.from('exam_responses').select('*').eq('exam_id',examId).eq('student_id',session.id).single()
   ]);
   if(!exam||!resp){alert('시험 정보를 불러올 수 없어요.');return;}
   await startOxQuiz(exam,resp);
@@ -9719,7 +9728,7 @@ async function renderSOxReview(){
   const el=document.getElementById('s-oxreview-list');
   if(!el||!session)return;
   el.innerHTML='<div style="text-align:center;padding:2rem;color:var(--text2);font-size:13px">불러오는 중...</div>';
-  const{data:responses}=await sb.from('exam_responses').select('*').eq('student_name',session.name||session.id);
+  const{data:responses}=await sb.from('exam_responses').select('*').eq('student_id',session.id);
   const withAnswers=(responses||[]).filter(function(r){return r.answers&&Object.keys(r.answers).length>0;});
   if(!withAnswers.length){sOxReviewCache=[];renderSOxReviewList();return;}
   const examIds=withAnswers.map(function(r){return r.exam_id;});
@@ -10314,7 +10323,7 @@ async function renderSExam(scope){
   const myName=session.name||session.id;
   const [{data:exams},{data:myResponses}]=await Promise.all([
     sb.from('exams').select('*').order('created_at',{ascending:false}),
-    sb.from('exam_responses').select('exam_id,score,answers,attempt_count,regrade_requested,regrade_approved').eq('student_name',myName)
+    sb.from('exam_responses').select('exam_id,score,answers,attempt_count,regrade_requested,regrade_approved').eq('student_id',session.id)
   ]);
   sExamRespCache={};
   (myResponses||[]).forEach(function(r){sExamRespCache[r.exam_id]=r;});
@@ -10473,7 +10482,7 @@ async function sExamOpenForGrading(examId,entryMode){
   const myName=session.name||session.id;
   const [{data:found,error:e1},{data:resp}]=await Promise.all([
     sb.from('exams').select('*').eq('id',examId).single(),
-    sb.from('exam_responses').select('*').eq('exam_id',examId).eq('student_name',myName).maybeSingle()
+    sb.from('exam_responses').select('*').eq('exam_id',examId).eq('student_id',session.id).maybeSingle()
   ]);
   if(e1||!found){alert('시험 정보를 불러오지 못했어요.');return;}
   if(!sExamVisibleForStudent(found)){alert('자기 학교에 등록된 시험만 채점할 수 있어요.');renderSExam();return;}
@@ -10540,7 +10549,7 @@ async function sExamSubmitReportedScore(){
   if(!Number.isInteger(score)||score<0||score>100){alert('0~100 사이의 정수 점수를 입력해주세요.');return;}
   if(!confirm(score+'점으로 저장할까요?\n문항별 오답 경향에는 반영되지 않습니다.'))return;
   var next=(sExamPriorResponse&&sExamPriorResponse.attempt_count?sExamPriorResponse.attempt_count:0)+1;
-  var res=await sb.from('exam_responses').upsert({exam_id:sExamData.id,student_name:session.name||session.id,answers:{},photo_urls:{},thoughts:{},score:score,correct_count:0,total_q:sExamData.total_q,points_earned:score,points_total:100,attempt_count:next,regrade_requested:false,regrade_approved:false,submitted_at:new Date().toISOString()},{onConflict:'exam_id,student_name'});
+  var res=await odapSaveResponse({exam_id:sExamData.id,student_name:session.name||session.id,answers:{},photo_urls:{},thoughts:{},score:score,correct_count:0,total_q:sExamData.total_q,points_earned:score,points_total:100,attempt_count:next,regrade_requested:false,regrade_approved:false,submitted_at:new Date().toISOString()});
   if(res.error){alert('점수 저장 실패: '+res.error.message);return;}
   sendStudentActivity('모의고사 점수 제출',sExamData.name+' · '+score+'점 · 점수만 입력');
   notify('점수를 저장했어요.','success');renderSExam();
@@ -10628,14 +10637,14 @@ async function sExamSubmitFull(forceSubmit){
       }
     }catch(e){}
   }
-  const saveRes=await sb.from('exam_responses').upsert({
+  const saveRes=await odapSaveResponse({
     exam_id:sExamData.id,student_name:session.name||session.id,
     answers:savedAnswers,photo_urls:photoUrls,thoughts:Object.assign({},sExamPriorResponse&&sExamPriorResponse.thoughts||{},{_subjective_answers:homeworkWrittenAnswers(sExamData,sExamFullAnswers)}),
     score:score,correct_count:correct,total_q:objIdxs.length,
     points_earned:pointsEarned,points_total:pointsTotal,
     attempt_count:nextAttempt,regrade_requested:false,regrade_approved:false,
     submitted_at:new Date().toISOString()
-  },{onConflict:'exam_id,student_name'});
+  });
   if(saveRes.error){alert('채점 결과 저장에 실패했어요: '+saveRes.error.message+'\n선생님께 알려주세요.');return;}
   sendStudentActivity(sExamData.category==='homework'?'숙제 채점 제출':'시험 채점 제출',sExamData.name+' · '+score+'점 ('+correct+'/'+objIdxs.length+')');
   if(isLiteratureExam(sExamData))await finishLiteratureStudy();
@@ -10741,7 +10750,7 @@ async function sOmrReadSelectedFile(files){
 async function sExamRequestRegrade(examId,examName){
   if(!confirm(examName+' 재채점을 요청할까요?\n선생님 승인 후 다시 채점할 수 있어요.'))return;
   const myName=session.name||session.id;
-  const {error}=await sb.from('exam_responses').update({regrade_requested:true}).eq('exam_id',examId).eq('student_name',myName);
+  const {error}=await sb.from('exam_responses').update({regrade_requested:true}).eq('exam_id',examId).eq('student_id',session.id);
   if(error){alert('요청 실패: '+error.message);return;}
   sendStudentActivity('재채점 요청',examName);
   notify('재채점을 요청했어요. 선생님 승인을 기다려주세요.','success');
@@ -10752,7 +10761,7 @@ async function sExamViewResult(examId){
   const myName=session.name||session.id;
   const [{data:exam,error:e1},{data:resp,error:e2}]=await Promise.all([
     sb.from('exams').select('*').eq('id',examId).single(),
-    sb.from('exam_responses').select('*').eq('exam_id',examId).eq('student_name',myName).single()
+    sb.from('exam_responses').select('*').eq('exam_id',examId).eq('student_id',session.id).single()
   ]);
   if(e1||e2||!exam||!resp){alert('결과를 불러오지 못했어요.');return;}
   sExamData=exam;
@@ -10927,14 +10936,14 @@ async function sExamSubmitScore(){
   }
   // Supabase 저장 (재채점은 승인된 경우에만 여기 도달함 — 제출 후 승인 플래그는 다시 잠금)
   var nextAttempt=(sExamPriorResponse&&sExamPriorResponse.attempt_count)?sExamPriorResponse.attempt_count+1:1;
-  const saveRes=await sb.from('exam_responses').upsert({
+  const saveRes=await odapSaveResponse({
     exam_id:sExamData.id,student_name:session.name||session.id,
     answers:savedAnswers,photo_urls:photoUrls,thoughts:Object.assign({},sExamPriorResponse&&sExamPriorResponse.thoughts||{},sExamThoughts),
     score:score,correct_count:correct,total_q:total,
     points_earned:pointsEarned,points_total:pointsTotal,
     attempt_count:nextAttempt,regrade_requested:false,regrade_approved:false,
     submitted_at:new Date().toISOString()
-  },{onConflict:'exam_id,student_name'});
+  });
   if(saveRes.error){alert('채점 결과 저장에 실패했어요: '+saveRes.error.message+'\n선생님께 알려주세요.');return;}
   sendStudentActivity(sExamData.category==='homework'?'숙제 채점 제출':'시험 채점 제출',sExamData.name+' · '+score+'점 ('+correct+'/'+total+')');
   sExamPriorResponse=null;
@@ -11031,7 +11040,7 @@ async function sMockSaveWrongNotes(){
   var incomplete=sExamLastWrong.filter(function(w){var n=sMockWrongNotes[w.idx]||{};return !String(n.reason||'').trim()||!String(n.lesson||'').trim()||!n.retry;});
   if(incomplete.length&&!confirm(incomplete.length+'문항의 오답노트가 아직 덜 작성됐어요. 지금 작성한 내용만 저장할까요?'))return;
   var payload=Object.assign({},sExamCurrentThoughts||{});payload._mock_wrong_notes=sMockWrongNotes;
-  var res=await sb.from('exam_responses').update({thoughts:payload}).eq('exam_id',sExamData.id).eq('student_name',session.name||session.id);
+  var res=await sb.from('exam_responses').update({thoughts:payload}).eq('exam_id',sExamData.id).eq('student_id',session.id);
   if(res.error){alert('오답노트 저장 실패: '+res.error.message);return;}
   sExamCurrentThoughts=payload;
   sendStudentActivity('모의고사 오답노트 저장',sExamData.name+' · '+Object.keys(sMockWrongNotes).length+'문항');
@@ -11096,7 +11105,7 @@ async function sExamRenderInlineReport(scrollToReport){
   el.innerHTML='<div class="card" style="padding:1.25rem;text-align:center;color:var(--text2);font-size:13px">성적표 불러오는 중...</div>';
   const [{data:allResponses,error},{data:studentResponses},{data:historyExams}]=await Promise.all([
     sb.from('exam_responses').select('*').eq('exam_id',sExamData.id),
-    sb.from('exam_responses').select('*').eq('student_name',session.name||session.id).limit(500),
+    sb.from('exam_responses').select('*').eq('student_id',session.id).limit(500),
     sb.from('exams').select('*').eq('category','school').limit(500)
   ]);
   if(error){el.innerHTML='<div class="card" style="padding:1.25rem;color:var(--red);font-size:13px">성적표를 불러오지 못했어요: '+escHtml(error.message)+'</div>';return;}
@@ -11285,10 +11294,11 @@ ${wrongs.some(({idx})=>sExamThoughts[idx])?'각 오답에 학생이 직접 입�
   }
 
   // Supabase에 응답 저장
-  await sb.from('exam_responses').upsert({
+  const savedResponse = await odapSaveResponse({
     exam_id:sExamData.id,student_name:session.name,
     answers:sExamAnswers,photo_urls:{},thoughts:sExamThoughts
-  },{onConflict:'exam_id,student_name'});
+  });
+  if(savedResponse.error)toast('분석은 완료됐지만 제출 저장에 실패했습니다: '+savedResponse.error.message);
 }
 
 function sExamFallback(wrongs,total,wrongCount,accuracy){
@@ -11444,5 +11454,6 @@ function installPWA(){
 </script>
 <script src="app-navigation.js?v=1"></script>
 <script src="video-chapters.js?v=1"></script>
+<script src="odap-entry.js?v=1"></script>
 </body>
 </html>
