@@ -1,5 +1,5 @@
 """Private Windows rendering worker. Credentials are prompted, never saved."""
-import argparse, getpass, json, subprocess, sys, time, urllib.request, urllib.error
+import argparse, getpass, json, subprocess, sys, time, urllib.request, urllib.error, http.client
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -78,14 +78,25 @@ def main():
     client.rpc('profile')
     print('제작 연결 중입니다. 종료하려면 Ctrl+C를 누르세요.')
     while True:
-        job = client.rpc('worker_claim')
-        if job:
-            try:
-                render(client, job)
-                print('한글·PDF 제작 완료. 교사 확인 대기 중입니다.')
-            except Exception as exc:
-                client.rpc('worker_finish', dict(id=job['id'], lease=job['lease'], error=str(exc)[:300]))
-                print('제작하지 못했습니다. 온라인 자료의 상태를 확인하세요.')
+        try:
+            job = client.rpc('worker_claim')
+            if job:
+                try:
+                    render(client, job)
+                    print('한글·PDF 제작 완료. 교사 확인 대기 중입니다.', flush=True)
+                except (urllib.error.URLError, http.client.HTTPException, TimeoutError, ConnectionError):
+                    raise
+                except Exception as exc:
+                    client.rpc('worker_finish', dict(id=job['id'], lease=job['lease'], error=str(exc)[:300]))
+                    print('제작하지 못했습니다. 온라인 자료의 상태를 확인하세요.', flush=True)
+        except (urllib.error.URLError, http.client.HTTPException, TimeoutError, ConnectionError):
+            # An interrupted write may have reached the server. Do not replay it;
+            # let the server lease expire and require a visible retry for that job.
+            print('서버 연결이 끊겼습니다. 60초 뒤 연결을 확인합니다. 진행 중 자료는 서버 상태 확인 후 재요청하세요.', flush=True)
+            if args.once:
+                raise
+            time.sleep(60)
+            continue
         if args.once:
             break
         time.sleep(15)

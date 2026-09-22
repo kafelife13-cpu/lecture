@@ -26,3 +26,28 @@ with tempfile.TemporaryDirectory() as td:
  except RuntimeError:pass
  assert len(calls)==1 and not client.uploads and not client.finished
 print('PASS: fresh-process retry for disconnected Hancom only; no failed-file upload')
+
+# A dropped connection must not terminate the worker or replay an uncertain write.
+import urllib.error, http.client
+main_node=next(n for n in ast.parse(source.read_text(encoding='utf-8')).body if isinstance(n,ast.FunctionDef) and n.name=='main')
+for break_at in ('claim','render'):
+ actions=[]; sleeps=[]; renders=[]
+ class StopLoop(Exception):pass
+ class NetworkClient:
+  def __init__(self,*args):pass
+  def rpc(self,action,payload=None):
+   actions.append(action)
+   if action=='profile':return {}
+   if actions.count('worker_claim')>1:raise StopLoop()
+   if break_at=='claim':raise urllib.error.URLError('test disconnection')
+   return {'id':'test','lease':'lease','packet_id':'packet'}
+ def render_network(client,job):
+  renders.append(job['id']);raise ConnectionResetError('test disconnection')
+ parser=SimpleNamespace(add_argument=lambda *a,**k:None,parse_args=lambda:SimpleNamespace(once=False))
+ ns={'argparse':SimpleNamespace(ArgumentParser=lambda **k:parser),'Client':NetworkClient,'input':lambda p:'test', 'getpass':SimpleNamespace(getpass=lambda p:'test'),'render':render_network,'urllib':SimpleNamespace(error=urllib.error),'http':SimpleNamespace(client=http.client),'time':SimpleNamespace(sleep=sleeps.append),'print':lambda *a,**k:None}
+ exec(compile(ast.Module(body=[main_node],type_ignores=[]),str(source),'exec'),ns)
+ try:ns['main']()
+ except StopLoop:pass
+ assert sleeps==[60] and actions==['profile','worker_claim','worker_claim']
+ assert renders==([] if break_at=='claim' else ['test'])
+print('PASS: connection loss keeps worker alive; no uncertain upload or finish replay')
