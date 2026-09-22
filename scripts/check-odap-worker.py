@@ -12,6 +12,7 @@ with tempfile.TemporaryDirectory() as td:
  root=Path(td);calls=[];client=Client();failure='pywintypes.com_error: (-2147023170, disconnected)'
  def run(command,**kwargs):
   calls.append(command)
+  assert command[1:3]==["-X","utf8"]
   if len(calls)==1:return SimpleNamespace(returncode=1,stdout='',stderr=failure)
   dest=root/'data/cloud-jobs/test';names=['fresh.hwp','fresh.hwpx','fresh.pdf']
   for n in names:(dest/n).write_bytes(b'valid document')

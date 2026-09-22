@@ -44,7 +44,7 @@ def render(client, job):
     dest.mkdir(parents=True, exist_ok=True)
     source = dest / 'job.json'
     source.write_text(json.dumps({'packet': job['packet']}, ensure_ascii=False), encoding='utf-8')
-    command = [sys.executable, str(ROOT / 'scripts' / ('build-record-draft.py' if job['packet'].get('mode')=='record_draft' else 'build-review-hangul.py')),str(source),'--template',str((ROOT / CFG['template']).resolve()),'--output',str(dest)]
+    command = [sys.executable, "-X", "utf8", str(ROOT / 'scripts' / ('build-record-draft.py' if job['packet'].get('mode')=='record_draft' else 'build-review-hangul.py')),str(source),'--template',str((ROOT / CFG['template']).resolve()),'--output',str(dest)]
     if job['packet'].get('mode')!='record_draft':command.extend(['--bank',str((ROOT / CFG['legacy_bank']).resolve())])
     logs = []
     for attempt in range(2):
