@@ -95,7 +95,16 @@ begin
  if p_role<>'teacher' then raise exception '교사 전용 작업입니다.';end if;
  sid:=p_payload->>'student_id';
  if sid is not null and not exists(select 1 from public.users where id::text=sid and role='student') then raise exception '기존 학생 ID를 확인하세요.';end if;
- if p_action='GET /api/summary' or p_action='POST /api/refresh' then
+ if p_action='GET /api/sync' then
+  return to_jsonb(md5(concat(
+   public.odap_external_revision(),
+   (select jsonb_agg(jsonb_build_array(id,name,role,status,school_id) order by id)::text from public.users where role='student'),
+   (select jsonb_agg(to_jsonb(e) order by id)::text from public.exams e),
+   (select jsonb_agg(to_jsonb(r) order by id)::text from public.exam_responses r),
+   (select count(*)::text||coalesce(max(created_at)::text,'') from public.odap_questions),
+   (select count(*)::text||coalesce(max(created_at)::text,'') from public.odap_sources)
+  )));
+ elsif p_action='GET /api/summary' or p_action='POST /api/refresh' then
   return jsonb_build_object('totals',jsonb_build_object('questions',(select count(*) from public.odap_questions),'approved',(select count(*) from public.odap_questions where status='approved'),'sources',(select count(*) from public.odap_sources),'pending_generated',(select count(*) from public.odap_generated where status='pending'),'packets',(select count(*) from public.odap_packets),'evidence',(select count(*) from public.odap_evidence)),
   'sources',(select coalesce(jsonb_agg(x order by total desc),'[]') from (select s.id,s.title,s.kind,s.school,s.bytes,count(q.id) total,count(q.id) filter(where q.status='approved') approved from public.odap_sources s left join public.odap_questions q on q.source_id=s.id group by s.id) x),
   'connection',jsonb_build_object('ok',true,'students',(select count(*) from public.users where role='student'),'responses',(select count(*) from public.exam_responses),'exams',(select count(*) from public.exams),'checked_at',now(),'has_student_id',true),
@@ -105,9 +114,9 @@ begin
   return jsonb_build_object('students',(select coalesce(jsonb_agg(jsonb_build_object('id',id,'name',name,'role',role,'status',status,'school_id',school_id) order by name),'[]') from public.users where role='student'),'schools',(select coalesce(jsonb_agg(jsonb_build_object('id',id,'name',name)),'[]') from public.qa_schools),'checked_at',now(),'has_student_id',true);
  elsif p_action='GET /api/records' then
   return jsonb_build_object('student',(select jsonb_build_object('id',id,'name',name,'school_id',school_id,'school',(select name from public.qa_schools where id=users.school_id)) from public.users where id::text=sid),'responses',(select coalesce(jsonb_agg(to_jsonb(r)),'[]') from public.exam_responses r where r.student_id=sid),
-   'history',(select coalesce(jsonb_agg(body order by archived_at),'[]') from public.odap_attempts where student_id=sid),
+   'history',(select coalesce(jsonb_agg(odap_attempts.body order by archived_at),'[]') from public.odap_attempts where student_id=sid),
    'unlinked',(select coalesce(jsonb_agg(jsonb_build_object('id',r.id,'exam',e.name,'date',r.submitted_at,'same_name_count',(select count(*) from public.users where role='student' and name=r.student_name))),'[]') from public.exam_responses r join public.exams e on e.id=r.exam_id where r.student_id is null and r.student_name=(select name from public.users where id::text=sid)),
-   'exams',(select coalesce(jsonb_agg(jsonb_build_object('id',id,'name',name,'category',category,'questions',questions)),'[]') from public.exams),'mappings',(select coalesce(jsonb_agg(to_jsonb(m)),'[]') from public.odap_mappings m),'notes',(select coalesce(jsonb_agg(to_jsonb(n)),'[]') from public.odap_notes n where student_id=sid),'evidence',(select coalesce(jsonb_agg(to_jsonb(e)||jsonb_build_object('title',s.title,'school',s.school)),'[]') from public.odap_evidence e join public.odap_sources s on s.id=e.source_id where e.approved),'checked_at',now());
+   'exams',(select coalesce(jsonb_agg(jsonb_build_object('id',id,'name',name,'category',category,'questions',questions)),'[]') from public.exams),'mappings',(select coalesce(jsonb_agg(to_jsonb(m)),'[]') from public.odap_mappings m),'notes',(select coalesce(jsonb_agg(to_jsonb(n.*)),'[]') from public.odap_notes n where student_id=sid),'evidence',(select coalesce(jsonb_agg(to_jsonb(e)||jsonb_build_object('title',s.title,'school',s.school)),'[]') from public.odap_evidence e join public.odap_sources s on s.id=e.source_id where e.approved),'checked_at',now());
  elsif p_action='GET /api/questions' then
   select coalesce(jsonb_agg(x),'[]') into items from (select public.odap_question_json(q.*)-'images'-'passage'-'explanation' x from public.odap_questions q where (coalesce(p_payload->>'q','')='' or q.body::text ilike '%'||(p_payload->>'q')||'%') and (coalesce(p_payload->>'status','')='' or q.status=p_payload->>'status') and (coalesce(p_payload->>'source_id','')='' or q.source_id::text=p_payload->>'source_id') order by q.source_id,q.source_key limit 30 offset greatest(0,coalesce((p_payload->>'offset')::integer,0))) t;
   return jsonb_build_object('items',items,'total',(select count(*) from public.odap_questions q where (coalesce(p_payload->>'q','')='' or q.body::text ilike '%'||(p_payload->>'q')||'%') and (coalesce(p_payload->>'status','')='' or q.status=p_payload->>'status') and (coalesce(p_payload->>'source_id','')='' or q.source_id::text=p_payload->>'source_id')));
@@ -124,7 +133,7 @@ begin
  elsif p_action='POST /api/generate' then return public.odap_daily(sid);
  elsif p_action='POST /api/source' then
   if coalesce(trim(p_payload->>'title'),'')='' then raise exception '자료명을 입력하세요.';end if;
-  insert into public.odap_sources(id,title,kind,school,sha256,bytes,object_path) values(coalesce((p_payload->>'id')::uuid,gen_random_uuid()),p_payload->>'title',coalesce(p_payload->>'kind','원본'),coalesce(p_payload->>'school',''),nullif(p_payload->>'sha256',''),coalesce((p_payload->>'bytes')::bigint,0),p_payload->>'object_path') on conflict(sha256) do update set title=odap_sources.title returning * into src;return to_jsonb(src);
+  insert into public.odap_sources(id,title,kind,school,sha256,bytes,object_path) values(coalesce((p_payload->>'id')::uuid,gen_random_uuid()),p_payload->>'title',coalesce(p_payload->>'kind','원본'),coalesce(p_payload->>'school',''),nullif(p_payload->>'sha256',''),coalesce((p_payload->>'bytes')::bigint,0),p_payload->>'object_path') on conflict(sha256) do update set title=odap_sources.title,object_path=coalesce(excluded.object_path,odap_sources.object_path) returning * into src;return to_jsonb(src);
  elsif p_action='POST /api/import' then
   if jsonb_typeof(p_payload->'questions') is distinct from 'array' or jsonb_array_length(p_payload->'questions')>500 then raise exception '500문항 이하로 가져오세요.';end if;
   for q in select value from jsonb_array_elements(p_payload->'questions') loop
@@ -245,3 +254,7 @@ end $$;
 revoke all on function public.odap_rpc(text,text,text,text,jsonb) from public;
 grant execute on function public.odap_rpc(text,text,text,text,jsonb) to anon,authenticated;
 commit;
+
+create index if not exists odap_questions_source_status_idx on public.odap_questions(source_id,status);
+
+create index if not exists odap_questions_summary_idx on public.odap_questions(source_id,status) include(id);

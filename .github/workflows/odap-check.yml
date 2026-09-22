@@ -20,5 +20,6 @@ jobs:
           node-version: 24
           package-manager-cache: false
       - run: node scripts/check-odap.cjs
+      - run: node scripts/check-odap-sync.cjs
       - run: npm install --no-save --ignore-scripts @electric-sql/pglite@0.5.8
       - run: node scripts/check-odap-db.cjs

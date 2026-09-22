@@ -20,6 +20,7 @@
  }
  async function upload(bytes,filename,kind='source',packetId=null){const signed=await gateway('prepare_upload',{filename,kind,packet_id:packetId,bytes:bytes.byteLength});const res=await fetch(signed.url,{method:'PUT',headers:{'Content-Type':'application/octet-stream'},body:bytes});if(!res.ok)throw Error('비공개 파일 저장소 업로드 실패');return signed.path;}
  window.researchAPI=async(path,data)=>{const url=new URL(path,location.href),params=Object.fromEntries(url.searchParams),payload=data??params,method=data===undefined?'GET':'POST';
+  if(url.pathname==='/api/linked')return request('/rest/v1/rpc/odap_linked_data',{p_id:auth.id,p_password:auth.pw,p_table:payload.table,p_student_id:payload.student_id||'',p_offset:Number(payload.offset||0)});
   if(url.pathname==='/api/analysis')return analyze(payload.student_id);
   if(url.pathname==='/api/source'&&method==='POST'){
    const body={...data};if(data.data){const bytes=Uint8Array.from(atob(data.data),c=>c.charCodeAt(0));body.sha256=[...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(n=>n.toString(16).padStart(2,'0')).join('');body.bytes=bytes.byteLength;body.object_path=await upload(bytes,data.filename);delete body.data;}return rpc('POST /api/source',body);

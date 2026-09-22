@@ -11294,10 +11294,11 @@ ${wrongs.some(({idx})=>sExamThoughts[idx])?'각 오답에 학생이 직접 입�
   }
 
   // Supabase에 응답 저장
-  await odapSaveResponse({
+  const savedResponse = await odapSaveResponse({
     exam_id:sExamData.id,student_name:session.name,
     answers:sExamAnswers,photo_urls:{},thoughts:sExamThoughts
   });
+  if(savedResponse.error)toast('분석은 완료됐지만 제출 저장에 실패했습니다: '+savedResponse.error.message);
 }
 
 function sExamFallback(wrongs,total,wrongCount,accuracy){

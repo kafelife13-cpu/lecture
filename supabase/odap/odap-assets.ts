@@ -1,4 +1,4 @@
-// Deploy as Supabase Edge Function `odap-assets` with gateway JWT verification disabled.
+// Deploy as Supabase Edge Function `odap-assets` using the existing publishable API key. Keep gateway verification enabled.
 // Every operation authenticates the existing Kkakka account before touching storage.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 const origins=new Set(['https://kafelife13-cpu.github.io','http://127.0.0.1:8876']);

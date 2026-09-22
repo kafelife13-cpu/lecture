@@ -3,8 +3,8 @@
 기존 `users`, `exams`, `exam_responses`, `qa_schools`, `authenticate_user`를 사용합니다. 학생 계정을 복제하지 않습니다. 학생 제출 저장 함수가 먼저 설치되어야 새 클라이언트가 동작합니다.
 
 1. 운영 DB 백업과 실제 스키마·고유 제약을 확인합니다.
-2. `migration.sql`, `identity-save.sql`, `storage-and-schedule.sql` 순서로 적용합니다.
-3. `odap-assets.ts`를 `odap-assets` Edge Function으로 배포합니다. Gateway JWT 검사는 사용하지 않으며 내부 `odap_rpc`에서 기존 계정을 매 요청 인증합니다. 서비스 키는 함수 환경 변수에만 보관합니다.
+2. `migration.sql`, `identity-save.sql`, `storage-and-schedule.sql`, `linked-data.sql`, `fast-sync.sql` 순서로 적용합니다.
+3. `odap-assets.ts`를 `odap-assets` Edge Function으로 배포합니다. Gateway JWT 검사는 유지하고 내부 `odap_rpc`에서 기존 계정을 매 요청 인증합니다. 서비스 키는 함수 환경 변수에만 보관합니다.
 4. 비공개 문제은행과 원본을 이관하고 수량·원본 해시를 확인합니다. 문제·답안·학생 정보는 이 공개 저장소에 올리지 않습니다.
 5. 교사 인증과 학생별 공개 자료 격리, Storage 접근을 확인한 뒤 웹 변경을 배포합니다.
 
