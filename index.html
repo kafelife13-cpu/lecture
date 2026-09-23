@@ -23,7 +23,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="class-attendance.js"></script>
-<script src="class-attendance-ui.js?v=e563a7f"></script>
+<script src="class-attendance-ui.js?v=20260923-telegram"></script>
 <script src="classical-vocab.js?v=2"></script>
 <script src="classical-course.js"></script>
 <script src="classical-translations.js"></script>
@@ -1922,6 +1922,20 @@ function sendStudentActivity(activity,detail){
   }).catch(function(error){console.warn('텔레그램 활동 알림 실패',error);});
 }
 
+async function sendAttendanceTelegram(student,detail,checkedAt){
+  if(!session||session.role!=='teacher'||studentPreviewMode)return;
+  try{
+    var result=await sb.functions.invoke('student-activity-telegram',{body:{
+      student_id:student.id,student_name:student.name,activity:'🟢 등원 체크',
+      detail:detail||'',occurred_at:checkedAt||new Date().toISOString()
+    }});
+    if(result&&result.error)throw result.error;
+  }catch(error){
+    console.warn('등원 텔레그램 알림 실패',error);
+    notify('출석은 저장됐지만 텔레그램 알림 전송에 실패했어요.','error');
+  }
+}
+
 let session=null,currentRole='teacher',progressView='video',progressVideoPage=1,padMode=false;
 let db={users:[],videos:[],progress:[],access:[],requests:[],accessLog:[]};
 var sharedAISettings=null;
@@ -2980,6 +2994,7 @@ async function dashSetAttendance(studentId,present){
         });
         if(inserted.error)throw inserted.error;
         row.attendanceRecord=inserted.data;
+        await sendAttendanceTelegram(student,'클리닉 · '+(schoolName(student.school_id||'')||'')+' · '+(row.clinicDay||'')+'요일 '+(row.attendanceSlotLabel||''),checkedAt.toISOString());
       }
       row.attendance=dashStatus('ok','출석','교사 직접 처리 · '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}));
       notify(student.name+' 학생을 출석 처리했어요.','success');

@@ -38,6 +38,7 @@ async function editClassAttendance(studentId,action){
   try{
     var result=await attendanceSb.rpc('teacher_edit_class_attendance',{p_pin:classAttendancePin,p_action:action,p_student_id:student.id,p_student_name:student.name,p_class_id:cls.id,p_lesson_date:date});
     if(result.error)throw result.error;
+    if(action==='present')await sendAttendanceTelegram(student,cls.label+' · 수업일 '+date);
     await renderClassAttendance();
   }catch(e){if(String(e.message).includes('invalid teacher pin')){classAttendancePin='';alert('교사 PIN이 맞지 않습니다.');}else alert('출결 저장 실패: '+e.message);}
   finally{classAttendanceBusy=false;}

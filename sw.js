@@ -1,7 +1,7 @@
 // CACHE_NAME을 배포할 때마다 바꿔주면(v1→v2→...) 예전 캐시가 자동 폐기되고
 // 브라우저가 새 index.html을 다시 받아옵니다. 코드 수정 후에도 화면이 안
 // 바뀌어 보이면 이 버전을 한 칸 올려서 다시 배포하세요.
-const CACHE_NAME = 'kukeo-wang-v151-odap';
+const CACHE_NAME = 'kukeo-wang-v152-attendance-telegram';
 const URLS_TO_CACHE = [
   '/lecture/literature.js?v=4',
   '/lecture/literature-study.js?v=1',
@@ -20,7 +20,7 @@ const URLS_TO_CACHE = [
   '/lecture/assets/fonts/NotoSansOldHangul-Regular.woff2',
   '/lecture/assets/fonts/NotoSansOldHangul-Bold.woff2',
   '/lecture/class-attendance.js',
-  '/lecture/class-attendance-ui.js?v=e563a7f',
+  '/lecture/class-attendance-ui.js?v=20260923-telegram',
   '/lecture/classical-course.js',
   '/lecture/classical-translations.js',
   '/lecture/manifest.json'
