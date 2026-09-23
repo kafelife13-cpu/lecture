@@ -138,6 +138,13 @@ def verify_original_text(fragments, roundtrip):
             position=found+len(expected)
 
 
+def trim_empty_tail(root):
+    """Remove only empty trailing body paragraphs, never notes or other controls."""
+    for section in root.findall('./BODY/SECTION'):
+        while len(section)>1 and all(e.tag in ('P','TEXT','CHAR') for e in section[-1].iter()) and not ''.join(section[-1].itertext()).strip():
+            section.remove(section[-1])
+
+
 def add_source_label(root,item):
     """Keep the source content intact and label why this existing question was chosen."""
     if not item.get('origin_exam'):return
@@ -198,6 +205,7 @@ def main():
             if not h.SetTextFile(xmlstring(frag),'HWPML2X','insertfile'):raise RuntimeError('Cannot insert original question')
         final=xmlroot(h.GetTextFile('HWPML2X',''));prefix.with_suffix('.intermediate.hml').write_text(xmlstring(final),encoding='utf-8');count=apply_styles(final)
         if count!=len(items):raise RuntimeError(f'Endnote count mismatch after merge: {count}/{len(items)}, total {len(final.findall(".//ENDNOTE"))}')
+        trim_empty_tail(final)
         h.Clear(1)
         if not h.SetTextFile(xmlstring(final),'HWPML2X',''):raise RuntimeError('Cannot apply final styles')
         # Native HWP bytes avoid file-open permission prompts; originals never opened by path.
