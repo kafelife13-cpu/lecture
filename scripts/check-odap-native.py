@@ -30,3 +30,19 @@ assert m.apply_styles(layout)==1
 stem=layout.find('./BODY/SECTION/P');shape=next(x for x in layout.findall('.//PARASHAPE') if x.get('Id')==stem.get('ParaShape'))
 assert shape.get('KeepLines')=='true' and shape.get('KeepWithNext')=='true'
 print('PASS: multi-line question stem stays together')
+
+# Styling may move the endnote control before the stem; content must stay exact.
+from copy import deepcopy
+fragment=E.fromstring(b'<HWPML><BODY><SECTION><P><TEXT><CHAR>Stem</CHAR><ENDNOTE><P><TEXT><CHAR>Answer 3</CHAR></TEXT></P></ENDNOTE><CHAR> rest</CHAR></TEXT></P><P><TEXT><CHAR>Choices</CHAR></TEXT></P></SECTION></BODY></HWPML>')
+result=deepcopy(fragment);t=result.find('.//TEXT');note=t.find('ENDNOTE');t.remove(note);t.insert(0,note)
+m.verify_original_text([fragment],result)
+for change in ['body','note','order']:
+ bad=deepcopy(result)
+ if change=='body':bad.find('./BODY/SECTION/P/TEXT/CHAR').text='Wrong stem'
+ elif change=='note':bad.find('.//ENDNOTE//CHAR').text='Answer 4'
+ else:
+  sec=bad.find('./BODY/SECTION');sec.insert(0,sec[-1])
+ try:m.verify_original_text([fragment],bad)
+ except RuntimeError:pass
+ else:raise AssertionError('Lost source text accepted: '+change)
+print('PASS: relocated endnote control accepted; changed body/answer/order rejected')

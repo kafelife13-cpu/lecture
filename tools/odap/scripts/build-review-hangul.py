@@ -116,6 +116,28 @@ def apply_styles(root):
     para.set('Count',str(len(para)));char.set('Count',str(len(char)))
     return number
 
+def verify_original_text(fragments, roundtrip):
+    """Check body order and each linked endnote separately after native layout."""
+    def text(node):return re.sub(r'\s+','',''.join(''.join(c.itertext()) for c in node.findall('.//CHAR')))
+    body=deepcopy(roundtrip.find('BODY'))
+    for note in list(body.findall('.//ENDNOTE')):note.getparent().remove(note)
+    finaltext=text(body);position=0
+    expected_notes=[n for fragment in fragments for n in fragment.findall('./BODY//ENDNOTE')]
+    actual_notes=roundtrip.findall('./BODY//ENDNOTE')
+    if len(expected_notes)!=len(actual_notes):raise RuntimeError('Original endnote count changed')
+    for index,(expected,actual) in enumerate(zip(expected_notes,actual_notes)):
+        if text(expected)!=text(actual):raise RuntimeError('Original endnote text changed: question '+str(index+1))
+    for index,fragment in enumerate(fragments):
+        for paragraph in fragment.findall('./BODY/SECTION/P'):
+            original=deepcopy(paragraph)
+            for note in list(original.findall('.//ENDNOTE')):note.getparent().remove(note)
+            expected=text(original)
+            if not expected:continue
+            found=finaltext.find(expected,position)
+            if found<0:raise RuntimeError('Original paragraph missing or reordered: question '+str(index+1)+'; '+expected[:120])
+            position=found+len(expected)
+
+
 def add_source_label(root,item):
     """Keep the source content intact and label why this existing question was chosen."""
     if not item.get('origin_exam'):return
@@ -188,11 +210,7 @@ def main():
         roundtrip=xmlroot(h.GetTextFile('HWPML2X',''));actual=len(roundtrip.findall('.//ENDNOTE'))
         prefix.with_suffix('.roundtrip.hml').write_text(xmlstring(roundtrip),encoding='utf-8')
         if actual!=len(items):raise RuntimeError('Endnotes lost during final save')
-        finaltext=re.sub(r'\s+','',''.join(''.join(c.itertext()) for c in roundtrip.findall('./BODY//CHAR')))
-        for fragment_index,frag in enumerate(fragments):
-            for para in frag.findall('./BODY/SECTION/P'):
-                expected=re.sub(r'\s+','',''.join(''.join(c.itertext()) for c in para.findall('.//CHAR')))
-                if expected and expected not in finaltext:raise RuntimeError('Original paragraph text missing after merge: question '+str(fragment_index+1)+'; '+expected[:120])
+        verify_original_text(fragments,roundtrip)
         expected_signatures=[signature for f in fragments for signature in image_signatures(f)]
         actual_signatures=image_signatures(roundtrip)
         if actual_signatures!=expected_signatures:raise RuntimeError('Original image content/order changed during native merge')
