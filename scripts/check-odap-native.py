@@ -46,3 +46,11 @@ for change in ['body','note','order']:
  except RuntimeError:pass
  else:raise AssertionError('Lost source text accepted: '+change)
 print('PASS: relocated endnote control accepted; changed body/answer/order rejected')
+
+# Empty import tails can push an extra blank page after the final endnote.
+for tag in ['CHAR','IMAGE','ENDNOTE','TABLE']:
+ tail=E.fromstring(b'<HWPML><BODY><SECTION><P><TEXT><CHAR>Keep</CHAR></TEXT></P><P><TEXT/></P></SECTION></BODY></HWPML>')
+ if tag!='CHAR':E.SubElement(tail.find('./BODY/SECTION/P[last()]/TEXT'),tag)
+ m.trim_empty_tail(tail)
+ assert len(tail.findall('./BODY/SECTION/P'))==(1 if tag=='CHAR' else 2)
+print('PASS: empty trailing paragraph removed; source controls retained')
