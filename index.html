@@ -1900,7 +1900,15 @@ input,button{font-family:var(--font)}
 <script>
 const SB_URL='https://zniwzwanlvvmzkkcmikh.supabase.co';
 const SB_KEY='sb_publishable_IbfVcXs5TmXfumrnK4Somg_7MzygCdh';
-const sb=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:false,autoRefreshToken:false}});
+async function boundedSupabaseFetch(input,options){
+  var controller=new AbortController(),original=options&&options.signal;
+  var abort=function(){controller.abort();};
+  if(original){if(original.aborted)abort();else original.addEventListener('abort',abort,{once:true});}
+  var timer=setTimeout(abort,20000);
+  try{return await fetch(input,Object.assign({},options,{signal:controller.signal}));}
+  finally{clearTimeout(timer);if(original)original.removeEventListener('abort',abort);}
+}
+const sb=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:false,autoRefreshToken:false},global:{fetch:boundedSupabaseFetch}});
 const ATTENDANCE_SB_URL='https://vpucowvjgkppdbotxjxd.supabase.co';
 const ATTENDANCE_SB_KEY='sb_publishable_9iZiIDhEakwNmSMYSg11Cg_hfGZk8Hx';
 const attendanceSb=supabase.createClient(ATTENDANCE_SB_URL,ATTENDANCE_SB_KEY,{auth:{persistSession:false,autoRefreshToken:false}});
@@ -2149,6 +2157,10 @@ async function saveRememberedStudentLogin(id,pw){
   }
 }
 var studentRestoreRunning=false,studentRestoreRetry=false;
+function loginWait(promise,ms){
+  var timer;
+  return Promise.race([promise,new Promise(function(_,reject){timer=setTimeout(function(){reject(new Error('로그인 처리 시간 초과'));},ms);})]).finally(function(){clearTimeout(timer);});
+}
 async function restoreRememberedStudentLogin(){
   if(studentRestoreRunning||session||padMode||studentPreviewMode||document.getElementById('login-btn').disabled)return;
   studentRestoreRunning=true;
@@ -2163,9 +2175,9 @@ async function restoreRememberedStudentLogin(){
   if(idEl)idEl.value=id;
   if(check)check.checked=true;
   var saved=null;
-  try{saved=await studentVaultGet();}catch(e){}
+  try{saved=await loginWait(studentVaultGet(),3000);}catch(e){}
   if((!saved||saved.id!==id)&&'credentials' in navigator){
-    try{var cred=await navigator.credentials.get({password:true,mediation:'optional'});if(cred&&cred.id===id&&cred.password)saved={id:cred.id,pw:cred.password};}catch(e){}
+    try{var cred=await loginWait(navigator.credentials.get({password:true,mediation:'optional'}),3000);if(cred&&cred.id===id&&cred.password)saved={id:cred.id,pw:cred.password};}catch(e){}
   }
   if(saved&&saved.id===id&&saved.pw){document.getElementById('login-pw').value=saved.pw;await doLogin(true);}
   }finally{studentRestoreRunning=false;}
@@ -2208,16 +2220,12 @@ async function doLogin(automatic){
     session=user;
     weeklyLogin={id:id,pw:pw,role:user.role};
     if(user.role==='student'){
-      try{await saveRememberedStudentLogin(id,pw);}catch(e){notify('이 기기에 로그인을 저장하지 못했어요. 다시 열면 로그인이 필요할 수 있어요.','info');}
+      try{await loginWait(saveRememberedStudentLogin(id,pw),3000);}catch(e){notify('이 기기에 로그인을 저장하지 못했어요. 다시 열면 로그인이 필요할 수 있어요.','info');}
     }
     await loadAll();
-    await loadQaData();
-    await loadCertData();
-    await loadClinicData();
-    await loadStudyData();
-    await loadAnnounceData();
+    await Promise.all([loadQaData(),loadCertData(),loadClinicData(),loadStudyData(),loadAnnounceData()]);
     if(user.role==='teacher')launchTeacher();else{launchStudent();sendStudentActivity('로그인','학생 앱 접속');}
-  }catch(e){studentRestoreRetry=automatic===true&&!session;err.textContent='연결 오류: 잠시 후 다시 시도해 주세요. 저장된 로그인 정보는 유지됩니다.';}
+  }catch(e){session=null;weeklyLogin=null;studentRestoreRetry=automatic===true;err.textContent='연결 오류: 잠시 후 다시 시도해 주세요. 저장된 로그인 정보는 유지됩니다.';}
   finally{btn.disabled=false;btn.textContent='로그인';}
 }
 function showSignup(){document.getElementById('form-login').style.display='none';document.getElementById('form-signup').style.display='block';}

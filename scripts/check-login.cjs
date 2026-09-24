@@ -9,7 +9,7 @@ function setup(result) {
   const storage = {getItem:k=>values.get(k)||null,setItem:(k,v)=>values.set(k,v),removeItem:k=>values.delete(k)};
   const els = {'login-id':{value:'student'},'login-pw':{value:'password'},'login-remember':{checked:true},'login-btn':{disabled:false},'login-err':{}};
   const events = {};
-  const c = {session:null,padMode:false,studentPreviewMode:false,currentRole:'student',STUDENT_REMEMBER_KEY:'lms_remember_student',
+  const c = {setTimeout:(fn,ms)=>setTimeout(fn,Math.min(ms,20)),clearTimeout,session:null,padMode:false,studentPreviewMode:false,currentRole:'student',STUDENT_REMEMBER_KEY:'lms_remember_student',
     localStorage:storage,sessionStorage:storage,navigator:{onLine:true},
     document:{getElementById:id=>els[id],addEventListener:(name,fn)=>events[name]=fn},
     window:{addEventListener:(name,fn)=>events[name]=fn},selectRole:()=>{},
@@ -43,6 +43,17 @@ function setup(result) {
   await t.c.restoreRememberedStudentLogin();
   assert.equal(t.c.launched,true,'storage failure must not block a valid login');
   assert.equal(passwordManagerUsed,false,'use the device vault before the password manager');
+
+  t=setup({data:{id:'student',role:'student',status:'active'}});
+  t.c.saveRememberedStudentLogin=()=>new Promise(()=>{});
+  await t.c.doLogin();
+  assert.equal(t.c.launched,true,'a stuck device vault must not block login');
+  assert.equal(t.els['login-btn'].disabled,false);
+  t=setup({data:{id:'student',role:'student',status:'active'}});
+  t.c.loadAll=async()=>{throw new Error('timeout');};
+  await t.c.doLogin();
+  assert.equal(t.c.session,null,'failed initialization must leave login retryable');
+  assert.equal(t.c.weeklyLogin,null);
 
   t=setup({data:{id:'student',role:'student',status:'pending'}});
   await t.c.restoreRememberedStudentLogin();
