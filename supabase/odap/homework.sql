@@ -22,6 +22,11 @@ begin
    select c.body into b from public.odap_clinics c where c.id=(saved.body->>'clinic_id')::uuid and c.student_id=sid;
    return to_jsonb(saved)||jsonb_build_object('clinic',b);
   elsif p_action='ox_context' then
+   -- Reuse generic drafts only when the exact evidence still matches this student's needs.
+   if jsonb_array_length(saved.body->'ox')=0 then
+    select coalesce(jsonb_agg(v),'[]') into ox from(select distinct on(q->>'text') q v from public.odap_homeworks h cross join lateral jsonb_array_elements(h.body->'ox')q where h.id<>saved.id and exists(select 1 from jsonb_array_elements(saved.body->'evidence')e where e->>'id'=q->'evidence'->>'id' and e->>'quote'=q->'evidence'->>'quote' and e->>'statement'=q->'evidence'->>'statement') order by q->>'text' limit 10)t;
+    if ox<>'[]' then update public.odap_homeworks set body=jsonb_set(body,'{ox}',ox) where id=saved.id returning * into saved;end if;
+   end if;
    return jsonb_build_object('evidence',saved.body->'evidence','needs',saved.body->'needs','existing',jsonb_array_length(saved.body->'ox'));
   end if;
   if jsonb_array_length(saved.body->'ox')>0 then return to_jsonb(saved);end if;
