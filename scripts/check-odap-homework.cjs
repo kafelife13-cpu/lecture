@@ -47,7 +47,7 @@ const full=await homework('get',{student_id:'s1',id:r.id});assert.equal(full.cli
 await assert.rejects(()=>homework('get',{student_id:'s2',id:r.id}));await assert.rejects(()=>homework('list',{},'s1'));
 const ox={evidence_id:b.evidence[0].id,text:'관형절 확인 진술 (O / X)',answer:'O',explanation:'제공된 근거를 확인한 해설입니다.'};
 await assert.rejects(()=>homework('save_ox',{student_id:'s1',id:r.id,items:[{...ox,evidence_id:'bad'}]}));await assert.rejects(()=>homework('save_ox',{student_id:'s1',id:r.id,items:[{...ox,answer:null}]}));
-const savedOx=(await homework('save_ox',{student_id:'s1',id:r.id,items:[ox,{...ox,text:ox.text.replaceAll(' / ','/').replaceAll(' ','  ')}]})).body.ox;
+const savedOx=(await homework('save_ox',{student_id:'s1',id:r.id,items:[ox,{...ox,text:ox.text.replaceAll(' / ','/').replaceAll(' ','  ')},{...ox,text:'같은 근거와 같은 정오 판단을 반복한 표현'}]})).body.ox;
 assert.equal(savedOx[0].status,'pending');assert.equal(savedOx.length,1);
 await db.exec(`insert into odap_attempts(response_id,student_id,exam_id,body) select id,student_id,exam_id,to_jsonb(r) from exam_responses r where id='r1';update exam_responses set answers='{"0":"1","1":"2"}' where id='r1';`);
 const corrected=await homework('generate',{...req,request_id:'00000000-0000-4000-8000-000000000091'});
