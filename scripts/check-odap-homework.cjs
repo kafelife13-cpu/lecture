@@ -17,7 +17,7 @@ const clinic=async(action,payload={},id='teacher',pw='test-only')=>(await db.que
 await assert.rejects(()=>clinic('list',{student_id:'s1'},'s1'));
 await assert.rejects(()=>clinic('list',{student_id:'s1'},'teacher','bad'));
 const src=await rpc('POST /api/source',{title:'학교 프린트',school:'한백고',kind:'학교 프린트'});
-for(let i=0;i<7;i++)await rpc('POST /api/import',{source_id:src.id,questions:[{text:i===0?'관형절 원문':'고난도 '+i,choices:['선지1','선지2'],answer:'1',explanation:'검수 해설',concepts:['관형절'],difficulty:'상',error_types:['조건 누락'],original_number:String(i)}]});
+for(let i=0;i<7;i++)await rpc('POST /api/import',{source_id:src.id,questions:[{text:i===0?'관형절 원문':'고난도 '+i,choices:['선지1','선지2'],answer:'1',explanation:'검수 해설',concepts:['관형절'],difficulty:'상',error_types:['조건 누락'],original_number:String(i),images:i===0?[{data:'data:image/png;base64,AAAA',alt:'Source image'}]:[]}]});
 let bank=await rpc('GET /api/questions');for(let q of bank.items)await rpc('POST /api/question',{...q,approved:true,evidence_ids:[]});
 const original=bank.items.find(q=>q.text==='관형절 원문');
 await rpc('POST /api/mapping',{student_id:'s1',response_id:'r1',question_index:0,question_id:original.id,concepts:['관형절'],verified:true,error_type:'조건 누락',note:'학생 설명 확인'});
@@ -39,7 +39,7 @@ await db.query('update odap_evidence set approved=false where id=$1',[b.evidence
 assert.equal((await db.query('select odap_homework_enrich($1) b',[JSON.stringify(b)])).rows[0].b.stages[0].drafts.length,0);
 await db.query('update odap_evidence set approved=true where id=$1',[b.evidence[0].id]);
 assert.equal((await homework('generate',req)).id,r.id);assert.equal((await homework('list')).length,1);
-const full=await homework('get',{student_id:'s1',id:r.id});assert.equal(full.clinic.wrongs.length,1);assert.equal(full.clinic.by_type.length,0);
+const full=await homework('get',{student_id:'s1',id:r.id});assert.equal(full.clinic.wrongs.length,1);assert.equal(full.clinic.wrongs[0].images[0].alt,'Source image');assert.ok(!('_image_bank_id' in full.clinic.wrongs[0]));assert.ok(!('images' in full.body.current_wrongs[0]));assert.equal(full.clinic.by_type.length,0);
 await assert.rejects(()=>homework('get',{student_id:'s2',id:r.id}));await assert.rejects(()=>homework('list',{},'s1'));
 const ox={evidence_id:b.evidence[0].id,text:'관형절 확인 진술 (O / X)',answer:'O',explanation:'제공된 근거를 확인한 해설입니다.'};
 await assert.rejects(()=>homework('save_ox',{student_id:'s1',id:r.id,items:[{...ox,evidence_id:'bad'}]}));await assert.rejects(()=>homework('save_ox',{student_id:'s1',id:r.id,items:[{...ox,answer:null}]}));
@@ -49,5 +49,15 @@ const corrected=await homework('generate',{...req,request_id:'00000000-0000-4000
 assert.equal(corrected.body.current_wrong_count,0);assert.ok(corrected.body.stages.every(s=>s.target===0&&s.items.length===0));assert.equal((await homework('get',{student_id:'s1',id:corrected.id})).clinic.wrongs.length,1);
 await db.exec('set role anon');await assert.rejects(()=>db.query('select * from odap_homeworks'));await db.exec('reset role');
 new vm.Script(fs.readFileSync('odap/homework.js','utf8'));new vm.Script(fs.readFileSync('odap/cloud.js','utf8'));
+const uiSource=fs.readFileSync('odap/homework.js','utf8');
+let html='';const uiNodes={};
+const fakeQ={text:'Student question',answer:'SECRET_ANSWER',explanation:'SECRET_EXPLANATION',source_title:'Exam'};
+const ui={homeworkRPC:async()=>({created_at:new Date().toISOString(),body:{student_name:'Student',current_wrong_count:1,needs:[],missing:{unclassified:0},ox:[fakeQ],stages:[{name:'개념',items:[fakeQ],drafts:[],missing:0}] ,current_wrongs:[]},clinic:{student:{school:'School'},wrongs:[fakeQ],diagnosis:[{}]}}),
+E:String,questionMarkup:(q,answers)=>{assert.equal(answers,false);return q.text;},questionImagesMarkup:()=>'',clinicKeyWarnings:()=>'',clinicDiagnosisMarkup:()=> 'PRIVATE_DIAGNOSIS',
+modal:(title,v)=>{html=v;},on:()=>{},$:id=>uiNodes[id]||(uiNodes[id]={}),document:{title:'App'},window:{print:()=>{}},download:()=>{}};
+vm.createContext(ui);vm.runInContext(uiSource.slice(uiSource.indexOf('async function homeworkPreview('),uiSource.indexOf('async function homeworkExportAll(')),ui);
+await ui.homeworkPreview('id','s1');assert.ok(!html.includes('SECRET_ANSWER'));assert.ok(!html.includes('SECRET_EXPLANATION'));assert.ok(!html.includes('PRIVATE_DIAGNOSIS'));
+uiNodes['homework-print-kind'].value='teacher';uiNodes['homework-print-kind'].onchange();assert.ok(uiNodes['homework-paper'].innerHTML.includes('SECRET_ANSWER'));assert.ok(uiNodes['homework-paper'].innerHTML.includes('PRIVATE_DIAGNOSIS'));
+uiNodes['homework-print-kind'].value='wrongs';uiNodes['homework-print-kind'].onchange();assert.ok(!uiNodes['homework-paper'].innerHTML.includes('SECRET_ANSWER'));
 console.log('PASS: staged progression, shortages, dedup, current vs cumulative history, source-grounded OX validation, idempotency, teacher isolation, draft-only outputs');
 }finally{await db.close();}})().catch(e=>{console.error(e);process.exitCode=1});

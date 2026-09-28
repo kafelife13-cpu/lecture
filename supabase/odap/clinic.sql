@@ -10,6 +10,12 @@ revoke all on public.odap_clinics from public,anon,authenticated;
 create table if not exists public.odap_exam_tags(exam_id text not null,question_index integer not null check(question_index>=0),concepts jsonb not null default '[]',question_types jsonb not null default '[]',updated_at timestamptz not null default now(),primary key(exam_id,question_index));
 alter table public.odap_exam_tags enable row level security;
 revoke all on public.odap_exam_tags from public,anon,authenticated;
+-- Reattach immutable source images once, after the small metadata ledger is built.
+create or replace function public.odap_clinic_hydrate(wrongs jsonb) returns jsonb language sql stable set search_path=public as $$
+ select coalesce(jsonb_agg((v-'_image_bank_id')||jsonb_build_object('images',coalesce(case when v->>'_image_bank_id' is not null then q.body->'images' else e.questions->((v->>'question_index')::int)->'images' end,'[]'),'explanation_images',coalesce(case when v->>'_image_bank_id' is not null then q.body->'explanation_images' else e.questions->((v->>'question_index')::int)->'explanation_images' end,'[]'))||case when v->>'_image_bank_id' is not null then jsonb_build_object('registered_record',e.questions->((v->>'question_index')::int))else '{}'::jsonb end order by n),'[]')
+ from jsonb_array_elements(wrongs)with ordinality x(v,n) left join public.odap_questions q on q.id=nullif(v->>'_image_bank_id','')::uuid left join public.exams e on e.id::text=v->>'exam_id'
+$$;
+revoke all on function public.odap_clinic_hydrate(jsonb) from public,anon,authenticated;
 create or replace function public.odap_clinic(p_id text,p_password text,p_action text,p_payload jsonb default '{}') returns jsonb
 language plpgsql security definer set search_path=public set statement_timeout='30s' as $$
 declare actor jsonb; student jsonb; result jsonb; saved public.odap_clinics%rowtype; sid text:=p_payload->>'student_id';
@@ -105,7 +111,7 @@ begin
   completeness:=case when coalesce((original_question->>'original_source_verified')::boolean,false) then '[]'::jsonb
    when jsonb_array_length(coalesce(original_question->'choices','[]'))=0 and not(coalesce(original_question->>'text','') like '%①%' and coalesce(original_question->>'text','') like '%⑤%')
    then '["등록된 문항에 선택지/보기 원문이 없습니다. 원본 시험지와 연결해야 합니다."]'::jsonb else '["원본 지면의 표·밑줄·옛한글 대조가 필요합니다."]'::jsonb end;
-  wrongs:=wrongs||jsonb_build_array(original_question||jsonb_build_object('id',gen_random_uuid(),'selection_type','existing_record','reviewed',false,'source_issues',completeness,'question_types',question_types,'exam_id',w.exam_id,'question_index',w.qi,'response_id',w.response_id,'attempts',jsonb_build_array(jsonb_build_object('date',w.submitted_at,'answer',w.student_answer,'archived',w.archived)),'student_answer',w.student_answer,'source_title',w.exam_title||' · '||coalesce(w.question->>'num',(w.qi+1)::text)||'번','concepts',cs));
+  wrongs:=wrongs||jsonb_build_array((original_question-'images'-'explanation_images'-'registered_record')||jsonb_build_object('_image_bank_id',case when original_question->>'original_source_verified'='true' then original_question->>'id' else null end,'id',gen_random_uuid(),'selection_type','existing_record','reviewed',false,'source_issues',completeness,'question_types',question_types,'exam_id',w.exam_id,'question_index',w.qi,'response_id',w.response_id,'attempts',jsonb_build_array(jsonb_build_object('date',w.submitted_at,'answer',w.student_answer,'archived',w.archived)),'student_answer',w.student_answer,'source_title',w.exam_title||' · '||coalesce(w.question->>'num',(w.qi+1)::text)||'번','concepts',cs));
   diagnoses:=diagnoses||jsonb_build_array(jsonb_build_object('exam',w.exam_title,'num',coalesce(w.question->>'num',(w.qi+1)::text),'student_answer',w.student_answer,'correct',grading_key,'registered_answer',w.question->>'answer','answer_key_conflict',key_conflict,'source_answer',original_question->>'source_answer','question_types',question_types,'concepts',cs,'review_focus',coalesce(original_question->>'review_focus',''),'print_references',coalesce((select jsonb_agg(v) from (select jsonb_build_object('source_id',src.id,'source_title',src.title,'page',ev.page,'quote',ev.quote) v from public.odap_evidence ev join public.odap_sources src on src.id=ev.source_id where ev.approved and src.kind='학교 프린트' and src.school=student->>'school' and cs ? ev.concept order by src.title,ev.page limit 2) refs),'[]'),'student_reason',w.student_reason,'cause',reason,'basis',case when source_type<>'' then '교사 기록 있음' when coalesce(trim(w.student_reason),'')<>'' then '학생 진술 있음 · 교사 확인 필요' else '원인 확인 필요' end,'question','이 선지를 고른 근거와, 정답 선지와 다른 점을 설명해 주세요.','next_step',case when cs='[]' then '세부 개념을 먼저 분류하세요.' else '연결된 프린트 근거 확인 → 개념 설명 → 고난도 적용 → 재풀이' end));
   typed:='[]';conceptual:='[]';
   -- Staged homework reuses the original/diagnosis ledger and selects its own progression.
@@ -149,6 +155,7 @@ begin
   by_concept:=by_concept||jsonb_build_array(jsonb_build_object('exam',w.exam_title,'num',coalesce(w.question->>'num',(w.qi+1)::text),'items',conceptual,'review_candidates',pending_concept,'missing',3-jsonb_array_length(conceptual),'reason',case when cs='[]' then '세부 개념 태그가 필요합니다.' else '동일 개념의 검수된 고난도 후보를 선정했습니다.' end));
   end if;
  end loop;
+ wrongs:=public.odap_clinic_hydrate(wrongs);
  if wrongs='[]' then raise exception '선택한 범위에 판정 가능한 오답이 없습니다. 미응답·서술형은 오답으로 임의 처리하지 않습니다.';end if;
  -- Reuse the daily proposition ledger, preserving teacher approval and deduplication.
  if coalesce((p_payload->>'include_supplements')::boolean,false) and exists(select 1 from public.odap_evidence ev join public.odap_sources s on s.id=ev.source_id where ev.approved and s.kind='학교 프린트' and s.school=student->>'school' and exists(select 1 from jsonb_array_elements(wrongs) x where (x->'concepts') ? ev.concept)) then
