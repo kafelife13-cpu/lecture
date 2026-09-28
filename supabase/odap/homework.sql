@@ -10,8 +10,23 @@ create or replace function public.odap_homework_summary(b jsonb) returns jsonb l
  select (b-'current_wrongs')||jsonb_build_object('stages',coalesce((select jsonb_agg(s||jsonb_build_object('items',coalesce((select jsonb_agg(q-'images'-'explanation_images'-'registered_record') from jsonb_array_elements(s->'items')q),'[]'))) from jsonb_array_elements(b->'stages')s),'[]'))
 $$;
 revoke all on function public.odap_homework_summary(jsonb) from public,anon,authenticated;
+-- Persist the small list view so listing students never reloads source images.
+alter table public.odap_homeworks add column if not exists list_summary jsonb;
+create or replace function public.odap_homework_index(b jsonb) returns jsonb language plpgsql immutable set search_path=public set jit=off as $$
+declare stages jsonb:='[]';s jsonb;
+begin
+ for s in select value from jsonb_array_elements(b->'stages') loop
+  stages:=stages||jsonb_build_array(jsonb_build_object('name',s->'name','target',s->'target','missing',s->'missing','items',coalesce((select jsonb_agg(null::text) from generate_series(1,jsonb_array_length(s->'items'))),'[]'),'drafts',coalesce((select jsonb_agg(null::text) from generate_series(1,jsonb_array_length(coalesce(s->'drafts','[]')))),'[]')));
+ end loop;
+ return jsonb_build_object('name',b->'student_name','current_wrong',b->>'current_wrong_count','stages',stages,'ox_count',jsonb_array_length(b->'ox'),'missing',b->'missing');
+end $$;
+revoke all on function public.odap_homework_index(jsonb) from public,anon,authenticated;
+create or replace function public.odap_homework_index_trigger() returns trigger language plpgsql set search_path=public as $$begin new.list_summary:=public.odap_homework_index(new.body);return new;end $$;
+revoke all on function public.odap_homework_index_trigger() from public,anon,authenticated;
+drop trigger if exists odap_homework_index_update on public.odap_homeworks;
+create trigger odap_homework_index_update before insert or update of body on public.odap_homeworks for each row execute function public.odap_homework_index_trigger();
 create or replace function public.odap_homework(p_id text,p_password text,p_action text,p_payload jsonb default '{}') returns jsonb
-language plpgsql security definer set search_path=public set statement_timeout='60s' as $$
+language plpgsql security definer set search_path=public set statement_timeout='60s' set jit=off as $$
 declare actor jsonb; sid text:=p_payload->>'student_id'; saved public.odap_homeworks%rowtype;
  base jsonb; b jsonb; current_wrongs jsonb:='[]'; needs jsonb:='[]'; stages jsonb:='[]'; items jsonb; evidence jsonb; ox jsonb:='[]';
  stage text; candidate public.odap_questions%rowtype; origin jsonb; item jsonb; ev jsonb; used text[]:='{}'; source_ids text[]:='{}'; packet_ids jsonb:='[]'; packet jsonb; wanted integer:=5; report jsonb; req uuid;
@@ -19,7 +34,7 @@ begin
  actor:=public.authenticate_user(p_id,p_password,'teacher');
  if actor is null or actor->>'role' is distinct from 'teacher' or actor->>'status' is distinct from 'active' then raise exception '교사 계정으로 로그인하세요.';end if;
  if p_action='list' then
-  return coalesce((select jsonb_agg(x order by x->>'created_at' desc) from (select jsonb_build_object('id',h.id,'student_id',h.student_id,'created_at',h.created_at,'name',h.body->>'student_name','current_wrong',h.body->>'current_wrong_count','stages',public.odap_homework_summary(h.body)->'stages','ox_count',jsonb_array_length(h.body->'ox'),'missing',h.body->'missing') x from (select distinct on(student_id) * from public.odap_homeworks order by student_id,created_at desc)h)t),'[]');
+  return coalesce((select jsonb_agg(coalesce(h.list_summary,public.odap_homework_index(h.body))||jsonb_build_object('id',h.id,'student_id',h.student_id,'created_at',h.created_at) order by h.created_at desc) from (select distinct on(student_id) * from public.odap_homeworks order by student_id,created_at desc)h),'[]');
  elsif p_action in ('get','ox_context','save_ox') then
   select * into saved from public.odap_homeworks h where h.id=(p_payload->>'id')::uuid and h.student_id=sid for update;
   if not found then raise exception '선택 학생의 맞춤 과제가 아닙니다.';end if;

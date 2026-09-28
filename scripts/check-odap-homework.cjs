@@ -39,6 +39,10 @@ await db.query('update odap_evidence set approved=false where id=$1',[b.evidence
 assert.equal((await db.query('select odap_homework_enrich($1) b',[JSON.stringify(b)])).rows[0].b.stages[0].drafts.length,0);
 await db.query('update odap_evidence set approved=true where id=$1',[b.evidence[0].id]);
 assert.equal((await homework('generate',req)).id,r.id);assert.equal((await homework('list')).length,1);
+const indexed=(await homework('list'))[0];
+assert.deepEqual(indexed.stages.map(s=>s.items.length),b.stages.map(s=>s.items.length));
+assert.ok(!JSON.stringify(indexed).includes('data:image'));
+assert.ok((await db.query('select list_summary from odap_homeworks where id=$1',[r.id])).rows[0].list_summary);
 const full=await homework('get',{student_id:'s1',id:r.id});assert.equal(full.clinic.wrongs.length,1);assert.equal(full.clinic.wrongs[0].images[0].alt,'Source image');assert.ok(!('_image_bank_id' in full.clinic.wrongs[0]));assert.ok(!('images' in full.body.current_wrongs[0]));assert.equal(full.clinic.by_type.length,0);
 await assert.rejects(()=>homework('get',{student_id:'s2',id:r.id}));await assert.rejects(()=>homework('list',{},'s1'));
 const ox={evidence_id:b.evidence[0].id,text:'관형절 확인 진술 (O / X)',answer:'O',explanation:'제공된 근거를 확인한 해설입니다.'};
