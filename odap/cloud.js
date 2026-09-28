@@ -20,6 +20,8 @@
  }
  async function upload(bytes,filename,kind='source',packetId=null){const signed=await gateway('prepare_upload',{filename,kind,packet_id:packetId,bytes:bytes.byteLength});const res=await fetch(signed.url,{method:'PUT',headers:{'Content-Type':'application/octet-stream'},body:bytes});if(!res.ok)throw Error('비공개 파일 저장소 업로드 실패');return signed.path;}
  window.researchAPI=async(path,data)=>{const url=new URL(path,location.href),params=Object.fromEntries(url.searchParams),payload=data??params,method=data===undefined?'GET':'POST';
+  if(url.pathname==='/api/drive')return request('/rest/v1/rpc/odap_drive',{p_id:auth.id,p_password:auth.pw,p_action:payload.action||'list',p_payload:payload});
+  if(url.pathname==='/api/input-status')return request('/rest/v1/rpc/odap_input_status',{p_id:auth.id,p_password:auth.pw});
   if(url.pathname==='/api/linked')return request('/rest/v1/rpc/odap_linked_data',{p_id:auth.id,p_password:auth.pw,p_table:payload.table,p_student_id:payload.student_id||'',p_offset:Number(payload.offset||0)});
   if(url.pathname==='/api/analysis')return analyze(payload.student_id);
   if(url.pathname==='/api/clinic')return request('/rest/v1/rpc/odap_clinic',{p_id:auth.id,p_password:auth.pw,p_action:payload.action||'list',p_payload:payload});
