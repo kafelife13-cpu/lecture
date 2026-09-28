@@ -29,7 +29,7 @@ create or replace function public.odap_homework(p_id text,p_password text,p_acti
 language plpgsql security definer set search_path=public set statement_timeout='60s' set jit=off as $$
 declare actor jsonb; sid text:=p_payload->>'student_id'; saved public.odap_homeworks%rowtype;
  base jsonb; b jsonb; current_wrongs jsonb:='[]'; needs jsonb:='[]'; stages jsonb:='[]'; items jsonb; evidence jsonb; ox jsonb:='[]';
- stage text; candidate public.odap_questions%rowtype; origin jsonb; item jsonb; ev jsonb; used text[]:='{}'; source_ids text[]:='{}'; packet_ids jsonb:='[]'; packet jsonb; wanted integer:=5; report jsonb; req uuid;
+ stage text; candidate public.odap_questions%rowtype; origin jsonb; item jsonb; ev jsonb; used text[]:='{}'; source_ids text[]:='{}'; packet_ids jsonb:='[]'; packet jsonb; wanted integer:=0; report jsonb; req uuid;
 begin
  actor:=public.authenticate_user(p_id,p_password,'teacher');
  if actor is null or actor->>'role' is distinct from 'teacher' or actor->>'status' is distinct from 'active' then raise exception '교사 계정으로 로그인하세요.';end if;
@@ -74,24 +74,28 @@ begin
  select coalesce(jsonb_agg(jsonb_build_object('concept',concept,'wrong',n) order by n desc,concept),'[]') into needs from
  (select c#>>'{}' concept,count(*) n from jsonb_array_elements(current_wrongs)w cross join lateral jsonb_array_elements(w->'concepts')c group by c)t;
  select coalesce(array_agg(qid) filter(where qid is not null),'{}') into source_ids from(select m.question_id::text qid from public.odap_mappings m join jsonb_array_elements(b->'wrongs')w on m.exam_id=w->>'exam_id' and m.question_index=(w->>'question_index')::integer)t;
+ wanted:=jsonb_array_length(current_wrongs);
  for stage in select unnest(array['개념','확장','고난도']) loop
   items:='[]';
-  for candidate in
-   select q.* from public.odap_questions q where q.status='approved' and not(q.id::text=any(source_ids)) and not(q.fingerprint=any(used))
+  -- Each wrong question owns one slot in each stage. A source can serve
+  -- different wrongs, but can never fill two stages of the same wrong.
+  for origin in select value from jsonb_array_elements(current_wrongs) loop
+   select q.* into candidate from public.odap_questions q
+   where q.status='approved' and not(q.id::text=any(source_ids))
+    and not(((origin->>'exam_id')||':'||(origin->>'question_index')||':'||q.fingerprint)=any(used))
+    and coalesce(q.body->>'answer','')<>'' and coalesce(q.body->>'explanation','')<>''
     and coalesce(q.body->>'school','') in ('',b->'student'->>'school')
     and case stage when '개념' then q.body->>'difficulty' in ('하','중하','기초','easy','basic') when '확장' then q.body->>'difficulty' in ('중','중상','보통','medium','intermediate') else q.body->>'difficulty' in ('상','최상','고난도','hard','very_hard') end
-    and exists(select 1 from jsonb_array_elements(current_wrongs)w where exists(select 1 from jsonb_array_elements_text(w->'concepts')c where (q.body->'concepts') ? c) or exists(select 1 from jsonb_array_elements_text(w->'question_types')t where (q.body->'question_types') ? t))
+    and (exists(select 1 from jsonb_array_elements_text(origin->'concepts')c where (q.body->'concepts') ? c)
+      or exists(select 1 from jsonb_array_elements_text(origin->'question_types')t where (q.body->'question_types') ? t))
     and not exists(select 1 from jsonb_array_elements(b->'wrongs')w where regexp_replace(coalesce(w->>'text',''),'\s','','g')=regexp_replace(coalesce(q.body->>'text',''),'\s','','g'))
-   order by (select coalesce(sum((n->>'wrong')::integer),0) from jsonb_array_elements(needs)n where (q.body->'concepts') ? (n->>'concept')) desc,q.id
-  loop
-   exit when jsonb_array_length(items)>=wanted;
-   if candidate.fingerprint=any(used) then continue;end if;
-   select w into origin from jsonb_array_elements(current_wrongs)w where exists(select 1 from jsonb_array_elements_text(w->'concepts')c where (candidate.body->'concepts') ? c) or exists(select 1 from jsonb_array_elements_text(w->'question_types')t where (candidate.body->'question_types') ? t)
-   order by (select count(*) from jsonb_array_elements_text(w->'concepts')c where (candidate.body->'concepts') ? c) desc limit 1;
-   item:=public.odap_question_json(candidate)||jsonb_build_object('stage',stage,'origin_exam',origin->>'source_title','origin_num',origin->>'num','match_reason',case when exists(select 1 from jsonb_array_elements_text(origin->'concepts')c where (candidate.body->'concepts') ? c) then '현재 오답과 세부 개념 일치' else '현재 오답과 문제 유형 일치 · 소재는 다를 수 있음' end);
-   items:=items||jsonb_build_array(item);used:=array_append(used,candidate.fingerprint);
+   order by (select count(*) from jsonb_array_elements_text(origin->'concepts')c where (q.body->'concepts') ? c) desc,q.id limit 1;
+   if not found then continue;end if;
+   item:=public.odap_question_json(candidate)||jsonb_build_object('stage',stage,'origin_exam_id',origin->>'exam_id','origin_question_index',origin->>'question_index','origin_exam',origin->>'source_title','origin_num',origin->>'num','match_reason',case when exists(select 1 from jsonb_array_elements_text(origin->'concepts')c where (candidate.body->'concepts') ? c) then '이 오답과 세부 개념 일치' else '이 오답과 문제 유형 일치 · 소재는 다를 수 있음' end);
+   items:=items||jsonb_build_array(item);
+   used:=array_append(used,(origin->>'exam_id')||':'||(origin->>'question_index')||':'||candidate.fingerprint);
   end loop;
-  stages:=stages||jsonb_build_array(jsonb_build_object('name',stage,'target',case when current_wrongs='[]' then 0 else wanted end,'items',items,'missing',case when current_wrongs='[]' then 0 else wanted-jsonb_array_length(items) end));
+  stages:=stages||jsonb_build_array(jsonb_build_object('name',stage,'target',wanted,'items',items,'missing',wanted-jsonb_array_length(items)));
   if items<>'[]' then
    packet:=public.odap_rpc(p_id,p_password,'teacher','POST /api/packet',jsonb_build_object('student_id',sid,'title',(b->'student'->>'name')||' · '||stage||' 맞춤 과제','summary','현재 오답과 개념 또는 유형이 일치하는 검수 문항. 교사 확인 후 배부.', 'items',(select jsonb_agg(jsonb_build_object('type','bank','id',x->>'id')) from jsonb_array_elements(items)x)));
    packet_ids:=packet_ids||jsonb_build_array(packet->>'id');
@@ -102,7 +106,7 @@ begin
   where e.approved and e.statement<>'' and e.quote<>'' and coalesce(s.school,'') in ('',b->'student'->>'school') and exists(select 1 from jsonb_array_elements(needs)n where n->>'concept'=e.concept)
   order by (select (n->>'wrong')::integer from jsonb_array_elements(needs)n where n->>'concept'=e.concept) desc,e.id limit 10
  )t;
- report:=jsonb_build_object('student_name',b->'student'->>'name','clinic_id',base->>'id','current_wrong_count',jsonb_array_length(current_wrongs),'current_wrongs',current_wrongs,'needs',needs,'stages',stages,'evidence',evidence,'ox',ox,'packet_ids',packet_ids,'missing',jsonb_build_object('unclassified',(select count(*) from jsonb_array_elements(current_wrongs)w where w->'concepts'='[]'),'ox_evidence',jsonb_array_length(evidence)=0),'notice','오답 번호만으로 결손 개념이나 오답 원인을 확정하지 않습니다. OX는 인용 근거를 대조할 교사 검수 초안입니다. 부족한 난도·유형을 임의로 채우지 않습니다.');
+ report:=jsonb_build_object('selection_unit','per_wrong','student_name',b->'student'->>'name','clinic_id',base->>'id','current_wrong_count',jsonb_array_length(current_wrongs),'current_wrongs',current_wrongs,'needs',needs,'stages',stages,'evidence',evidence,'ox',ox,'packet_ids',packet_ids,'missing',jsonb_build_object('unclassified',(select count(*) from jsonb_array_elements(current_wrongs)w where w->'concepts'='[]'),'ox_evidence',jsonb_array_length(evidence)=0),'notice','오답 번호만으로 결손 개념이나 오답 원인을 확정하지 않습니다. OX는 인용 근거를 대조할 교사 검수 초안입니다. 부족한 난도·유형을 임의로 채우지 않습니다.');
  insert into public.odap_homeworks(student_id,request_id,body) values(sid,req,report) returning * into saved;
  return to_jsonb(saved)||jsonb_build_object('body',public.odap_homework_summary(saved.body));
 end $$;

@@ -29,14 +29,16 @@ for(const difficulty of ['하','중'])for(let i=0;i<3;i++)await rpc('POST /api/i
 bank=await rpc('GET /api/questions');for(const q of bank.items)if(q.status!=='approved')await rpc('POST /api/question',{...q,approved:true,evidence_ids:[]});
 const req={student_id:'s1',request_id:'00000000-0000-4000-8000-000000000090'};
 const r=await homework('generate',req),b=r.body;
-assert.equal(b.current_wrong_count,1);assert.deepEqual(b.stages.map(s=>s.name),['개념','확장','고난도']);assert.deepEqual(b.stages.map(s=>s.items.length),[3,3,5]);assert.deepEqual(b.stages.map(s=>s.missing),[2,2,0]);
-const ids=b.stages.flatMap(s=>s.items.map(q=>q.id));assert.equal(new Set(ids).size,11);assert.ok(!ids.includes(original.id));assert.equal(b.evidence.length,3);
+assert.equal(b.current_wrong_count,1);assert.deepEqual(b.stages.map(s=>s.name),['개념','확장','고난도']);assert.deepEqual(b.stages.map(s=>s.items.length),[1,1,1]);assert.deepEqual(b.stages.map(s=>s.missing),[0,0,0]);
+const ids=b.stages.flatMap(s=>s.items.map(q=>q.id));assert.equal(new Set(ids).size,3);assert.ok(!ids.includes(original.id));assert.equal(b.evidence.length,3);
 await db.query('insert into odap_homework_templates values($1,$2,$3,$4,$5)',['fixture','관형절',b.evidence[0].statement,'개념',JSON.stringify({text:'근거 개념을 확인하는 연습',answer:'관형절',explanation:'근거 확인'})]);
-let enriched=(await db.query('select odap_homework_enrich($1) b',[JSON.stringify(b)])).rows[0].b;
+assert.deepEqual((await db.query('select odap_homework_enrich($1) b',[JSON.stringify(b)])).rows[0].b,b);
+const legacy=JSON.parse(JSON.stringify(b));delete legacy.selection_unit;legacy.stages.forEach(s=>{s.target=3;s.missing=2});
+let enriched=(await db.query('select odap_homework_enrich($1) b',[JSON.stringify(legacy)])).rows[0].b;
 assert.equal(enriched.stages[0].drafts.length,1);assert.equal(enriched.stages[0].missing,1);assert.equal(enriched.stages[0].drafts[0].reviewed,false);
 assert.deepEqual((await db.query('select odap_homework_enrich($1) b',[JSON.stringify(enriched)])).rows[0].b,enriched);
 await db.query('update odap_evidence set approved=false where id=$1',[b.evidence[0].id]);
-assert.equal((await db.query('select odap_homework_enrich($1) b',[JSON.stringify(b)])).rows[0].b.stages[0].drafts.length,0);
+assert.equal((await db.query('select odap_homework_enrich($1) b',[JSON.stringify(legacy)])).rows[0].b.stages[0].drafts.length,0);
 await db.query('update odap_evidence set approved=true where id=$1',[b.evidence[0].id]);
 assert.equal((await homework('generate',req)).id,r.id);assert.equal((await homework('list')).length,1);
 const indexed=(await homework('list'))[0];
@@ -52,6 +54,17 @@ assert.equal(savedOx[0].status,'pending');assert.equal(savedOx.length,1);
 await db.exec(`insert into odap_attempts(response_id,student_id,exam_id,body) select id,student_id,exam_id,to_jsonb(r) from exam_responses r where id='r1';update exam_responses set answers='{"0":"1","1":"2"}' where id='r1';`);
 const corrected=await homework('generate',{...req,request_id:'00000000-0000-4000-8000-000000000091'});
 assert.equal(corrected.body.current_wrong_count,0);assert.ok(corrected.body.stages.every(s=>s.target===0&&s.items.length===0));assert.equal((await homework('get',{student_id:'s1',id:corrected.id})).clinic.wrongs.length,1);
+await db.exec(`insert into exams values('clinic2','클리닉 검증','clinic','[{"num":1,"text":"두 번째 관형절 오답","answer":"1","concepts":["관형절"]},{"num":2,"text":"미확보 개념 오답","answer":"1","concepts":["미확보개념"]}]');
+insert into exam_responses(id,exam_id,student_name,student_id,answers,submitted_at) values('r2','clinic2','Student','s1','{"0":"2","1":"2"}',now());
+update exam_responses set answers='{"0":"2","1":"2"}' where id='r1';`);
+const perWrong=await homework('generate',{student_id:'s1',request_id:'00000000-0000-4000-8000-000000000092'});
+assert.equal(perWrong.body.current_wrong_count,3);
+assert.ok(perWrong.body.stages.every(s=>s.target===3&&s.items.length===2&&s.missing===1));
+for(const stage of perWrong.body.stages){
+ assert.deepEqual(new Set(stage.items.map(q=>q.origin_exam_id)),new Set(['exam','clinic2']));
+ assert.ok(stage.items.every(q=>q.origin_question_index==='0'));
+ assert.ok(!stage.drafts?.length);
+}
 await db.exec('set role anon');await assert.rejects(()=>db.query('select * from odap_homeworks'));await db.exec('reset role');
 new vm.Script(fs.readFileSync('odap/homework.js','utf8'));new vm.Script(fs.readFileSync('odap/cloud.js','utf8'));
 const uiSource=fs.readFileSync('odap/homework.js','utf8');

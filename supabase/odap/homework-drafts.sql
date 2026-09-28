@@ -15,6 +15,7 @@ on conflict(id) do nothing;
 create or replace function public.odap_homework_enrich(b jsonb) returns jsonb language plpgsql security definer set search_path=public as $$
 declare stages jsonb:='[]';s jsonb;drafts jsonb;t record;
 begin
+ if b->>'selection_unit'='per_wrong' then return b;end if;
  for s in select value from jsonb_array_elements(b->'stages') loop
   drafts:='[]';
   for t in select x.*,e evidence from public.odap_homework_templates x join lateral(select e from jsonb_array_elements(b->'evidence')e where e->>'concept'=x.concept and e->>'statement'=x.statement and exists(select 1 from public.odap_evidence v where v.id=(e->>'id')::uuid and v.approved and v.quote=e->>'quote' and v.statement=e->>'statement')limit 1)src on true where x.stage=s->>'name' order by x.id loop
