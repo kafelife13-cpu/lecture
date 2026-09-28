@@ -47,7 +47,8 @@ const full=await homework('get',{student_id:'s1',id:r.id});assert.equal(full.cli
 await assert.rejects(()=>homework('get',{student_id:'s2',id:r.id}));await assert.rejects(()=>homework('list',{},'s1'));
 const ox={evidence_id:b.evidence[0].id,text:'관형절 확인 진술 (O / X)',answer:'O',explanation:'제공된 근거를 확인한 해설입니다.'};
 await assert.rejects(()=>homework('save_ox',{student_id:'s1',id:r.id,items:[{...ox,evidence_id:'bad'}]}));await assert.rejects(()=>homework('save_ox',{student_id:'s1',id:r.id,items:[{...ox,answer:null}]}));
-assert.equal((await homework('save_ox',{student_id:'s1',id:r.id,items:[ox]})).body.ox[0].status,'pending');
+const savedOx=(await homework('save_ox',{student_id:'s1',id:r.id,items:[ox,{...ox,text:ox.text.replaceAll(' / ','/').replaceAll(' ','  ')}]})).body.ox;
+assert.equal(savedOx[0].status,'pending');assert.equal(savedOx.length,1);
 await db.exec(`insert into odap_attempts(response_id,student_id,exam_id,body) select id,student_id,exam_id,to_jsonb(r) from exam_responses r where id='r1';update exam_responses set answers='{"0":"1","1":"2"}' where id='r1';`);
 const corrected=await homework('generate',{...req,request_id:'00000000-0000-4000-8000-000000000091'});
 assert.equal(corrected.body.current_wrong_count,0);assert.ok(corrected.body.stages.every(s=>s.target===0&&s.items.length===0));assert.equal((await homework('get',{student_id:'s1',id:corrected.id})).clinic.wrongs.length,1);

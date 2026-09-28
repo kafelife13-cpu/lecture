@@ -55,7 +55,7 @@ begin
    select x into ev from jsonb_array_elements(saved.body->'evidence') x where x->>'id'=item->>'evidence_id';
    if ev is null or coalesce(item->>'answer','') not in ('O','X') or length(coalesce(item->>'text','')) not between 5 and 1500 or length(coalesce(item->>'explanation','')) not between 5 and 2500 then raise exception 'OX의 근거·정답·해설을 확인하세요.';end if;
    if not exists(select 1 from public.odap_evidence e where e.id=(ev->>'id')::uuid and e.approved and e.quote=ev->>'quote' and e.statement=ev->>'statement') then raise exception '근거가 변경되었습니다. 새 과제를 생성하세요.';end if;
-   if exists(select 1 from jsonb_array_elements(ox)x where x->>'text'=item->>'text') then raise exception 'OX 문항이 중복됩니다.';end if;
+   if exists(select 1 from jsonb_array_elements(ox)x where regexp_replace(x->>'text','[[:space:]()]','','g')=regexp_replace(item->>'text','[[:space:]()]','','g') and x->>'answer'=item->>'answer') then continue;end if;
    ox:=ox||jsonb_build_array(jsonb_build_object('text',item->>'text','answer',item->>'answer','explanation',item->>'explanation','choices','[]'::jsonb,'concepts',jsonb_build_array(ev->>'concept'),'evidence',ev,'status','pending','engine','검수 근거 기반 AI 초안'));
   end loop;
   update public.odap_homeworks set body=jsonb_set(body,'{ox}',ox) where id=saved.id returning * into saved;
