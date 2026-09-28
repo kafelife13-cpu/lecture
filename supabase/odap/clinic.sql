@@ -108,6 +108,8 @@ begin
   wrongs:=wrongs||jsonb_build_array(original_question||jsonb_build_object('id',gen_random_uuid(),'selection_type','existing_record','reviewed',false,'source_issues',completeness,'question_types',question_types,'exam_id',w.exam_id,'question_index',w.qi,'response_id',w.response_id,'attempts',jsonb_build_array(jsonb_build_object('date',w.submitted_at,'answer',w.student_answer,'archived',w.archived)),'student_answer',w.student_answer,'source_title',w.exam_title||' · '||coalesce(w.question->>'num',(w.qi+1)::text)||'번','concepts',cs));
   diagnoses:=diagnoses||jsonb_build_array(jsonb_build_object('exam',w.exam_title,'num',coalesce(w.question->>'num',(w.qi+1)::text),'student_answer',w.student_answer,'correct',grading_key,'registered_answer',w.question->>'answer','answer_key_conflict',key_conflict,'source_answer',original_question->>'source_answer','question_types',question_types,'concepts',cs,'review_focus',coalesce(original_question->>'review_focus',''),'print_references',coalesce((select jsonb_agg(v) from (select jsonb_build_object('source_id',src.id,'source_title',src.title,'page',ev.page,'quote',ev.quote) v from public.odap_evidence ev join public.odap_sources src on src.id=ev.source_id where ev.approved and src.kind='학교 프린트' and src.school=student->>'school' and cs ? ev.concept order by src.title,ev.page limit 2) refs),'[]'),'student_reason',w.student_reason,'cause',reason,'basis',case when source_type<>'' then '교사 기록 있음' when coalesce(trim(w.student_reason),'')<>'' then '학생 진술 있음 · 교사 확인 필요' else '원인 확인 필요' end,'question','이 선지를 고른 근거와, 정답 선지와 다른 점을 설명해 주세요.','next_step',case when cs='[]' then '세부 개념을 먼저 분류하세요.' else '연결된 프린트 근거 확인 → 개념 설명 → 고난도 적용 → 재풀이' end));
   typed:='[]';conceptual:='[]';
+  -- Staged homework reuses the original/diagnosis ledger and selects its own progression.
+  if coalesce(p_payload->>'mode','')<>'staged' then
   -- Alternate scarce candidates so one document cannot consume every shared match.
   for stage in select unnest(array['type','concept','type','concept','type','concept']) loop
    if (stage='type' and source_type='' and question_types='[]') or (stage='concept' and cs='[]') then continue;end if;
@@ -145,6 +147,7 @@ begin
   type_missing:=type_missing+3-jsonb_array_length(typed);concept_missing:=concept_missing+3-jsonb_array_length(conceptual);
   by_type:=by_type||jsonb_build_array(jsonb_build_object('exam',w.exam_title,'num',coalesce(w.question->>'num',(w.qi+1)::text),'items',typed,'review_candidates',pending_type,'missing',3-jsonb_array_length(typed),'reason',case when source_type='' and question_types='[]' then '원문 문항의 요구 사고 유형 또는 확인된 오답 원인 태그가 필요합니다.' else '세부 개념을 공유하며 문항 유형 또는 확인된 오답 원인이 일치하는 고난도 문항입니다.' end));
   by_concept:=by_concept||jsonb_build_array(jsonb_build_object('exam',w.exam_title,'num',coalesce(w.question->>'num',(w.qi+1)::text),'items',conceptual,'review_candidates',pending_concept,'missing',3-jsonb_array_length(conceptual),'reason',case when cs='[]' then '세부 개념 태그가 필요합니다.' else '동일 개념의 검수된 고난도 후보를 선정했습니다.' end));
+  end if;
  end loop;
  if wrongs='[]' then raise exception '선택한 범위에 판정 가능한 오답이 없습니다. 미응답·서술형은 오답으로 임의 처리하지 않습니다.';end if;
  -- Reuse the daily proposition ledger, preserving teacher approval and deduplication.
