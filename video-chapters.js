@@ -1,9 +1,16 @@
-/* ponytail: These two reviewed lessons need only a video-ID catalogue.
+/* ponytail: These reviewed lessons need only a video-ID catalogue.
    Add a teacher chapter editor when teachers need to maintain more lessons. */
 (function(root){
   'use strict';
   // Seconds refer to the uploaded videos; cue just before each explanation.
   const catalogue={
+    // Week 5: transcript cues; question 12 includes the teacher's exclusion notice.
+    yIWb_j_49oM:[
+      ['1번',0],['2번',527],['3번',752],['4번',980],['5번',1732],
+      ['6번',2196],['7번',2543],['8번',2824],['9번',3117],['10번',3329],
+      ['11번',3688],['12번',3822],['13번',3837],['14번',4071],['15번',4207],
+      ['16번',4323],['17번',4590],['18번',4702],['19번',4786],['20번',4987]
+    ],
     Mml3RyA1TwU:[
       ['1번',0],['2번',252],['3번',346],['4번',484],['5번',687],
       ['6번',935],['7번',1000],['8번',1267],['9번',1752],['10번',1844],
@@ -84,6 +91,6 @@
       return status+': '+(selected.length?selected.map(function(row){return row.label+(status==='일부 시청'?' ('+row.percent+'%)':'');}).join(', '):'없음');
     }).join(' / ');
   }
-  function duration(videoId){return videoId==='Mml3RyA1TwU'?5635:videoId==='sJsIw7F6r_w'?2928:videoId==='8TwCCPBPyrA'?2839:0;}
+  function duration(videoId){return videoId==='yIWb_j_49oM'?5131:videoId==='Mml3RyA1TwU'?5635:videoId==='sJsIw7F6r_w'?2928:videoId==='8TwCCPBPyrA'?2839:0;}
   root.KkakkaVideoChapters={get:get,render:render,restore:restore,observe:observe,stats:stats,summary:summary,duration:duration};
 })(typeof window==='undefined'?globalThis:window);
