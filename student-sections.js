@@ -5,6 +5,29 @@
  if(typeof module!=='undefined')module.exports={replacement,noticeMatches};
  if(typeof document==='undefined')return;
  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const sentenceVideo='v1791128025081';
+ const sentencePdf='https://zniwzwanlvvmzkkcmikh.supabase.co/storage/v1/object/public/qa-files/announce/20261005-hanbaek-sentence-analysis.pdf';
+ const sentenceDismissed=new Set();
+ function sentenceAudience(student){return !!student&&student.role==='student'&&student.school_id==='sc_hanbaek'&&!['이내','들소'].includes(student.name);}
+ if(typeof module!=='undefined')module.exports.sentenceAudience=sentenceAudience;
+ function sentenceCard(){
+  if(!sentenceAudience(session))return '';
+  return '<section class="weekly-plan"><h2>[한백고1] 문장 분석 영상 · 해설 자료</h2><p>문장 분석하기 25문장 영상을 듣고, 나머지 문장도 아래 PDF로 확인하며 복습하세요. 문장 아래 주석과 주어 호응 설명을 함께 확인해 주세요.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn blue" data-sentence-video>▶ 문장분석 영상 보기</button><a class="btn green" href="'+sentencePdf+'" target="_blank" rel="noopener">📄 PDF 열기 · 다운로드</a></div></section>';
+ }
+ function refreshSentenceNotice(showPopup){
+  if(!sentenceAudience(session)||padMode){document.getElementById('sentence-study-popup')?.remove();document.getElementById('sentence-study-card')?.remove();return;}
+  let card=document.getElementById('sentence-study-card');
+  if(!card){card=document.createElement('div');card.id='sentence-study-card';document.getElementById('home-announce-banner')?.before(card);}
+  card.innerHTML=sentenceCard();
+  if(!showPopup||sentenceDismissed.has(session.id)||document.getElementById('sentence-study-popup'))return;
+  const modal=document.createElement('div');modal.id='sentence-study-popup';modal.className='modal-bg show';modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-label','한백고1 문장분석 영상 및 PDF 안내');
+  modal.innerHTML='<div class="modal" style="max-width:560px"><div class="modal-head"><h3>문장분석 보강 안내</h3><button class="modal-close" data-sentence-close aria-label="닫기">×</button></div><div style="padding:20px">'+sentenceCard()+'</div></div>';
+  document.body.appendChild(modal);
+ }
+ document.addEventListener('click',e=>{
+  if(e.target.closest('[data-sentence-close],[data-sentence-video]')){if(session)sentenceDismissed.add(session.id);document.getElementById('sentence-study-popup')?.remove();}
+  if(e.target.closest('[data-sentence-video]')){if(hasAccess(session.id,sentenceVideo))openPlay(sentenceVideo);else window.open('https://www.youtube.com/watch?v=sfmYcGResIY','_blank','noopener');}
+ });
  root.renderWeeklyExtras=function(week){
   let host=document.getElementById('s-weekly-extras');
   if(!host){host=document.createElement('div');host.id='s-weekly-extras';document.getElementById('s-weekly-body').before(host);}
@@ -33,6 +56,7 @@
   return '<section class="weekly-plan"><h2>★ 이번 주 속미인곡 영상 · 필기 사진 인증</h2><p>속미인곡 영상을 반드시 듣고 <strong>4주차 김까까 과제 앞장에 작품 해석과 핵심 개념을 필기해 오세요.</strong> 영상 시청과 앞장 필기 모두 필수입니다.</p><p>'+(state.done?'✓ 사진 제출 완료 · 제출 내역에서 확인할 수 있어요.':'사진 인증이 필요해요. 시청과 필기를 마치지 못하면 클리닉에서 완료해야 합니다.')+'</p><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn blue" data-sok-video>속미인곡 영상보기</button>'+((certDb.targets[sokItem]||[]).includes(session.id)?'<button class="btn green" data-cert-open="'+sokItem+'">'+(state.done?'인증 제출 내역 보기':'듣고 필기 사진 인증하기')+'</button>':'')+'</div></section>';
  }
  root.refreshSokTask=async function(showPopup){
+  refreshSentenceNotice(showPopup);
   if(!session||session.role!=='student'||padMode)return;
   const sid=session.id;
   const result=showPopup?{error:true}:await sb.from('cert_submissions').select('*').eq('item_id',sokItem).eq('student_id',sid).order('submitted_at',{ascending:false});
