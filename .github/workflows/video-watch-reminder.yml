@@ -1,16 +1,13 @@
 name: 영상 미시청 3일 문자 안내
 
+# Disabled at owner's request after unintended historical reminder sends.
+# No scheduled or push-triggered sends; manual runs also skip the job.
 on:
-  schedule:
-    - cron: '17 * * * *'
   workflow_dispatch: {}
-  push:
-    paths:
-      - 'scripts/video-watch-reminder.mjs'
-      - '.github/workflows/video-watch-reminder.yml'
 
 jobs:
   remind:
+    if: ${{ false }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
