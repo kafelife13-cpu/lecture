@@ -1314,6 +1314,7 @@ input,button{font-family:var(--font)}
         <div class="page-header"><h1>온라인 채점</h1><p>목록에서 시험을 선택하면 바로 채점할 수 있어요</p></div>
         <!-- 시험 목록 -->
         <div id="s-exam-entry">
+          <div class="card" style="margin-bottom:12px;border-left:4px solid #6366f1"><div class="card-head"><h3>📚 중간·기말고사 입력</h3></div><div style="padding:0 12px 8px;font-size:12px;color:var(--text2)">틀린 문항과 선택한 답을 고르고, 시험 볼 때 떠올린 생각을 적어 주세요. 원래 배점으로 점수가 계산됩니다.</div><div id="s-exam-list-naeshin" style="padding:0 12px 12px"></div></div>
           <div class="card" style="margin-bottom:12px;border-left:4px solid #6366f1"><div class="card-head"><h3>🏫 클리닉 채점</h3></div><div id="s-exam-clinic-groups" style="padding:0 12px 12px"></div></div>
           <div class="card" style="margin-bottom:12px;border-left:4px solid #f59e0b"><div class="card-head"><h3>📒 과제 채점</h3></div><div id="s-exam-list-homework" style="padding:0 12px 12px"></div></div>
           <div class="card" style="margin-bottom:12px;border-left:4px solid #10b981"><div class="card-head"><h3>🧩 미니모의고사 채점</h3></div><div id="s-exam-list-mini-mock" style="padding:0 12px 12px"></div></div>
@@ -10339,6 +10340,8 @@ async function renderSExam(scope){
   const homeworkEl=document.getElementById('s-exam-list-homework');
   const miniMockEl=document.getElementById('s-exam-list-mini-mock');
   const mockEl=document.getElementById('s-exam-list-mock');
+  const naeshinEl=document.getElementById('s-exam-list-naeshin');
+  if(naeshinEl)naeshinEl.innerHTML='';
   if(clinicEl)clinicEl.innerHTML='<div style="padding:1rem;text-align:center;color:var(--text3);font-size:13px">불러오는 중...</div>';
   if(mockEl)mockEl.innerHTML='';
   if(miniMockEl)miniMockEl.innerHTML='';
@@ -10351,11 +10354,12 @@ async function renderSExam(scope){
   sExamRespCache={};
   (myResponses||[]).forEach(function(r){sExamRespCache[r.exam_id]=r;});
   const list=(exams||[]).filter(sExamVisibleForStudent).filter(e=>studentExamScope==='clinic'?(e.category||'school')==='school':studentExamScope==='homework'?e.category==='homework':studentExamScope==='mock'?e.category==='mock':true);
-  [clinicEl,homeworkEl,miniMockEl,mockEl].forEach((el,i)=>{if(el)el.closest('.card').hidden=!!studentExamScope&&(studentExamScope==='clinic'?i!==0:studentExamScope==='mock'?i!==3:i!==1);});
+  [clinicEl,homeworkEl,miniMockEl,mockEl,naeshinEl].forEach((el,i)=>{if(el)el.closest('.card').hidden=!!studentExamScope&&(studentExamScope==='clinic'?i!==0:studentExamScope==='mock'?i!==3:i!==1);});
   sExamClinicCache=list.filter(function(e){return (e.category||'school')==='school';});
   const mock=list.filter(function(e){return e.category==='mock';});
   const miniMock=list.filter(function(e){return e.category==='mini_mock';});
   const homework=list.filter(function(e){return e.category==='homework';});
+  if(naeshinEl)naeshinEl.innerHTML=renderSExamListCards(list.filter(function(e){return e.category==='naeshin';}),sExamRespCache,'등록된 중간·기말고사가 없어요');
   renderSExamClinicGroups();
   if(mockEl)mockEl.innerHTML=renderSExamListCards(mock,sExamRespCache,'등록된 모의고사가 없어요');
   if(miniMockEl)miniMockEl.innerHTML=renderSExamListCards(miniMock,sExamRespCache,'등록된 미니모의고사가 없어요');
@@ -10468,7 +10472,7 @@ function renderSExamListCards(list,respMap,emptyLabel){
     var safeName=(e.name||'').replace(/'/g,"\\'");
     var actionHtml;
     if(!resp){
-      actionHtml='<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn blue btn-sm" onclick="sExamOpenForGrading(\''+e.id+'\')">'+(sHomeworkAllowsWrongOnly(e)?'전체 답안 입력':e.category==='homework'?e.total_q+'문항 입력':'바로 채점하기')+'</button>'+(sHomeworkAllowsWrongOnly(e)?'<button class="btn btn-sm" onclick="sExamOpenForGrading(\''+e.id+'\',\'wrongonly\')">틀린 문제만 입력</button>':'')+'</div>';
+      actionHtml='<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn blue btn-sm" onclick="sExamOpenForGrading(\''+e.id+'\')">'+(sHomeworkAllowsWrongOnly(e)?'전체 답안 입력':e.category==='homework'?e.total_q+'문항 입력':e.category==='naeshin'?'점수·오답 이유 입력':'바로 채점하기')+'</button>'+(sHomeworkAllowsWrongOnly(e)?'<button class="btn btn-sm" onclick="sExamOpenForGrading(\''+e.id+'\',\'wrongonly\')">틀린 문제만 입력</button>':'')+'</div>';
     } else if(resp.regrade_approved){
       actionHtml='<div style="display:flex;gap:6px">'+
         '<button class="btn btn-sm" onclick="sExamViewResult(\''+e.id+'\')">결과보기</button>'+
