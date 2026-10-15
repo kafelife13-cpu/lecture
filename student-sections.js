@@ -56,6 +56,10 @@
   return '<section class="weekly-plan"><h2>★ 이번 주 속미인곡 영상 · 필기 사진 인증</h2><p>속미인곡 영상을 반드시 듣고 <strong>4주차 김까까 과제 앞장에 작품 해석과 핵심 개념을 필기해 오세요.</strong> 영상 시청과 앞장 필기 모두 필수입니다.</p><p>'+(state.done?'✓ 사진 제출 완료 · 제출 내역에서 확인할 수 있어요.':'사진 인증이 필요해요. 시청과 필기를 마치지 못하면 클리닉에서 완료해야 합니다.')+'</p><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn blue" data-sok-video>속미인곡 영상보기</button>'+((certDb.targets[sokItem]||[]).includes(session.id)?'<button class="btn green" data-cert-open="'+sokItem+'">'+(state.done?'인증 제출 내역 보기':'듣고 필기 사진 인증하기')+'</button>':'')+'</div></section>';
  }
  root.refreshSokTask=async function(showPopup){
+  if(root.isExamConsultationNoticeStudent?.(session)){
+   showPopup=false;
+   ['sentence-study-popup','sok-task-popup'].forEach(id=>document.getElementById(id)?.remove());
+  }
   refreshSentenceNotice(showPopup);
   if(!session||session.role!=='student'||padMode)return;
   const sid=session.id;
