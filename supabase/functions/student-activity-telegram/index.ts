@@ -16,7 +16,7 @@ Deno.serve(async (req) => {
     let routes: Record<string, string> = {};
     try { routes = JSON.parse(Deno.env.get("TELEGRAM_CATEGORY_CHAT_IDS") || "{}"); } catch { return json({ error: "텔레그램 알림방 설정을 확인해 주세요." }, 503); }
     const routedChatId = String(routes[category] || "");
-    if (routedChatId && !/^-?\\d+$/.test(routedChatId)) return json({ error: "텔레그램 알림방 번호가 올바르지 않습니다." }, 503);
+    if (routedChatId && !/^-?\d+$/.test(routedChatId)) return json({ error: "텔레그램 알림방 번호가 올바르지 않습니다." }, 503);
     const chatId = routedChatId || configuredChatId || await findLatestPrivateChatId(token);
     if (!chatId) return json({ error: "봇 채팅방을 찾지 못했습니다. 텔레그램에서 봇에게 메시지를 한 번 보내주세요." }, 503);
     const studentName = clean(body?.student_name, 60) || "학생";
