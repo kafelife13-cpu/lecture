@@ -28,7 +28,7 @@
 <script src="classical-course.js"></script>
 <script src="classical-translations.js"></script>
 <script src="student-sections.js?v=20261015-entry"></script>
-<script src="weekly-homework.js?v=5"></script>
+<script src="weekly-homework.js?v=20261015-activity"></script>
 <script src="personal-review.js?v=1"></script>
 <link rel="stylesheet" href="clinic-check.css?v=2">
 <script src="clinic-check.js?v=2"></script>
@@ -2102,6 +2102,7 @@ async function upsertProgress(sid,vid,pct,watchSec,lastPosition,maxRate){
   const{error}=await sb.from('progress').upsert(payload,{onConflict:'student_id,video_id'});
   if(error){console.error('Save error:',error.message);return;}
   const ex=db.progress.find(p=>p.student_id===sid&&p.video_id===vid);
+  if(payload.percent>=100&&(!ex||ex.percent<100)&&session&&session.id===sid){const video=db.videos.find(v=>v.id===vid);sendStudentActivity('강의 시청 완료',video?video.title:vid);}
   if(ex)Object.assign(ex,payload);else db.progress.push(payload);
 }
 
@@ -2257,6 +2258,7 @@ async function doSignup(){
   finally{btn.disabled=false;btn.textContent='가입 신청';}
 }
 function doLogout(){
+  sendStudentActivity('로그아웃','학생 앱 로그아웃');
   studentRestoreRetry=false;
   closePlay();
   if(studentPreviewMode){returnFromStudentPreview();return;}
@@ -3988,6 +3990,7 @@ function closeDetail(){document.getElementById('modal-detail').classList.remove(
 
 /* ===== STUDENT NAV ===== */
 document.addEventListener('keydown',function(e){var menu=document.getElementById('student-menu');if(e.key==='Escape'&&menu&&menu.open){menu.open=false;menu.querySelector('summary').focus();}});
+var lastStudentActivityPanel='';
 function sNav(panel,examScope){
   if(['vocab','oxreview','weekly-concept'].includes(panel))panel='scores';
   var literatureOnly=panel==='literature-exam';if(literatureOnly)panel='exam';
@@ -4027,6 +4030,7 @@ function sNav(panel,examScope){
   if(panel==='weekly')renderWeeklyHomework();
   if(panel==='home')renderSHome();
   if(panel==='home'||panel==='weekly')refreshSokTask(true);
+  if(session&&session.role==='student'&&!studentPreviewMode&&!padMode&&lastStudentActivityPanel!==session.id+':'+panel){lastStudentActivityPanel=session.id+':'+panel;sendStudentActivity('화면 이동',current?current.textContent:panel);}
 }
 
 function renderClinicRequiredPicker(){
@@ -10673,7 +10677,7 @@ async function sExamSubmitFull(forceSubmit){
     submitted_at:new Date().toISOString()
   });
   if(saveRes.error){alert('채점 결과 저장에 실패했어요: '+saveRes.error.message+'\n선생님께 알려주세요.');return;}
-  sendStudentActivity(sExamData.category==='homework'?'숙제 채점 제출':'시험 채점 제출',sExamData.name+' · '+score+'점 ('+correct+'/'+objIdxs.length+')');
+  sendStudentActivity(sExamData.category==='homework'?'숙제 채점 제출':sExamData.category==='naeshin'?'중간·기말고사 성적 입력':(sExamData.category||'school')==='school'?'클리닉 채점 제출':'모의고사 채점 제출',sExamData.name+' · '+score+'점 ('+correct+'/'+objIdxs.length+')');
   if(isLiteratureExam(sExamData))await finishLiteratureStudy();
   sExamTimerStop(true);
   sExamPriorResponse=null;sOmrCurrentPhoto=null;sExamCurrentThoughts={};sMockWrongNotes={};
@@ -10980,7 +10984,7 @@ async function sExamSubmitScore(){
     submitted_at:new Date().toISOString()
   });
   if(saveRes.error){alert('채점 결과 저장에 실패했어요: '+saveRes.error.message+'\n선생님께 알려주세요.');return;}
-  sendStudentActivity(sExamData.category==='homework'?'숙제 채점 제출':'시험 채점 제출',sExamData.name+' · '+score+'점 ('+correct+'/'+total+')');
+  sendStudentActivity(sExamData.category==='homework'?'숙제 채점 제출':sExamData.category==='naeshin'?'중간·기말고사 성적 입력':(sExamData.category||'school')==='school'?'클리닉 채점 제출':'모의고사 채점 제출',sExamData.name+' · '+score+'점 ('+correct+'/'+total+')');
   sExamPriorResponse=null;
   // 결과 표시
   showSExamView('result');
