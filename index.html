@@ -3990,7 +3990,6 @@ function closeDetail(){document.getElementById('modal-detail').classList.remove(
 
 /* ===== STUDENT NAV ===== */
 document.addEventListener('keydown',function(e){var menu=document.getElementById('student-menu');if(e.key==='Escape'&&menu&&menu.open){menu.open=false;menu.querySelector('summary').focus();}});
-var lastStudentActivityPanel='';
 function sNav(panel,examScope){
   if(['vocab','oxreview','weekly-concept'].includes(panel))panel='scores';
   var literatureOnly=panel==='literature-exam';if(literatureOnly)panel='exam';
@@ -4030,7 +4029,6 @@ function sNav(panel,examScope){
   if(panel==='weekly')renderWeeklyHomework();
   if(panel==='home')renderSHome();
   if(panel==='home'||panel==='weekly')refreshSokTask(true);
-  if(session&&session.role==='student'&&!studentPreviewMode&&!padMode&&lastStudentActivityPanel!==session.id+':'+panel){lastStudentActivityPanel=session.id+':'+panel;sendStudentActivity('화면 이동',current?current.textContent:panel);}
 }
 
 function renderClinicRequiredPicker(){
