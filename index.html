@@ -7805,7 +7805,7 @@ function renderTeditQList(){
           ${EXAM_TYPES.map(t=>`<option${t===q.type?' selected':''}>${t}</option>`).join('')}
         </select>
         <input id="eqd-${i}" class="form-input" placeholder="영역(예: 화법)" value="${q.domain||''}" onchange="editingQuestions[${i}].domain=this.value" style="width:110px;font-size:12px;padding:4px 6px">
-        <input id="eqp-${i}" type="number" min="1" class="form-input" placeholder="배점" value="${q.points||1}" onchange="editingQuestions[${i}].points=parseInt(this.value)||1" style="width:56px;font-size:12px;padding:4px 6px">
+        <input id="eqp-${i}" type="number" min="0.1" step="0.1" class="form-input" placeholder="배점" value="${q.points||1}" onchange="editingQuestions[${i}].points=parseFloat(this.value)||1" style="width:56px;font-size:12px;padding:4px 6px">
         <div style="display:flex;gap:4px;align-items:center;margin-left:auto">
           <span style="font-size:11px;color:var(--text2)">정답:</span>
           ${[1,2,3,4,5].map(n=>`<div id="eqa-${i}-${n}" onclick="eSelectAnswer(${i},${n})"
@@ -8068,7 +8068,7 @@ function renderTexStep3(){
           ${EXAM_TYPES.map(t=>`<option${t===q.type?' selected':''}>${t}</option>`).join('')}
         </select>
         <input id="rqd-${i}" class="form-input" placeholder="영역(예: 화법)" value="${q.domain||''}" style="width:110px;font-size:12px;padding:4px 6px">
-        <input id="rqp-${i}" type="number" min="1" class="form-input" placeholder="배점" value="${q.points||1}" style="width:56px;font-size:12px;padding:4px 6px">
+        <input id="rqp-${i}" type="number" min="0.1" step="0.1" class="form-input" placeholder="배점" value="${q.points||1}" style="width:56px;font-size:12px;padding:4px 6px">
         <div style="display:flex;gap:4px;align-items:center;margin-left:auto">
           <span style="font-size:11px;color:var(--text2)">정답:</span>
           ${[1,2,3,4,5].map(n=>`<div id="rqa-${i}-${n}" onclick="rSelectAnswer(${i},${n})"
@@ -8107,7 +8107,7 @@ async function saveTExam(){
     num:q.num,
     type:document.getElementById('rqt-'+i)?.value||q.type||'기타',
     domain:document.getElementById('rqd-'+i)?.value||q.domain||'',
-    points:parseInt(document.getElementById('rqp-'+i)?.value)||q.points||1,
+    points:parseFloat(document.getElementById('rqp-'+i)?.value)||q.points||1,
     answer:(document.getElementById('rqanswer-'+i)?.value||String(q.answer||'')).trim(),
     passage:document.getElementById('rqpassage-'+i)?.value||q.passage||'',
     text:document.getElementById('rqtext-'+i)?.value||q.text||'',
@@ -10538,7 +10538,7 @@ async function sExamOpenForGrading(examId,entryMode){
     document.getElementById('s-mock-entry-notice').style.display=found.category==='mock'?'block':'none';
   }else{
     fullEl.style.display='none';wrongEl.style.display='block';
-    document.getElementById('s-exam-check-sub').textContent='총 '+found.total_q+'문항 · 틀린 번호를 클릭하세요';
+    document.getElementById('s-exam-check-sub').textContent='총 '+found.total_q+'문항 · 틀린 번호를 클릭하세요'+(found.category==='naeshin'?' · 각 문항에 선택한 답과 시험 당시 생각을 적어 주세요.':'');
     renderSExamAnswerGrid();
   }
   sExamTimerStart(found);
@@ -10867,13 +10867,13 @@ function renderWrongDetails(){
       '</div>'+
       // 사고과정 입력
       '<div style="margin-bottom:10px">'+
-        '<div style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:5px">✏️ 내 사고 과정 & 틀린 이유</div>'+
+        '<div style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:5px">✏️ 오답을 선택한 이유 · 시험 볼 때 떠올린 생각</div>'+
         '<textarea '+
           'id="thought-'+idx+'" '+
           'class="form-input" '+
           'style="min-height:80px;font-size:13px;resize:vertical" '+
-          'placeholder="왜 이 답을 골랐는지, 어디서 헷갈렸는지 적어보세요&#10;예) 2문단에서 ~라고 했기 때문에 ③번이라 생각했는데..." '+
-          'oninput="sExamThoughts['+idx+']=this.value">'+thought+'</textarea>'+
+          'placeholder="시험 당시 왜 그 답을 골랐는지 솔직하게 적어 주세요.&#10;예) 사실감이 있다고 생각해서 ③번을 골랐다. 프린트에서 본 기억이 있었지만 어떤 구절인지는 떠오르지 않았다.&#10;예) ②와 ④가 헷갈려서 익숙한 표현이 있는 ④를 골랐다." '+
+          'oninput="sExamThoughts['+idx+']=this.value">'+escHtml(thought)+'</textarea>'+
       '</div>'+
       // 사진 첨부
       '<div>'+
@@ -10925,6 +10925,14 @@ async function sExamSubmitScore(){
       document.getElementById('s-exam-check-err').textContent=missing.length?
         missing.map(function(i){return examQuestionNumber(sExamData,i);}).join(', ')+'번: 학생이 선택한 답을 입력해주세요.':
         matching.map(function(i){return examQuestionNumber(sExamData,i);}).join(', ')+'번: 오답 표시와 선택한 답이 일치하지 않아요. 답안이나 오답 번호를 확인해주세요.';
+      return;
+    }
+  }
+  if(sExamData.category==='naeshin'){
+    var unwritten=wrongIdxs.filter(function(i){return !String(sExamThoughts[i]||'').trim();});
+    if(unwritten.length){
+      document.getElementById('s-exam-check-err').textContent=unwritten.map(function(i){return examQuestionNumber(sExamData,i);}).join(', ')+'번: 오답을 선택한 이유와 시험 볼 때 떠올린 생각을 적어 주세요.';
+      var first=document.getElementById('thought-'+unwritten[0]);if(first){first.focus();first.scrollIntoView({block:'center'});}
       return;
     }
   }
