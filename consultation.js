@@ -1,0 +1,100 @@
+(function(){
+ 'use strict';
+ const notice=`[국어왕 김까까 | 개별 상담 및 맞춤 보강 안내]
+
+학부모님 안녕하세요. 학생별 시험 결과와 문제를 풀 때의 사고 과정을 확인하고, 앞으로의 학습 방향을 안내하는 개별 상담을 진행합니다.
+
+■ 상담 일정 (1인 15분)
+10/22(목) 오후 4~10시 · 24명
+10/23(금) 오후 4~10시 · 24명
+10/25(일) 오후 6~10시 · 16명
+총 64명, 시간대별 선착순 신청
+
+■ 신청 대상 및 방법
+국어왕에 중간·기말고사 성적을 입력한 학생만 신청 가능합니다. 학생 계정으로 로그인한 뒤 홈의 ‘개별 상담 신청’에서 원하는 시간을 선택해 주세요. 학생당 1회 신청할 수 있으며, 예약 완료 표시가 나와야 확정됩니다.
+https://kafelife13-cpu.github.io/lecture/index.html?consultation=1
+
+■ 시험지 반드시 지참
+학생이 실제로 푼 시험지를 꼭 가져와야 합니다. 문제를 풀 때 어떤 생각으로 답을 골랐는지 학생이 직접 말로 설명하며 확인하므로 학생 본인의 참여가 필요합니다. 풀이 흔적은 지우지 않고 가져와 주세요.
+
+■ 매주 클리닉이 개별 보강의 기준이 됩니다
+앞으로 학생별 취약점을 보완하는 개별 보강 시스템을 적용할 예정입니다. 매주 클리닉에서 확인한 오답에 맞춰 학생마다 필요한 과제를 제공할 예정이므로, 매주 클리닉 참여와 정확한 답안 입력, 오답 점검이 더욱 중요해집니다. 클리닉을 빠지거나 답안을 입력하지 않으면 취약점을 정확히 파악하고 맞춤 과제를 제공하기 어렵습니다.
+
+학생이 매주 클리닉에 성실히 참여하고 오답을 끝까지 점검할 수 있도록 가정에서도 관심 부탁드립니다. 감사합니다.`;
+ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const day=s=>new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',month:'numeric',day:'numeric',weekday:'short'}).format(new Date(s));
+ const time=s=>new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(s));
+ if(typeof module!=='undefined')module.exports={notice,day,time};
+ if(typeof document==='undefined')return;
+ let dialog=null,timer=null,busy=false,loading=false,owner=null,revision=0;
+ async function rpc(action,payload={}){
+  if(!session||!weeklyLogin||session.id!==weeklyLogin.id||padMode||studentPreviewMode)throw Error('학생 또는 강사 본인 계정으로 다시 로그인해 주세요.');
+  const r=await sb.rpc('consultation_rpc',{p_id:weeklyLogin.id,p_password:weeklyLogin.pw,p_role:weeklyLogin.role,p_action:action,p_payload:payload});
+  if(r.error)throw Error(/schema cache|does not exist|Could not find/i.test(r.error.message)?'상담 신청 시스템을 준비 중입니다. 선생님께 문의해 주세요.':r.error.message);
+  return r.data;
+ }
+ function close(){revision++;clearInterval(timer);timer=null;dialog?.remove();dialog=null;owner=null;busy=false;loading=false;}
+ function message(text){if(dialog)dialog.querySelector('[data-message]').textContent=text;}
+ async function refresh(){
+  if(loading||busy||!dialog)return;
+  if(session?.id!==owner){close();return;}
+  const version=revision;loading=true;
+  try{
+   const data=await rpc('list');if(!dialog||version!==revision||session?.id!==owner)return;
+   const teacher=session.role==='teacher',mine=data.slots.find(s=>s.mine),remaining=data.slots.filter(s=>s.available).length;
+   dialog.querySelector('[data-status]').textContent=teacher?'총 64자리 · 남은 자리 '+remaining+'개':mine?'예약 확정: '+day(mine.starts_at)+' '+time(mine.starts_at)+'~'+time(mine.ends_at):data.eligible?'신청 가능 · 남은 자리 '+remaining+'개':'중간·기말고사 성적 입력 후 신청할 수 있습니다.';
+   let html='';
+   for(const label of [...new Set(data.slots.map(s=>day(s.starts_at)))]){
+    html+='<section style="margin-top:20px"><h3>'+esc(label)+'</h3><div class="consultation-grid">';
+    for(const s of data.slots.filter(s=>day(s.starts_at)===label)){
+     const canBook=!teacher&&data.eligible&&!mine&&s.available;
+     html+='<div class="consultation-slot"><strong>'+time(s.starts_at)+'~'+time(s.ends_at)+'</strong><span>'+esc(s.mine?'내 예약':s.available?'신청 가능':'마감')+'</span>';
+     if(teacher&&s.booking_id)html+='<span>'+esc(s.student_name)+' · '+esc(s.student_id)+'</span>';
+     if(canBook)html+='<button class="btn blue" data-book="'+esc(s.starts_at)+'">이 시간 신청</button>';
+     if(s.booking_id&&(teacher||s.mine))html+='<button class="btn" data-cancel="'+esc(s.booking_id)+'">예약 취소</button>';
+     html+='</div>';
+    }
+    html+='</div></section>';
+   }
+   dialog.querySelector('[data-slots]').innerHTML=html;
+   dialog.querySelector('[data-paper-wrap]').hidden=teacher||!!mine||!data.eligible;
+   dialog.querySelector('[data-score-entry]').hidden=teacher||data.eligible;
+  }catch(e){message(e.message);dialog?.querySelectorAll('[data-book],[data-cancel]').forEach(b=>b.disabled=true);}
+  finally{if(version===revision)loading=false;}
+ }
+ window.openConsultation=async function(){
+  close();owner=session?.id;const teacher=session?.role==='teacher';
+  dialog=document.createElement('dialog');dialog.setAttribute('aria-labelledby','consultation-title');dialog.className='consultation-dialog';
+  dialog.innerHTML='<div style="display:flex;justify-content:space-between;gap:12px"><h2 id="consultation-title">'+(teacher?'상담 신청 현황':'개별 상담 신청')+'</h2><button class="btn" data-close aria-label="상담 창 닫기">닫기</button></div><p>10/22(목)·23(금) 16~22시 / 25(일) 18~22시<br>1인 15분 · 총 64명 · 선착순 · 한국 시간</p><p><strong>본인이 푼 시험지를 반드시 지참하세요.</strong><br>학생이 풀이 당시의 생각을 직접 말로 설명하며 점검합니다.</p><p>매주 클리닉 오답을 바탕으로 개별 보강 과제가 제공될 예정입니다. <strong>매주 클리닉 참여와 정확한 답안 입력이 중요합니다.</strong></p><p role="status" data-status>예약 현황 확인 중…</p><p role="alert" data-message style="color:var(--red,#b42318)"></p><button class="btn" data-score-entry hidden>중간·기말고사 성적 입력하기</button><label data-paper-wrap hidden style="display:block;padding:12px;background:var(--bg,#f5f5f5)"><input type="checkbox" data-paper> 시험지 지참 및 학생 본인 참여 안내를 확인했습니다.</label><div style="display:flex;gap:8px;margin:12px 0"><button class="btn" data-refresh>현황 새로고침</button>'+(teacher?'<button class="btn" data-notice>학부모 안내문 복사</button>':'')+'</div><div data-slots></div>';
+  document.body.append(dialog);dialog.showModal();dialog.addEventListener('close',close,{once:true});
+  dialog.addEventListener('click',async e=>{
+   const b=e.target.closest('button');if(!b)return;
+   if(b.hasAttribute('data-close'))return close();
+   if(b.hasAttribute('data-score-entry')){close();window.studentExamScope=null;sNav('exam');return;}
+   if(b.hasAttribute('data-refresh'))return refresh();
+   if(b.hasAttribute('data-notice')){try{await navigator.clipboard.writeText(notice);message('학부모 안내문을 복사했습니다.');}catch(_){message('복사하지 못했습니다. 브라우저의 클립보드 권한을 확인해 주세요.');}return;}
+   if(busy)return;
+   const slot=b.dataset.book,id=b.dataset.cancel;if(!slot&&!id)return;
+   if(slot&&!dialog.querySelector('[data-paper]').checked){message('시험지 지참 안내를 먼저 확인해 주세요.');return;}
+   if(id&&!confirm('이 예약을 취소하면 다른 학생이 신청할 수 있습니다. 취소할까요?'))return;
+   const version=revision;busy=true;dialog.querySelectorAll('[data-book],[data-cancel]').forEach(x=>x.disabled=true);message('처리 중…');
+   try{await rpc(slot?'book':'cancel',slot?{starts_at:slot,paper_confirmed:true}:{id});if(version===revision)message(slot?'예약이 확정되었습니다. 시험지를 꼭 가져와 주세요.':'예약을 취소했습니다.');}
+   catch(err){if(version===revision)message(err.message);}
+   finally{if(version===revision){busy=false;await refresh();}}
+  });
+  await refresh();if(dialog)timer=setInterval(refresh,20000);
+ };
+ function entry(){
+  document.querySelectorAll('[data-consultation-entry]').forEach(x=>x.remove());
+  if(!session||padMode||studentPreviewMode)return;
+  const host=document.querySelector(session.role==='teacher'?'#panel-dashboard':'#panel-home');if(!host)return;
+  const card=document.createElement('section');card.dataset.consultationEntry='';card.className='card';card.style.cssText='padding:18px;margin-bottom:16px;border-left:4px solid var(--accent,#4757d5)';
+  card.innerHTML='<h3>시험 분석 · 개별 상담 주간</h3><p>10/22·23·25 · 1인 15분 · 선착순 64명<br>성적 입력 완료 학생 대상 · 시험지 필수 지참</p><button class="btn blue">'+(session.role==='teacher'?'상담 신청 현황 · 안내문':'개별 상담 신청')+'</button>';
+  card.querySelector('button').onclick=openConsultation;host.prepend(card);
+  if(new URLSearchParams(location.search).get('consultation')==='1')openConsultation();
+ }
+ const style=document.createElement('style');style.textContent='.consultation-dialog{width:calc(100% - 24px);max-width:850px;max-height:90vh;box-sizing:border-box;border:0;border-radius:16px;padding:24px;background:var(--surface,#fff);color:var(--text,#171b2c);line-height:1.7}.consultation-dialog::backdrop{background:#0008}.consultation-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px}.consultation-slot{display:flex;flex-direction:column;gap:6px;border:1px solid var(--border,#ddd);border-radius:10px;padding:12px}.consultation-slot .btn{min-height:44px;justify-content:center}.consultation-dialog button:focus-visible{outline:3px solid #5275ee;outline-offset:3px}';document.head.append(style);
+ for(const name of ['launchStudent','launchTeacher']){const original=window[name];window[name]=function(){const v=original.apply(this,arguments);entry();return v;};}
+ const logout=window.doLogout;window.doLogout=function(){close();document.querySelectorAll('[data-consultation-entry]').forEach(x=>x.remove());return logout.apply(this,arguments);};
+ window.addEventListener('pagehide',close);entry();
+})();

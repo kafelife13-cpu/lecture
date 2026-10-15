@@ -1,0 +1,37 @@
+const fs=require('node:fs'),assert=require('node:assert/strict'),path=require('node:path');
+const {PGlite}=require('@electric-sql/pglite');
+(async()=>{
+ const db=new PGlite();
+ await db.exec(`create role anon;create role authenticated;
+ create table users(id text primary key,name text,role text,status text);
+ create table exams(id text primary key,category text);
+ create table exam_responses(exam_id text,student_id text,score numeric);
+ create function authenticate_user(text,text,text) returns jsonb language sql as $$select to_jsonb(u) from users u where id=$1 and $2='test' and role=$3$$;
+ insert into users values('s1','A','student','active'),('s2','B','student','active'),('s3','C','student','active'),('s4','D','student','active'),('t','Teacher','teacher','active');
+ insert into exams values('e','naeshin'),('h','homework');
+ insert into exam_responses values('e','s1',0),('e','s2',80),('h','s3',100);`);
+ await db.exec(fs.readFileSync(path.join(__dirname,'../supabase/migrations/20261015090000_consultation.sql'),'utf8'));
+ const call=async(id,action,payload={},pw='test',role='student')=>(await db.query('select consultation_rpc($1,$2,$3,$4,$5::jsonb) data',[id,pw,role,action,JSON.stringify(payload)])).rows[0].data;
+ let data=await call('s1','list');assert.equal(data.slots.length,64);assert.equal(data.eligible,true,'zero is a recorded score');
+ const {day,time,notice}=require('../consultation.js');
+ const groups=Object.groupBy(data.slots,s=>day(s.starts_at));assert.deepEqual(Object.values(groups).map(x=>x.length),[24,24,16]);
+ assert.equal(time(data.slots[0].starts_at),'16:00');assert.equal(time(data.slots[48].starts_at),'18:00');assert.equal(time(data.slots.at(-1).ends_at),'22:00');assert.ok(notice.includes('매주 클리닉'));
+ // Shift fixture slots into the future so this regression test remains usable after the event.
+ await db.exec("update consultation_slots set starts_at=starts_at+interval '10 years',ends_at=ends_at+interval '10 years'");
+ data=await call('s1','list');const a=data.slots[0].starts_at,b=data.slots[1].starts_at,p={starts_at:a,paper_confirmed:true};
+ await assert.rejects(call('s1','list',{},'wrong'),/로그인/);
+ await assert.rejects(call('s3','book',p),/성적/);await assert.rejects(call('s4','book',p),/성적/);
+ await assert.rejects(call('t','book',p,'test','teacher'),/학생/);
+ await assert.rejects(call('s1','book',{starts_at:a}),/시험지/);
+ await assert.rejects(call('s1','book',{starts_at:'2099-01-01',paper_confirmed:true}),/시간/);
+ const first=await call('s1','book',p);assert.equal((await call('s1','book',p)).id,first.id,'retry is idempotent');
+ await assert.rejects(call('s2','book',p),/다른 학생/);
+ await assert.rejects(call('s1','book',{...p,starts_at:b}),/한 번/);
+ const peer=(await call('s2','list')).slots[0];assert.equal(peer.booking_id,null);assert.equal(peer.student_id,null);assert.equal(peer.student_name,null);
+ assert.equal((await call('t','list',{},'test','teacher')).slots[0].student_name,'A');
+ await assert.rejects(call('s2','cancel',{id:first.id}),/본인/);
+ await call('s1','cancel',{id:first.id});await call('s2','book',p);
+ const races=await Promise.allSettled([call('s1','book',{...p,starts_at:b}),call('s1','book',{...p,starts_at:data.slots[2].starts_at})]);assert.equal(races.filter(x=>x.status==='fulfilled').length,1);
+ await db.exec('set role anon');await assert.rejects(db.query('select * from consultation_bookings'),/permission/);
+ await db.close();console.log('PASS: 64 slots, Korea times, score eligibility, authentication, privacy, retry, duplicate reservation, cancellation, concurrent requests, table access');
+})().catch(e=>{console.error(e);process.exitCode=1;});
