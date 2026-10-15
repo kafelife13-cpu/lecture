@@ -79,7 +79,9 @@
   for(const f of files)if(!['image/jpeg','image/png','image/webp'].includes(f.type)||f.size>10*1024*1024)throw Error('사진은 JPG·PNG·WEBP, 장당 10MB 이하여야 해요.');
   const paths=[];
   for(const f of files){const path='weekly-notes/'+session.id+'/'+plan.id+'/'+crypto.randomUUID()+'.'+({'image/jpeg':'jpg','image/png':'png','image/webp':'webp'}[f.type]);const r=await sb.storage.from('exam-photos').upload(path,f,{contentType:f.type});if(r.error)throw r.error;paths.push(path);}
-  await rpc('notebook',{plan_id:plan.id,mode:new FormData(form).get('note-mode'),photos:paths});
+  const mode=new FormData(form).get('note-mode');
+  await rpc('notebook',{plan_id:plan.id,mode:mode,photos:paths});
+  sendStudentActivity('주간 과제 오답노트 제출',plan.title+' · '+(mode==='home'?'집에서 해설 시청 후 제출':'클리닉에서 제출')+' · 사진 '+paths.length+'장');
   await root.renderWeeklyHomework();renderNotebook();notify('사진이 제출됐어요. 선생님 확인 후 완료돼요.','success');
  }
  async function editor(plan){
