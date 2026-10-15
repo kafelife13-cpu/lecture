@@ -70,7 +70,7 @@ https://kafelife13-cpu.github.io/lecture/index.html?consultation=1
   dialog.addEventListener('click',async e=>{
    const b=e.target.closest('button');if(!b)return;
    if(b.hasAttribute('data-close'))return close();
-   if(b.hasAttribute('data-score-entry')){close();window.studentExamScope=null;sNav('exam');return;}
+   if(b.hasAttribute('data-score-entry')){close();sNav('exam','naeshin');return;}
    if(b.hasAttribute('data-refresh'))return refresh();
    if(b.hasAttribute('data-notice')){try{await navigator.clipboard.writeText(notice);message('학부모 안내문을 복사했습니다.');}catch(_){message('복사하지 못했습니다. 브라우저의 클립보드 권한을 확인해 주세요.');}return;}
    if(busy)return;
@@ -97,11 +97,11 @@ https://kafelife13-cpu.github.io/lecture/index.html?consultation=1
   ['sentence-study-popup','sok-task-popup'].forEach(id=>document.getElementById(id)?.remove());
   const popup=document.createElement('dialog');popup.id='exam-consultation-notice';popup.className='consultation-dialog';
   popup.style.maxWidth='560px';popup.setAttribute('aria-labelledby','exam-consultation-notice-title');
-  popup.innerHTML='<h2 id="exam-consultation-notice-title">상담 신청 · 중간고사 성적 입력</h2><p>중간고사 준비하고 시험 보느라 모두 수고 많았어요. 이번 시험을 돌아보고 기말고사에는 더 열심히 준비해 봅시다!</p><p><strong>먼저 중간고사 답안과 성적을 입력해 주세요.</strong><br>틀린 문항에는 내가 선택한 답과 그 답을 고른 이유, 시험 볼 때 떠올린 생각도 적어 주세요.</p><p style="padding:12px;background:var(--bg);border-radius:10px">예) 프린트에서 본 내용이라고 생각해서 ③번을 골랐지만, 정확한 근거는 기억나지 않았다.</p><p><strong>상담: 10/22(목) · 10/23(금) · 10/25(일)</strong><br>성적 입력 후 원하는 시간을 신청하세요.<br>본인이 푼 시험지를 꼭 가져와 주세요.</p><p>전화·카카오톡 상담은 언제든 개별적으로 연락해 주세요.<br><a href="tel:01021557286">010-2155-7286</a></p><div style="display:grid;gap:10px"><button class="btn blue" data-entry-score>중간고사 성적 입력하기</button><button class="btn green" data-entry-consultation>상담 신청하기</button><button class="btn" data-entry-close>닫기</button></div>';
+  popup.innerHTML='<h2 id="exam-consultation-notice-title">중간고사 성적을 입력해 주세요</h2><p>상담 신청 전에 시험 성적과 오답을 입력해 주세요.</p><button class="btn blue exam-score-primary" data-entry-score>지금 성적 입력하기 →</button><p>중간고사 준비하고 시험 보느라 모두 수고 많았어요. 이번 시험을 돌아보고 기말고사에는 더 열심히 준비해 봅시다!</p><p><strong>먼저 중간고사 답안과 성적을 입력해 주세요.</strong><br>틀린 문항에는 내가 선택한 답과 그 답을 고른 이유, 시험 볼 때 떠올린 생각도 적어 주세요.</p><p style="padding:12px;background:var(--bg);border-radius:10px">예) 프린트에서 본 내용이라고 생각해서 ③번을 골랐지만, 정확한 근거는 기억나지 않았다.</p><p><strong>상담: 10/22(목) · 10/23(금) · 10/25(일)</strong><br>성적 입력 후 원하는 시간을 신청하세요.<br>본인이 푼 시험지를 꼭 가져와 주세요.</p><p>전화·카카오톡 상담은 언제든 개별적으로 연락해 주세요.<br><a href="tel:01021557286">010-2155-7286</a></p><div style="display:grid;gap:10px"><button class="btn green" data-entry-consultation>상담 신청하기</button><button class="btn" data-entry-close>닫기</button></div>';
   document.body.append(popup);popup.showModal();
   popup.addEventListener('close',closeEntryNotice,{once:true});
   popup.addEventListener('click',e=>{
-   if(e.target.closest('[data-entry-score]')){closeEntryNotice();window.studentExamScope=null;sNav('exam');}
+   if(e.target.closest('[data-entry-score]')){closeEntryNotice();sNav('exam','naeshin');}
    if(e.target.closest('[data-entry-consultation]')){closeEntryNotice();openConsultation();}
    if(e.target.closest('[data-entry-close]'))closeEntryNotice();
   });
@@ -115,10 +115,12 @@ https://kafelife13-cpu.github.io/lecture/index.html?consultation=1
   const host=document.querySelector(session.role==='teacher'?'#panel-dashboard':'#panel-home');if(!host)return;
   const card=document.createElement('section');card.dataset.consultationEntry='';card.className='card';card.style.cssText='padding:18px;margin-bottom:16px;border-left:4px solid var(--accent,#4757d5)';
   card.innerHTML='<h3>시험 분석 · 개별 상담 주간</h3><p>10/22·23·25 · 1인 15분 · 선착순 64명<br>성적 입력 완료 학생 대상 · 시험지 필수 지참</p><button class="btn blue">'+(session.role==='teacher'?'상담 신청 현황 · 안내문':'개별 상담 신청')+'</button>';
-  card.querySelector('button').onclick=openConsultation;host.prepend(card);
+  card.querySelector('button').onclick=openConsultation;
+  if(session.role==='student'){const score=document.createElement('button');score.className='btn blue exam-score-primary';score.textContent='중간고사 성적 입력하기 →';score.onclick=()=>sNav('exam','naeshin');card.prepend(score);}
+  host.prepend(card);
   if(new URLSearchParams(location.search).get('consultation')==='1'&&!window.isExamConsultationNoticeStudent(session))openConsultation();
  }
- const style=document.createElement('style');style.textContent='.consultation-dialog{margin:auto;overflow:auto;width:calc(100% - 24px);max-width:850px;max-height:90vh;box-sizing:border-box;border:0;border-radius:16px;padding:24px;background:var(--bg2,#fff);color:var(--text,#171b2c);line-height:1.7}.consultation-dialog [hidden]{display:none!important}.consultation-dialog p{margin:12px 0}.consultation-dialog::backdrop{background:#0008}.consultation-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px}.consultation-slot{display:flex;flex-direction:column;gap:6px;border:1px solid var(--border,#ddd);border-radius:10px;padding:12px}.consultation-slot .btn{min-height:44px;justify-content:center}.consultation-dialog button:focus-visible{outline:3px solid #5275ee;outline-offset:3px}';document.head.append(style);
+ const style=document.createElement('style');style.textContent='.exam-score-primary{display:flex;width:100%;justify-content:center;min-height:60px;font-size:19px!important;font-weight:800;margin:12px 0 20px;background:#4338ca!important;color:#fff!important;border:2px solid #a5b4fc!important;border-radius:12px} .consultation-dialog{margin:auto;overflow:auto;width:calc(100% - 24px);max-width:850px;max-height:90vh;box-sizing:border-box;border:0;border-radius:16px;padding:24px;background:var(--bg2,#fff);color:var(--text,#171b2c);line-height:1.7}.consultation-dialog [hidden]{display:none!important}.consultation-dialog p{margin:12px 0}.consultation-dialog::backdrop{background:#0008}.consultation-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px}.consultation-slot{display:flex;flex-direction:column;gap:6px;border:1px solid var(--border,#ddd);border-radius:10px;padding:12px}.consultation-slot .btn{min-height:44px;justify-content:center}.consultation-dialog button:focus-visible{outline:3px solid #5275ee;outline-offset:3px}';document.head.append(style);
  for(const name of ['launchStudent','launchTeacher']){const original=window[name];window[name]=function(){const v=original.apply(this,arguments);entry();return v;};}
  const logout=window.doLogout;window.doLogout=function(){closeEntryNotice();close();document.querySelectorAll('[data-consultation-entry]').forEach(x=>x.remove());return logout.apply(this,arguments);};
  window.addEventListener('pagehide',close);

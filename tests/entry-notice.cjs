@@ -3,7 +3,7 @@ const source=fs.readFileSync(require('node:path').join(__dirname,'../consultatio
 new vm.Script(source);
 const nodes=new Map(),events=[];
 const document={hidden:false,getElementById:id=>nodes.get(id),querySelector:()=>null,createElement:()=>({style:{},setAttribute(){},showModal(){this.open=true;},addEventListener(k,fn){this[k]=fn;},remove(){nodes.delete(this.id);}}),body:{append(el){nodes.set(el.id,el);}}};
-const c={window:{},document,session:{id:'preview',role:'student',school_id:'sc_chidong'},padMode:false,sNav:p=>events.push(p),openConsultation:()=>events.push('consultation')};
+const c={window:{},document,session:{id:'preview',role:'student',school_id:'sc_chidong'},padMode:false,sNav:(p,scope)=>events.push(scope?p+':'+scope:p),openConsultation:()=>events.push('consultation')};
 vm.createContext(c);vm.runInContext(source.slice(source.indexOf(' window.isExamConsultationNoticeStudent='),source.indexOf(' function entry(){')),c);
 for(const school of ['sc_chidong','sc_hanbaek'])assert.equal(c.window.isExamConsultationNoticeStudent({role:'student',school_id:school}),true);
 assert.equal(c.window.isExamConsultationNoticeStudent({role:'teacher',school_id:'sc_chidong'}),false);
@@ -11,8 +11,12 @@ assert.equal(c.window.isExamConsultationNoticeStudent({role:'student',school_id:
 nodes.set('sentence-study-popup',{remove:()=>nodes.delete('sentence-study-popup')});
 c.showEntryNotice();const p=nodes.get('exam-consultation-notice');assert.ok(p.open);assert.ok(!nodes.has('sentence-study-popup'));
 c.showEntryNotice();assert.equal(nodes.size,1);
-p.click({target:{closest:s=>s==='[data-entry-score]'}});assert.deepEqual(events,['exam']);assert.equal(c.window.studentExamScope,null);assert.equal(nodes.size,0);
-c.showEntryNotice();nodes.get('exam-consultation-notice').click({target:{closest:s=>s==='[data-entry-consultation]'}});assert.deepEqual(events,['exam','consultation']);
+p.click({target:{closest:s=>s==='[data-entry-score]'}});assert.deepEqual(events,['exam:naeshin']);assert.equal(nodes.size,0);
+c.showEntryNotice();nodes.get('exam-consultation-notice').click({target:{closest:s=>s==='[data-entry-consultation]'}});assert.deepEqual(events,['exam:naeshin','consultation']);
 c.padMode=true;c.showEntryNotice();assert.equal(nodes.size,0);c.padMode=false;
 document.querySelector=()=>({open:true});c.showEntryNotice();assert.equal(nodes.size,0);
 console.log('PASS: schools, automatic notice, routes, pad and teacher exclusions');
+assert.ok(p.innerHTML.indexOf('data-entry-score') < p.innerHTML.indexOf('중간고사 준비'));
+const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
+assert.ok(html.includes("studentExamScope==='naeshin'?e.category==='naeshin':true"));
+assert.ok(html.includes("studentExamScope==='naeshin'?i!==4:i!==1"));
