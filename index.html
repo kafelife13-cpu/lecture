@@ -27,7 +27,7 @@
 <script src="classical-vocab.js?v=2"></script>
 <script src="classical-course.js"></script>
 <script src="classical-translations.js"></script>
-<script src="student-sections.js?v=20261005-sentence"></script>
+<script src="student-sections.js?v=20261015-entry"></script>
 <script src="weekly-homework.js?v=5"></script>
 <script src="personal-review.js?v=1"></script>
 <link rel="stylesheet" href="clinic-check.css?v=2">
@@ -2573,7 +2573,7 @@ async function updatePushBtnState(){
     banner.innerHTML='<div style="padding:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><div style="flex:1;min-width:160px"><strong>🔔 '+info.title+'</strong><div style="font-size:12px;color:var(--text2);margin-top:5px">'+info.text+'</div></div><button class="btn green">'+info.button+'</button></div>';
     banner.querySelector('button').onclick=function(){state==='needed'?subscribeToPush():showStudentPushPrompt(state);};
   }
-  if(state!=='enabled'&&!studentPushPromptShown){studentPushPromptShown=true;showStudentPushPrompt(state);}
+  if(state!=='enabled'&&!studentPushPromptShown&&!window.isExamConsultationNoticeStudent?.(session)){studentPushPromptShown=true;showStudentPushPrompt(state);}
 }
 window.addEventListener('focus',function(){if(session&&session.role==='student')updatePushBtnState();});
 
@@ -11494,6 +11494,6 @@ function installPWA(){
 <script src="app-navigation.js?v=1"></script>
 <script src="video-chapters.js?v=20261001"></script>
 <script src="odap-entry.js?v=1"></script>
-<script src="consultation.js?v=1"></script>
+<script src="consultation.js?v=20261015-entry"></script>
 </body>
 </html>
