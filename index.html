@@ -10493,7 +10493,7 @@ function renderSExamListCards(list,respMap,emptyLabel){
       '<div style="padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">'+
         '<div>'+
           '<div style="font-size:14px;font-weight:600">'+e.name+'</div>'+
-          '<div style="font-size:12px;color:var(--text2);margin-top:2px">총 '+e.total_q+'문항'+(resp?' · 제출완료 '+resp.score+'점'+(sExamIsScoreOnlyResponse(resp)?' · 점수만 입력':''):'')+'</div>'+
+          '<div style="font-size:12px;color:var(--text2);margin-top:2px">총 '+e.total_q+'문항'+(resp?' · 제출완료 '+(e.category==='naeshin'?repScore(e,resp).pct:resp.score)+'점'+(sExamIsScoreOnlyResponse(resp)?' · 점수만 입력':''):'')+'</div>'+
         '</div>'+
         actionHtml+clinicExplanationNotice(e,resp?resp.score:null)+
       '</div>'+
@@ -10922,7 +10922,7 @@ async function sExamSubmitScore(){
   var total=sExamData.category==='homework'?gradedQuestions.length:sExamData.total_q;
   var wrongIdxs=Object.keys(sWrongChecked).map(Number);
   document.getElementById('s-exam-check-err').textContent='';
-  if(sHomeworkWrongOnly(sExamData)){
+  if(sHomeworkWrongOnly(sExamData)||sExamData.category==='naeshin'){
     var missing=wrongIdxs.filter(function(i){return !(String(sExamData.questions[i].answer).indexOf('all:')===0?/^[1-5](,[1-5])*$/:/^[1-5]$/).test(String(sExamAnswers[i]||''));});
     var matching=wrongIdxs.filter(function(i){return examAnswerMatches(sExamAnswers[i],sExamData.questions[i]?.answer);});
     if(missing.length||matching.length){
@@ -11086,6 +11086,10 @@ function sExamOpenMockWrongNote(){
 }
 
 function renderSExamResultView(score,correct,wrong,total){
+  if(sExamData&&sExamData.category==='naeshin'){
+    var marked={};wrong.forEach(function(w){marked[w.idx]=w.my;});
+    score=repScore(sExamData,{answers:marked}).pct;
+  }
   const actions=document.getElementById('s-exam-result-actions');
   if(actions){
     actions.innerHTML=padMode
