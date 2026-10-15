@@ -12,6 +12,7 @@ Deno.serve(async (req) => {
     if (!token) return json({ error: "텔레그램 봇 토큰이 설정되지 않았습니다." }, 503);
     const configuredChatId = Deno.env.get("TELEGRAM_CHAT_ID") || Deno.env.get("TG_CHAT_ID");
     const body = await req.json();
+    if (body?.activity === "화면 이동") return json({ ok: true, ignored: true });
     const category = activityCategory(String(body?.activity || ""));
     let routes: Record<string, string> = {};
     try { routes = JSON.parse(Deno.env.get("TELEGRAM_CATEGORY_CHAT_IDS") || "{}"); } catch { return json({ error: "텔레그램 알림방 설정을 확인해 주세요." }, 503); }
