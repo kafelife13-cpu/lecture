@@ -51,7 +51,7 @@ https://kafelife13-cpu.github.io/lecture/index.html?consultation=1
      html+='<div class="consultation-slot"><strong>'+time(s.starts_at)+'~'+time(s.ends_at)+'</strong><span>'+esc(s.mine?'내 예약':s.available?'신청 가능':'마감')+'</span>';
      if(teacher&&s.booking_id)html+='<span>'+esc(s.student_name)+' · '+esc(s.student_id)+'</span>';
      if(canBook)html+='<button class="btn blue" data-book="'+esc(s.starts_at)+'">이 시간 신청</button>';
-     if(s.booking_id&&(teacher||s.mine))html+='<button class="btn" data-cancel="'+esc(s.booking_id)+'">예약 취소</button>';
+     if(s.booking_id&&(teacher||s.mine))html+='<button class="btn" data-cancel="'+esc(s.booking_id)+'" data-starts-at="'+esc(s.starts_at)+'">예약 취소</button>';
      html+='</div>';
     }
     html+='</div></section>';
@@ -78,7 +78,7 @@ https://kafelife13-cpu.github.io/lecture/index.html?consultation=1
    if(slot&&!dialog.querySelector('[data-paper]').checked){message('시험지 지참 안내를 먼저 확인해 주세요.');return;}
    if(id&&!confirm('이 예약을 취소하면 다른 학생이 신청할 수 있습니다. 취소할까요?'))return;
    const version=revision;busy=true;dialog.querySelectorAll('[data-book],[data-cancel]').forEach(x=>x.disabled=true);message('처리 중…');
-   try{await rpc(slot?'book':'cancel',slot?{starts_at:slot,paper_confirmed:true}:{id});if(version===revision)message(slot?'예약이 확정되었습니다. 시험지를 꼭 가져와 주세요.':'예약을 취소했습니다.');}
+   try{await rpc(slot?'book':'cancel',slot?{starts_at:slot,paper_confirmed:true}:{id});if(version===revision){const at=slot||b.dataset.startsAt;sendStudentActivity(slot?'상담 신청':'상담 신청 취소',(at?day(at)+' '+time(at)+' · 15분 상담':'상담 예약')+(slot?' · 시험지 지참 확인':''));message(slot?'예약이 확정되었습니다. 시험지를 꼭 가져와 주세요.':'예약을 취소했습니다.');}}
    catch(err){if(version===revision)message(err.message);}
    finally{if(version===revision){busy=false;await refresh();}}
   });
