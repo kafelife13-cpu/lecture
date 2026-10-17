@@ -13,6 +13,9 @@ Deno.serve(async (req) => {
     if (!apiKey) return json({ error: { message: "서버에 Claude API 키가 설정되지 않았습니다." } }, 503);
 
     const requestBody = await req.json();
+    if (!(await isActiveUser(req, requestBody?.credentials))) {
+      return json({ error: { message: "본인 계정으로 다시 로그인해 주세요." } }, 401);
+    }
     const payload = requestBody?.payload;
     if (!payload || !Array.isArray(payload.messages)) {
       return json({ error: { message: "AI 요청 형식이 올바르지 않습니다." } }, 400);
@@ -40,6 +43,20 @@ Deno.serve(async (req) => {
     return json({ error: { message: error instanceof Error ? error.message : String(error) } }, 500);
   }
 });
+
+async function isActiveUser(req: Request, c: { id?: unknown; pw?: unknown; role?: unknown } | undefined) {
+  const role = c?.role;
+  if (typeof c?.id !== "string" || typeof c?.pw !== "string" || (role !== "student" && role !== "teacher")) return false;
+  const apikey = req.headers.get("apikey") ?? "";
+  const r = await fetch(`${Deno.env.get("SUPABASE_URL")}/rest/v1/rpc/authenticate_user`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", apikey, Authorization: `Bearer ${apikey}` },
+    body: JSON.stringify({ p_id: c.id, p_password: c.pw, p_role: role }),
+  });
+  if (!r.ok) return false;
+  const user = await r.json();
+  return !!user && user.status === "active" && user.role === role;
+}
 
 function json(value: unknown, status = 200) {
   return new Response(JSON.stringify(value), {

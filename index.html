@@ -6237,7 +6237,7 @@ function getSharedClaudeKey(){return sessionStorage.getItem('claude_api_key')||'
 async function callClaudeServer(payload){
   const resp=await fetch(SB_URL+'/functions/v1/claude-ai',{method:'POST',headers:{
     'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY
-  },body:JSON.stringify({payload:payload})});
+  },body:JSON.stringify({payload:payload,credentials:weeklyLogin})});
   const data=await resp.json();
   if(!resp.ok||data.error)throw new Error((data.error&&data.error.message)||'AI 서버 호출에 실패했어요.');
   return data;
