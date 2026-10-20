@@ -35,13 +35,13 @@
   }).join('');
  }
  window.openWrongPhotos=async function(){
-  if(!session||!weeklyLogin||studentPreviewMode||padMode){notify('본인 계정으로 로그인해 주세요.','error');return;}
+  if(!session||!weeklyLogin||padMode){notify('본인 계정으로 로그인해 주세요.','error');return;}
   dialog?.remove();busy=false;const owner=session.id;
   dialog=document.createElement('dialog');dialog.className='consultation-dialog';dialog.innerHTML='<h2>'+title+'</h2><p>성적·답안을 바꾸지 않고 사진만 추가할 수 있습니다. 문제와 본인의 풀이 흔적이 잘 보이도록 촬영해 주세요.</p><button class="btn" data-close>닫기</button><p role="status" data-status>불러오는 중…</p><div data-list></div>';
   document.body.append(dialog);dialog.showModal();
   dialog.querySelector('[data-close]').onclick=()=>{if(!busy){dialog.close();dialog.remove();}};
   dialog.addEventListener('cancel',e=>{if(busy)e.preventDefault();});
-  try{await load();if(session.id!==owner)return; if(session.role==='teacher')await provision();dialog.querySelector('[data-status]').textContent='상담 신청 여부와 사진 제출 여부를 별도로 표시합니다.';render();}
+  try{await load();if(session.id!==owner)return; if(session.role==='teacher'&&!studentPreviewMode)await provision();dialog.querySelector('[data-status]').textContent='상담 신청 여부와 사진 제출 여부를 별도로 표시합니다.';render();if(studentPreviewMode){dialog.querySelector('[data-status]').textContent='학생 화면 미리보기 · 사진 저장은 본인 로그인 또는 교사 화면에서 가능합니다.';dialog.querySelectorAll('input,[data-save]').forEach(e=>e.disabled=true);}}
   catch(e){dialog.querySelector('[data-status]').textContent='불러오지 못했습니다: '+e.message;return;}
   dialog.addEventListener('change',e=>{
    if(!e.target.matches('[data-files]'))return;
@@ -49,7 +49,7 @@
    for(const f of e.target.files){if(!valid(f))continue;const img=document.createElement('img'),url=URL.createObjectURL(f);img.src=url;img.alt=f.name;img.style.cssText='width:100px;height:120px;object-fit:contain';img.onload=()=>URL.revokeObjectURL(url);box.append(img);}
   });
   dialog.addEventListener('click',async e=>{
-   if(!e.target.closest('[data-save]')||busy)return;
+   if(!e.target.closest('[data-save]')||busy||studentPreviewMode)return;
    const section=e.target.closest('[data-student]'),id=section.dataset.student;
    const u=session.role==='teacher'?studentList().find(u=>u.id===id):session;
    const result=section.querySelector('[data-result]'),files=[...section.querySelector('[data-files]').files],nums=section.querySelector('[data-numbers]').value.trim();
@@ -71,13 +71,13 @@
  };
  function entry(){
   document.querySelectorAll('[data-wrong-photo-entry]').forEach(e=>e.remove());
-  if(!session||padMode||studentPreviewMode)return;
+  if(!session||padMode)return;
   for(const selector of session.role==='teacher'?['#page-teacher #panel-dashboard','#page-teacher #panel-exam']:['#page-student #panel-home','#page-student #panel-exam']){
    const host=document.querySelector(selector);if(!host)continue;
    const section=document.createElement('section');section.dataset.wrongPhotoEntry='';section.className='card';section.style.cssText='padding:18px;margin-bottom:16px';section.innerHTML='<h3>오답 문제 사진 제출</h3><p>상담 신청 학생은 상담 중 교사 보충 · 미신청 학생은 등원 후 사진 제출</p><button class="btn blue">'+(session.role==='teacher'?'학생별 사진 확인 · 상담 중 보충':'틀린 문제 사진 올리기')+'</button>';section.querySelector('button').onclick=openWrongPhotos;host.prepend(section);
   }
  }
- for(const name of ['launchStudent','launchTeacher']){const old=window[name];window[name]=function(){const r=old.apply(this,arguments);entry();return r;};}
+ for(const name of ['launchStudent','launchTeacher','returnFromStudentPreview']){const old=window[name];window[name]=function(){const r=old.apply(this,arguments);entry();return r;};}
  entry();
 })();
 
