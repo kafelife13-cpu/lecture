@@ -127,3 +127,6 @@ https://kafelife13-cpu.github.io/lecture/index.html?consultation=1
  window.addEventListener('pageshow',showEntryNotice);
  document.addEventListener('visibilitychange',function(){if(!document.hidden)showEntryNotice();});entry();
 })();
+
+// Dedicated photo submissions reuse the existing certification storage.
+(function(){const s=document.createElement('script');s.src='wrong-photo-section.js?v=20261020-1';document.head.append(s);})();
