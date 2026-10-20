@@ -8,7 +8,7 @@
 10/22(목) 오후 4~10시 · 24명
 10/23(금) 오후 4~10시 · 24명
 10/25(일) 오후 6~10시 · 16명
-총 64명, 시간대별 선착순 신청
+각 날짜 밤 10~11시 전화 상담 추가 · 4명씩\n총 76명, 시간대별 선착순 신청
 
 ■ 신청 대상 및 방법
 국어왕에 중간·기말고사 성적을 입력한 학생만 신청 가능합니다. 학생 계정으로 로그인한 뒤 홈의 ‘개별 상담 신청’에서 원하는 시간을 선택해 주세요. 학생당 1회 신청할 수 있으며, 예약 완료 표시가 나와야 확정됩니다.
@@ -42,13 +42,13 @@ https://kafelife13-cpu.github.io/lecture/index.html?consultation=1
   try{
    const data=await rpc('list');if(!dialog||version!==revision||session?.id!==owner)return;
    const teacher=session.role==='teacher',mine=data.slots.find(s=>s.mine),remaining=data.slots.filter(s=>s.available).length;
-   dialog.querySelector('[data-status]').textContent=teacher?'총 64자리 · 남은 자리 '+remaining+'개':mine?'예약 확정: '+day(mine.starts_at)+' '+time(mine.starts_at)+'~'+time(mine.ends_at):data.eligible?'신청 가능 · 남은 자리 '+remaining+'개':'중간·기말고사 성적 입력 후 신청할 수 있습니다.';
+   dialog.querySelector('[data-status]').textContent=teacher?'총 '+data.slots.length+'자리 · 남은 자리 '+remaining+'개':mine?'예약 확정: '+day(mine.starts_at)+' '+time(mine.starts_at)+'~'+time(mine.ends_at):data.eligible?'신청 가능 · 남은 자리 '+remaining+'개':'중간·기말고사 성적 입력 후 신청할 수 있습니다.';
    let html='';
    for(const label of [...new Set(data.slots.map(s=>day(s.starts_at)))]){
     html+='<section style="margin-top:20px"><h3>'+esc(label)+'</h3><div class="consultation-grid">';
     for(const s of data.slots.filter(s=>day(s.starts_at)===label)){
      const canBook=!teacher&&data.eligible&&!mine&&s.available;
-     html+='<div class="consultation-slot"><strong>'+time(s.starts_at)+'~'+time(s.ends_at)+'</strong><span>'+esc(s.mine?'내 예약':s.available?'신청 가능':'마감')+'</span>';
+     html+='<div class="consultation-slot"><strong>'+time(s.starts_at)+'~'+time(s.ends_at)+'</strong>'+(time(s.starts_at)>='22:00'?'<span>전화 상담 전용</span>':'')+'<span>'+esc(s.mine?'내 예약':s.available?'신청 가능':'마감')+'</span>';
      if(teacher&&s.booking_id)html+='<span>'+esc(s.student_name)+' · '+esc(s.student_id)+'</span>';
      if(canBook)html+='<button class="btn blue" data-book="'+esc(s.starts_at)+'">이 시간 신청</button>';
      if(s.booking_id&&(teacher||s.mine))html+='<button class="btn" data-cancel="'+esc(s.booking_id)+'" data-starts-at="'+esc(s.starts_at)+'">예약 취소</button>';
@@ -65,7 +65,7 @@ https://kafelife13-cpu.github.io/lecture/index.html?consultation=1
  window.openConsultation=async function(){
   close();owner=session?.id;const teacher=session?.role==='teacher';
   dialog=document.createElement('dialog');dialog.setAttribute('aria-labelledby','consultation-title');dialog.className='consultation-dialog';
-  dialog.innerHTML='<div style="display:flex;justify-content:space-between;gap:12px"><h2 id="consultation-title">'+(teacher?'상담 신청 현황':'개별 상담 신청')+'</h2><button class="btn" data-close aria-label="상담 창 닫기">닫기</button></div><p>10/22(목)·23(금) 16~22시 / 25(일) 18~22시<br>1인 15분 · 총 64명 · 선착순 · 한국 시간</p><p><strong>본인이 푼 시험지를 반드시 지참하세요.</strong><br>학생이 풀이 당시의 생각을 직접 말로 설명하며 점검합니다.</p><p>매주 클리닉 오답을 바탕으로 개별 보강 과제가 제공될 예정입니다. <strong>매주 클리닉 참여와 정확한 답안 입력이 중요합니다.</strong></p><p role="status" data-status>예약 현황 확인 중…</p><p role="alert" data-message style="color:var(--red,#b42318)"></p><button class="btn" data-score-entry hidden>중간·기말고사 성적 입력하기</button><label data-paper-wrap hidden style="display:block;padding:12px;background:var(--bg,#f5f5f5)"><input type="checkbox" data-paper> 시험지 지참 및 학생 본인 참여 안내를 확인했습니다.</label><div style="display:flex;gap:8px;margin:12px 0"><button class="btn" data-refresh>현황 새로고침</button>'+(teacher?'<button class="btn" data-notice>학부모 안내문 복사</button>':'')+'</div><div data-slots></div>';
+  dialog.innerHTML='<div style="display:flex;justify-content:space-between;gap:12px"><h2 id="consultation-title">'+(teacher?'상담 신청 현황':'개별 상담 신청')+'</h2><button class="btn" data-close aria-label="상담 창 닫기">닫기</button></div><p>10/22(목)·23(금) 16~22시 / 25(일) 18~22시<br>밤 22~23시 전화 상담 추가 (각 날짜 4명)<br>1인 15분 · 총 76명 · 선착순 · 한국 시간</p><p><strong>본인이 푼 시험지를 반드시 지참하세요.</strong><br>학생이 풀이 당시의 생각을 직접 말로 설명하며 점검합니다.</p><p>매주 클리닉 오답을 바탕으로 개별 보강 과제가 제공될 예정입니다. <strong>매주 클리닉 참여와 정확한 답안 입력이 중요합니다.</strong></p><p role="status" data-status>예약 현황 확인 중…</p><p role="alert" data-message style="color:var(--red,#b42318)"></p><button class="btn" data-score-entry hidden>중간·기말고사 성적 입력하기</button><label data-paper-wrap hidden style="display:block;padding:12px;background:var(--bg,#f5f5f5)"><input type="checkbox" data-paper> 시험지 지참 및 학생 본인 참여 안내를 확인했습니다.</label><div style="display:flex;gap:8px;margin:12px 0"><button class="btn" data-refresh>현황 새로고침</button>'+(teacher?'<button class="btn" data-notice>학부모 안내문 복사</button>':'')+'</div><div data-slots></div>';
   document.body.append(dialog);dialog.showModal();dialog.addEventListener('close',close,{once:true});
   dialog.addEventListener('click',async e=>{
    const b=e.target.closest('button');if(!b)return;
@@ -114,7 +114,7 @@ https://kafelife13-cpu.github.io/lecture/index.html?consultation=1
   if(studentPreviewMode)return;
   const host=document.querySelector(session.role==='teacher'?'#panel-dashboard':'#panel-home');if(!host)return;
   const card=document.createElement('section');card.dataset.consultationEntry='';card.className='card';card.style.cssText='padding:18px;margin-bottom:16px;border-left:4px solid var(--accent,#4757d5)';
-  card.innerHTML='<h3>시험 분석 · 개별 상담 주간</h3><p>10/22·23·25 · 1인 15분 · 선착순 64명<br>성적 입력 완료 학생 대상 · 시험지 필수 지참</p><button class="btn blue">'+(session.role==='teacher'?'상담 신청 현황 · 안내문':'개별 상담 신청')+'</button>';
+  card.innerHTML='<h3>시험 분석 · 개별 상담 주간</h3><p>10/22·23·25 · 1인 15분 · 선착순 76명 · 밤 22~23시 전화 상담<br>성적 입력 완료 학생 대상 · 시험지 필수 지참</p><button class="btn blue">'+(session.role==='teacher'?'상담 신청 현황 · 안내문':'개별 상담 신청')+'</button>';
   card.querySelector('button').onclick=openConsultation;
   if(session.role==='student'){const score=document.createElement('button');score.className='btn blue exam-score-primary';score.textContent='중간고사 성적 입력하기 →';score.onclick=()=>sNav('exam','naeshin');card.prepend(score);}
   host.prepend(card);
