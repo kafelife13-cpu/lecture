@@ -33,7 +33,7 @@ https://kafelife13-cpu.github.io/lecture/index.html?consultation=1
   if(r.error)throw Error(/schema cache|does not exist|Could not find/i.test(r.error.message)?'상담 신청 시스템을 준비 중입니다. 선생님께 문의해 주세요.':r.error.message);
   return r.data;
  }
- function dismissModal(el){if(!el)return;el._dispose?.();if(el.open&&typeof el.close==='function')el.close();el.remove();}
+ function dismissModal(el){if(!el)return;const dispose=el._dispose;el._dispose=null;dispose?.();if(el.open&&typeof el.close==='function')el.close();el.remove();}
  // ponytail: retain native focus handling; older in-app browsers use one keyboard-accessible overlay.
  function showModal(el){
   if(typeof el.showModal==='function'){try{el.showModal();return;}catch(_){}}
@@ -70,7 +70,7 @@ https://kafelife13-cpu.github.io/lecture/index.html?consultation=1
    dialog.querySelector('[data-slots]').innerHTML=html;
    dialog.querySelector('[data-paper-wrap]').hidden=teacher||!!mine||!data.eligible;
    dialog.querySelector('[data-score-entry]').hidden=teacher||data.eligible;
-  }catch(e){if(version===revision){message(e.message);dialog?.querySelectorAll('[data-book],[data-cancel]').forEach(b=>b.disabled=true);}}
+  }catch(e){if(version===revision){dialog.querySelector('[data-status]').textContent='예약 현황을 불러오지 못했습니다.';message(e.message);dialog?.querySelectorAll('[data-book],[data-cancel]').forEach(b=>b.disabled=true);}}
   finally{if(version===revision)loading=false;}
  }
  window.openConsultation=async function(){
