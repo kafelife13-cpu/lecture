@@ -10386,7 +10386,12 @@ function renderHomeworkEntry(list,responses){
     var ym=String(e.created_at||'').slice(0,7),year=Number(ym.slice(0,4))||new Date().getFullYear();
     var m=month?Number(month[1]):Number(ym.slice(5,7))||new Date().getMonth()+1;
     var n=week?Number(week[1]):0,key=year+'-'+String(m).padStart(2,'0')+'-'+n;
-    if(!groups[key])groups[key]={label:n?m+'월 '+n+'주차 과제':'주차 미지정 과제',order:n?year*1000+m*10+n:0,items:[]};
+    var prep=(label+' '+String(e.name||'')).match(/(중간|기말)\s*대비\s*(\d+)\s*주차?/);
+    if(prep){
+      key=year+'-'+prep[1]+'대비-'+prep[2];
+      if(!groups[key])groups[key]={label:prep[1]+'대비 '+Number(prep[2])+'주차 과제',order:year*1000+(prep[1]==='기말'?900:800)+Number(prep[2]),items:[]};
+    }
+    else if(!groups[key])groups[key]={label:n?m+'월 '+n+'주차 과제':'주차 미지정 과제',order:n?year*1000+m*10+n:0,items:[]};
     groups[key].items.push(e);
   });
   return Object.values(groups).sort(function(a,b){return b.order-a.order;}).map(function(g,i){

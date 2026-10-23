@@ -11,3 +11,13 @@ assert.equal(JSON.stringify(ctx.qaProblemNumbers({prob_count:2,sol_text:'QA_SOLU
 assert.equal(JSON.stringify(ctx.qaProblemNumbers({prob_count:2,sol_text:''})),'[1,2]');
 assert.equal(JSON.stringify(ctx.qaProblemNumbers({prob_count:2,sol_text:'QA_SOLUTIONS_V1\n'+JSON.stringify({numbers:['B1','B1']})})),'[1,2]');
 console.log('PASS: QnA original labels and legacy fallback');
+
+const prep=ctx.renderHomeworkEntry([
+ {name:'기존 6주차',clinic_week:'6주차',created_at:'2026-10-01'},
+ {name:'한백고 기말대비 1주차',clinic_week:'기말대비 1주차',created_at:'2026-10-24'},
+ {name:'치동고 기말대비 1주차',clinic_week:'기말대비 1주차',created_at:'2026-10-25'}
+],[]);
+assert.ok(prep.includes('기말대비 1주차 과제 · 2개'));
+assert.ok(!prep.includes('10월 1주차 과제'));
+assert.ok(prep.indexOf('기말대비 1주차 과제')<prep.indexOf('10월 6주차 과제'));
+console.log('PASS: exam preparation labels preserved and separated from calendar weeks');
