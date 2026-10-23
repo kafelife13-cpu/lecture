@@ -1336,18 +1336,21 @@ input,button{font-family:var(--font)}
             <div id="s-exam-full-choice">
               <div class="card" style="margin-bottom:10px">
                 <div style="padding:1.25rem;text-align:center">
-                  <button class="btn blue" style="width:100%;margin-bottom:8px" onclick="sExamFullManualStart()">✏️ 직접 답 체크</button>
+                  <div id="s-mock-source-links" style="margin-bottom:10px"></div><button class="btn blue" style="width:100%;margin-bottom:8px" onclick="sExamFullManualStart()">✏️ 전체 문항 답 입력</button>
                   <button class="btn" style="width:100%" onclick="sOmrStartCamera()">📷 OMR 사진으로 채점</button>
                   <label class="btn" style="display:block;width:100%;margin-top:8px;text-align:center;box-sizing:border-box;cursor:pointer">
                     📄 스캔 PDF·사진 파일로 채점
                     <input type="file" id="s-omr-file-input" accept="image/*,application/pdf" style="display:none" onchange="sOmrReadSelectedFile(this.files)">
                   </label>
+                  <button id="s-mock-wrong-only-btn" class="btn blue" style="display:none;width:100%;margin-top:10px" onclick="sMockOpenWrongOnly()">틀린 번호만 입력하기</button>
                   <button id="s-mock-score-only-btn" type="button" style="display:none;width:100%;margin-top:12px;padding:16px 12px;border:2px solid #d97706;border-radius:12px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;cursor:pointer;box-shadow:0 5px 14px rgba(217,119,6,.28);font-size:17px;font-weight:900;line-height:1.35" onclick="sExamOpenScoreOnly()">🔢 점수만 입력하기<span style="display:block;margin-top:3px;font-size:11px;font-weight:600;opacity:.92">답안 입력 없이 모의고사 총점만 저장</span></button>
-                  <div id="s-mock-entry-notice" style="display:none;text-align:left;padding:10px;margin-top:10px;border-radius:8px;background:var(--blue-bg);font-size:11px;color:var(--text2);line-height:1.55"><strong>전체 답안 입력</strong>은 영역·유형별 오답 경향이 누적됩니다.<br><strong>점수만 입력</strong>은 총점만 저장되고 오답 경향에는 반영되지 않습니다.</div>
+                  <button id="s-mock-defer-btn" class="btn" style="display:none;width:100%;margin-top:10px" onclick="sMockDeferGrading()">채점 안 함 · 나중에 입력</button>
+                  <div id="s-mock-entry-notice" style="display:none;text-align:left;padding:10px;margin-top:10px;border-radius:8px;background:var(--blue-bg);font-size:11px;color:var(--text2);line-height:1.55"><strong>전체 답안 입력 / 틀린 번호만 입력</strong>은 문항 배점으로 자동 채점하고 영역·유형별 오답 경향이 누적됩니다.<br><strong>점수만 입력</strong>은 총점만 저장되고 오답 경향에는 반영되지 않습니다.</div>
                   <div style="font-size:11px;color:var(--text3);margin-top:7px">로그인한 학생의 답안으로 저장되므로 이름·생년월일을 읽지 않아요.</div>
                 </div>
               </div>
             </div>
+            <div id="s-mock-wrong-only" class="card" style="display:none;padding:1.25rem;margin-bottom:10px"><h3>틀린 번호만 입력하기</h3><p>틀린 문항 번호를 쉼표나 공백으로 구분하세요. 나머지 문항은 정답으로 계산합니다. 모두 맞았다면 빈칸으로 제출하세요.</p><label for="s-mock-wrong-input">틀린 문항 번호</label><input id="s-mock-wrong-input" class="form-input" placeholder="예: 3, 14, 45"><div style="display:flex;gap:8px;margin-top:12px"><button class="btn" onclick="sMockCancelWrongOnly()">취소</button><button class="btn blue" onclick="sMockSubmitWrongOnly()">자동 채점 · 저장</button></div></div>
             <div id="s-mock-score-only" class="card" style="display:none;padding:1.25rem;margin-bottom:10px">
               <div style="font-size:20px;font-weight:900;margin-bottom:7px">🔢 모의고사 점수만 입력하기</div><div style="font-size:13px;color:var(--text2);line-height:1.55;margin-bottom:14px">답안은 입력하지 않고 총점만 저장합니다.<br>문항별 오답 데이터에는 반영되지 않습니다.</div>
               <input id="s-mock-score-input" class="form-input" type="number" min="0" max="100" step="1" inputmode="numeric" placeholder="0~100점" style="font-size:28px;font-weight:900;text-align:center;margin-bottom:12px;padding:15px"><div style="display:flex;gap:8px"><button class="btn" style="flex:1" onclick="sExamCancelScoreOnly()">취소</button><button class="btn blue" style="flex:2;font-size:16px;font-weight:800;padding:13px" onclick="sExamSubmitReportedScore()">점수 저장하기</button></div>
@@ -10404,7 +10407,7 @@ function parseHomeworkWrongNumbers(value,totalOrExam){
   tokens.forEach(function(token){
     var normalized=/^[A-Za-z]/.test(token)?token.toUpperCase():String(Number(token));
     var index=labels.map(String).indexOf(normalized);
-    if(!/^[A-Za-z]?\d+$/.test(token)||index<0)throw new Error('과제에 있는 문제 번호('+labels[0]+'~'+labels[labels.length-1]+')를 입력해주세요.');
+    if(!/^[A-Za-z]?\d+$/.test(token)||index<0)throw new Error('시험에 있는 문제 번호('+labels[0]+'~'+labels[labels.length-1]+')를 입력해주세요.');
     if(numbers.indexOf(index)===-1)numbers.push(index);
   });
   return numbers.sort(function(a,b){return a-b;});
@@ -10520,7 +10523,7 @@ async function sExamOpenForGrading(examId,entryMode){
     renderSExam();
     return;
   }
-  sExamData=found;sExamPriorResponse=resp||null;
+  sExamData=found;sExamPriorResponse=resp||null;sOmrCurrentPhoto=null;
   sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;sWrongChecked={};sExamFullAnswers={};
   if(found.category==='homework'&&resp&&resp.thoughts&&resp.thoughts._subjective_answers)Object.assign(sExamFullAnswers,resp.thoughts._subjective_answers);
   sExamCheckMode=found.category==='naeshin'||(entryMode==='wrongonly'&&sHomeworkAllowsWrongOnly(found))?'wrongonly':'full';
@@ -10539,6 +10542,12 @@ async function sExamOpenForGrading(examId,entryMode){
     document.getElementById('s-exam-full-camera').style.display='none';
     document.getElementById('s-exam-full-loading').style.display='none';
     document.getElementById('s-exam-full-grid-wrap').style.display='none';
+    document.getElementById('s-mock-wrong-only').style.display='none';
+    document.getElementById('s-mock-wrong-input').value='';
+    document.getElementById('s-mock-wrong-only-btn').style.display=found.category==='mock'?'block':'none';
+    document.getElementById('s-mock-defer-btn').style.display=found.category==='mock'?'block':'none';
+    document.getElementById('s-mock-source-links').innerHTML=sMockSourceLinks(found);
+    document.getElementById('s-mock-score-input').value='';
     document.getElementById('s-mock-score-only').style.display='none';
     document.getElementById('s-mock-score-only-btn').style.display=found.category==='mock'?'block':'none';
     document.getElementById('s-mock-entry-notice').style.display=found.category==='mock'?'block':'none';
@@ -10562,7 +10571,37 @@ function sExamFullManualStart(){
 
 function sExamIsScoreOnlyResponse(resp){
   var answers=(resp&&resp.answers)||{};
-  return !!resp&&Object.keys(answers).filter(function(k){return /^\d+$/.test(k)&&String(answers[k]||'').trim();}).length===0;
+  return !!resp&&Object.keys(answers).filter(function(k){return /^\d+$/.test(k);}).length===0;
+}
+function sMockDeferGrading(){
+  sExamTimerStop(true);
+  renderSExam();
+  notify('채점하지 않고 성적 입력을 보류했어요. 나중에 다시 입력할 수 있어요.','info');
+}
+function sMockSourceLinks(exam){
+  var files=exam&&exam.questions&&exam.questions[0]&&exam.questions[0].source_files||[];
+  return files.filter(function(f){return /^https:\/\/wdown\.ebsi\.co\.kr\//.test(f.url);}).map(function(f){return '<a class="btn btn-sm" href="'+escHtml(f.url)+'" target="_blank" rel="noopener">'+escHtml(f.label)+'</a>';}).join(' ');
+}
+function sMockOpenWrongOnly(){
+  document.getElementById('s-exam-full-choice').style.display='none';
+  document.getElementById('s-mock-wrong-only').style.display='block';
+  document.getElementById('s-mock-wrong-input').focus();
+}
+function sMockCancelWrongOnly(){
+  document.getElementById('s-mock-wrong-only').style.display='none';
+  document.getElementById('s-exam-full-choice').style.display='block';
+}
+async function sMockSubmitWrongOnly(){
+  if(!sExamData||sExamData.category!=='mock')return;
+  var wrong;
+  try{wrong=parseHomeworkWrongNumbers(document.getElementById('s-mock-wrong-input').value,sExamData);}catch(e){alert(e.message);return;}
+  if(sExamData.questions.some(function(q){return !isObjectiveAnswer(q.answer);})){alert('이 시험은 전체 답안 입력으로 채점해주세요.');return;}
+  var total=sExamData.questions.reduce(function(sum,q){return sum+(q.points||1);},0);
+  var lost=wrong.reduce(function(sum,i){return sum+(sExamData.questions[i].points||1);},0);
+  if(!confirm((wrong.length?'틀린 번호: '+wrong.map(function(i){return examQuestionNumber(sExamData,i);}).join(', '):'틀린 문항 없음')+'\n'+Math.round((total-lost)/total*100)+'점으로 저장할까요?'))return;
+  sExamFullAnswers={};
+  sExamData.questions.forEach(function(q,i){sExamFullAnswers[i]=wrong.indexOf(i)>=0?'':q.answer;});
+  await sExamSubmitFull(true);
 }
 function sExamOpenScoreOnly(){
   document.getElementById('s-exam-full-choice').style.display='none';
@@ -10575,7 +10614,7 @@ function sExamCancelScoreOnly(){
 }
 async function sExamSubmitReportedScore(){
   var input=document.getElementById('s-mock-score-input'),score=Number(input.value);
-  if(!Number.isInteger(score)||score<0||score>100){alert('0~100 사이의 정수 점수를 입력해주세요.');return;}
+  if(!input.value.trim()||!Number.isInteger(score)||score<0||score>100){alert('0~100 사이의 정수 점수를 입력해주세요.');return;}
   if(!confirm(score+'점으로 저장할까요?\n문항별 오답 경향에는 반영되지 않습니다.'))return;
   var next=(sExamPriorResponse&&sExamPriorResponse.attempt_count?sExamPriorResponse.attempt_count:0)+1;
   var res=await odapSaveResponse({exam_id:sExamData.id,student_name:session.name||session.id,answers:{},photo_urls:{},thoughts:{},score:score,correct_count:0,total_q:sExamData.total_q,points_earned:score,points_total:100,attempt_count:next,regrade_requested:false,regrade_approved:false,submitted_at:new Date().toISOString()});
