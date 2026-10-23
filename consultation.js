@@ -108,11 +108,12 @@ https://kafelife13-cpu.github.io/lecture/index.html?consultation=1
   ['sentence-study-popup','sok-task-popup'].forEach(id=>document.getElementById(id)?.remove());
   const popup=document.createElement('dialog');popup.id='exam-consultation-notice';popup.className='consultation-dialog';
   popup.style.maxWidth='560px';popup.setAttribute('aria-labelledby','exam-consultation-notice-title');
-  popup.innerHTML='<h2 id="exam-consultation-notice-title">중간고사 성적을 입력해 주세요</h2><p>상담 신청 전에 시험 성적과 오답을 입력해 주세요.</p><button class="btn blue exam-score-primary" data-entry-score>지금 성적 입력하기 →</button><p>중간고사 준비하고 시험 보느라 모두 수고 많았어요. 이번 시험을 돌아보고 기말고사에는 더 열심히 준비해 봅시다!</p><p><strong>먼저 중간고사 답안과 성적을 입력해 주세요.</strong><br>틀린 문항에는 내가 선택한 답과 그 답을 고른 이유, 시험 볼 때 떠올린 생각도 적어 주세요.</p><p style="padding:12px;background:var(--bg);border-radius:10px">예) 프린트에서 본 내용이라고 생각해서 ③번을 골랐지만, 정확한 근거는 기억나지 않았다.</p><p><strong>상담: 10/22(목) · 10/23(금) · 10/25(일)</strong><br>성적 입력 후 원하는 시간을 신청하세요.<br>본인이 푼 시험지를 꼭 가져와 주세요.</p><p>전화·카카오톡 상담은 언제든 개별적으로 연락해 주세요.<br><a href="tel:01021557286">010-2155-7286</a></p><div style="display:grid;gap:10px"><button class="btn green" data-entry-consultation>상담 신청하기</button><button class="btn" data-entry-close>닫기</button></div>';
+  popup.innerHTML='<h2 id="exam-consultation-notice-title">중간고사 · 모의고사 성적 입력</h2><p>입력할 시험을 선택해 주세요.</p><button class="btn blue exam-score-primary" data-entry-score>중간고사 성적 입력 →</button><button class="btn blue exam-score-primary" data-entry-mock>10월 모의고사 성적 입력 →</button><p>모의고사는 총점만 입력하거나, 틀린 번호만 입력하거나, 전체 문항의 답을 입력할 수 있어요. 채점하지 않고 나중에 입력해도 됩니다.</p><p>중간고사 준비하고 시험 보느라 모두 수고 많았어요. 이번 시험을 돌아보고 기말고사에는 더 열심히 준비해 봅시다!</p><p><strong>먼저 중간고사 답안과 성적을 입력해 주세요.</strong><br>틀린 문항에는 내가 선택한 답과 그 답을 고른 이유, 시험 볼 때 떠올린 생각도 적어 주세요.</p><p style="padding:12px;background:var(--bg);border-radius:10px">예) 프린트에서 본 내용이라고 생각해서 ③번을 골랐지만, 정확한 근거는 기억나지 않았다.</p><p><strong>상담: 10/22(목) · 10/23(금) · 10/25(일)</strong><br>성적 입력 후 원하는 시간을 신청하세요.<br>본인이 푼 시험지를 꼭 가져와 주세요.</p><p>전화·카카오톡 상담은 언제든 개별적으로 연락해 주세요.<br><a href="tel:01021557286">010-2155-7286</a></p><div style="display:grid;gap:10px"><button class="btn green" data-entry-consultation>상담 신청하기</button><button class="btn" data-entry-close>닫기</button></div>';
   document.body.append(popup);
   popup.addEventListener('close',()=>dismissModal(popup),{once:true});
   popup.addEventListener('click',e=>{
    if(e.target.closest('[data-entry-score]')){closeEntryNotice();sNav('exam','naeshin');}
+   if(e.target.closest('[data-entry-mock]')){closeEntryNotice();sNav('exam','mock');}
    if(e.target.closest('[data-entry-consultation]')){closeEntryNotice();openConsultation();}
    if(e.target.closest('[data-entry-close]'))closeEntryNotice();
   });
