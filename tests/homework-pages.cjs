@@ -1,0 +1,11 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const html=fs.readFileSync('index.html','utf8');
+const code=html.slice(html.indexOf('var sExamFullPage=0;'),html.indexOf('\nfunction sExamPickFullAnswer'));
+const el={innerHTML:'',scrollIntoView(){}};
+const ctx={document:{getElementById:()=>el},sExamData:{id:'cd6bb2bc-d203-4b63-a3d1-46bd7113b595',category:'homework',total_q:100,questions:Array.from({length:100},(_,i)=>({answer:i===2||i===64?'written':'1'}))},sExamFullAnswers:{2:'essay A',64:'essay B',50:'2'},examQuestionNumber:(_,i)=>i+1,isObjectiveAnswer:a=>a!=='written',sHomeworkRequired:()=>true,escHtml:String,examAnswerSelected:(a,b)=>String(a)===String(b)};
+vm.createContext(ctx);vm.runInContext(code,ctx);ctx.renderSExamFullGrid();
+assert(el.innerHTML.includes('50번</span>'));assert(!el.innerHTML.includes('51번</span>'));assert(el.innerHTML.includes('essay A'));
+ctx.sExamChangeFullPage(1);assert(el.innerHTML.includes('51번</span>'));assert(el.innerHTML.includes('100번</span>'));assert(!el.innerHTML.includes('50번</span>'));assert(el.innerHTML.includes('essay B'));assert.equal(ctx.sExamFullAnswers[50],'2');
+ctx.sExamChangeFullPage(0);assert(el.innerHTML.includes('essay A'));
+ctx.sExamData.id='other';ctx.renderSExamFullGrid();assert(el.innerHTML.includes('100번</span>'));assert(!el.innerHTML.includes('sExamChangeFullPage('));
+console.log('PASS: ranges, numbering, answer preservation, other exams unchanged');
