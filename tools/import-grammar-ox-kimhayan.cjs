@@ -1,0 +1,10 @@
+const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
+const dir=process.argv[2],context={window:{},document:{}};vm.createContext(context);
+for(const file of ['questions.js','questions-extra.js','questions-v3.js','audit-sources.js','questions-v6.js','questions-v7.js'])vm.runInContext(fs.readFileSync(path.join(dir,file),'utf8'),context,{timeout:3000,contextCodeGeneration:{strings:false,wasm:false}});
+const all=vm.runInContext('BASE_QUESTIONS',context),verified=all.filter(q=>q.sourceReviewStatus==='verified'),sources=context.window.GrammarSources;
+assert.equal(all.length,717);assert.equal(verified.length,627);assert.equal(all.filter(q=>q.sourceReviewStatus==='pending').length,90);
+const map={sound:'phonology',word:'words',pos:'parts',sentence:'sentences',expression:'expression',spelling:'spelling',medieval:'medieval'};
+const Q=verified.map(q=>({id:'kh-'+q.id,era:q.unit==='medieval'?'medieval':'modern',topic:map[q.unit],prompt:q.text,answer:q.answer?0:1,choices:['O','X'],explanation:q.explanation,choiceExplanations:[0,1].map(c=>(c===(q.answer?0:1)?'맞습니다. ':'정답은 '+(q.answer?'O':'X')+'입니다. ')+q.explanation),concept:q.concept,skill:q.skill,difficulty:q.difficulty,objectiveId:q.objectiveId,variantOf:(Array.isArray(q.approvedVariantOf)?q.approvedVariantOf:q.approvedVariantOf?[q.approvedVariantOf]:[]).map(id=>'kh-'+id),src:'김하얀T 문법 교실',basis:(q.evidence||[]).map(e=>{const s=sources[e.sourceId]||(e.url?{title:e.title,institution:'국립국어원',url:e.url}:e.sourceId==='v7_ss_wenil_306333'?{title:'온라인가나다 (원본 링크 미등록)',institution:'국립국어원',url:''}:null);assert.ok(s,'Missing evidence source '+e.sourceId);return {name:[s.institution,s.title].filter(Boolean).join(' · '),where:e.locator,url:s.url};})}));
+assert.equal(Q.filter(q=>q.topic==='expression').length,103);
+fs.writeFileSync(process.argv[3]||'grammar-ox-data-kimhayan.js',"(function(r){const Q="+JSON.stringify(Q,null,2)+";if(typeof module!=='undefined')module.exports=Q;else r.GRAMMAR_OX_KIMHAYAN=Q;})(typeof window==='undefined'?globalThis:window);\n");
+console.log('PASS: 717 source / 627 verified / 90 pending excluded; expression 103');

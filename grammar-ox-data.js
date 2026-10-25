@@ -16,7 +16,14 @@
       "맞습니다. ‘ㄱ’ 받침 뒤에서 나는 된소리는 같은 음절이나 비슷한 음절이 겹치는 경우가 아니면 된소리로 적지 않는다. 따라서 ‘깍두기’로 쓴다.",
       "정답은 O입니다. ‘ㄱ’ 받침 뒤에서 나는 된소리는 같은 음절이나 비슷한 음절이 겹치는 경우가 아니면 된소리로 적지 않는다. 따라서 ‘깍두기’로 쓴다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=98&pageIndex=1&qna_seq=325455"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_002",
@@ -35,7 +42,14 @@
       "정답은 X입니다. ‘살짝’은 한 단어 안에서 ‘ㄹ’ 받침 뒤에 나는 된소리를 표기에 반영한 말이다. ‘살작’은 허용되지 않는다.",
       "맞습니다. ‘살짝’은 한 단어 안에서 ‘ㄹ’ 받침 뒤에 나는 된소리를 표기에 반영한 말이다. ‘살작’은 허용되지 않는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=&pageIndex=1&qna_seq=323997"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_003",
@@ -54,7 +68,14 @@
       "맞습니다. ‘좋다’의 어간 ‘좋-’에 어미 ‘-아’가 결합했다. [조아]로 발음하더라도 어간의 형태를 밝혀 ‘좋아’로 적는다.",
       "정답은 O입니다. ‘좋다’의 어간 ‘좋-’에 어미 ‘-아’가 결합했다. [조아]로 발음하더라도 어간의 형태를 밝혀 ‘좋아’로 적는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_004",
@@ -73,7 +94,14 @@
       "정답은 X입니다. 자음을 첫소리로 가진 음절의 ‘ㅢ’는 [ㅣ]로 발음하더라도 ‘ㅢ’로 적는다. 발음과 달리 ‘희망’으로 표기한다.",
       "맞습니다. 자음을 첫소리로 가진 음절의 ‘ㅢ’는 [ㅣ]로 발음하더라도 ‘ㅢ’로 적는다. 발음과 달리 ‘희망’으로 표기한다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=&pageIndex=1&qna_seq=329342"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_005",
@@ -92,7 +120,14 @@
       "맞습니다. ‘열렬’의 둘째 음절은 ‘ㄹ’ 받침 뒤에 있으므로 본음인 ‘렬’을 유지한다. 모음이나 ‘ㄴ’ 받침 뒤에서 ‘열’로 적는 경우와 달라 ‘열열’로 쓰지 않는다.",
       "정답은 O입니다. ‘열렬’의 둘째 음절은 ‘ㄹ’ 받침 뒤에 있으므로 본음인 ‘렬’을 유지한다. 모음이나 ‘ㄴ’ 받침 뒤에서 ‘열’로 적는 경우와 달라 ‘열열’로 쓰지 않는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=6519&mn_id=62&pageIndex=17"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_006",
@@ -111,7 +146,14 @@
       "맞습니다. ‘나무’와 ‘잎’이 결합하여 [나문닙]으로 발음된다. 모음으로 끝나는 고유어와 고유어의 합성어에서 ‘ㄴㄴ’이 덧나는 경우이므로 사이시옷을 적는다.",
       "정답은 O입니다. ‘나무’와 ‘잎’이 결합하여 [나문닙]으로 발음된다. 모음으로 끝나는 고유어와 고유어의 합성어에서 ‘ㄴㄴ’이 덧나는 경우이므로 사이시옷을 적는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_007",
@@ -130,7 +172,14 @@
       "정답은 X입니다. ‘예쁘다’와 ‘이쁘다’는 모두 표준어이다. 같은 뜻의 표준어가 이미 있다고 해서 다른 형태가 반드시 비표준어인 것은 아니다.",
       "맞습니다. ‘예쁘다’와 ‘이쁘다’는 모두 표준어이다. 같은 뜻의 표준어가 이미 있다고 해서 다른 형태가 반드시 비표준어인 것은 아니다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://m.korean.go.kr/common/download.do?c_file_name=edc37daf-1a0c-4462-b6e1-e93785b96d55_0.pdf&file_path=etcData&o_file_name=함께+가꾸는+우리말+우리+꿈.pdf"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_008",
@@ -149,7 +198,14 @@
       "정답은 X입니다. ‘오뚝이’의 표기는 맞지만 ‘오뚝’을 명사로 본 분석이 틀렸다. ‘-하다’가 붙을 수 있는 어근 ‘오뚝’에 ‘-이’가 붙어 명사가 되었으므로 어근의 원형을 밝힌다.",
       "맞습니다. ‘오뚝이’의 표기는 맞지만 ‘오뚝’을 명사로 본 분석이 틀렸다. ‘-하다’가 붙을 수 있는 어근 ‘오뚝’에 ‘-이’가 붙어 명사가 되었으므로 어근의 원형을 밝힌다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=322792"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_009",
@@ -168,7 +224,14 @@
       "정답은 X입니다. 여기서는 어간 ‘이르-’가 그대로 있고 어미 ‘-어’가 ‘-러’로 바뀐다. 어간의 ‘르’가 바뀌었다는 분석은 틀렸으며, 러 불규칙 활용에 해당한다.",
       "맞습니다. 여기서는 어간 ‘이르-’가 그대로 있고 어미 ‘-어’가 ‘-러’로 바뀐다. 어간의 ‘르’가 바뀌었다는 분석은 틀렸으며, 러 불규칙 활용에 해당한다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_010",
@@ -187,7 +250,14 @@
       "정답은 X입니다. ‘굳이’의 표기는 맞지만 ‘이’를 조사로 본 분석이 틀렸다. 여기의 ‘-이’는 부사를 만드는 접미사이다. 구개음화로 [구지]가 되어도 ‘굳-’의 ‘ㄷ’을 밝혀 적는다.",
       "맞습니다. ‘굳이’의 표기는 맞지만 ‘이’를 조사로 본 분석이 틀렸다. 여기의 ‘-이’는 부사를 만드는 접미사이다. 구개음화로 [구지]가 되어도 ‘굳-’의 ‘ㄷ’을 밝혀 적는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=98&pageIndex=1&qna_seq=323107"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_011",
@@ -206,7 +276,14 @@
       "맞습니다. ‘이틀’과 ‘날’이 어울릴 때 ‘ㄹ’이 ‘ㄷ’으로 소리 나는 것을 반영하여 ‘이튿날’로 적는다. 원형을 그대로 유지한 ‘이틀날’로 적지 않는다.",
       "정답은 O입니다. ‘이틀’과 ‘날’이 어울릴 때 ‘ㄹ’이 ‘ㄷ’으로 소리 나는 것을 반영하여 ‘이튿날’로 적는다. 원형을 그대로 유지한 ‘이틀날’로 적지 않는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/nkview/nknews/200601/90_3.html"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_012",
@@ -225,7 +302,14 @@
       "맞습니다. ‘-던’과 ‘-든’은 뜻과 쓰임이 서로 다른 어미이다. 선택을 나타내는 ‘-든’은 ‘-든지’의 준말이지 ‘-던’의 준말이 아니다.",
       "정답은 O입니다. ‘-던’과 ‘-든’은 뜻과 쓰임이 서로 다른 어미이다. 선택을 나타내는 ‘-든’은 ‘-든지’의 준말이지 ‘-던’의 준말이 아니다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_013",
@@ -244,7 +328,14 @@
       "맞습니다. 수공업적 기술을 지닌 사람을 나타낼 때에는 ‘-장이’를 쓴다. 단순한 사람의 성질이나 습관을 나타내는 ‘-쟁이’와 구별한다.",
       "정답은 O입니다. 수공업적 기술을 지닌 사람을 나타낼 때에는 ‘-장이’를 쓴다. 단순한 사람의 성질이나 습관을 나타내는 ‘-쟁이’와 구별한다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/nkview/news_pdf/1302.pdf"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_014",
@@ -263,7 +354,14 @@
       "정답은 X입니다. 물건값 또는 물건값의 비싸고 싼 정도를 뜻하는 명사는 ‘금새’로 적는다. ‘금시에’의 준말인 부사 ‘금세’와 의미가 다른 말이다.",
       "맞습니다. 물건값 또는 물건값의 비싸고 싼 정도를 뜻하는 명사는 ‘금새’로 적는다. ‘금시에’의 준말인 부사 ‘금세’와 의미가 다른 말이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=305617"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_015",
@@ -282,7 +380,14 @@
       "맞습니다. 합성어나 이에 준하는 말에서 치아를 뜻하는 ‘이’가 ‘니’로 소리 나면 ‘니’로 적는다. ‘덧니’도 이 규정의 예이며 ‘덧이’로 적지 않는다.",
       "정답은 O입니다. 합성어나 이에 준하는 말에서 치아를 뜻하는 ‘이’가 ‘니’로 소리 나면 ‘니’로 적는다. ‘덧니’도 이 규정의 예이며 ‘덧이’로 적지 않는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_016",
@@ -301,7 +406,14 @@
       "맞습니다. 모음이나 ‘ㄴ’ 받침 뒤에 이어지는 ‘률’은 ‘율’로 적는다. ‘백분율’은 ‘분’의 받침이 ‘ㄴ’이므로 이 조건에 해당한다.",
       "정답은 O입니다. 모음이나 ‘ㄴ’ 받침 뒤에 이어지는 ‘률’은 ‘율’로 적는다. ‘백분율’은 ‘분’의 받침이 ‘ㄴ’이므로 이 조건에 해당한다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_017",
@@ -320,7 +432,14 @@
       "맞습니다. ‘돌아왔음’은 ‘돌아오-’에 과거를 나타내는 ‘-았-’과 명사형 어미 ‘-음’이 결합한 형태이다. ‘-음’은 명사를 만드는 접미사가 아니며, ‘그가 돌아왔음’이 명사절로 쓰인다.",
       "정답은 O입니다. ‘돌아왔음’은 ‘돌아오-’에 과거를 나타내는 ‘-았-’과 명사형 어미 ‘-음’이 결합한 형태이다. ‘-음’은 명사를 만드는 접미사가 아니며, ‘그가 돌아왔음’이 명사절로 쓰인다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/nkview/nknews/200502/79_3.html"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_018",
@@ -339,7 +458,14 @@
       "정답은 X입니다. ‘깨끗지’라는 표기는 맞지만 ‘ㅎ’만 탈락했다는 설명은 틀렸다. 여기서는 어간의 끝음절 ‘하’ 전체가 줄어든다.",
       "맞습니다. ‘깨끗지’라는 표기는 맞지만 ‘ㅎ’만 탈락했다는 설명은 틀렸다. 여기서는 어간의 끝음절 ‘하’ 전체가 줄어든다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=306010"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_019",
@@ -358,7 +484,14 @@
       "맞습니다. ‘푸-’에 모음으로 시작하는 어미 ‘-어라’가 붙으면 ‘ㅜ’가 탈락하여 ‘퍼라’가 된다. ‘ㅜ’와 ‘ㅓ’가 합쳐져 ‘ㅝ’가 된 형태로 분석하지 않는다.",
       "정답은 O입니다. ‘푸-’에 모음으로 시작하는 어미 ‘-어라’가 붙으면 ‘ㅜ’가 탈락하여 ‘퍼라’가 된다. ‘ㅜ’와 ‘ㅓ’가 합쳐져 ‘ㅝ’가 된 형태로 분석하지 않는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&qna_seq=322819"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_020",
@@ -377,7 +510,14 @@
       "정답은 X입니다. ‘국련’이라는 표기는 맞지만 두음 법칙을 적용했다는 설명은 틀렸다. 준말에서는 본음으로 소리 나는 것을 본음대로 적으므로 ‘련’을 유지한다.",
       "맞습니다. ‘국련’이라는 표기는 맞지만 두음 법칙을 적용했다는 설명은 틀렸다. 준말에서는 본음으로 소리 나는 것을 본음대로 적으므로 ‘련’을 유지한다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=321988"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_021",
@@ -396,7 +536,14 @@
       "정답은 X입니다. ‘며칠’이라는 표기는 맞지만 그 근거는 틀렸다. ‘며칠’은 어원이 분명하지 않은 말로 다루므로 ‘몇’과 ‘일’의 원형을 밝혀 적은 사례가 아니다.",
       "맞습니다. ‘며칠’이라는 표기는 맞지만 그 근거는 틀렸다. ‘며칠’은 어원이 분명하지 않은 말로 다루므로 ‘몇’과 ‘일’의 원형을 밝혀 적은 사례가 아니다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=9261&mn_id=&pageIndex=9"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_022",
@@ -415,7 +562,14 @@
       "정답은 X입니다. 접두사처럼 쓰이는 한자가 붙은 말에도 뒷말의 두음 법칙이 적용된다. ‘신-’과 ‘여성’이 결합한 것이므로 ‘신여성’을 그대로 쓴다.",
       "맞습니다. 접두사처럼 쓰이는 한자가 붙은 말에도 뒷말의 두음 법칙이 적용된다. ‘신-’과 ‘여성’이 결합한 것이므로 ‘신여성’을 그대로 쓴다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=261&pageIndex=1&qna_seq=324622"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_023",
@@ -434,7 +588,14 @@
       "맞습니다. 같은 한자가 단어에 따라 본음과 속음으로 쓰이면 각각 그 소리에 따라 적는다. ‘곤란’은 본음 ‘난’이 아니라 속음 ‘란’을 적는 예이다.",
       "정답은 O입니다. 같은 한자가 단어에 따라 본음과 속음으로 쓰이면 각각 그 소리에 따라 적는다. ‘곤란’은 본음 ‘난’이 아니라 속음 ‘란’을 적는 예이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_024",
@@ -453,7 +614,14 @@
       "맞습니다. 증거라는 자격을 나타내므로 조사 ‘로서’를 쓴다. ‘로서’는 사람 뒤에만 붙는 것이 아니며, 사물을 가리킨다는 이유만으로 수단·도구를 나타내는 ‘로써’로 고치면 안 된다.",
       "정답은 O입니다. 증거라는 자격을 나타내므로 조사 ‘로서’를 쓴다. ‘로서’는 사람 뒤에만 붙는 것이 아니며, 사물을 가리킨다는 이유만으로 수단·도구를 나타내는 ‘로써’로 고치면 안 된다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=279237"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_025",
@@ -472,7 +640,14 @@
       "정답은 X입니다. ‘부딪치다’는 ‘부딪다’를 강조하는 말이고 ‘부딪히다’는 피동사이다. 두 말의 형태와 의미를 구별해야 한다.",
       "맞습니다. ‘부딪치다’는 ‘부딪다’를 강조하는 말이고 ‘부딪히다’는 피동사이다. 두 말의 형태와 의미를 구별해야 한다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_026",
@@ -491,7 +666,14 @@
       "맞습니다. 끝음절이 ‘이’로 나는 말이므로 ‘틈틈이’로 적는다. ‘틈틈히’는 틀린 표기이다.",
       "정답은 O입니다. 끝음절이 ‘이’로 나는 말이므로 ‘틈틈이’로 적는다. ‘틈틈히’는 틀린 표기이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_027",
@@ -510,7 +692,14 @@
       "정답은 X입니다. 불확실한 사실을 나타내는 어미는 ‘-ㄹ는지’이다. ‘갈런지’가 아니라 ‘갈는지’로 적는다.",
       "맞습니다. 불확실한 사실을 나타내는 어미는 ‘-ㄹ는지’이다. ‘갈런지’가 아니라 ‘갈는지’로 적는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=8073&mn_id=62&pageIndex=10"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_028",
@@ -529,7 +718,14 @@
       "맞습니다. ‘곱’ 뒤에 접미사 ‘-빼기’가 결합한 말이다. ‘곱배기’로 적지 않는다.",
       "정답은 O입니다. ‘곱’ 뒤에 접미사 ‘-빼기’가 결합한 말이다. ‘곱배기’로 적지 않는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_029",
@@ -548,7 +744,14 @@
       "정답은 X입니다. 끈으로 묶는 뜻은 ‘매다’이므로 ‘맸다’로 적는다. ‘메다’는 어깨에 걸치거나 올려놓는 뜻 등에 쓰인다.",
       "맞습니다. 끈으로 묶는 뜻은 ‘매다’이므로 ‘맸다’로 적는다. ‘메다’는 어깨에 걸치거나 올려놓는 뜻 등에 쓰인다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_030",
@@ -567,7 +770,14 @@
       "맞습니다. 얇게 써는 뜻의 기본형은 ‘저미다’이다. ‘저미었다’가 줄어 ‘저몄다’가 된다.",
       "정답은 O입니다. 얇게 써는 뜻의 기본형은 ‘저미다’이다. ‘저미었다’가 줄어 ‘저몄다’가 된다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_031",
@@ -586,7 +796,14 @@
       "정답은 X입니다. 영화를 보지 않은 화자가 친구의 평을 옮기는 맥락이므로 ‘슬프다고 해’의 준말 ‘슬프대’를 쓴다. 친구의 말을 귀로 직접 들었다는 사실만으로, 영화를 직접 보고 느낀 경험을 나타내는 ‘슬프데’로 바꿀 수는 없다.",
       "맞습니다. 영화를 보지 않은 화자가 친구의 평을 옮기는 맥락이므로 ‘슬프다고 해’의 준말 ‘슬프대’를 쓴다. 친구의 말을 귀로 직접 들었다는 사실만으로, 영화를 직접 보고 느낀 경험을 나타내는 ‘슬프데’로 바꿀 수는 없다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&qna_seq=307387"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_032",
@@ -605,7 +822,14 @@
       "맞습니다. 일이나 경우를 뜻하는 ‘데’는 의존 명사이고 ‘에’와 ‘도’는 조사이다. ‘짓는 데’는 띄고 ‘데에도’는 붙인다.",
       "정답은 O입니다. 일이나 경우를 뜻하는 ‘데’는 의존 명사이고 ‘에’와 ‘도’는 조사이다. ‘짓는 데’는 띄고 ‘데에도’는 붙인다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_033",
@@ -624,7 +848,14 @@
       "정답은 X입니다. 대명사 ‘너’ 뒤의 ‘만큼’은 조사이고 뒤의 ‘도’도 조사이다. 조사들이 연속되어도 앞말에 붙이므로 ‘너만큼도’로 적는다.",
       "맞습니다. 대명사 ‘너’ 뒤의 ‘만큼’은 조사이고 뒤의 ‘도’도 조사이다. 조사들이 연속되어도 앞말에 붙이므로 ‘너만큼도’로 적는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_034",
@@ -643,7 +874,14 @@
       "맞습니다. 경과한 시간을 뜻하는 ‘지’는 의존 명사이고 ‘가’는 조사이다. ‘떠난 지’는 띄고 ‘지가’는 붙인다.",
       "정답은 O입니다. 경과한 시간을 뜻하는 ‘지’는 의존 명사이고 ‘가’는 조사이다. ‘떠난 지’는 띄고 ‘지가’는 붙인다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_035",
@@ -662,7 +900,14 @@
       "정답은 X입니다. ‘3 시간’은 원칙에 맞지만 ‘3시간’도 허용된다. 숫자와 어울릴 때 붙여 쓸 수 있으므로 ‘반드시’가 틀리다.",
       "맞습니다. ‘3 시간’은 원칙에 맞지만 ‘3시간’도 허용된다. 숫자와 어울릴 때 붙여 쓸 수 있으므로 ‘반드시’가 틀리다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_036",
@@ -681,7 +926,14 @@
       "맞습니다. ‘이든지’는 체언 ‘무엇’ 뒤에 붙어 어느 것이 선택되어도 상관없음을 나타내는 조사이다. 이 문장의 ‘이든지’를 어미로 분석하지 않는다.",
       "정답은 O입니다. ‘이든지’는 체언 ‘무엇’ 뒤에 붙어 어느 것이 선택되어도 상관없음을 나타내는 조사이다. 이 문장의 ‘이든지’를 어미로 분석하지 않는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_037",
@@ -700,7 +952,14 @@
       "정답은 X입니다. 수는 ‘만’ 단위로 띄어 쓴다. 1,100은 ‘천백’으로 붙여 적는다.",
       "맞습니다. 수는 ‘만’ 단위로 띄어 쓴다. 1,100은 ‘천백’으로 붙여 적는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_038",
@@ -719,7 +978,14 @@
       "맞습니다. ‘-여’는 그 수를 넘는다는 뜻을 더하는 접미사이다. 사람 수를 세는 단위 명사 ‘명’은 앞말과 띄어 쓴다.",
       "정답은 O입니다. ‘-여’는 그 수를 넘는다는 뜻을 더하는 접미사이다. 사람 수를 세는 단위 명사 ‘명’은 앞말과 띄어 쓴다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_039",
@@ -738,7 +1004,14 @@
       "정답은 X입니다. ‘겸’은 두 일을 아울러 한다는 뜻의 의존 명사이다. 띄어쓰기는 맞지만 조사라는 분석이 틀리다.",
       "맞습니다. ‘겸’은 두 일을 아울러 한다는 뜻의 의존 명사이다. 띄어쓰기는 맞지만 조사라는 분석이 틀리다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_040",
@@ -757,7 +1030,14 @@
       "맞습니다. 전문 용어는 단어별로 띄는 것이 원칙이며 붙여 쓰는 것도 허용된다. 붙여 쓰기만 옳은 것은 아니다.",
       "정답은 O입니다. 전문 용어는 단어별로 띄는 것이 원칙이며 붙여 쓰는 것도 허용된다. 붙여 쓰기만 옳은 것은 아니다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_041",
@@ -776,7 +1056,14 @@
       "정답은 X입니다. ‘그동안’은 앞에서 말한 기간을 뜻하는 한 단어이다. 두 단어를 임시로 붙이는 허용 규정의 예가 아니다.",
       "맞습니다. ‘그동안’은 앞에서 말한 기간을 뜻하는 한 단어이다. 두 단어를 임시로 붙이는 허용 규정의 예가 아니다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=60236"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_042",
@@ -795,7 +1082,14 @@
       "맞습니다. 성과 이름은 붙이는 것이 원칙이지만 경계를 분명히 구분할 필요가 있으면 띄어 쓸 수 있다.",
       "정답은 O입니다. 성과 이름은 붙이는 것이 원칙이지만 경계를 분명히 구분할 필요가 있으면 띄어 쓸 수 있다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_043",
@@ -814,7 +1108,14 @@
       "정답은 X입니다. 원칙과 허용이 뒤바뀌었다. ‘적어 두었다’가 원칙이고 ‘적어두었다’도 허용된다.",
       "맞습니다. 원칙과 허용이 뒤바뀌었다. ‘적어 두었다’가 원칙이고 ‘적어두었다’도 허용된다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_044",
@@ -833,7 +1134,14 @@
       "맞습니다. 이때 ‘가다’는 실제 이동을 뜻하는 본용언이다. 두 본용언은 ‘먹고 가다’로 띄어 쓴다.",
       "정답은 O입니다. 이때 ‘가다’는 실제 이동을 뜻하는 본용언이다. 두 본용언은 ‘먹고 가다’로 띄어 쓴다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_045",
@@ -852,7 +1160,14 @@
       "정답은 X입니다. 의존 명사 ‘척’ 뒤에 조사 ‘을’이 들어가면 붙여 쓰지 않는다. ‘아는 척을 하다’로 적는다.",
       "맞습니다. 의존 명사 ‘척’ 뒤에 조사 ‘을’이 들어가면 붙여 쓰지 않는다. ‘아는 척을 하다’로 적는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_046",
@@ -871,7 +1186,14 @@
       "맞습니다. 체언 뒤의 조사 ‘뿐’과 관형어 뒤의 의존 명사 ‘뿐’은 띄어쓰기가 다르다. 소리가 같아도 품사와 결합 조건을 확인해야 한다.",
       "정답은 O입니다. 체언 뒤의 조사 ‘뿐’과 관형어 뒤의 의존 명사 ‘뿐’은 띄어쓰기가 다르다. 소리가 같아도 품사와 결합 조건을 확인해야 한다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_047",
@@ -890,7 +1212,14 @@
       "정답은 X입니다. 제51항은 끝음절이 ‘이’로만 나는 경우에 ‘-이’로 적고, ‘히’로만 나거나 ‘이, 히’로 나는 경우에는 ‘-히’로 적도록 한다. 발음의 차이를 복수 표기 허용으로 해석하면 안 된다.",
       "맞습니다. 제51항은 끝음절이 ‘이’로만 나는 경우에 ‘-이’로 적고, ‘히’로만 나거나 ‘이, 히’로 나는 경우에는 ‘-히’로 적도록 한다. 발음의 차이를 복수 표기 허용으로 해석하면 안 된다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_048",
@@ -909,7 +1238,14 @@
       "맞습니다. ‘-째’는 ‘그대로’ 또는 ‘전부’의 뜻을 더하는 접미사이다. 의존 명사가 아니므로 ‘껍질 째’로 띄지 않는다.",
       "정답은 O입니다. ‘-째’는 ‘그대로’ 또는 ‘전부’의 뜻을 더하는 접미사이다. 의존 명사가 아니므로 ‘껍질 째’로 띄지 않는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=6271&mn_id=62&pageIndex=1"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_049",
@@ -928,7 +1264,14 @@
       "정답은 X입니다. 어떤 사실이나 상태를 뜻하는 ‘줄’은 의존 명사이다. 띄어쓰기는 맞지만 어미라는 설명이 틀리며, 어미는 앞말에 붙여 쓴다.",
       "맞습니다. 어떤 사실이나 상태를 뜻하는 ‘줄’은 의존 명사이다. 띄어쓰기는 맞지만 어미라는 설명이 틀리며, 어미는 앞말에 붙여 쓴다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
+      }
+    ]
   },
   {
     "id": "modern_spelling_central_050",
@@ -947,7 +1290,14 @@
       "정답은 X입니다. 단음절어라고 무조건 붙이지 않는다. 부사 ‘더’와 관형어 ‘큰’처럼 자연스러운 의미 단위로 묶이지 않는 구성은 띄어 쓴다.",
       "맞습니다. 단음절어라고 무조건 붙이지 않는다. 부사 ‘더’와 관형어 ‘큰’처럼 자연스러운 의미 단위로 묶이지 않는 구성은 띄어 쓴다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_006",
@@ -966,7 +1316,14 @@
       "정답은 X입니다. 여러 사람을 가리키지만 그 수를 나타내지는 않는 대명사이다.",
       "맞습니다. 여러 사람을 가리키지만 그 수를 나타내지는 않는 대명사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=17182"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_021",
@@ -985,7 +1342,14 @@
       "맞습니다. ‘잊지 아니하였다’를 줄인 말이므로 ‘않았다’로 쓴다.",
       "정답은 O입니다. ‘잊지 아니하였다’를 줄인 말이므로 ‘않았다’로 쓴다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=322400&searchCondition=&searchKeyword="
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_022",
@@ -1004,7 +1368,14 @@
       "정답은 X입니다. ‘아니’의 준말인 부사 ‘안’을 써서 ‘안 먹었다’로 적는다.",
       "맞습니다. ‘아니’의 준말인 부사 ‘안’을 써서 ‘안 먹었다’로 적는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=322400&searchCondition=&searchKeyword="
+      }
+    ]
   },
   {
     "id": "modern_parts_short_017",
@@ -1023,7 +1394,14 @@
       "맞습니다. ‘먹였다’의 기본형 ‘먹이다’는 동사이다.",
       "정답은 O입니다. ‘먹였다’의 기본형 ‘먹이다’는 동사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=61953"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_008",
@@ -1042,7 +1420,14 @@
       "정답은 X입니다. 이름을 모르는 사람을 대신 가리키는 대명사이다.",
       "맞습니다. 이름을 모르는 사람을 대신 가리키는 대명사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=8780&mn_id=62&pageIndex=29"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_039",
@@ -1061,7 +1446,14 @@
       "맞습니다. 피기 전의 꽃을 뜻하므로 ‘꽃봉오리’가 맞다. ‘봉우리’는 산의 솟은 부분을 뜻한다.",
       "정답은 O입니다. 피기 전의 꽃을 뜻하므로 ‘꽃봉오리’가 맞다. ‘봉우리’는 산의 솟은 부분을 뜻한다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/common/download.do?c_file_name=a0027c40-ac14-4303-b078-ce97382abf6d_0.pdf&file_path=reportData&o_file_name=%EC%B2%AD%EC%86%8C%EB%85%84%EC%9D%84+%EC%9C%84%ED%95%9C+%EB%B0%94%EB%A5%B8+%EA%B5%AD%EC%96%B4+%EC%83%9D%ED%99%9C.pdf"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_048",
@@ -1080,7 +1472,14 @@
       "정답은 X입니다. 병이 회복된다는 뜻은 ‘낫다’이며 과거형은 ‘나았다’이다.",
       "맞습니다. 병이 회복된다는 뜻은 ‘낫다’이며 과거형은 ‘나았다’이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_009",
@@ -1099,7 +1498,14 @@
       "맞습니다. 사물의 이름을 대신하여 대상을 가리킨다.",
       "정답은 O입니다. 사물의 이름을 대신하여 대상을 가리킨다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=311884"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_019",
@@ -1118,7 +1524,14 @@
       "맞습니다. ‘돼’는 ‘되어’의 준말이다. ‘쉬어도 되어’로 풀 수 있다.",
       "정답은 O입니다. ‘돼’는 ‘되어’의 준말이다. ‘쉬어도 되어’로 풀 수 있다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_050",
@@ -1137,7 +1550,14 @@
       "정답은 X입니다. 성질이나 행태를 나타내는 말이므로 ‘개구쟁이’로 적는다.",
       "맞습니다. 성질이나 행태를 나타내는 말이므로 ‘개구쟁이’로 적는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/nkview/nknews/199904/9_2.htm"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_049",
@@ -1156,7 +1576,14 @@
       "정답은 X입니다. 접미사는 단어의 일부이며 학교 문법에서 별개의 품사로 세지 않는다.",
       "맞습니다. 접미사는 단어의 일부이며 학교 문법에서 별개의 품사로 세지 않는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=313860"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_050",
@@ -1175,7 +1602,19 @@
       "맞습니다. ‘셋’은 수사이고 ‘두’는 관형사이다.",
       "정답은 O입니다. ‘셋’은 수사이고 ‘두’는 관형사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://krdict.korean.go.kr/eng/dicMarinerSearch/search?mainSearchWord=%EB%91%90"
+      },
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://krdict.korean.go.kr/eng/dicMarinerSearch/search?mainSearchWord=%EC%85%8B&nation=eng"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_013",
@@ -1194,7 +1633,14 @@
       "맞습니다. 수사는 명사·대명사와 함께 체언에 속한다.",
       "정답은 O입니다. 수사는 명사·대명사와 함께 체언에 속한다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=316523"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_027",
@@ -1213,7 +1659,14 @@
       "맞습니다. 의문을 나타내는 어미 ‘-을까’는 된소리로 적는다.",
       "정답은 O입니다. 의문을 나타내는 어미 ‘-을까’는 된소리로 적는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_036",
@@ -1232,7 +1685,14 @@
       "정답은 X입니다. 느낌을 독립적으로 드러내는 감탄사이다.",
       "맞습니다. 느낌을 독립적으로 드러내는 감탄사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=27&qna_seq=330130"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_002",
@@ -1251,7 +1711,14 @@
       "정답은 X입니다. ‘교내’는 명사이다. ‘교내에서’가 부사어로 쓰인 것이다.",
       "맞습니다. ‘교내’는 명사이다. ‘교내에서’가 부사어로 쓰인 것이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=24030"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_037",
@@ -1270,7 +1737,14 @@
       "맞습니다. 기본형 ‘서슴다’의 어간 ‘서슴-’에 ‘-지’가 붙은 형태이므로 ‘서슴지’로 적는다.",
       "정답은 O입니다. 기본형 ‘서슴다’의 어간 ‘서슴-’에 ‘-지’가 붙은 형태이므로 ‘서슴지’로 적는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=8456&mn_id=208&pageIndex=1"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_023",
@@ -1289,7 +1763,14 @@
       "맞습니다. ‘두껍다’에 관형사형 어미가 결합한 형태이다.",
       "정답은 O입니다. ‘두껍다’에 관형사형 어미가 결합한 형태이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://krdict.korean.go.kr/eng/dicMarinerSearch/search?mainSearchWord=%EB%91%90"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_034",
@@ -1308,7 +1789,14 @@
       "정답은 X입니다. 맡은 일을 뜻하는 말은 ‘역할(役割)’이다.",
       "맞습니다. 맡은 일을 뜻하는 말은 ‘역할(役割)’이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=314724"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_010",
@@ -1327,7 +1815,14 @@
       "정답은 X입니다. ‘반드시’는 틀림없이 꼭, ‘반듯이’는 비뚤지 않고 바르게라는 뜻이다.",
       "맞습니다. ‘반드시’는 틀림없이 꼭, ‘반듯이’는 비뚤지 않고 바르게라는 뜻이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_011",
@@ -1346,7 +1841,14 @@
       "맞습니다. 수량을 나타내며 조사 ‘이’가 붙은 수사이다.",
       "정답은 O입니다. 수량을 나타내며 조사 ‘이’가 붙은 수사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://krdict.korean.go.kr/eng/dicMarinerSearch/search?mainSearchWord=%EC%85%8B&nation=eng"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_027",
@@ -1365,7 +1867,14 @@
       "맞습니다. 관형사 ‘그’가 수사 ‘둘’을 꾸민다. 관형사가 명사만 꾸미는 것은 아니다.",
       "정답은 O입니다. 관형사 ‘그’가 수사 ‘둘’을 꾸민다. 관형사가 명사만 꾸미는 것은 아니다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=8882&mn_id=62&pageIndex=24"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_015",
@@ -1384,7 +1893,14 @@
       "맞습니다. 성과 이름은 붙여 쓴다. 성과 이름을 구별해야 하는 특별한 경우는 별도이다.",
       "정답은 O입니다. 성과 이름은 붙여 쓴다. 성과 이름을 구별해야 하는 특별한 경우는 별도이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_019",
@@ -1403,7 +1919,14 @@
       "맞습니다. 명사를 꾸미더라도 ‘먹다’가 관형사로 바뀌지는 않는다.",
       "정답은 O입니다. 명사를 꾸미더라도 ‘먹다’가 관형사로 바뀌지는 않는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=58272"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_033",
@@ -1422,7 +1945,14 @@
       "맞습니다. 어간 ‘만들-’의 ‘ㄹ’을 유지하고 ‘-ㅁ’을 붙이므로 ‘만듦’이 된다.",
       "정답은 O입니다. 어간 ‘만들-’의 ‘ㄹ’을 유지하고 ‘-ㅁ’을 붙이므로 ‘만듦’이 된다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/nkview/nknews/200502/79_3.html"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_046",
@@ -1441,7 +1971,14 @@
       "정답은 X입니다. 답을 틀리지 않게 댔다는 뜻은 ‘맞히다’이므로 ‘맞혔다’로 쓴다.",
       "맞습니다. 답을 틀리지 않게 댔다는 뜻은 ‘맞히다’이므로 ‘맞혔다’로 쓴다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=313545"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_004",
@@ -1460,7 +1997,14 @@
       "정답은 X입니다. 평가한 결과를 가리키는 명사이며 수 자체를 나타내는 수사가 아니다.",
       "맞습니다. 평가한 결과를 가리키는 명사이며 수 자체를 나타내는 수사가 아니다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=64457"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_041",
@@ -1479,7 +2023,14 @@
       "맞습니다. ‘잠그-’에 ‘-았-’이 결합하면 ‘ㅡ’가 탈락하여 ‘잠갔다’가 된다.",
       "정답은 O입니다. ‘잠그-’에 ‘-았-’이 결합하면 ‘ㅡ’가 탈락하여 ‘잠갔다’가 된다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/nkview/nknews/200506/83_3.html"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_017",
@@ -1498,7 +2049,14 @@
       "맞습니다. ‘해’ 뒤의 보조 용언 ‘볼게’는 띄어 쓰는 것이 원칙이고 붙여 쓰기도 허용된다.",
       "정답은 O입니다. ‘해’ 뒤의 보조 용언 ‘볼게’는 띄어 쓰는 것이 원칙이고 붙여 쓰기도 허용된다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_020",
@@ -1517,7 +2075,14 @@
       "정답은 X입니다. 어미와 결합하여 활용하는 동사이므로 가변어이다.",
       "맞습니다. 어미와 결합하여 활용하는 동사이므로 가변어이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=330519&searchCondition=&searchKeyword="
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_044",
@@ -1536,7 +2101,14 @@
       "정답은 X입니다. ‘반갑다’는 ‘반가워서’로 활용한다. ‘돕다·곱다’의 ‘도와·고와’와 구별한다.",
       "맞습니다. ‘반갑다’는 ‘반가워서’로 활용한다. ‘돕다·곱다’의 ‘도와·고와’와 구별한다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_049",
@@ -1555,7 +2127,14 @@
       "맞습니다. 첫머리의 한자음 ‘력’에는 두음 법칙이 적용되고 뒤의 ‘량’은 본음을 유지한다.",
       "정답은 O입니다. 첫머리의 한자음 ‘력’에는 두음 법칙이 적용되고 뒤의 ‘량’은 본음을 유지한다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_020",
@@ -1574,7 +2153,14 @@
       "정답은 X입니다. 어간 ‘되-’에 ‘-면’이 붙으므로 ‘되면’으로 쓴다.",
       "맞습니다. 어간 ‘되-’에 ‘-면’이 붙으므로 ‘되면’으로 쓴다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=322400&searchCondition=&searchKeyword="
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_007",
@@ -1593,7 +2179,14 @@
       "맞습니다. 사람을 나타내는 접미사 ‘-꾼’은 된소리로 적으므로 ‘심부름꾼’이 맞다.",
       "정답은 O입니다. 사람을 나타내는 접미사 ‘-꾼’은 된소리로 적으므로 ‘심부름꾼’이 맞다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=8086&mn_id=46&pageIndex=1"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_010",
@@ -1612,7 +2205,14 @@
       "정답은 X입니다. 명사 앞에 놓여도 ‘우리’의 품사는 대명사이다.",
       "맞습니다. 명사 앞에 놓여도 ‘우리’의 품사는 대명사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=17182"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_038",
@@ -1631,7 +2231,14 @@
       "정답은 X입니다. 당황하거나 낭패를 느낄 때 쓰는 감탄사이다.",
       "맞습니다. 당황하거나 낭패를 느낄 때 쓰는 감탄사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://m.korean.go.kr/common/download.do%3Bfront%3D7A179D4FC3F463F9CDB293A8A7E588C3?c_file_name=edc37daf-1a0c-4462-b6e1-e93785b96d55_0.pdf&file_path=etcData&o_file_name=%ED%95%A8%EA%BB%98+%EA%B0%80%EA%BE%B8%EB%8A%94+%EC%9A%B0%EB%A6%AC%EB%A7%90+%EC%9A%B0%EB%A6%AC+%EA%BF%88.pdf"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_042",
@@ -1650,7 +2257,14 @@
       "정답은 X입니다. 체언 ‘책’에 붙은 목적격 조사이다.",
       "맞습니다. 체언 ‘책’에 붙은 목적격 조사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://krdict.korean.go.kr/eng/dicSearch/SearchView?ParaWordNo=86355&nation=eng"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_016",
@@ -1669,7 +2283,14 @@
       "정답은 X입니다. 성명 뒤에 붙는 호칭어 ‘씨’는 띄므로 ‘김하늘 씨’로 쓴다.",
       "맞습니다. 성명 뒤에 붙는 호칭어 ‘씨’는 띄므로 ‘김하늘 씨’로 쓴다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_018",
@@ -1688,7 +2309,14 @@
       "정답은 X입니다. 본용언과 보조 용언 사이에 조사가 끼면 붙일 수 없다. ‘읽어만 보았다’로 쓴다.",
       "맞습니다. 본용언과 보조 용언 사이에 조사가 끼면 붙일 수 없다. ‘읽어만 보았다’로 쓴다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_038",
@@ -1707,7 +2335,14 @@
       "정답은 X입니다. 받침 있는 명사 ‘공책’ 뒤에는 ‘이에요’가 붙으므로 ‘공책이에요’로 쓴다.",
       "맞습니다. 받침 있는 명사 ‘공책’ 뒤에는 ‘이에요’가 붙으므로 ‘공책이에요’로 쓴다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0002"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_012",
@@ -1726,7 +2361,14 @@
       "정답은 X입니다. 단위를 나타내는 ‘자루’는 띄어 쓴다. 수량을 나타내므로 ‘두 자루’가 맞다.",
       "맞습니다. 단위를 나타내는 ‘자루’는 띄어 쓴다. 수량을 나타내므로 ‘두 자루’가 맞다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_003",
@@ -1745,7 +2387,14 @@
       "맞습니다. 활동을 나타내는 뜻이 있어도 ‘수업’ 자체의 품사는 명사이다.",
       "정답은 O입니다. 활동을 나타내는 뜻이 있어도 ‘수업’ 자체의 품사는 명사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=64597"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_043",
@@ -1764,7 +2413,14 @@
       "맞습니다. 사람을 부르는 이름 뒤에 붙어 부름을 나타내는 조사이다.",
       "정답은 O입니다. 사람을 부르는 이름 뒤에 붙어 부름을 나타내는 조사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://krdict.korean.go.kr/jpn/dicSearch/SearchView?ParaWordNo=86410"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_046",
@@ -1783,7 +2439,14 @@
       "정답은 X입니다. 부사어는 문장 성분이며 ‘빠르게’의 품사는 형용사이다.",
       "맞습니다. 부사어는 문장 성분이며 ‘빠르게’의 품사는 형용사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=330693&searchCondition=&searchKeyword="
+      }
+    ]
   },
   {
     "id": "modern_parts_short_022",
@@ -1802,7 +2465,14 @@
       "정답은 X입니다. 대상의 상태나 성질을 나타내는 형용사이다.",
       "맞습니다. 대상의 상태나 성질을 나타내는 형용사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=5605&mn_id=62"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_014",
@@ -1821,7 +2491,14 @@
       "정답은 X입니다. 한글로 수를 적을 때에는 만 단위로 띄므로 ‘일만 이천삼백사십오’가 맞다.",
       "맞습니다. 한글로 수를 적을 때에는 만 단위로 띄므로 ‘일만 이천삼백사십오’가 맞다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_036",
@@ -1840,7 +2517,14 @@
       "정답은 X입니다. 접미사 ‘-님’이 붙은 파생어이므로 사이시옷 없이 ‘해님’으로 적는다.",
       "맞습니다. 접미사 ‘-님’이 붙은 파생어이므로 사이시옷 없이 ‘해님’으로 적는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=8117&mn_id=216"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_047",
@@ -1859,7 +2543,14 @@
       "맞습니다. 문장 성분이 목적어라는 사실과 단어의 품사는 구별된다.",
       "정답은 O입니다. 문장 성분이 목적어라는 사실과 단어의 품사는 구별된다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=8780&mn_id=62&pageIndex=29"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_003",
@@ -1878,7 +2569,14 @@
       "맞습니다. 관형사형 ‘준비한’ 뒤의 ‘만큼’은 의존 명사이다.",
       "정답은 O입니다. 관형사형 ‘준비한’ 뒤의 ‘만큼’은 의존 명사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_028",
@@ -1897,7 +2595,14 @@
       "정답은 X입니다. 명사 ‘옷’의 상태를 꾸미는 성상 관형사이다.",
       "맞습니다. 명사 ‘옷’의 상태를 꾸미는 성상 관형사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=90&pageIndex=1&qna_seq=333085&searchCondition=&searchKeyword="
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_013",
@@ -1916,7 +2621,14 @@
       "맞습니다. 단위 명사가 아라비아 숫자와 함께 쓰이면 붙여 쓰는 것도 허용된다.",
       "정답은 O입니다. 단위 명사가 아라비아 숫자와 함께 쓰이면 붙여 쓰는 것도 허용된다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_005",
@@ -1935,7 +2647,14 @@
       "맞습니다. 출발하는 이유를 나타내므로 ‘-으므로’를 써서 ‘끝났으므로’로 적는다.",
       "정답은 O입니다. 출발하는 이유를 나타내므로 ‘-으므로’를 써서 ‘끝났으므로’로 적는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/common/download.do%3Bfront%3DE163775EFB0FBB3EE9B3A56D3B72E531?c_file_name=940361cb-62df-4a45-b471-926c5478f3c8.pdf&file_path=etcData&o_file_name=2022+%EC%88%AB%EC%9E%90%EB%A1%9C+%EC%82%B4%ED%8E%B4%EB%B3%B4%EB%8A%94+%EC%9A%B0%EB%A6%AC%EB%A7%90.pdf"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_047",
@@ -1954,7 +2673,14 @@
       "맞습니다. 편지를 보내는 뜻은 ‘부치다’이므로 ‘부쳤다’가 맞다.",
       "정답은 O입니다. 편지를 보내는 뜻은 ‘부치다’이므로 ‘부쳤다’가 맞다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_026",
@@ -1973,7 +2699,14 @@
       "정답은 X입니다. 장소를 대신 가리키는 지시 대명사이다. ‘거기에서’가 부사어로 쓰인다.",
       "맞습니다. 장소를 대신 가리키는 지시 대명사이다. ‘거기에서’가 부사어로 쓰인다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=311884"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_041",
@@ -1992,7 +2725,14 @@
       "맞습니다. ‘대표’에 붙어 자격을 나타내며 ‘대표로’를 부사어가 되게 하는 조사이다.",
       "정답은 O입니다. ‘대표’에 붙어 자격을 나타내며 ‘대표로’를 부사어가 되게 하는 조사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/common/download.do?c_file_name=c0cbf5a7-cb03-4e25-9a43-f2f44b4e382a_0.pdf&file_path=etcData&o_file_name=%5B%EA%B5%AD%EB%A6%BD%EA%B5%AD%EC%96%B4%EC%9B%90%5D+%EB%B0%94%EB%A5%B8+%EA%B5%AD%EC%96%B4+%EC%83%9D%ED%99%9C+%EA%B5%90%EC%9E%AC_2016.pdf"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_032",
@@ -2011,7 +2751,14 @@
       "정답은 X입니다. ‘설레다’에서 나온 ‘설렘’이 표준어이며 ‘설레임’은 비표준어이다.",
       "맞습니다. ‘설레다’에서 나온 ‘설렘’이 표준어이며 ‘설레임’은 비표준어이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=6031&mn_id=217"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_029",
@@ -2030,7 +2777,14 @@
       "맞습니다. ‘오래간만’이 줄어든 한 단어이므로 ‘오랜만’으로 적는다.",
       "정답은 O입니다. ‘오래간만’이 줄어든 한 단어이므로 ‘오랜만’으로 적는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=6374&mn_id=217&pageIndex=1"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_043",
@@ -2049,7 +2803,14 @@
       "맞습니다. ‘치르-’에 ‘-어’가 결합하면 ‘ㅡ’가 탈락하여 ‘치러’가 된다.",
       "정답은 O입니다. ‘치르-’에 ‘-어’가 결합하면 ‘ㅡ’가 탈락하여 ‘치러’가 된다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/nkview/nknews/200506/83_3.html"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_040",
@@ -2068,7 +2829,14 @@
       "정답은 X입니다. 이 부사는 ‘꼼꼼히’로 적는다. ‘꼼꼼이’는 잘못된 표기이다.",
       "맞습니다. 이 부사는 ‘꼼꼼히’로 적는다. ‘꼼꼼이’는 잘못된 표기이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_042",
@@ -2087,7 +2855,14 @@
       "정답은 X입니다. 기본형이 ‘담그다’이므로 ‘ㅡ’가 탈락한 ‘담갔다’로 쓴다.",
       "맞습니다. 기본형이 ‘담그다’이므로 ‘ㅡ’가 탈락한 ‘담갔다’로 쓴다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/nkview/nknews/200506/83_3.html"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_016",
@@ -2106,7 +2881,14 @@
       "정답은 X입니다. 음식을 먹는 동작을 나타내는 동사 ‘먹다’의 활용형이다.",
       "맞습니다. 음식을 먹는 동작을 나타내는 동사 ‘먹다’의 활용형이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=58272"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_015",
@@ -2125,7 +2907,14 @@
       "맞습니다. 대략적인 수량을 나타내는 말도 수사가 될 수 있다.",
       "정답은 O입니다. 대략적인 수량을 나타내는 말도 수사가 될 수 있다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://krdict.korean.go.kr/eng/dicMarinerSearch/search?mainSearchWord=%EC%85%8B&nation=eng"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_011",
@@ -2144,7 +2933,14 @@
       "맞습니다. ‘수’는 띄고, 그 뒤의 조사 ‘밖에’는 ‘수’에 붙인다.",
       "정답은 O입니다. ‘수’는 띄고, 그 뒤의 조사 ‘밖에’는 ‘수’에 붙인다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_040",
@@ -2163,7 +2959,14 @@
       "정답은 X입니다. 갑작스러운 느낌을 드러내는 감탄사이다.",
       "맞습니다. 갑작스러운 느낌을 드러내는 감탄사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://m.korean.go.kr/common/download.do%3Bfront%3D7A179D4FC3F463F9CDB293A8A7E588C3?c_file_name=edc37daf-1a0c-4462-b6e1-e93785b96d55_0.pdf&file_path=etcData&o_file_name=%ED%95%A8%EA%BB%98+%EA%B0%80%EA%BE%B8%EB%8A%94+%EC%9A%B0%EB%A6%AC%EB%A7%90+%EC%9A%B0%EB%A6%AC+%EA%BF%88.pdf"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_048",
@@ -2182,7 +2985,14 @@
       "정답은 X입니다. ‘-다’는 어미이며 학교 문법에서 별도의 품사로 세지 않는다.",
       "맞습니다. ‘-다’는 어미이며 학교 문법에서 별도의 품사로 세지 않는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://krdict.korean.go.kr/statistic/dicStat"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_001",
@@ -2201,7 +3011,14 @@
       "맞습니다. ‘꽃’이라는 말의 형태를 밝혀 ‘꽃을’로 적는다.",
       "정답은 O입니다. ‘꽃’이라는 말의 형태를 밝혀 ‘꽃을’로 적는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_045",
@@ -2220,7 +3037,14 @@
       "맞습니다. 대명사 ‘누구’에 조사 ‘가’가 붙은 ‘누구가’가 줄어든 형태이다.",
       "정답은 O입니다. 대명사 ‘누구’에 조사 ‘가’가 붙은 ‘누구가’가 줄어든 형태이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=8780&mn_id=62&pageIndex=29"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_044",
@@ -2239,7 +3063,14 @@
       "정답은 X입니다. ‘어찌’는 해결할 방법을 묻는 부사이다. 사람이나 사물을 대신 가리키는 대명사가 아니다.",
       "맞습니다. ‘어찌’는 해결할 방법을 묻는 부사이다. 사람이나 사물을 대신 가리키는 대명사가 아니다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://krdict.korean.go.kr/eng/dicSearch/SearchView?ParaWordNo=24032&captchaNumber=&comment_user_name=&nation=eng&nationCode=6&viewTypes=on&wordComment="
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_023",
@@ -2258,7 +3089,14 @@
       "맞습니다. 선택에 상관없음을 나타내므로 ‘-든지’를 쓴다.",
       "정답은 O입니다. 선택에 상관없음을 나타내므로 ‘-든지’를 쓴다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=312390"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_033",
@@ -2277,7 +3115,14 @@
       "맞습니다. 부사는 어미를 바꾸어 활용하지 않는 불변어이다.",
       "정답은 O입니다. 부사는 어미를 바꾸어 활용하지 않는 불변어이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=330519&searchCondition=&searchKeyword="
+      }
+    ]
   },
   {
     "id": "modern_parts_short_025",
@@ -2296,7 +3141,14 @@
       "맞습니다. 형용사는 어미를 바꾸어 활용하는 가변어이다.",
       "정답은 O입니다. 형용사는 어미를 바꾸어 활용하는 가변어이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=330519&searchCondition=&searchKeyword="
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_031",
@@ -2315,7 +3167,14 @@
       "맞습니다. 한자 ‘憩’의 음은 ‘게’이므로 ‘휴계실’이 아니라 ‘휴게실’로 적는다.",
       "정답은 O입니다. 한자 ‘憩’의 음은 ‘게’이므로 ‘휴계실’이 아니라 ‘휴게실’로 적는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://krdict.korean.go.kr/eng/dicSearch/SearchView?ParaWordNo=88410&blockCount=10&currentPage=1&exaType=&mainSearchWord=%EB%81%9D&nation=eng&nationCode=6&proverbType=&searchType=E&sort=W&viewType=A&wordMatchFlag=N"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_045",
@@ -2334,7 +3193,14 @@
       "맞습니다. 그릇을 씻어 정리하는 일은 ‘설거지’로 적으며 ‘설겆이’는 표준어가 아니다.",
       "정답은 O입니다. 그릇을 씻어 정리하는 일은 ‘설거지’로 적으며 ‘설겆이’는 표준어가 아니다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/nkview/news/8/33.htm"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_009",
@@ -2353,7 +3219,14 @@
       "맞습니다. 경과한 시간을 나타내는 ‘만’은 의존 명사이므로 띄어 쓴다.",
       "정답은 O입니다. 경과한 시간을 나타내는 ‘만’은 의존 명사이므로 띄어 쓴다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_035",
@@ -2372,7 +3245,14 @@
       "맞습니다. ‘암’과 ‘닭’이 결합할 때 덧나는 ‘ㅎ’ 소리를 반영해 ‘암탉’으로 적는다.",
       "정답은 O입니다. ‘암’과 ‘닭’이 결합할 때 덧나는 ‘ㅎ’ 소리를 반영해 ‘암탉’으로 적는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_030",
@@ -2391,7 +3271,14 @@
       "정답은 X입니다. 현재의 작은 상태를 나타낼 때는 ‘작은’으로 활용한다.",
       "맞습니다. 현재의 작은 상태를 나타낼 때는 ‘작은’으로 활용한다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=27&pageIndex=1&qna_seq=334404&searchCondition=&searchKeyword="
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_024",
@@ -2410,7 +3297,14 @@
       "정답은 X입니다. 선택을 나타낼 때에는 ‘읽든지 쓰든지’로 적는다.",
       "맞습니다. 선택을 나타낼 때에는 ‘읽든지 쓰든지’로 적는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=312390"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_021",
@@ -2429,7 +3323,14 @@
       "맞습니다. 아픈 상태를 나타내는 형용사이다.",
       "정답은 O입니다. 아픈 상태를 나타내는 형용사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=6555&mn_id=&pageIndex=1"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_032",
@@ -2448,7 +3349,14 @@
       "정답은 X입니다. 명사를 꾸미지 않고 동작의 방식을 꾸미는 부사이다.",
       "맞습니다. 명사를 꾸미지 않고 동작의 방식을 꾸미는 부사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=64744"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_008",
@@ -2467,7 +3375,14 @@
       "정답은 X입니다. ‘가엾다’와 ‘가엽다’는 모두 인정되는 복수 표준어이다.",
       "맞습니다. ‘가엾다’와 ‘가엽다’는 모두 인정되는 복수 표준어이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=8958&mn_id=62&pageIndex=3"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_014",
@@ -2486,7 +3401,14 @@
       "정답은 X입니다. 수사는 수량뿐 아니라 순서도 나타낸다. 차례를 나타내는 ‘둘째’ 등이 서수사이다.",
       "맞습니다. 수사는 수량뿐 아니라 순서도 나타낸다. 차례를 나타내는 ‘둘째’ 등이 서수사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://krdict.korean.go.kr/eng/dicMarinerSearch/search?mainSearchWord=%EB%91%98&nation=eng"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_030",
@@ -2505,7 +3427,14 @@
       "정답은 X입니다. 어찌 된 일이라는 뜻의 말은 ‘웬일’이다.",
       "맞습니다. 어찌 된 일이라는 뜻의 말은 ‘웬일’이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/common/download.do%3Bfront%3DEFF3DB6B957ED72049D80CE8CF5A24DB?c_file_name=f870c8da-b2e1-4bc2-8ae2-c66bc992117d_0.pdf&file_path=etcData&o_file_name=%EB%B0%94%EB%A5%B8+%EA%B5%AD%EC%96%B4+%EC%83%9D%ED%99%9C-%EA%B5%AD%EC%96%B4%EC%A0%84%EB%AC%B8%EA%B5%90%EC%9C%A1%EA%B3%BC%EC%A0%95+%EA%B5%90%EC%9E%AC.pdf"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_039",
@@ -2524,7 +3453,14 @@
       "맞습니다. 놀라움이나 반가움을 독립적으로 드러내는 감탄사이다.",
       "정답은 O입니다. 놀라움이나 반가움을 독립적으로 드러내는 감탄사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://m.korean.go.kr/common/download.do%3Bfront%3D7A179D4FC3F463F9CDB293A8A7E588C3?c_file_name=edc37daf-1a0c-4462-b6e1-e93785b96d55_0.pdf&file_path=etcData&o_file_name=%ED%95%A8%EA%BB%98+%EA%B0%80%EA%BE%B8%EB%8A%94+%EC%9A%B0%EB%A6%AC%EB%A7%90+%EC%9A%B0%EB%A6%AC+%EA%BF%88.pdf"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_035",
@@ -2543,7 +3479,14 @@
       "맞습니다. 부탁을 부드럽게 하는 뜻을 더하는 부사이다.",
       "정답은 O입니다. 부탁을 부드럽게 하는 뜻을 더하는 부사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=27&qna_seq=330130"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_037",
@@ -2562,7 +3505,14 @@
       "맞습니다. 감탄사 ‘아’는 문장의 다른 성분과 밀접한 문법적 관계를 맺지 않고 독립적으로 쓰인다.",
       "정답은 O입니다. 감탄사 ‘아’는 문장의 다른 성분과 밀접한 문법적 관계를 맺지 않고 독립적으로 쓰인다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/common/download.do?c_file_name=a5ac0d67-5ab5-4ae0-922c-226cba3e62d6_0.pdf&file_path=reportData&o_file_name=%EA%B5%AD%EC%96%B4%EA%B5%90%EA%B3%BC%EC%9A%A9%EC%96%B4%EC%9D%98+%EC%88%98%ED%99%94+%ED%91%9C%EC%A4%80%ED%99%94+%EC%97%B0%EA%B5%AC-%EC%96%B8%EC%96%B4%EC%98%81%EC%97%AD.pdf"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_031",
@@ -2581,7 +3531,14 @@
       "맞습니다. 부사 ‘빨리’ 뒤에 보조사 ‘도’가 붙어 강조의 뜻을 더한다.",
       "정답은 O입니다. 부사 ‘빨리’ 뒤에 보조사 ‘도’가 붙어 강조의 뜻을 더한다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=86258"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_034",
@@ -2600,7 +3557,14 @@
       "정답은 X입니다. 오는 동작이 이루어지지 않았음을 나타내는 부정 부사이다.",
       "맞습니다. 오는 동작이 이루어지지 않았음을 나타내는 부정 부사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/common/download.do?c_file_name=6d50cef7-4e96-4fe9-aaab-30959a6f7872_0.pdf&file_path=reportData&o_file_name=%5B2015-01-17%5D+%EC%9E%91%EB%AC%B8%28%EC%93%B0%EA%B8%B0%29+%EB%8A%A5%EB%A0%A5+%ED%96%A5%EC%83%81%EC%9D%84+%EC%9C%84%ED%95%9C+%EB%AC%B8%EB%B2%95+%EB%82%B4%EC%9A%A9+%EA%B0%9C%EB%B0%9C+%EC%B5%9C%EC%A2%85+%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_024",
@@ -2619,7 +3583,14 @@
       "정답은 X입니다. 명사형 어미 ‘-기’가 붙어도 ‘먹기’의 품사는 동사이다.",
       "맞습니다. 명사형 어미 ‘-기’가 붙어도 ‘먹기’의 품사는 동사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=&pageIndex=1&qna_seq=321641"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_001",
@@ -2638,7 +3609,14 @@
       "맞습니다. 사람을 가리키는 이름으로 쓰인 명사이다.",
       "정답은 O입니다. 사람을 가리키는 이름으로 쓰인 명사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=66306"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_005",
@@ -2657,7 +3635,14 @@
       "맞습니다. ‘먹을’의 수식을 받는 의존 명사이다.",
       "정답은 O입니다. ‘먹을’의 수식을 받는 의존 명사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=62835"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_018",
@@ -2676,7 +3661,14 @@
       "정답은 X입니다. 물건을 놓는 뜻의 동사 ‘두다’의 활용형이다.",
       "맞습니다. 물건을 놓는 뜻의 동사 ‘두다’의 활용형이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://krdict.korean.go.kr/eng/dicMarinerSearch/search?mainSearchWord=%EB%91%90"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_025",
@@ -2695,7 +3687,14 @@
       "맞습니다. 과거의 일을 돌이켜 나타내므로 ‘-던’을 쓴다.",
       "정답은 O입니다. 과거의 일을 돌이켜 나타내므로 ‘-던’을 쓴다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_029",
@@ -2714,7 +3713,14 @@
       "맞습니다. 대상을 지시하며 명사 ‘건물’을 꾸미는 지시 관형사이다.",
       "정답은 O입니다. 대상을 지시하며 명사 ‘건물’을 꾸미는 지시 관형사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=&pageIndex=1&qna_seq=313532"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_004",
@@ -2733,7 +3739,14 @@
       "정답은 X입니다. 명사 ‘약속’ 뒤의 ‘대로’는 조사이므로 ‘약속대로’로 붙인다.",
       "맞습니다. 명사 ‘약속’ 뒤의 ‘대로’는 조사이므로 ‘약속대로’로 붙인다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_006",
@@ -2752,7 +3765,14 @@
       "정답은 X입니다. 여기서는 어미 ‘-는지’가 쓰였으므로 ‘오는지’로 붙인다.",
       "맞습니다. 여기서는 어미 ‘-는지’가 쓰였으므로 ‘오는지’로 붙인다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_002",
@@ -2771,7 +3791,14 @@
       "정답은 X입니다. 두 대상을 이어 주는 ‘및’은 띄어 쓴다. ‘학생 및 학부모’로 적는다.",
       "맞습니다. 두 대상을 이어 주는 ‘및’은 띄어 쓴다. ‘학생 및 학부모’로 적는다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_012",
@@ -2790,7 +3817,14 @@
       "정답은 X입니다. 가리키는 대상의 이름을 대신하는 말이 아니라 수량을 나타내는 수사이다.",
       "맞습니다. 가리키는 대상의 이름을 대신하는 말이 아니라 수량을 나타내는 수사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=316523"
+      }
+    ]
   },
   {
     "id": "modern_parts_short_007",
@@ -2809,7 +3843,14 @@
       "맞습니다. 듣는 사람을 가리키는 인칭 대명사이다.",
       "정답은 O입니다. 듣는 사람을 가리키는 인칭 대명사이다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=311884"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_026",
@@ -2828,7 +3869,14 @@
       "정답은 X입니다. 약속이나 의지를 나타내는 어미는 ‘-ㄹ게’이다. ‘갈게’로 쓴다.",
       "맞습니다. 약속이나 의지를 나타내는 어미는 ‘-ㄹ게’이다. ‘갈게’로 쓴다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
+      }
+    ]
   },
   {
     "id": "modern_spelling_short_028",
@@ -2847,7 +3895,14 @@
       "정답은 X입니다. 넓다는 뜻과 관련되므로 원형을 밝혀 ‘넓적하다’로 쓴다.",
       "맞습니다. 넓다는 뜻과 관련되므로 원형을 밝혀 ‘넓적하다’로 쓴다."
     ],
-    "src": "자체 창작"
+    "src": "자체 창작",
+    "basis": [
+      {
+        "name": "자체 창작",
+        "where": "",
+        "url": "https://www.korean.go.kr/nkview/nklife/1995_1/5_25.html"
+      }
+    ]
   },
   {
     "id": "challenge-phonology-001",

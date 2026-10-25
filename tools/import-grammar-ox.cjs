@@ -21,6 +21,8 @@ assert.deepEqual(counts,{'modern/parts/authored':50,'modern/spelling/authored':1
 const clean=questions.map(q=>{
  const {source,...row}=q;
  row.src=source.kind==='authored'?'자체 창작':`${source.year} ${source.month}월 전국연합 ${String(source.grade).startsWith('고')?source.grade:'고'+source.grade}`;
+ const urls=String(source.title||'').match(/https?:\/\/[^\s|]+/g)||[];
+ if(urls.length)row.basis=urls.map(url=>({name:String(source.title).split('|')[0].trim(),where:'',url}));
  if(row.passage){row.passage=row.passage.split('\n').filter(line=>!line.includes('원문 판단 조건:')).join('\n').trim();if(!row.passage)delete row.passage;}
  return row;
 });
