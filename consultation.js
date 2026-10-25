@@ -101,9 +101,23 @@ https://kafelife13-cpu.github.io/lecture/index.html?consultation=1
   return !!student&&student.role==='student'&&(['sc_hanbaek','sc_chidong'].includes(student.school_id)||/^(hanbaek|chidong)_/.test(student.group_id||''));
  };
  function closeEntryNotice(){dismissModal(document.getElementById('exam-consultation-notice'));}
+ const homeworkNoticeIds=['an_1792925427850','an_1792925445084'];
+ const dismissedHomeworkNotices=new Set();
  function showEntryNotice(){
-  // The score-entry campaign has ended; dismiss any existing notice on return.
-  closeEntryNotice();
+  if(!window.isExamConsultationNoticeStudent(session)||padMode){closeEntryNotice();return;}
+  // ponytail: only the two approved final-prep week-one notices auto-open.
+  // Replace this allowlist when the teacher requests the next popup campaign.
+  const item=myAnnounceItems().find(a=>homeworkNoticeIds.includes(a.id));
+  if(!item)return;
+  const key=session.id+':'+item.id;
+  if(dismissedHomeworkNotices.has(key)||document.getElementById('exam-consultation-notice'))return;
+  const el=document.createElement('dialog');el.id='exam-consultation-notice';el.className='consultation-dialog';
+  el.setAttribute('aria-labelledby','homework-entry-title');
+  el.innerHTML='<h2 id="homework-entry-title">'+esc(item.title)+'</h2><div style="white-space:pre-wrap;line-height:1.8">'+esc(item.content||'')+'</div><button class="btn blue" style="margin-top:16px;min-height:44px" data-entry-close data-homework-close>확인 · 닫기</button>';
+  const dismiss=()=>{dismissedHomeworkNotices.add(key);closeEntryNotice();};
+  el.querySelector('[data-homework-close]').onclick=dismiss;
+  el.addEventListener('cancel',e=>{e.preventDefault();dismiss();});
+  document.body.append(el);showModal(el);
  }
 
  function entry(){
