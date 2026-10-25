@@ -2603,7 +2603,7 @@ function renderStudentCertAlert(){
   var el=document.getElementById('home-cert-alert');
   if(!el||!session)return;
   var assigned=certDb.items.filter(function(item){
-    return (certDb.targets[item.id]||[]).indexOf(session.id)!==-1;
+    return Date.parse(item.created_at)>=Date.parse('2026-10-25T19:41:06+09:00')&&(certDb.targets[item.id]||[]).indexOf(session.id)!==-1;
   });
   var missing=assigned.filter(function(item){
     var sub=certDb.submissions.find(function(s){return s.item_id===item.id&&s.student_id===session.id;});
@@ -2639,7 +2639,7 @@ async function renderWeeklyStudentDashboard(){
   // 주간 과제는 실제 수행 주간보다 앞선 금·토에 미리 게시될 수 있다.
   // 게시 날짜로 이번 주를 잘라내면 월요일이 지난 뒤 과제가 사라지므로,
   // 학생 학교에 맞는 가장 최근 과제 안내를 현재 과제로 보여준다.
-  var myAssignments=myAnnounceItems().filter(a=>(a.notice_kind||'general')==='general'&&new Date(a.created_at)>=weekStart&&new Date(a.created_at)>=new Date('2026-09-20T00:00:00+09:00'));
+  var myAssignments=myAnnounceItems().filter(a=>(a.notice_kind||'general')==='general'&&new Date(a.created_at)>=weekStart&&new Date(a.created_at)>=new Date('2026-10-25T19:41:06+09:00'));
   var assignments=myAssignments.length?[myAssignments[0]]:[];
   function dashboardSafeText(value){
     return String(value||'').replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});
@@ -4572,10 +4572,10 @@ function isAnnounceRead(id){
   if(!session)return true;
   return announceDb.reads.some(function(r){return r.announcement_id===id&&r.student_id===session.id;});
 }
-// One-time teacher-requested alert reset. Keep the latest homework notice and future notices.
+// Teacher-requested reset: suppress existing alerts for every student; future notices remain enabled.
 // Dismissing an alert must not fabricate student read receipts.
 function isAnnounceAlert(item){
-  return !!item&&Date.parse(item.created_at)>=Date.parse('2026-09-20T00:00:00+09:00')&&!isAnnounceRead(item.id);
+  return !!item&&Date.parse(item.created_at)>=Date.parse('2026-10-25T19:41:06+09:00')&&!isAnnounceRead(item.id);
 }
 function announceReadCount(id){
   return announceDb.reads.filter(function(r){return r.announcement_id===id;}).length;
