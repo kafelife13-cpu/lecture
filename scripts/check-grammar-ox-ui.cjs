@@ -8,7 +8,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_PATH||'playwright');
  await page.route('**/*',r=>r.abort());
  await page.setContent('<div id="s-grammar-ox-body"></div><div id="t-grammar-ox-body"></div>');
  for(const m of fs.readFileSync('index.html','utf8').matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g))await page.addStyleTag({content:m[1]});
- await page.addStyleTag({path:'grammar-ox.css'});await page.addScriptTag({path:'grammar-ox-data.js'});await page.addScriptTag({path:'grammar-ox-data-kimhayan.js'});await page.addScriptTag({path:'grammar-review.js'});await page.addScriptTag({path:'grammar-daily.js'});
+ await page.addStyleTag({path:'grammar-ox.css'});await page.addScriptTag({path:'grammar-ox-data.js'});await page.addScriptTag({path:'grammar-ox-data-kimhayan.js'});await page.addScriptTag({path:'grammar-ox-data-hanbaek.js'});await page.addScriptTag({path:'grammar-review.js'});await page.addScriptTag({path:'grammar-daily.js'});
  await page.evaluate(()=>{
   if(!crypto.randomUUID)crypto.randomUUID=()=>String(Math.random());
   window.session={id:'s1',name:'테스트 학생',role:'student'};window.padMode=false;window.studentPreviewMode=false;window.alerts=0;window.sendStudentActivity=()=>alerts++;
