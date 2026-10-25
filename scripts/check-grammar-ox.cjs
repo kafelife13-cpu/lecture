@@ -39,9 +39,11 @@ assert.equal(Object.keys(R.seoroElementTags).length,30);
 for(const q of Q.filter(q=>q.topic==='expression')){const n=Number(q.id.slice(-3)),expected=(n>=6&&n<=10)||(n>=16&&n<=20)?'높임 표현':n>=21&&n<=25?'인용 표현':'피동·사동';assert.deepEqual(R.grammarElementTags(q),[expected]);assert.deepEqual(R.grammarElementTags({...q,passage:'높임 시간 종결',explanation:'높임 시간 종결'}),[expected]);console.log(q.id+' | '+q.prompt.slice(0,30).replace(/\n/g,' ')+' | '+expected);}
 assert.equal(Q.filter(q=>R.grammarElementTags(q).includes('높임 표현')).length,10);
 
-const {modernOnly}=require('../grammar-ox.js'),modern=merged.filter(modernOnly);
-assert.equal(modern.length,836);assert.ok(modern.every(q=>q.era==='modern'&&q.topic!=='medieval'));
-assert.equal(modernOnly({era:'modern',topic:'expression',prompt:'중세 국어의 높임 표현'}),false);
-const excluded=merged.find(q=>q.era==='medieval'),old=[{id:'old',question_id:excluded.id,is_correct:false,submitted_at:'2020-01-01T00:00:00Z'}];
-assert.equal(wrongQuestions(modern,old).length,0);assert.equal(R.dueQuestions(modern,old).length,0);
-console.log('PASS: modern-only pool836 excludes medieval from new, wrong-answer and due-review sets');
+const {modernOnly,classifyQuestion}=require('../grammar-ox.js'),classified=merged.map(classifyQuestion);
+assert.equal(classified.length,merged.length);
+assert.ok(classified.filter(q=>q.topic==='expression').every(modernOnly));
+const moved=classified.filter(q=>q.originalConcept&&q.id.startsWith('challenge-expression-'));
+assert.equal(moved.length,10);assert.ok(moved.every(q=>q.topic==='medieval'&&q.era==='medieval'&&q.concept==='중세 문법 요소'));
+for(const q of moved){const original=merged.find(x=>x.id===q.id);assert.equal(q.prompt,original.prompt);assert.equal(q.answer,original.answer);}
+assert.ok(classified.some(q=>q.topic==='medieval'));
+console.log('PASS: all questions retained; modern expression separated from medieval grammar elements; IDs and answers preserved');
