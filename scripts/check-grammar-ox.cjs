@@ -9,7 +9,7 @@ for(const era of ['','modern','medieval'])for(const topic of ['',...new Set(Q.ma
 const concept=Q[0].concept;assert.ok(makeSet(Q,{concept},20).every(q=>q.concept===concept));
 const rows=[{question_id:Q[0].id,is_correct:false,submitted_at:'2026-10-24T00:00:00Z'},{question_id:Q[0].id,is_correct:true,submitted_at:'2026-10-25T00:00:00Z'},{question_id:Q[1].id,is_correct:false,submitted_at:'2026-10-25T00:00:00Z'}];
 assert.deepEqual(wrongQuestions(Q,rows).map(q=>q.id),[Q[1].id]);assert.deepEqual(wrongQuestions(Q,rows.reverse()).map(q=>q.id),[Q[1].id]);
-const html=fs.readFileSync('index.html','utf8');assert.ok(html.includes("if(panel==='grammar-ox')renderGrammarOx();"));assert.ok(html.includes("if(panel==='grammar-ox')renderGrammarOxTeacher();"));
+const html=fs.readFileSync('index.html','utf8');assert.ok(html.includes("if(panel==='grammar-ox')openStudentGrammar();"));assert.ok(html.includes("if(panel==='grammar-ox')renderGrammarOxTeacher();"));
 console.log('PASS: 360 validated questions; filtered, balanced, unique sets; latest-answer retry; menu hooks');
 const K=require('../grammar-ox-data-kimhayan.js'),R=require('../grammar-review.js'),merged=R.mergeBanks(Q,K);
 assert.equal(K.length,627);assert.equal(merged.length,987);assert.equal(new Set(merged.map(q=>q.id)).size,987);
