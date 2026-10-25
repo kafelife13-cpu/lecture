@@ -19,6 +19,8 @@ const fixture=html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g,'');
   window.renderWeeklyHomework=()=>{};
   window.renderStudentClassAttendance=()=>{};
   window.renderReplacementLectures=()=>{};
+  window.renderGrammarOx=()=>{};
+  window.renderLiterature=()=>{};
   for(const name of ['renderLectures','renderClinicLectures','renderStudentReview','renderMyPage','renderSQaSchoolList','renderSQaMyList','clearQaBadge','renderSCertList','renderSClinicList','renderSStudy','renderSOxReview','renderSExam','renderSGrades','renderVocabEntry','renderSAnnounceList','renderSHome'])window[name]=()=>{};
  });
  const start=html.indexOf("document.addEventListener('keydown',function(e){var menu=document.getElementById('student-menu')");
@@ -28,17 +30,18 @@ const fixture=html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g,'');
   await page.setViewportSize({width,height:844});
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`no horizontal overflow at ${width}`);
   await page.locator('#student-menu summary').click();
-  assert.equal(await page.locator('#s-tabbar [data-ms]').count(),17);
+  assert.equal(await page.locator('#s-tabbar [data-ms]').count(),19);
   if(width===390)await page.screenshot({path:path.join(root,'tmp/student-menu-mobile.png'),fullPage:true});
   const panels=await page.locator('#s-tabbar [data-ms]').evaluateAll(bs=>bs.map(b=>b.dataset.ms));
   for(const panel of panels){
    if(!await page.locator('#student-menu').evaluate(e=>e.open))await page.locator('#student-menu summary').click();
    await page.locator('#s-tabbar [data-ms="'+panel+'"]').click();
-   assert.equal(await page.locator('#page-student #panel-'+panel).evaluate(e=>e.classList.contains('active')),true,panel);
+   const destination=['vocab','oxreview','weekly-concept'].includes(panel)?'scores':panel;
+   assert.equal(await page.locator('#page-student #panel-'+destination).evaluate(e=>e.classList.contains('active')),true,panel);
    assert.equal(await page.locator('#student-menu').evaluate(e=>e.open),false);
   }
   await page.getByRole('button',{name:'공부 홈으로 이동'}).click();
-  assert.equal(await page.locator('.student-section-card').count(),4);
+  assert.equal(await page.locator('.student-section-card').count(),5);
   for(const section of ['weekly','clinic-hub','announce','video-hub']){
    await page.locator('[data-student-section="'+section+'"]').click();
    assert.equal(await page.locator('[data-student-section="'+section+'"]').getAttribute('aria-current'),'page');
@@ -55,5 +58,5 @@ const fixture=html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g,'');
   assert.equal(await page.locator('#student-menu').evaluate(e=>e.open),false);
  }
  await browser.close();
- console.log('PASS: 4 primary sections and 17 destinations at 320/390/768/1280px, no overflow, home, menu close and Escape');
+ console.log('PASS: 5 home cards and 19 destinations at 320/390/768/1280px, no overflow, home, menu close and Escape');
 })().catch(e=>{console.error(e);process.exitCode=1;});
