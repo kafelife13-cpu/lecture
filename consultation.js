@@ -110,7 +110,7 @@ https://kafelife13-cpu.github.io/lecture/index.html?consultation=1
   document.querySelectorAll('[data-consultation-entry]').forEach(x=>x.remove());
   if(!session||padMode)return;
   if(window.isExamConsultationNoticeStudent(session))showEntryNotice();
-  if(studentPreviewMode)return;
+  if(studentPreviewMode||session.role!=='teacher')return;
   const host=document.querySelector(session.role==='teacher'?'#panel-dashboard':'#panel-home');if(!host)return;
   const card=document.createElement('section');card.dataset.consultationEntry='';card.className='card';card.style.cssText='padding:18px;margin-bottom:16px;border-left:4px solid var(--accent,#4757d5)';
   card.innerHTML='<h3>시험 분석 · 개별 상담 주간</h3><p>10/22·23·25 · 1인 15분 · 선착순 76명 · 밤 22~23시 전화 상담<br>성적 입력 완료 학생 대상 · 시험지 필수 지참</p><button class="btn blue">'+(session.role==='teacher'?'상담 신청 현황 · 안내문':'개별 상담 신청')+'</button>';
@@ -128,4 +128,4 @@ https://kafelife13-cpu.github.io/lecture/index.html?consultation=1
 })();
 
 // Dedicated photo submissions reuse the existing certification storage.
-(function(){if(typeof document==='undefined')return;const s=document.createElement('script');s.src='wrong-photo-section.js?v=20261020-2';document.head.append(s);})();
+(function(){if(typeof document==='undefined')return;const s=document.createElement('script');s.src='wrong-photo-section.js?v=20261025-homework-only';document.head.append(s);})();

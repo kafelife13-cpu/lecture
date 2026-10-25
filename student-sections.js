@@ -13,7 +13,7 @@
   let host=document.getElementById('s-weekly-extras');
   if(!host){host=document.createElement('div');host.id='s-weekly-extras';document.getElementById('s-weekly-body').before(host);}
   const end=new Date(week+'T00:00:00');end.setDate(end.getDate()+7);
-  const notices=myAnnounceItems().filter(a=>(a.notice_kind||'general')==='general'&&new Date(a.created_at)>=new Date(week+'T00:00:00')&&new Date(a.created_at)>=new Date('2026-10-25T19:41:06+09:00')&&new Date(a.created_at)<end);
+  const notices=myAnnounceItems().filter(a=>(a.notice_kind||'general')==='general'&&new Date(a.created_at)>=new Date(week+'T00:00:00')&&/과제|숙제/.test(a.title||'')&&new Date(a.created_at)<end);
   const notice=notices[0];
   const items=certDb.items.filter(i=>Date.parse(i.created_at)>=Date.parse('2026-10-25T19:41:06+09:00')&&(certDb.targets[i.id]||[]).includes(session.id)&&new Date(i.created_at)<end);
   const cards=items.map(i=>{

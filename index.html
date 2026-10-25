@@ -2601,25 +2601,7 @@ function renderSHome(){
 
 function renderStudentCertAlert(){
   var el=document.getElementById('home-cert-alert');
-  if(!el||!session)return;
-  var assigned=certDb.items.filter(function(item){
-    return Date.parse(item.created_at)>=Date.parse('2026-10-25T19:41:06+09:00')&&(certDb.targets[item.id]||[]).indexOf(session.id)!==-1;
-  });
-  var missing=assigned.filter(function(item){
-    var sub=certDb.submissions.find(function(s){return s.item_id===item.id&&s.student_id===session.id;});
-    return !sub||sub.status==='rejected';
-  });
-  if(!missing.length){el.innerHTML='';return;}
-  var rejectedCount=missing.filter(function(item){
-    return certDb.submissions.some(function(s){return s.item_id===item.id&&s.student_id===session.id&&s.status==='rejected';});
-  }).length;
-  el.innerHTML='<div class="card" onclick="sNav(\'cert\')" style="margin-bottom:1rem;border:2px solid var(--amber);background:rgba(245,158,11,.10);cursor:pointer">'+
-    '<div style="padding:16px;display:flex;align-items:center;gap:12px">'+
-      '<div style="font-size:28px;flex-shrink:0">⚠️</div>'+
-      '<div style="flex:1"><div style="font-size:15px;font-weight:800;color:var(--amber)">인증이 필요해요</div>'+
-      '<div style="font-size:12px;color:var(--text2);margin-top:4px">인증 대상자로 지정되었지만 아직 완료하지 않은 항목이 '+missing.length+'개 있어요.'+(rejectedCount?' (다시 제출 '+rejectedCount+'개)':'')+'</div></div>'+
-      '<button class="btn btn-sm" style="border-color:var(--amber);color:var(--amber);white-space:nowrap">인증하러 가기 →</button>'+
-    '</div></div>';
+  if(el)el.innerHTML='';
 }
 
 async function renderWeeklyStudentDashboard(){
@@ -2639,7 +2621,7 @@ async function renderWeeklyStudentDashboard(){
   // 주간 과제는 실제 수행 주간보다 앞선 금·토에 미리 게시될 수 있다.
   // 게시 날짜로 이번 주를 잘라내면 월요일이 지난 뒤 과제가 사라지므로,
   // 학생 학교에 맞는 가장 최근 과제 안내를 현재 과제로 보여준다.
-  var myAssignments=myAnnounceItems().filter(a=>(a.notice_kind||'general')==='general'&&new Date(a.created_at)>=weekStart&&new Date(a.created_at)>=new Date('2026-10-25T19:41:06+09:00'));
+  var myAssignments=myAnnounceItems().filter(a=>(a.notice_kind||'general')==='general'&&new Date(a.created_at)>=weekStart&&/과제|숙제/.test(a.title||''));
   var assignments=myAssignments.length?[myAssignments[0]]:[];
   function dashboardSafeText(value){
     return String(value||'').replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});
@@ -4575,7 +4557,7 @@ function isAnnounceRead(id){
 // Teacher-requested reset: suppress existing alerts for every student; future notices remain enabled.
 // Dismissing an alert must not fabricate student read receipts.
 function isAnnounceAlert(item){
-  return !!item&&Date.parse(item.created_at)>=Date.parse('2026-10-25T19:41:06+09:00')&&!isAnnounceRead(item.id);
+  return !!item&&/과제|숙제/.test(item.title||'')&&Date.parse(item.created_at)>=weekMonday(new Date()).getTime()&&!isAnnounceRead(item.id);
 }
 function announceReadCount(id){
   return announceDb.reads.filter(function(r){return r.announcement_id===id;}).length;
@@ -11563,6 +11545,6 @@ function installPWA(){
 <script src="app-navigation.js?v=1"></script>
 <script src="video-chapters.js?v=20261001"></script>
 <script src="odap-entry.js?v=1"></script>
-<script src="consultation.js?v=20261025-no-score-popup"></script>
+<script src="consultation.js?v=20261025-homework-only"></script>
 </body>
 </html>

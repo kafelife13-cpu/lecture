@@ -71,7 +71,7 @@
  };
  function entry(){
   document.querySelectorAll('[data-wrong-photo-entry]').forEach(e=>e.remove());
-  if(!session||padMode)return;
+  if(!session||padMode||studentPreviewMode||session.role!=='teacher')return;
   for(const selector of session.role==='teacher'?['#page-teacher #panel-dashboard','#page-teacher #panel-exam']:['#page-student #panel-home','#page-student #panel-exam']){
    const host=document.querySelector(selector);if(!host)continue;
    const section=document.createElement('section');section.dataset.wrongPhotoEntry='';section.className='card';section.style.cssText='padding:18px;margin-bottom:16px';section.innerHTML='<h3>오답 문제 사진 제출</h3><p>상담 신청 학생은 상담 중 교사 보충 · 미신청 학생은 등원 후 사진 제출</p><button class="btn blue">'+(session.role==='teacher'?'학생별 사진 확인 · 상담 중 보충':'틀린 문제 사진 올리기')+'</button>';section.querySelector('button').onclick=openWrongPhotos;host.prepend(section);
