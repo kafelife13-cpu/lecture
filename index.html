@@ -35,7 +35,7 @@
 <script src="grammar-ox-data.js?v=2"></script>
 <script src="grammar-ox-data-kimhayan.js?v=2"></script>
 <script src="grammar-review.js?v=3"></script>
-<script src="grammar-ox.js?v=5"></script>
+<script src="grammar-ox.js?v=6"></script>
 <link rel="stylesheet" href="grammar-ox.css?v=2">
 <script src="literature.js?v=4"></script>
 <script src="literature-study.js?v=1"></script>
@@ -3995,7 +3995,7 @@ async function openStudentGrammar(){
         await loadExternalScript('grammar-ox-data.js?v=2',()=>Array.isArray(window.GRAMMAR_OX));
         await loadExternalScript('grammar-ox-data-kimhayan.js?v=2',()=>Array.isArray(window.GRAMMAR_OX_KIMHAYAN));
         await loadExternalScript('grammar-review.js?v=3',()=>!!window.GrammarReview);
-        await loadExternalScript('grammar-ox.js?v=5',()=>typeof window.renderGrammarOx==='function');
+        await loadExternalScript('grammar-ox.js?v=6',()=>typeof window.renderGrammarOx==='function');
       })().finally(()=>{grammarStudentLoading=null;});
       await grammarStudentLoading;
     }
