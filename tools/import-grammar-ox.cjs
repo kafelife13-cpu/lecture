@@ -24,6 +24,7 @@ const clean=questions.map(q=>{
  const urls=String(source.title||'').match(/https?:\/\/[^\s|]+/g)||[];
  if(urls.length)row.basis=urls.map(url=>({name:String(source.title).split('|')[0].trim(),where:'',url}));
  if(row.passage){row.passage=row.passage.split('\n').filter(line=>!line.includes('원문 판단 조건:')).join('\n').trim();if(!row.passage)delete row.passage;}
+ row.level=require('../grammar-daily.js').levelFor(row);
  return row;
 });
 fs.writeFileSync(process.argv[3]||'grammar-ox-data.js',"(function(r){const Q="+JSON.stringify(clean,null,2)+";if(typeof module!=='undefined')module.exports=Q;else r.GRAMMAR_OX=Q;})(typeof window==='undefined'?globalThis:window);\n");

@@ -3,7 +3,7 @@
  const DAY=86400000,intervals=[1,3,7,14,30];
  const elementNames=['높임 표현','시간 표현','피동·사동','부정 표현','종결 표현','인용 표현','기타'];
  const tips={phonology:'음운 변동은 교체·탈락·첨가·축약 중 무엇인지부터 정하고 보세요.',words:'자립성과 실질적 의미는 서로 다른 기준이에요. 하나씩 따로 따져 보세요.',parts:'품사는 단어의 갈래, 문장 성분은 문장 속 역할이에요. 둘을 섞지 마세요.',sentences:'주어-서술어 관계가 몇 번 나오는지 세면 홑문장·겹문장이 갈려요.',expression:'누구를 높이는지, 언제 일인지, 누가 하는 행동인지 먼저 표시해 보세요.',spelling:'소리대로 적는지, 원형을 밝혀 적는지부터 판단해요.',medieval:'현대국어와 다른 글자·표기·조사 형태에 먼저 표시해 보세요.'};
- const bank=q=>q.id.startsWith('kh-')?'kimhayan':'seoro';
+ const bank=q=>q.protected?'protected':q.id.startsWith('kh-')?'kimhayan':q.id.startsWith('hb-')?'hanbaek':'seoro';
  function normalize(text){return String(text).normalize('NFKC').replace(/[\s'"‘’“”「」『』]/g,'');}
  function mergeBanks(seoro,kh){const seen=new Set(seoro.map(q=>normalize(q.prompt)));return seoro.concat(kh.filter(q=>!seen.has(normalize(q.prompt))));}
  const seoroElementTags={
@@ -67,10 +67,10 @@
  }
  function reviewSet(Q,rows,now=Date.now(),topic){const used=new Set(),targets={},items=[];for(const q of dueQuestions(Q,rows,now,topic).slice(0,10)){let x=replacementQuestion(q,Q,rows,used);if(used.has(x.id))x=q;if(used.has(x.id))continue;used.add(x.id);items.push(x);targets[x.id]=q.id;}return {items,targets};}
  function validateQuestion(body,rows,studentId,questionId){const clean=String(body||'').trim();if(!clean||Array.from(clean).length>300)throw Error('질문은 1~300자로 입력해 주세요.');if(rows.some(r=>r.student_id===studentId&&r.question_id===questionId&&!r.seen_at))throw Error('선생님이 아직 확인하지 않은 질문이 있습니다.');return clean;}
- function csv(students,rows,Q,classes,now=Date.now()){
+ function csv(students,rows,Q,classes,now=Date.now(),daily=[]){
   const escape=v=>'"'+String(v??'').replace(/^[=+@\-\t\r]/,"'$&").replace(/"/g,'""')+'"';
-  const data=[['이름','반','푼 문항','풀이 횟수','정답 횟수','정답률','오답 문항 수','복습 대기','최근 공부']];
-  for(const s of students){const r=rows.filter(a=>a.student_id===s.id).sort((a,b)=>Date.parse(a.submitted_at)-Date.parse(b.submitted_at)),latest=new Map();r.forEach(a=>latest.set(a.question_id,a));const correct=r.filter(a=>a.is_correct).length;data.push([s.name,classes.find(c=>c.id===s.group_id)?.label||'반 미배정',latest.size,r.length,correct,r.length?Math.round(correct/r.length*100):0,[...latest.values()].filter(a=>!a.is_correct).length,dueQuestions(Q,r,now).length,r.at(-1)?.submitted_at||'']);}
+  const data=[['이름','반','푼 문항','풀이 횟수','정답 횟수','정답률','오답 문항 수','복습 대기','최근 공부','레벨','연속 일수','최근 7일 완료 일수']];
+  for(const s of students){const r=rows.filter(a=>a.student_id===s.id).sort((a,b)=>Date.parse(a.submitted_at)-Date.parse(b.submitted_at)),latest=new Map();r.forEach(a=>latest.set(a.question_id,a));const correct=r.filter(a=>a.is_correct).length;data.push([s.name,classes.find(c=>c.id===s.group_id)?.label||'반 미배정',latest.size,r.length,correct,r.length?Math.round(correct/r.length*100):0,[...latest.values()].filter(a=>!a.is_correct).length,dueQuestions(Q,r,now).length,r.at(-1)?.submitted_at||'',...(()=>{const D=typeof module!=='undefined'?require('./grammar-daily.js'):root.GrammarDaily;const x=D.summary(daily.find(d=>d.student_id===s.id)?.history||[]);return [x.level,x.streak,x.week];})()]);}
   return '\ufeff'+data.map(r=>r.map(escape).join(',')).join('\r\n');
  }
  const api={seoroElementTags,DAY,elementNames,tips,bank,mergeBanks,grammarElementTags,reviewCards,dueQuestions,reviewSuccess,replacementQuestion,reviewSet,validateQuestion,csv};

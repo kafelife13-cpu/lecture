@@ -23,7 +23,8 @@
         "where": "",
         "url": "https://korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=98&pageIndex=1&qna_seq=325455"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_central_002",
@@ -49,7 +50,8 @@
         "where": "",
         "url": "https://korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=&pageIndex=1&qna_seq=323997"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_central_003",
@@ -75,7 +77,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_central_004",
@@ -101,7 +104,8 @@
         "where": "",
         "url": "https://korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=&pageIndex=1&qna_seq=329342"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_central_005",
@@ -127,7 +131,8 @@
         "where": "",
         "url": "https://korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=6519&mn_id=62&pageIndex=17"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_central_006",
@@ -153,7 +158,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_007",
@@ -179,7 +185,8 @@
         "where": "",
         "url": "https://m.korean.go.kr/common/download.do?c_file_name=edc37daf-1a0c-4462-b6e1-e93785b96d55_0.pdf&file_path=etcData&o_file_name=함께+가꾸는+우리말+우리+꿈.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_008",
@@ -205,7 +212,8 @@
         "where": "",
         "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=322792"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "modern_spelling_central_009",
@@ -231,7 +239,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "modern_spelling_central_010",
@@ -257,7 +266,8 @@
         "where": "",
         "url": "https://korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=98&pageIndex=1&qna_seq=323107"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "modern_spelling_central_011",
@@ -283,7 +293,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/nkview/nknews/200601/90_3.html"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_012",
@@ -309,7 +320,8 @@
         "where": "",
         "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_013",
@@ -335,7 +347,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/nkview/news_pdf/1302.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_014",
@@ -361,7 +374,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=305617"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_015",
@@ -387,7 +401,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_016",
@@ -413,7 +428,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_017",
@@ -439,7 +455,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/nkview/nknews/200502/79_3.html"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_018",
@@ -465,7 +482,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=306010"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "modern_spelling_central_019",
@@ -491,7 +509,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&qna_seq=322819"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_020",
@@ -517,7 +536,8 @@
         "where": "",
         "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=321988"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "modern_spelling_central_021",
@@ -543,7 +563,8 @@
         "where": "",
         "url": "https://korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=9261&mn_id=&pageIndex=9"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "modern_spelling_central_022",
@@ -569,7 +590,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=261&pageIndex=1&qna_seq=324622"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_023",
@@ -595,7 +617,8 @@
         "where": "",
         "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_024",
@@ -621,7 +644,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=279237"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_025",
@@ -647,7 +671,8 @@
         "where": "",
         "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_026",
@@ -673,7 +698,8 @@
         "where": "",
         "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_central_027",
@@ -699,7 +725,8 @@
         "where": "",
         "url": "https://korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=8073&mn_id=62&pageIndex=10"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_central_028",
@@ -725,7 +752,8 @@
         "where": "",
         "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_central_029",
@@ -751,7 +779,8 @@
         "where": "",
         "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_central_030",
@@ -777,7 +806,8 @@
         "where": "",
         "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_central_031",
@@ -803,7 +833,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&qna_seq=307387"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_032",
@@ -829,7 +860,8 @@
         "where": "",
         "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_033",
@@ -855,7 +887,8 @@
         "where": "",
         "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_034",
@@ -881,7 +914,8 @@
         "where": "",
         "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_035",
@@ -907,7 +941,8 @@
         "where": "",
         "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_036",
@@ -933,7 +968,8 @@
         "where": "",
         "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_037",
@@ -959,7 +995,8 @@
         "where": "",
         "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_038",
@@ -985,7 +1022,8 @@
         "where": "",
         "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_039",
@@ -1011,7 +1049,8 @@
         "where": "",
         "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_040",
@@ -1037,7 +1076,8 @@
         "where": "",
         "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_041",
@@ -1063,7 +1103,8 @@
         "where": "",
         "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=60236"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_042",
@@ -1089,7 +1130,8 @@
         "where": "",
         "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_043",
@@ -1115,7 +1157,8 @@
         "where": "",
         "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_044",
@@ -1141,7 +1184,8 @@
         "where": "",
         "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_045",
@@ -1167,7 +1211,8 @@
         "where": "",
         "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_046",
@@ -1193,7 +1238,8 @@
         "where": "",
         "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_047",
@@ -1219,7 +1265,8 @@
         "where": "",
         "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_048",
@@ -1245,7 +1292,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=6271&mn_id=62&pageIndex=1"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_049",
@@ -1271,7 +1319,8 @@
         "where": "",
         "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_central_050",
@@ -1297,7 +1346,8 @@
         "where": "",
         "url": "https://korean.go.kr/kornorms/m/m_regltn.do"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "modern_parts_short_006",
@@ -1323,7 +1373,8 @@
         "where": "",
         "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=17182"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_021",
@@ -1349,7 +1400,8 @@
         "where": "",
         "url": "https://korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=322400&searchCondition=&searchKeyword="
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_022",
@@ -1375,7 +1427,8 @@
         "where": "",
         "url": "https://korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=322400&searchCondition=&searchKeyword="
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_017",
@@ -1401,7 +1454,8 @@
         "where": "",
         "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=61953"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_008",
@@ -1427,7 +1481,8 @@
         "where": "",
         "url": "https://korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=8780&mn_id=62&pageIndex=29"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_039",
@@ -1453,7 +1508,8 @@
         "where": "",
         "url": "https://korean.go.kr/common/download.do?c_file_name=a0027c40-ac14-4303-b078-ce97382abf6d_0.pdf&file_path=reportData&o_file_name=%EC%B2%AD%EC%86%8C%EB%85%84%EC%9D%84+%EC%9C%84%ED%95%9C+%EB%B0%94%EB%A5%B8+%EA%B5%AD%EC%96%B4+%EC%83%9D%ED%99%9C.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_048",
@@ -1479,7 +1535,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_009",
@@ -1505,7 +1562,8 @@
         "where": "",
         "url": "https://korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=311884"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_019",
@@ -1531,7 +1589,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_050",
@@ -1557,7 +1616,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/nkview/nknews/199904/9_2.htm"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_049",
@@ -1583,7 +1643,8 @@
         "where": "",
         "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=313860"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_050",
@@ -1614,7 +1675,8 @@
         "where": "",
         "url": "https://krdict.korean.go.kr/eng/dicMarinerSearch/search?mainSearchWord=%EC%85%8B&nation=eng"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_parts_short_013",
@@ -1640,7 +1702,8 @@
         "where": "",
         "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=316523"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_027",
@@ -1666,7 +1729,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_036",
@@ -1692,7 +1756,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=27&qna_seq=330130"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_002",
@@ -1718,7 +1783,8 @@
         "where": "",
         "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=24030"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_037",
@@ -1744,7 +1810,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=8456&mn_id=208&pageIndex=1"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_023",
@@ -1770,7 +1837,8 @@
         "where": "",
         "url": "https://krdict.korean.go.kr/eng/dicMarinerSearch/search?mainSearchWord=%EB%91%90"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_034",
@@ -1796,7 +1864,8 @@
         "where": "",
         "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=314724"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_010",
@@ -1822,7 +1891,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_011",
@@ -1848,7 +1918,8 @@
         "where": "",
         "url": "https://krdict.korean.go.kr/eng/dicMarinerSearch/search?mainSearchWord=%EC%85%8B&nation=eng"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_027",
@@ -1874,7 +1945,8 @@
         "where": "",
         "url": "https://korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=8882&mn_id=62&pageIndex=24"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_015",
@@ -1900,7 +1972,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_parts_short_019",
@@ -1926,7 +1999,8 @@
         "where": "",
         "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=58272"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_033",
@@ -1952,7 +2026,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/nkview/nknews/200502/79_3.html"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_046",
@@ -1978,7 +2053,8 @@
         "where": "",
         "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=313545"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_004",
@@ -2004,7 +2080,8 @@
         "where": "",
         "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=64457"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_041",
@@ -2030,7 +2107,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/nkview/nknews/200506/83_3.html"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_017",
@@ -2056,7 +2134,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_parts_short_020",
@@ -2082,7 +2161,8 @@
         "where": "",
         "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=330519&searchCondition=&searchKeyword="
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_044",
@@ -2108,7 +2188,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_049",
@@ -2134,7 +2215,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_020",
@@ -2160,7 +2242,8 @@
         "where": "",
         "url": "https://korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=322400&searchCondition=&searchKeyword="
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_007",
@@ -2186,7 +2269,8 @@
         "where": "",
         "url": "https://korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=8086&mn_id=46&pageIndex=1"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_010",
@@ -2212,7 +2296,8 @@
         "where": "",
         "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=17182"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_038",
@@ -2238,7 +2323,8 @@
         "where": "",
         "url": "https://m.korean.go.kr/common/download.do%3Bfront%3D7A179D4FC3F463F9CDB293A8A7E588C3?c_file_name=edc37daf-1a0c-4462-b6e1-e93785b96d55_0.pdf&file_path=etcData&o_file_name=%ED%95%A8%EA%BB%98+%EA%B0%80%EA%BE%B8%EB%8A%94+%EC%9A%B0%EB%A6%AC%EB%A7%90+%EC%9A%B0%EB%A6%AC+%EA%BF%88.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_042",
@@ -2264,7 +2350,8 @@
         "where": "",
         "url": "https://krdict.korean.go.kr/eng/dicSearch/SearchView?ParaWordNo=86355&nation=eng"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_016",
@@ -2290,7 +2377,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_018",
@@ -2316,7 +2404,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_short_038",
@@ -2342,7 +2431,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0002"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_012",
@@ -2368,7 +2458,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_003",
@@ -2394,7 +2485,8 @@
         "where": "",
         "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=64597"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_043",
@@ -2420,7 +2512,8 @@
         "where": "",
         "url": "https://krdict.korean.go.kr/jpn/dicSearch/SearchView?ParaWordNo=86410"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_046",
@@ -2446,7 +2539,8 @@
         "where": "",
         "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=330693&searchCondition=&searchKeyword="
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_parts_short_022",
@@ -2472,7 +2566,8 @@
         "where": "",
         "url": "https://korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=5605&mn_id=62"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_014",
@@ -2498,7 +2593,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_short_036",
@@ -2524,7 +2620,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=8117&mn_id=216"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_047",
@@ -2550,7 +2647,8 @@
         "where": "",
         "url": "https://korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=8780&mn_id=62&pageIndex=29"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_short_003",
@@ -2576,7 +2674,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_028",
@@ -2602,7 +2701,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=90&pageIndex=1&qna_seq=333085&searchCondition=&searchKeyword="
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_013",
@@ -2628,7 +2728,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_005",
@@ -2654,7 +2755,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/common/download.do%3Bfront%3DE163775EFB0FBB3EE9B3A56D3B72E531?c_file_name=940361cb-62df-4a45-b471-926c5478f3c8.pdf&file_path=etcData&o_file_name=2022+%EC%88%AB%EC%9E%90%EB%A1%9C+%EC%82%B4%ED%8E%B4%EB%B3%B4%EB%8A%94+%EC%9A%B0%EB%A6%AC%EB%A7%90.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_047",
@@ -2680,7 +2782,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_026",
@@ -2706,7 +2809,8 @@
         "where": "",
         "url": "https://korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=311884"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_041",
@@ -2732,7 +2836,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=c0cbf5a7-cb03-4e25-9a43-f2f44b4e382a_0.pdf&file_path=etcData&o_file_name=%5B%EA%B5%AD%EB%A6%BD%EA%B5%AD%EC%96%B4%EC%9B%90%5D+%EB%B0%94%EB%A5%B8+%EA%B5%AD%EC%96%B4+%EC%83%9D%ED%99%9C+%EA%B5%90%EC%9E%AC_2016.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_032",
@@ -2758,7 +2863,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=6031&mn_id=217"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_029",
@@ -2784,7 +2890,8 @@
         "where": "",
         "url": "https://korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=6374&mn_id=217&pageIndex=1"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_043",
@@ -2810,7 +2917,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/nkview/nknews/200506/83_3.html"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_040",
@@ -2836,7 +2944,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_042",
@@ -2862,7 +2971,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/nkview/nknews/200506/83_3.html"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_016",
@@ -2888,7 +2998,8 @@
         "where": "",
         "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=58272"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_015",
@@ -2914,7 +3025,8 @@
         "where": "",
         "url": "https://krdict.korean.go.kr/eng/dicMarinerSearch/search?mainSearchWord=%EC%85%8B&nation=eng"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_011",
@@ -2940,7 +3052,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_parts_short_040",
@@ -2966,7 +3079,8 @@
         "where": "",
         "url": "https://m.korean.go.kr/common/download.do%3Bfront%3D7A179D4FC3F463F9CDB293A8A7E588C3?c_file_name=edc37daf-1a0c-4462-b6e1-e93785b96d55_0.pdf&file_path=etcData&o_file_name=%ED%95%A8%EA%BB%98+%EA%B0%80%EA%BE%B8%EB%8A%94+%EC%9A%B0%EB%A6%AC%EB%A7%90+%EC%9A%B0%EB%A6%AC+%EA%BF%88.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_048",
@@ -2992,7 +3106,8 @@
         "where": "",
         "url": "https://krdict.korean.go.kr/statistic/dicStat"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "modern_spelling_short_001",
@@ -3018,7 +3133,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_045",
@@ -3044,7 +3160,8 @@
         "where": "",
         "url": "https://korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=8780&mn_id=62&pageIndex=29"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_044",
@@ -3070,7 +3187,8 @@
         "where": "",
         "url": "https://krdict.korean.go.kr/eng/dicSearch/SearchView?ParaWordNo=24032&captchaNumber=&comment_user_name=&nation=eng&nationCode=6&viewTypes=on&wordComment="
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_023",
@@ -3096,7 +3214,8 @@
         "where": "",
         "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=312390"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_033",
@@ -3122,7 +3241,8 @@
         "where": "",
         "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=330519&searchCondition=&searchKeyword="
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_025",
@@ -3148,7 +3268,8 @@
         "where": "",
         "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=330519&searchCondition=&searchKeyword="
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_031",
@@ -3174,7 +3295,8 @@
         "where": "",
         "url": "https://krdict.korean.go.kr/eng/dicSearch/SearchView?ParaWordNo=88410&blockCount=10&currentPage=1&exaType=&mainSearchWord=%EB%81%9D&nation=eng&nationCode=6&proverbType=&searchType=E&sort=W&viewType=A&wordMatchFlag=N"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_045",
@@ -3200,7 +3322,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/nkview/news/8/33.htm"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_009",
@@ -3226,7 +3349,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_035",
@@ -3252,7 +3376,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_030",
@@ -3278,7 +3403,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=27&pageIndex=1&qna_seq=334404&searchCondition=&searchKeyword="
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_024",
@@ -3304,7 +3430,8 @@
         "where": "",
         "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=312390"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_021",
@@ -3330,7 +3457,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=6555&mn_id=&pageIndex=1"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_032",
@@ -3356,7 +3484,8 @@
         "where": "",
         "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=64744"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_008",
@@ -3382,7 +3511,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=8958&mn_id=62&pageIndex=3"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_014",
@@ -3408,7 +3538,8 @@
         "where": "",
         "url": "https://krdict.korean.go.kr/eng/dicMarinerSearch/search?mainSearchWord=%EB%91%98&nation=eng"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_030",
@@ -3434,7 +3565,8 @@
         "where": "",
         "url": "https://korean.go.kr/common/download.do%3Bfront%3DEFF3DB6B957ED72049D80CE8CF5A24DB?c_file_name=f870c8da-b2e1-4bc2-8ae2-c66bc992117d_0.pdf&file_path=etcData&o_file_name=%EB%B0%94%EB%A5%B8+%EA%B5%AD%EC%96%B4+%EC%83%9D%ED%99%9C-%EA%B5%AD%EC%96%B4%EC%A0%84%EB%AC%B8%EA%B5%90%EC%9C%A1%EA%B3%BC%EC%A0%95+%EA%B5%90%EC%9E%AC.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_039",
@@ -3460,7 +3592,8 @@
         "where": "",
         "url": "https://m.korean.go.kr/common/download.do%3Bfront%3D7A179D4FC3F463F9CDB293A8A7E588C3?c_file_name=edc37daf-1a0c-4462-b6e1-e93785b96d55_0.pdf&file_path=etcData&o_file_name=%ED%95%A8%EA%BB%98+%EA%B0%80%EA%BE%B8%EB%8A%94+%EC%9A%B0%EB%A6%AC%EB%A7%90+%EC%9A%B0%EB%A6%AC+%EA%BF%88.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_035",
@@ -3486,7 +3619,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=27&qna_seq=330130"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_037",
@@ -3512,7 +3646,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=a5ac0d67-5ab5-4ae0-922c-226cba3e62d6_0.pdf&file_path=reportData&o_file_name=%EA%B5%AD%EC%96%B4%EA%B5%90%EA%B3%BC%EC%9A%A9%EC%96%B4%EC%9D%98+%EC%88%98%ED%99%94+%ED%91%9C%EC%A4%80%ED%99%94+%EC%97%B0%EA%B5%AC-%EC%96%B8%EC%96%B4%EC%98%81%EC%97%AD.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_031",
@@ -3538,7 +3673,8 @@
         "where": "",
         "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=86258"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_034",
@@ -3564,7 +3700,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=6d50cef7-4e96-4fe9-aaab-30959a6f7872_0.pdf&file_path=reportData&o_file_name=%5B2015-01-17%5D+%EC%9E%91%EB%AC%B8%28%EC%93%B0%EA%B8%B0%29+%EB%8A%A5%EB%A0%A5+%ED%96%A5%EC%83%81%EC%9D%84+%EC%9C%84%ED%95%9C+%EB%AC%B8%EB%B2%95+%EB%82%B4%EC%9A%A9+%EA%B0%9C%EB%B0%9C+%EC%B5%9C%EC%A2%85+%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_024",
@@ -3590,7 +3727,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=&pageIndex=1&qna_seq=321641"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_001",
@@ -3616,7 +3754,8 @@
         "where": "",
         "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=66306"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_005",
@@ -3642,7 +3781,8 @@
         "where": "",
         "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=62835"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_018",
@@ -3668,7 +3808,8 @@
         "where": "",
         "url": "https://krdict.korean.go.kr/eng/dicMarinerSearch/search?mainSearchWord=%EB%91%90"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_025",
@@ -3694,7 +3835,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_029",
@@ -3720,7 +3862,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=&pageIndex=1&qna_seq=313532"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_004",
@@ -3746,7 +3889,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_006",
@@ -3772,7 +3916,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_002",
@@ -3798,7 +3943,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_012",
@@ -3824,7 +3970,8 @@
         "where": "",
         "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=316523"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_parts_short_007",
@@ -3850,7 +3997,8 @@
         "where": "",
         "url": "https://korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=311884"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_026",
@@ -3876,7 +4024,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "modern_spelling_short_028",
@@ -3902,7 +4051,8 @@
         "where": "",
         "url": "https://www.korean.go.kr/nkview/nklife/1995_1/5_25.html"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "challenge-phonology-001",
@@ -3922,7 +4072,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n제14항의 ‘ㅅ’은 된소리로 발음한다는 규정에 의거하여 ‘값이’는 [갑씨]라고 발음해야 한다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n제14항의 ‘ㅅ’은 된소리로 발음한다는 규정에 의거하여 ‘값이’는 [갑씨]라고 발음해야 한다."
     ],
-    "src": "2018 6월 전국연합 고2"
+    "src": "2018 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-002",
@@ -3942,7 +4093,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n제14항의 ‘ㅅ’은 된소리로 발음한다는 규정에 의거하여 ‘값이’는 [갑씨]라고 발음해야 한다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n제14항의 ‘ㅅ’은 된소리로 발음한다는 규정에 의거하여 ‘값이’는 [갑씨]라고 발음해야 한다."
     ],
-    "src": "2018 6월 전국연합 고2"
+    "src": "2018 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-003",
@@ -3962,7 +4114,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n제14항의 ‘ㅅ’은 된소리로 발음한다는 규정에 의거하여 ‘값이’는 [갑씨]라고 발음해야 한다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n제14항의 ‘ㅅ’은 된소리로 발음한다는 규정에 의거하여 ‘값이’는 [갑씨]라고 발음해야 한다."
     ],
-    "src": "2018 6월 전국연합 고2"
+    "src": "2018 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-004",
@@ -3982,7 +4135,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n제14항의 ‘ㅅ’은 된소리로 발음한다는 규정에 의거하여 ‘값이’는 [갑씨]라고 발음해야 한다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n제14항의 ‘ㅅ’은 된소리로 발음한다는 규정에 의거하여 ‘값이’는 [갑씨]라고 발음해야 한다."
     ],
-    "src": "2018 6월 전국연합 고2"
+    "src": "2018 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-005",
@@ -4002,7 +4156,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n제14항의 ‘ㅅ’은 된소리로 발음한다는 규정에 의거하여 ‘값이’는 [갑씨]라고 발음해야 한다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n제14항의 ‘ㅅ’은 된소리로 발음한다는 규정에 의거하여 ‘값이’는 [갑씨]라고 발음해야 한다."
     ],
-    "src": "2018 6월 전국연합 고2"
+    "src": "2018 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-006",
@@ -4022,7 +4177,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄷ의 ‘올여름’은 ㄴ첨가, 유음화가 일어나므로 두 번 이상의 음운 변동이 일어나지만, ㄹ의 ‘해돋이’는 구개음화만 일어나므로 두 번 이상의 음운 변동이 일어나지 않는다.\n① ㄱ의 ‘신라’는 앞의 음운인 ‘ㄴ’이 뒤의 음운인 유음 ‘ㄹ’의 성질을 닮아 유음 ‘ㄹ’로 변동되었고, ㄴ의 ‘국물’은 앞의 음운인 ‘ㄱ’이 뒤의 음운인 비음 ‘ㅁ’의 성질을 닮아 비음 ‘ㅇ’으로 변동되었다.\n② ㄱ의 ‘신라’는 ‘ㄴ’이 ‘ㄹ’로 바뀌는 교체 현상이 일어나고, ㄷ의 ‘올여름’은 ㄴ첨가가 일어나 [올녀름]이 되고 뒤의 음운 ‘ㄴ’이 앞의 음운 ‘ㄹ’의 영향으로 ‘ㄹ’로 바뀌는 교체(유음화)가 일어나 [올려름]이 된다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄷ의 ‘올여름’은 ㄴ첨가, 유음화가 일어나므로 두 번 이상의 음운 변동이 일어나지만, ㄹ의 ‘해돋이’는 구개음화만 일어나므로 두 번 이상의 음운 변동이 일어나지 않는다.\n① ㄱ의 ‘신라’는 앞의 음운인 ‘ㄴ’이 뒤의 음운인 유음 ‘ㄹ’의 성질을 닮아 유음 ‘ㄹ’로 변동되었고, ㄴ의 ‘국물’은 앞의 음운인 ‘ㄱ’이 뒤의 음운인 비음 ‘ㅁ’의 성질을 닮아 비음 ‘ㅇ’으로 변동되었다.\n② ㄱ의 ‘신라’는 ‘ㄴ’이 ‘ㄹ’로 바뀌는 교체 현상이 일어나고, ㄷ의 ‘올여름’은 ㄴ첨가가 일어나 [올녀름]이 되고 뒤의 음운 ‘ㄴ’이 앞의 음운 ‘ㄹ’의 영향으로 ‘ㄹ’로 바뀌는 교체(유음화)가 일어나 [올려름]이 된다."
     ],
-    "src": "2019 9월 전국연합 고2"
+    "src": "2019 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-007",
@@ -4042,7 +4198,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄷ의 ‘올여름’은 ㄴ첨가, 유음화가 일어나므로 두 번 이상의 음운 변동이 일어나지만, ㄹ의 ‘해돋이’는 구개음화만 일어나므로 두 번 이상의 음운 변동이 일어나지 않는다.\n① ㄱ의 ‘신라’는 앞의 음운인 ‘ㄴ’이 뒤의 음운인 유음 ‘ㄹ’의 성질을 닮아 유음 ‘ㄹ’로 변동되었고, ㄴ의 ‘국물’은 앞의 음운인 ‘ㄱ’이 뒤의 음운인 비음 ‘ㅁ’의 성질을 닮아 비음 ‘ㅇ’으로 변동되었다.\n② ㄱ의 ‘신라’는 ‘ㄴ’이 ‘ㄹ’로 바뀌는 교체 현상이 일어나고, ㄷ의 ‘올여름’은 ㄴ첨가가 일어나 [올녀름]이 되고 뒤의 음운 ‘ㄴ’이 앞의 음운 ‘ㄹ’의 영향으로 ‘ㄹ’로 바뀌는 교체(유음화)가 일어나 [올려름]이 된다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄷ의 ‘올여름’은 ㄴ첨가, 유음화가 일어나므로 두 번 이상의 음운 변동이 일어나지만, ㄹ의 ‘해돋이’는 구개음화만 일어나므로 두 번 이상의 음운 변동이 일어나지 않는다.\n① ㄱ의 ‘신라’는 앞의 음운인 ‘ㄴ’이 뒤의 음운인 유음 ‘ㄹ’의 성질을 닮아 유음 ‘ㄹ’로 변동되었고, ㄴ의 ‘국물’은 앞의 음운인 ‘ㄱ’이 뒤의 음운인 비음 ‘ㅁ’의 성질을 닮아 비음 ‘ㅇ’으로 변동되었다.\n② ㄱ의 ‘신라’는 ‘ㄴ’이 ‘ㄹ’로 바뀌는 교체 현상이 일어나고, ㄷ의 ‘올여름’은 ㄴ첨가가 일어나 [올녀름]이 되고 뒤의 음운 ‘ㄴ’이 앞의 음운 ‘ㄹ’의 영향으로 ‘ㄹ’로 바뀌는 교체(유음화)가 일어나 [올려름]이 된다."
     ],
-    "src": "2019 9월 전국연합 고2"
+    "src": "2019 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-008",
@@ -4062,7 +4219,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄷ의 ‘올여름’은 ㄴ첨가, 유음화가 일어나므로 두 번 이상의 음운 변동이 일어나지만, ㄹ의 ‘해돋이’는 구개음화만 일어나므로 두 번 이상의 음운 변동이 일어나지 않는다.\n① ㄱ의 ‘신라’는 앞의 음운인 ‘ㄴ’이 뒤의 음운인 유음 ‘ㄹ’의 성질을 닮아 유음 ‘ㄹ’로 변동되었고, ㄴ의 ‘국물’은 앞의 음운인 ‘ㄱ’이 뒤의 음운인 비음 ‘ㅁ’의 성질을 닮아 비음 ‘ㅇ’으로 변동되었다.\n② ㄱ의 ‘신라’는 ‘ㄴ’이 ‘ㄹ’로 바뀌는 교체 현상이 일어나고, ㄷ의 ‘올여름’은 ㄴ첨가가 일어나 [올녀름]이 되고 뒤의 음운 ‘ㄴ’이 앞의 음운 ‘ㄹ’의 영향으로 ‘ㄹ’로 바뀌는 교체(유음화)가 일어나 [올려름]이 된다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄷ의 ‘올여름’은 ㄴ첨가, 유음화가 일어나므로 두 번 이상의 음운 변동이 일어나지만, ㄹ의 ‘해돋이’는 구개음화만 일어나므로 두 번 이상의 음운 변동이 일어나지 않는다.\n① ㄱ의 ‘신라’는 앞의 음운인 ‘ㄴ’이 뒤의 음운인 유음 ‘ㄹ’의 성질을 닮아 유음 ‘ㄹ’로 변동되었고, ㄴ의 ‘국물’은 앞의 음운인 ‘ㄱ’이 뒤의 음운인 비음 ‘ㅁ’의 성질을 닮아 비음 ‘ㅇ’으로 변동되었다.\n② ㄱ의 ‘신라’는 ‘ㄴ’이 ‘ㄹ’로 바뀌는 교체 현상이 일어나고, ㄷ의 ‘올여름’은 ㄴ첨가가 일어나 [올녀름]이 되고 뒤의 음운 ‘ㄴ’이 앞의 음운 ‘ㄹ’의 영향으로 ‘ㄹ’로 바뀌는 교체(유음화)가 일어나 [올려름]이 된다."
     ],
-    "src": "2019 9월 전국연합 고2"
+    "src": "2019 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-009",
@@ -4082,7 +4240,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄷ의 ‘올여름’은 ㄴ첨가, 유음화가 일어나므로 두 번 이상의 음운 변동이 일어나지만, ㄹ의 ‘해돋이’는 구개음화만 일어나므로 두 번 이상의 음운 변동이 일어나지 않는다.\n① ㄱ의 ‘신라’는 앞의 음운인 ‘ㄴ’이 뒤의 음운인 유음 ‘ㄹ’의 성질을 닮아 유음 ‘ㄹ’로 변동되었고, ㄴ의 ‘국물’은 앞의 음운인 ‘ㄱ’이 뒤의 음운인 비음 ‘ㅁ’의 성질을 닮아 비음 ‘ㅇ’으로 변동되었다.\n② ㄱ의 ‘신라’는 ‘ㄴ’이 ‘ㄹ’로 바뀌는 교체 현상이 일어나고, ㄷ의 ‘올여름’은 ㄴ첨가가 일어나 [올녀름]이 되고 뒤의 음운 ‘ㄴ’이 앞의 음운 ‘ㄹ’의 영향으로 ‘ㄹ’로 바뀌는 교체(유음화)가 일어나 [올려름]이 된다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄷ의 ‘올여름’은 ㄴ첨가, 유음화가 일어나므로 두 번 이상의 음운 변동이 일어나지만, ㄹ의 ‘해돋이’는 구개음화만 일어나므로 두 번 이상의 음운 변동이 일어나지 않는다.\n① ㄱ의 ‘신라’는 앞의 음운인 ‘ㄴ’이 뒤의 음운인 유음 ‘ㄹ’의 성질을 닮아 유음 ‘ㄹ’로 변동되었고, ㄴ의 ‘국물’은 앞의 음운인 ‘ㄱ’이 뒤의 음운인 비음 ‘ㅁ’의 성질을 닮아 비음 ‘ㅇ’으로 변동되었다.\n② ㄱ의 ‘신라’는 ‘ㄴ’이 ‘ㄹ’로 바뀌는 교체 현상이 일어나고, ㄷ의 ‘올여름’은 ㄴ첨가가 일어나 [올녀름]이 되고 뒤의 음운 ‘ㄴ’이 앞의 음운 ‘ㄹ’의 영향으로 ‘ㄹ’로 바뀌는 교체(유음화)가 일어나 [올려름]이 된다."
     ],
-    "src": "2019 9월 전국연합 고2"
+    "src": "2019 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-010",
@@ -4102,7 +4261,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄷ의 ‘올여름’은 ㄴ첨가, 유음화가 일어나므로 두 번 이상의 음운 변동이 일어나지만, ㄹ의 ‘해돋이’는 구개음화만 일어나므로 두 번 이상의 음운 변동이 일어나지 않는다.\n① ㄱ의 ‘신라’는 앞의 음운인 ‘ㄴ’이 뒤의 음운인 유음 ‘ㄹ’의 성질을 닮아 유음 ‘ㄹ’로 변동되었고, ㄴ의 ‘국물’은 앞의 음운인 ‘ㄱ’이 뒤의 음운인 비음 ‘ㅁ’의 성질을 닮아 비음 ‘ㅇ’으로 변동되었다.\n② ㄱ의 ‘신라’는 ‘ㄴ’이 ‘ㄹ’로 바뀌는 교체 현상이 일어나고, ㄷ의 ‘올여름’은 ㄴ첨가가 일어나 [올녀름]이 되고 뒤의 음운 ‘ㄴ’이 앞의 음운 ‘ㄹ’의 영향으로 ‘ㄹ’로 바뀌는 교체(유음화)가 일어나 [올려름]이 된다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄷ의 ‘올여름’은 ㄴ첨가, 유음화가 일어나므로 두 번 이상의 음운 변동이 일어나지만, ㄹ의 ‘해돋이’는 구개음화만 일어나므로 두 번 이상의 음운 변동이 일어나지 않는다.\n① ㄱ의 ‘신라’는 앞의 음운인 ‘ㄴ’이 뒤의 음운인 유음 ‘ㄹ’의 성질을 닮아 유음 ‘ㄹ’로 변동되었고, ㄴ의 ‘국물’은 앞의 음운인 ‘ㄱ’이 뒤의 음운인 비음 ‘ㅁ’의 성질을 닮아 비음 ‘ㅇ’으로 변동되었다.\n② ㄱ의 ‘신라’는 ‘ㄴ’이 ‘ㄹ’로 바뀌는 교체 현상이 일어나고, ㄷ의 ‘올여름’은 ㄴ첨가가 일어나 [올녀름]이 되고 뒤의 음운 ‘ㄴ’이 앞의 음운 ‘ㄹ’의 영향으로 ‘ㄹ’로 바뀌는 교체(유음화)가 일어나 [올려름]이 된다."
     ],
-    "src": "2019 9월 전국연합 고2"
+    "src": "2019 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-011",
@@ -4122,7 +4282,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓒ의 ‘꽃이슬’은 [꼰니슬]로, ⓓ의 ‘솜이불’은 [솜니불]로 발음될 때 ‘ㄴ’이라는 새로운 음운이 생기는 ‘첨가’가 공통적으로 일어나므로 적절하다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓒ의 ‘꽃이슬’은 [꼰니슬]로, ⓓ의 ‘솜이불’은 [솜니불]로 발음될 때 ‘ㄴ’이라는 새로운 음운이 생기는 ‘첨가’가 공통적으로 일어나므로 적절하다."
     ],
-    "src": "2019 11월 전국연합 고2"
+    "src": "2019 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-012",
@@ -4142,7 +4303,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓒ의 ‘꽃이슬’은 [꼰니슬]로, ⓓ의 ‘솜이불’은 [솜니불]로 발음될 때 ‘ㄴ’이라는 새로운 음운이 생기는 ‘첨가’가 공통적으로 일어나므로 적절하다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓒ의 ‘꽃이슬’은 [꼰니슬]로, ⓓ의 ‘솜이불’은 [솜니불]로 발음될 때 ‘ㄴ’이라는 새로운 음운이 생기는 ‘첨가’가 공통적으로 일어나므로 적절하다."
     ],
-    "src": "2019 11월 전국연합 고2"
+    "src": "2019 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-013",
@@ -4162,7 +4324,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓒ의 ‘꽃이슬’은 [꼰니슬]로, ⓓ의 ‘솜이불’은 [솜니불]로 발음될 때 ‘ㄴ’이라는 새로운 음운이 생기는 ‘첨가’가 공통적으로 일어나므로 적절하다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓒ의 ‘꽃이슬’은 [꼰니슬]로, ⓓ의 ‘솜이불’은 [솜니불]로 발음될 때 ‘ㄴ’이라는 새로운 음운이 생기는 ‘첨가’가 공통적으로 일어나므로 적절하다."
     ],
-    "src": "2019 11월 전국연합 고2"
+    "src": "2019 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-014",
@@ -4182,7 +4345,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓒ의 ‘꽃이슬’은 [꼰니슬]로, ⓓ의 ‘솜이불’은 [솜니불]로 발음될 때 ‘ㄴ’이라는 새로운 음운이 생기는 ‘첨가’가 공통적으로 일어나므로 적절하다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓒ의 ‘꽃이슬’은 [꼰니슬]로, ⓓ의 ‘솜이불’은 [솜니불]로 발음될 때 ‘ㄴ’이라는 새로운 음운이 생기는 ‘첨가’가 공통적으로 일어나므로 적절하다."
     ],
-    "src": "2019 11월 전국연합 고2"
+    "src": "2019 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-015",
@@ -4202,7 +4366,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓒ의 ‘꽃이슬’은 [꼰니슬]로, ⓓ의 ‘솜이불’은 [솜니불]로 발음될 때 ‘ㄴ’이라는 새로운 음운이 생기는 ‘첨가’가 공통적으로 일어나므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓒ의 ‘꽃이슬’은 [꼰니슬]로, ⓓ의 ‘솜이불’은 [솜니불]로 발음될 때 ‘ㄴ’이라는 새로운 음운이 생기는 ‘첨가’가 공통적으로 일어나므로 적절하다."
     ],
-    "src": "2019 11월 전국연합 고2"
+    "src": "2019 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-016",
@@ -4222,7 +4387,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n현대 국어에서 표준 발음으로 인정되는 구개음화는 음절 끝소리가 ‘ㄷ, ㅌ’인 형태소가 단모음 ‘ㅣ’로 시작하는 조사나 접사 같은 형식 형태소와 결합하여 ‘ㅈ, ㅊ’으로 변하는 경우나, 음절 끝소리가 ‘ㄷ’이고 뒤에 접사 ‘-히-’가 올 때 ‘ㄷ’과 ‘ㅎ’이 축약되어 ‘ㅌ’이 되고 이것이 구개음 ‘ㅊ’으로 되는 경우이다. ‘끝인사’를 [끄친사]로 발음하지 않는 이유는 ‘끝’ 뒤에 붙는 ‘인사’가 형식 형태소가 아니기 때문이다.\n[오답풀이] ① ‘같이’를 [가치]로 발음하는 이유는 표준 발음으로 인정되는 ‘ㄷ-구개음화’가 일어나기 때문이다. ② ‘많지만’을 [만치만]으로 발음하는 이유는 자음 축약이 일어나기 때문이다. 이 경우는 현대 국어에서 표준 발음으로 인정되는 구개음화의 사례가 될 수 없다. ③ ‘맏이’를 [마디]로 발음하지 않는 이유는 ‘ㄷ-구개음화’가 일어난 [마지]가 표준 발음으로 인정되기 때문이다. ④ ‘곁으로’를 [겨츠로]로 발음하지 않는 이유는 연음하여 발음한 [겨트로]가 표준 발음이기 때문이다. 이 경우 현대 국어에서 표준 발음으로 인정되는 구개음화의 사례가 될 수 없다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n현대 국어에서 표준 발음으로 인정되는 구개음화는 음절 끝소리가 ‘ㄷ, ㅌ’인 형태소가 단모음 ‘ㅣ’로 시작하는 조사나 접사 같은 형식 형태소와 결합하여 ‘ㅈ, ㅊ’으로 변하는 경우나, 음절 끝소리가 ‘ㄷ’이고 뒤에 접사 ‘-히-’가 올 때 ‘ㄷ’과 ‘ㅎ’이 축약되어 ‘ㅌ’이 되고 이것이 구개음 ‘ㅊ’으로 되는 경우이다. ‘끝인사’를 [끄친사]로 발음하지 않는 이유는 ‘끝’ 뒤에 붙는 ‘인사’가 형식 형태소가 아니기 때문이다.\n[오답풀이] ① ‘같이’를 [가치]로 발음하는 이유는 표준 발음으로 인정되는 ‘ㄷ-구개음화’가 일어나기 때문이다. ② ‘많지만’을 [만치만]으로 발음하는 이유는 자음 축약이 일어나기 때문이다. 이 경우는 현대 국어에서 표준 발음으로 인정되는 구개음화의 사례가 될 수 없다. ③ ‘맏이’를 [마디]로 발음하지 않는 이유는 ‘ㄷ-구개음화’가 일어난 [마지]가 표준 발음으로 인정되기 때문이다. ④ ‘곁으로’를 [겨츠로]로 발음하지 않는 이유는 연음하여 발음한 [겨트로]가 표준 발음이기 때문이다. 이 경우 현대 국어에서 표준 발음으로 인정되는 구개음화의 사례가 될 수 없다."
     ],
-    "src": "2020 3월 전국연합 고2"
+    "src": "2020 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-017",
@@ -4242,7 +4408,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n현대 국어에서 표준 발음으로 인정되는 구개음화는 음절 끝소리가 ‘ㄷ, ㅌ’인 형태소가 단모음 ‘ㅣ’로 시작하는 조사나 접사 같은 형식 형태소와 결합하여 ‘ㅈ, ㅊ’으로 변하는 경우나, 음절 끝소리가 ‘ㄷ’이고 뒤에 접사 ‘-히-’가 올 때 ‘ㄷ’과 ‘ㅎ’이 축약되어 ‘ㅌ’이 되고 이것이 구개음 ‘ㅊ’으로 되는 경우이다. ‘끝인사’를 [끄친사]로 발음하지 않는 이유는 ‘끝’ 뒤에 붙는 ‘인사’가 형식 형태소가 아니기 때문이다.\n[오답풀이] ① ‘같이’를 [가치]로 발음하는 이유는 표준 발음으로 인정되는 ‘ㄷ-구개음화’가 일어나기 때문이다. ② ‘많지만’을 [만치만]으로 발음하는 이유는 자음 축약이 일어나기 때문이다. 이 경우는 현대 국어에서 표준 발음으로 인정되는 구개음화의 사례가 될 수 없다. ③ ‘맏이’를 [마디]로 발음하지 않는 이유는 ‘ㄷ-구개음화’가 일어난 [마지]가 표준 발음으로 인정되기 때문이다. ④ ‘곁으로’를 [겨츠로]로 발음하지 않는 이유는 연음하여 발음한 [겨트로]가 표준 발음이기 때문이다. 이 경우 현대 국어에서 표준 발음으로 인정되는 구개음화의 사례가 될 수 없다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n현대 국어에서 표준 발음으로 인정되는 구개음화는 음절 끝소리가 ‘ㄷ, ㅌ’인 형태소가 단모음 ‘ㅣ’로 시작하는 조사나 접사 같은 형식 형태소와 결합하여 ‘ㅈ, ㅊ’으로 변하는 경우나, 음절 끝소리가 ‘ㄷ’이고 뒤에 접사 ‘-히-’가 올 때 ‘ㄷ’과 ‘ㅎ’이 축약되어 ‘ㅌ’이 되고 이것이 구개음 ‘ㅊ’으로 되는 경우이다. ‘끝인사’를 [끄친사]로 발음하지 않는 이유는 ‘끝’ 뒤에 붙는 ‘인사’가 형식 형태소가 아니기 때문이다.\n[오답풀이] ① ‘같이’를 [가치]로 발음하는 이유는 표준 발음으로 인정되는 ‘ㄷ-구개음화’가 일어나기 때문이다. ② ‘많지만’을 [만치만]으로 발음하는 이유는 자음 축약이 일어나기 때문이다. 이 경우는 현대 국어에서 표준 발음으로 인정되는 구개음화의 사례가 될 수 없다. ③ ‘맏이’를 [마디]로 발음하지 않는 이유는 ‘ㄷ-구개음화’가 일어난 [마지]가 표준 발음으로 인정되기 때문이다. ④ ‘곁으로’를 [겨츠로]로 발음하지 않는 이유는 연음하여 발음한 [겨트로]가 표준 발음이기 때문이다. 이 경우 현대 국어에서 표준 발음으로 인정되는 구개음화의 사례가 될 수 없다."
     ],
-    "src": "2020 3월 전국연합 고2"
+    "src": "2020 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-018",
@@ -4262,7 +4429,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n현대 국어에서 표준 발음으로 인정되는 구개음화는 음절 끝소리가 ‘ㄷ, ㅌ’인 형태소가 단모음 ‘ㅣ’로 시작하는 조사나 접사 같은 형식 형태소와 결합하여 ‘ㅈ, ㅊ’으로 변하는 경우나, 음절 끝소리가 ‘ㄷ’이고 뒤에 접사 ‘-히-’가 올 때 ‘ㄷ’과 ‘ㅎ’이 축약되어 ‘ㅌ’이 되고 이것이 구개음 ‘ㅊ’으로 되는 경우이다. ‘끝인사’를 [끄친사]로 발음하지 않는 이유는 ‘끝’ 뒤에 붙는 ‘인사’가 형식 형태소가 아니기 때문이다.\n[오답풀이] ① ‘같이’를 [가치]로 발음하는 이유는 표준 발음으로 인정되는 ‘ㄷ-구개음화’가 일어나기 때문이다. ② ‘많지만’을 [만치만]으로 발음하는 이유는 자음 축약이 일어나기 때문이다. 이 경우는 현대 국어에서 표준 발음으로 인정되는 구개음화의 사례가 될 수 없다. ③ ‘맏이’를 [마디]로 발음하지 않는 이유는 ‘ㄷ-구개음화’가 일어난 [마지]가 표준 발음으로 인정되기 때문이다. ④ ‘곁으로’를 [겨츠로]로 발음하지 않는 이유는 연음하여 발음한 [겨트로]가 표준 발음이기 때문이다. 이 경우 현대 국어에서 표준 발음으로 인정되는 구개음화의 사례가 될 수 없다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n현대 국어에서 표준 발음으로 인정되는 구개음화는 음절 끝소리가 ‘ㄷ, ㅌ’인 형태소가 단모음 ‘ㅣ’로 시작하는 조사나 접사 같은 형식 형태소와 결합하여 ‘ㅈ, ㅊ’으로 변하는 경우나, 음절 끝소리가 ‘ㄷ’이고 뒤에 접사 ‘-히-’가 올 때 ‘ㄷ’과 ‘ㅎ’이 축약되어 ‘ㅌ’이 되고 이것이 구개음 ‘ㅊ’으로 되는 경우이다. ‘끝인사’를 [끄친사]로 발음하지 않는 이유는 ‘끝’ 뒤에 붙는 ‘인사’가 형식 형태소가 아니기 때문이다.\n[오답풀이] ① ‘같이’를 [가치]로 발음하는 이유는 표준 발음으로 인정되는 ‘ㄷ-구개음화’가 일어나기 때문이다. ② ‘많지만’을 [만치만]으로 발음하는 이유는 자음 축약이 일어나기 때문이다. 이 경우는 현대 국어에서 표준 발음으로 인정되는 구개음화의 사례가 될 수 없다. ③ ‘맏이’를 [마디]로 발음하지 않는 이유는 ‘ㄷ-구개음화’가 일어난 [마지]가 표준 발음으로 인정되기 때문이다. ④ ‘곁으로’를 [겨츠로]로 발음하지 않는 이유는 연음하여 발음한 [겨트로]가 표준 발음이기 때문이다. 이 경우 현대 국어에서 표준 발음으로 인정되는 구개음화의 사례가 될 수 없다."
     ],
-    "src": "2020 3월 전국연합 고2"
+    "src": "2020 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-019",
@@ -4282,7 +4450,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n현대 국어에서 표준 발음으로 인정되는 구개음화는 음절 끝소리가 ‘ㄷ, ㅌ’인 형태소가 단모음 ‘ㅣ’로 시작하는 조사나 접사 같은 형식 형태소와 결합하여 ‘ㅈ, ㅊ’으로 변하는 경우나, 음절 끝소리가 ‘ㄷ’이고 뒤에 접사 ‘-히-’가 올 때 ‘ㄷ’과 ‘ㅎ’이 축약되어 ‘ㅌ’이 되고 이것이 구개음 ‘ㅊ’으로 되는 경우이다. ‘끝인사’를 [끄친사]로 발음하지 않는 이유는 ‘끝’ 뒤에 붙는 ‘인사’가 형식 형태소가 아니기 때문이다.\n[오답풀이] ① ‘같이’를 [가치]로 발음하는 이유는 표준 발음으로 인정되는 ‘ㄷ-구개음화’가 일어나기 때문이다. ② ‘많지만’을 [만치만]으로 발음하는 이유는 자음 축약이 일어나기 때문이다. 이 경우는 현대 국어에서 표준 발음으로 인정되는 구개음화의 사례가 될 수 없다. ③ ‘맏이’를 [마디]로 발음하지 않는 이유는 ‘ㄷ-구개음화’가 일어난 [마지]가 표준 발음으로 인정되기 때문이다. ④ ‘곁으로’를 [겨츠로]로 발음하지 않는 이유는 연음하여 발음한 [겨트로]가 표준 발음이기 때문이다. 이 경우 현대 국어에서 표준 발음으로 인정되는 구개음화의 사례가 될 수 없다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n현대 국어에서 표준 발음으로 인정되는 구개음화는 음절 끝소리가 ‘ㄷ, ㅌ’인 형태소가 단모음 ‘ㅣ’로 시작하는 조사나 접사 같은 형식 형태소와 결합하여 ‘ㅈ, ㅊ’으로 변하는 경우나, 음절 끝소리가 ‘ㄷ’이고 뒤에 접사 ‘-히-’가 올 때 ‘ㄷ’과 ‘ㅎ’이 축약되어 ‘ㅌ’이 되고 이것이 구개음 ‘ㅊ’으로 되는 경우이다. ‘끝인사’를 [끄친사]로 발음하지 않는 이유는 ‘끝’ 뒤에 붙는 ‘인사’가 형식 형태소가 아니기 때문이다.\n[오답풀이] ① ‘같이’를 [가치]로 발음하는 이유는 표준 발음으로 인정되는 ‘ㄷ-구개음화’가 일어나기 때문이다. ② ‘많지만’을 [만치만]으로 발음하는 이유는 자음 축약이 일어나기 때문이다. 이 경우는 현대 국어에서 표준 발음으로 인정되는 구개음화의 사례가 될 수 없다. ③ ‘맏이’를 [마디]로 발음하지 않는 이유는 ‘ㄷ-구개음화’가 일어난 [마지]가 표준 발음으로 인정되기 때문이다. ④ ‘곁으로’를 [겨츠로]로 발음하지 않는 이유는 연음하여 발음한 [겨트로]가 표준 발음이기 때문이다. 이 경우 현대 국어에서 표준 발음으로 인정되는 구개음화의 사례가 될 수 없다."
     ],
-    "src": "2020 3월 전국연합 고2"
+    "src": "2020 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-020",
@@ -4302,7 +4471,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n현대 국어에서 표준 발음으로 인정되는 구개음화는 음절 끝소리가 ‘ㄷ, ㅌ’인 형태소가 단모음 ‘ㅣ’로 시작하는 조사나 접사 같은 형식 형태소와 결합하여 ‘ㅈ, ㅊ’으로 변하는 경우나, 음절 끝소리가 ‘ㄷ’이고 뒤에 접사 ‘-히-’가 올 때 ‘ㄷ’과 ‘ㅎ’이 축약되어 ‘ㅌ’이 되고 이것이 구개음 ‘ㅊ’으로 되는 경우이다. ‘끝인사’를 [끄친사]로 발음하지 않는 이유는 ‘끝’ 뒤에 붙는 ‘인사’가 형식 형태소가 아니기 때문이다.\n[오답풀이] ① ‘같이’를 [가치]로 발음하는 이유는 표준 발음으로 인정되는 ‘ㄷ-구개음화’가 일어나기 때문이다. ② ‘많지만’을 [만치만]으로 발음하는 이유는 자음 축약이 일어나기 때문이다. 이 경우는 현대 국어에서 표준 발음으로 인정되는 구개음화의 사례가 될 수 없다. ③ ‘맏이’를 [마디]로 발음하지 않는 이유는 ‘ㄷ-구개음화’가 일어난 [마지]가 표준 발음으로 인정되기 때문이다. ④ ‘곁으로’를 [겨츠로]로 발음하지 않는 이유는 연음하여 발음한 [겨트로]가 표준 발음이기 때문이다. 이 경우 현대 국어에서 표준 발음으로 인정되는 구개음화의 사례가 될 수 없다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n현대 국어에서 표준 발음으로 인정되는 구개음화는 음절 끝소리가 ‘ㄷ, ㅌ’인 형태소가 단모음 ‘ㅣ’로 시작하는 조사나 접사 같은 형식 형태소와 결합하여 ‘ㅈ, ㅊ’으로 변하는 경우나, 음절 끝소리가 ‘ㄷ’이고 뒤에 접사 ‘-히-’가 올 때 ‘ㄷ’과 ‘ㅎ’이 축약되어 ‘ㅌ’이 되고 이것이 구개음 ‘ㅊ’으로 되는 경우이다. ‘끝인사’를 [끄친사]로 발음하지 않는 이유는 ‘끝’ 뒤에 붙는 ‘인사’가 형식 형태소가 아니기 때문이다.\n[오답풀이] ① ‘같이’를 [가치]로 발음하는 이유는 표준 발음으로 인정되는 ‘ㄷ-구개음화’가 일어나기 때문이다. ② ‘많지만’을 [만치만]으로 발음하는 이유는 자음 축약이 일어나기 때문이다. 이 경우는 현대 국어에서 표준 발음으로 인정되는 구개음화의 사례가 될 수 없다. ③ ‘맏이’를 [마디]로 발음하지 않는 이유는 ‘ㄷ-구개음화’가 일어난 [마지]가 표준 발음으로 인정되기 때문이다. ④ ‘곁으로’를 [겨츠로]로 발음하지 않는 이유는 연음하여 발음한 [겨트로]가 표준 발음이기 때문이다. 이 경우 현대 국어에서 표준 발음으로 인정되는 구개음화의 사례가 될 수 없다."
     ],
-    "src": "2020 3월 전국연합 고2"
+    "src": "2020 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-021",
@@ -4322,7 +4492,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓐ는 받침 ‘ㅈ’이 ‘ㄷ’으로 교체되고 ‘ㄷ’과 ‘ㅎ’이 만나 거센소리 ‘ㅌ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ② ⓑ는 ‘ㅈ’과 ‘ㅎ’이 곧바로 합쳐져 ‘ㅊ’으로 바뀐 것이므로 ㉠에 따른 것이라고 할 수 있다. ③ ⓒ는 겹받침 ‘ㄺ’에서 ‘ㄹ’이 탈락하고 ‘ㄱ’과 ‘ㅎ’이 만나 거센소리 ‘ㅋ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ④ ⓓ는 받침 ‘ㅈ’이 ‘ㄷ’으로 교체되고 ‘ㄷ’과 ‘ㅎ’이 만나 ‘ㅌ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ⑤ ⓔ는 겹받침 ‘ㄼ’의 ‘ㅂ’이 접미사 ‘-히-’의 ‘ㅎ’과 곧바로 합쳐져 ‘ㅍ’으로 바뀐 것이므로 ㉠에 따른 것이라고 할 수 있다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓐ는 받침 ‘ㅈ’이 ‘ㄷ’으로 교체되고 ‘ㄷ’과 ‘ㅎ’이 만나 거센소리 ‘ㅌ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ② ⓑ는 ‘ㅈ’과 ‘ㅎ’이 곧바로 합쳐져 ‘ㅊ’으로 바뀐 것이므로 ㉠에 따른 것이라고 할 수 있다. ③ ⓒ는 겹받침 ‘ㄺ’에서 ‘ㄹ’이 탈락하고 ‘ㄱ’과 ‘ㅎ’이 만나 거센소리 ‘ㅋ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ④ ⓓ는 받침 ‘ㅈ’이 ‘ㄷ’으로 교체되고 ‘ㄷ’과 ‘ㅎ’이 만나 ‘ㅌ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ⑤ ⓔ는 겹받침 ‘ㄼ’의 ‘ㅂ’이 접미사 ‘-히-’의 ‘ㅎ’과 곧바로 합쳐져 ‘ㅍ’으로 바뀐 것이므로 ㉠에 따른 것이라고 할 수 있다."
     ],
-    "src": "2023 3월 전국연합 고2"
+    "src": "2023 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-022",
@@ -4342,7 +4513,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓐ는 받침 ‘ㅈ’이 ‘ㄷ’으로 교체되고 ‘ㄷ’과 ‘ㅎ’이 만나 거센소리 ‘ㅌ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ② ⓑ는 ‘ㅈ’과 ‘ㅎ’이 곧바로 합쳐져 ‘ㅊ’으로 바뀐 것이므로 ㉠에 따른 것이라고 할 수 있다. ③ ⓒ는 겹받침 ‘ㄺ’에서 ‘ㄹ’이 탈락하고 ‘ㄱ’과 ‘ㅎ’이 만나 거센소리 ‘ㅋ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ④ ⓓ는 받침 ‘ㅈ’이 ‘ㄷ’으로 교체되고 ‘ㄷ’과 ‘ㅎ’이 만나 ‘ㅌ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ⑤ ⓔ는 겹받침 ‘ㄼ’의 ‘ㅂ’이 접미사 ‘-히-’의 ‘ㅎ’과 곧바로 합쳐져 ‘ㅍ’으로 바뀐 것이므로 ㉠에 따른 것이라고 할 수 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓐ는 받침 ‘ㅈ’이 ‘ㄷ’으로 교체되고 ‘ㄷ’과 ‘ㅎ’이 만나 거센소리 ‘ㅌ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ② ⓑ는 ‘ㅈ’과 ‘ㅎ’이 곧바로 합쳐져 ‘ㅊ’으로 바뀐 것이므로 ㉠에 따른 것이라고 할 수 있다. ③ ⓒ는 겹받침 ‘ㄺ’에서 ‘ㄹ’이 탈락하고 ‘ㄱ’과 ‘ㅎ’이 만나 거센소리 ‘ㅋ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ④ ⓓ는 받침 ‘ㅈ’이 ‘ㄷ’으로 교체되고 ‘ㄷ’과 ‘ㅎ’이 만나 ‘ㅌ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ⑤ ⓔ는 겹받침 ‘ㄼ’의 ‘ㅂ’이 접미사 ‘-히-’의 ‘ㅎ’과 곧바로 합쳐져 ‘ㅍ’으로 바뀐 것이므로 ㉠에 따른 것이라고 할 수 있다."
     ],
-    "src": "2023 3월 전국연합 고2"
+    "src": "2023 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-023",
@@ -4362,7 +4534,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓐ는 받침 ‘ㅈ’이 ‘ㄷ’으로 교체되고 ‘ㄷ’과 ‘ㅎ’이 만나 거센소리 ‘ㅌ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ② ⓑ는 ‘ㅈ’과 ‘ㅎ’이 곧바로 합쳐져 ‘ㅊ’으로 바뀐 것이므로 ㉠에 따른 것이라고 할 수 있다. ③ ⓒ는 겹받침 ‘ㄺ’에서 ‘ㄹ’이 탈락하고 ‘ㄱ’과 ‘ㅎ’이 만나 거센소리 ‘ㅋ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ④ ⓓ는 받침 ‘ㅈ’이 ‘ㄷ’으로 교체되고 ‘ㄷ’과 ‘ㅎ’이 만나 ‘ㅌ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ⑤ ⓔ는 겹받침 ‘ㄼ’의 ‘ㅂ’이 접미사 ‘-히-’의 ‘ㅎ’과 곧바로 합쳐져 ‘ㅍ’으로 바뀐 것이므로 ㉠에 따른 것이라고 할 수 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓐ는 받침 ‘ㅈ’이 ‘ㄷ’으로 교체되고 ‘ㄷ’과 ‘ㅎ’이 만나 거센소리 ‘ㅌ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ② ⓑ는 ‘ㅈ’과 ‘ㅎ’이 곧바로 합쳐져 ‘ㅊ’으로 바뀐 것이므로 ㉠에 따른 것이라고 할 수 있다. ③ ⓒ는 겹받침 ‘ㄺ’에서 ‘ㄹ’이 탈락하고 ‘ㄱ’과 ‘ㅎ’이 만나 거센소리 ‘ㅋ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ④ ⓓ는 받침 ‘ㅈ’이 ‘ㄷ’으로 교체되고 ‘ㄷ’과 ‘ㅎ’이 만나 ‘ㅌ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ⑤ ⓔ는 겹받침 ‘ㄼ’의 ‘ㅂ’이 접미사 ‘-히-’의 ‘ㅎ’과 곧바로 합쳐져 ‘ㅍ’으로 바뀐 것이므로 ㉠에 따른 것이라고 할 수 있다."
     ],
-    "src": "2023 3월 전국연합 고2"
+    "src": "2023 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-024",
@@ -4382,7 +4555,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓐ는 받침 ‘ㅈ’이 ‘ㄷ’으로 교체되고 ‘ㄷ’과 ‘ㅎ’이 만나 거센소리 ‘ㅌ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ② ⓑ는 ‘ㅈ’과 ‘ㅎ’이 곧바로 합쳐져 ‘ㅊ’으로 바뀐 것이므로 ㉠에 따른 것이라고 할 수 있다. ③ ⓒ는 겹받침 ‘ㄺ’에서 ‘ㄹ’이 탈락하고 ‘ㄱ’과 ‘ㅎ’이 만나 거센소리 ‘ㅋ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ④ ⓓ는 받침 ‘ㅈ’이 ‘ㄷ’으로 교체되고 ‘ㄷ’과 ‘ㅎ’이 만나 ‘ㅌ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ⑤ ⓔ는 겹받침 ‘ㄼ’의 ‘ㅂ’이 접미사 ‘-히-’의 ‘ㅎ’과 곧바로 합쳐져 ‘ㅍ’으로 바뀐 것이므로 ㉠에 따른 것이라고 할 수 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓐ는 받침 ‘ㅈ’이 ‘ㄷ’으로 교체되고 ‘ㄷ’과 ‘ㅎ’이 만나 거센소리 ‘ㅌ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ② ⓑ는 ‘ㅈ’과 ‘ㅎ’이 곧바로 합쳐져 ‘ㅊ’으로 바뀐 것이므로 ㉠에 따른 것이라고 할 수 있다. ③ ⓒ는 겹받침 ‘ㄺ’에서 ‘ㄹ’이 탈락하고 ‘ㄱ’과 ‘ㅎ’이 만나 거센소리 ‘ㅋ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ④ ⓓ는 받침 ‘ㅈ’이 ‘ㄷ’으로 교체되고 ‘ㄷ’과 ‘ㅎ’이 만나 ‘ㅌ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ⑤ ⓔ는 겹받침 ‘ㄼ’의 ‘ㅂ’이 접미사 ‘-히-’의 ‘ㅎ’과 곧바로 합쳐져 ‘ㅍ’으로 바뀐 것이므로 ㉠에 따른 것이라고 할 수 있다."
     ],
-    "src": "2023 3월 전국연합 고2"
+    "src": "2023 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-025",
@@ -4402,7 +4576,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓐ는 받침 ‘ㅈ’이 ‘ㄷ’으로 교체되고 ‘ㄷ’과 ‘ㅎ’이 만나 거센소리 ‘ㅌ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ② ⓑ는 ‘ㅈ’과 ‘ㅎ’이 곧바로 합쳐져 ‘ㅊ’으로 바뀐 것이므로 ㉠에 따른 것이라고 할 수 있다. ③ ⓒ는 겹받침 ‘ㄺ’에서 ‘ㄹ’이 탈락하고 ‘ㄱ’과 ‘ㅎ’이 만나 거센소리 ‘ㅋ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ④ ⓓ는 받침 ‘ㅈ’이 ‘ㄷ’으로 교체되고 ‘ㄷ’과 ‘ㅎ’이 만나 ‘ㅌ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ⑤ ⓔ는 겹받침 ‘ㄼ’의 ‘ㅂ’이 접미사 ‘-히-’의 ‘ㅎ’과 곧바로 합쳐져 ‘ㅍ’으로 바뀐 것이므로 ㉠에 따른 것이라고 할 수 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓐ는 받침 ‘ㅈ’이 ‘ㄷ’으로 교체되고 ‘ㄷ’과 ‘ㅎ’이 만나 거센소리 ‘ㅌ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ② ⓑ는 ‘ㅈ’과 ‘ㅎ’이 곧바로 합쳐져 ‘ㅊ’으로 바뀐 것이므로 ㉠에 따른 것이라고 할 수 있다. ③ ⓒ는 겹받침 ‘ㄺ’에서 ‘ㄹ’이 탈락하고 ‘ㄱ’과 ‘ㅎ’이 만나 거센소리 ‘ㅋ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ④ ⓓ는 받침 ‘ㅈ’이 ‘ㄷ’으로 교체되고 ‘ㄷ’과 ‘ㅎ’이 만나 ‘ㅌ’으로 바뀐 것이므로 ㉡에 따른 것이라고 할 수 있다. ⑤ ⓔ는 겹받침 ‘ㄼ’의 ‘ㅂ’이 접미사 ‘-히-’의 ‘ㅎ’과 곧바로 합쳐져 ‘ㅍ’으로 바뀐 것이므로 ㉠에 따른 것이라고 할 수 있다."
     ],
-    "src": "2023 3월 전국연합 고2"
+    "src": "2023 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-026",
@@ -4422,7 +4597,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉡의 부엌문→부억문→[부엉문]에서 일어나는 음절의 끝소리 규칙과 비음화는 모두 교체에 해당하며, ㉢의 벼훑이[벼훌치]에서 일어나는 구개음화 역시 교체에 해당하므로, ㉡, ㉢에서 공통적으로 일어난 음운 변동은 교체가 적절하다. ① 음운 변동이 ㉠에서 2번(자음군 단순화, 된소리되기), ㉡에서 2번(음절의 끝소리 규칙, 비음화), ㉢에서 1번(구개음화) 일어난 것으로 보아, 음운 변동의 횟수는 같지 않으므로 적절하지 않다. ② ㉠에서 자음군 단순화는 탈락에 해당하므로 음운의 개수가 줄어들었으나, ㉡에서는 교체만 일어나 음운의 개수가 달라지지 않았으므로 적절하지 않다. ③ ㉠에서는 흙[흑]으로 겹받침 중 ‘ㄹ’의 탈락이 일어났으나, ㉢에서는 탈락이 일어나지 않았으므로 적절하지 않다. ⑤ ㉢에서는 새로운 음운이 첨가되는 음운 변동이 일어나지 않았으므로 적절하지 않다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉡의 부엌문→부억문→[부엉문]에서 일어나는 음절의 끝소리 규칙과 비음화는 모두 교체에 해당하며, ㉢의 벼훑이[벼훌치]에서 일어나는 구개음화 역시 교체에 해당하므로, ㉡, ㉢에서 공통적으로 일어난 음운 변동은 교체가 적절하다. ① 음운 변동이 ㉠에서 2번(자음군 단순화, 된소리되기), ㉡에서 2번(음절의 끝소리 규칙, 비음화), ㉢에서 1번(구개음화) 일어난 것으로 보아, 음운 변동의 횟수는 같지 않으므로 적절하지 않다. ② ㉠에서 자음군 단순화는 탈락에 해당하므로 음운의 개수가 줄어들었으나, ㉡에서는 교체만 일어나 음운의 개수가 달라지지 않았으므로 적절하지 않다. ③ ㉠에서는 흙[흑]으로 겹받침 중 ‘ㄹ’의 탈락이 일어났으나, ㉢에서는 탈락이 일어나지 않았으므로 적절하지 않다. ⑤ ㉢에서는 새로운 음운이 첨가되는 음운 변동이 일어나지 않았으므로 적절하지 않다."
     ],
-    "src": "2024 10월 전국연합 고2"
+    "src": "2024 10월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-027",
@@ -4442,7 +4618,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉡의 부엌문→부억문→[부엉문]에서 일어나는 음절의 끝소리 규칙과 비음화는 모두 교체에 해당하며, ㉢의 벼훑이[벼훌치]에서 일어나는 구개음화 역시 교체에 해당하므로, ㉡, ㉢에서 공통적으로 일어난 음운 변동은 교체가 적절하다. ① 음운 변동이 ㉠에서 2번(자음군 단순화, 된소리되기), ㉡에서 2번(음절의 끝소리 규칙, 비음화), ㉢에서 1번(구개음화) 일어난 것으로 보아, 음운 변동의 횟수는 같지 않으므로 적절하지 않다. ② ㉠에서 자음군 단순화는 탈락에 해당하므로 음운의 개수가 줄어들었으나, ㉡에서는 교체만 일어나 음운의 개수가 달라지지 않았으므로 적절하지 않다. ③ ㉠에서는 흙[흑]으로 겹받침 중 ‘ㄹ’의 탈락이 일어났으나, ㉢에서는 탈락이 일어나지 않았으므로 적절하지 않다. ⑤ ㉢에서는 새로운 음운이 첨가되는 음운 변동이 일어나지 않았으므로 적절하지 않다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉡의 부엌문→부억문→[부엉문]에서 일어나는 음절의 끝소리 규칙과 비음화는 모두 교체에 해당하며, ㉢의 벼훑이[벼훌치]에서 일어나는 구개음화 역시 교체에 해당하므로, ㉡, ㉢에서 공통적으로 일어난 음운 변동은 교체가 적절하다. ① 음운 변동이 ㉠에서 2번(자음군 단순화, 된소리되기), ㉡에서 2번(음절의 끝소리 규칙, 비음화), ㉢에서 1번(구개음화) 일어난 것으로 보아, 음운 변동의 횟수는 같지 않으므로 적절하지 않다. ② ㉠에서 자음군 단순화는 탈락에 해당하므로 음운의 개수가 줄어들었으나, ㉡에서는 교체만 일어나 음운의 개수가 달라지지 않았으므로 적절하지 않다. ③ ㉠에서는 흙[흑]으로 겹받침 중 ‘ㄹ’의 탈락이 일어났으나, ㉢에서는 탈락이 일어나지 않았으므로 적절하지 않다. ⑤ ㉢에서는 새로운 음운이 첨가되는 음운 변동이 일어나지 않았으므로 적절하지 않다."
     ],
-    "src": "2024 10월 전국연합 고2"
+    "src": "2024 10월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-028",
@@ -4462,7 +4639,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉡의 부엌문→부억문→[부엉문]에서 일어나는 음절의 끝소리 규칙과 비음화는 모두 교체에 해당하며, ㉢의 벼훑이[벼훌치]에서 일어나는 구개음화 역시 교체에 해당하므로, ㉡, ㉢에서 공통적으로 일어난 음운 변동은 교체가 적절하다. ① 음운 변동이 ㉠에서 2번(자음군 단순화, 된소리되기), ㉡에서 2번(음절의 끝소리 규칙, 비음화), ㉢에서 1번(구개음화) 일어난 것으로 보아, 음운 변동의 횟수는 같지 않으므로 적절하지 않다. ② ㉠에서 자음군 단순화는 탈락에 해당하므로 음운의 개수가 줄어들었으나, ㉡에서는 교체만 일어나 음운의 개수가 달라지지 않았으므로 적절하지 않다. ③ ㉠에서는 흙[흑]으로 겹받침 중 ‘ㄹ’의 탈락이 일어났으나, ㉢에서는 탈락이 일어나지 않았으므로 적절하지 않다. ⑤ ㉢에서는 새로운 음운이 첨가되는 음운 변동이 일어나지 않았으므로 적절하지 않다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉡의 부엌문→부억문→[부엉문]에서 일어나는 음절의 끝소리 규칙과 비음화는 모두 교체에 해당하며, ㉢의 벼훑이[벼훌치]에서 일어나는 구개음화 역시 교체에 해당하므로, ㉡, ㉢에서 공통적으로 일어난 음운 변동은 교체가 적절하다. ① 음운 변동이 ㉠에서 2번(자음군 단순화, 된소리되기), ㉡에서 2번(음절의 끝소리 규칙, 비음화), ㉢에서 1번(구개음화) 일어난 것으로 보아, 음운 변동의 횟수는 같지 않으므로 적절하지 않다. ② ㉠에서 자음군 단순화는 탈락에 해당하므로 음운의 개수가 줄어들었으나, ㉡에서는 교체만 일어나 음운의 개수가 달라지지 않았으므로 적절하지 않다. ③ ㉠에서는 흙[흑]으로 겹받침 중 ‘ㄹ’의 탈락이 일어났으나, ㉢에서는 탈락이 일어나지 않았으므로 적절하지 않다. ⑤ ㉢에서는 새로운 음운이 첨가되는 음운 변동이 일어나지 않았으므로 적절하지 않다."
     ],
-    "src": "2024 10월 전국연합 고2"
+    "src": "2024 10월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-029",
@@ -4482,7 +4660,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉡의 부엌문→부억문→[부엉문]에서 일어나는 음절의 끝소리 규칙과 비음화는 모두 교체에 해당하며, ㉢의 벼훑이[벼훌치]에서 일어나는 구개음화 역시 교체에 해당하므로, ㉡, ㉢에서 공통적으로 일어난 음운 변동은 교체가 적절하다. ① 음운 변동이 ㉠에서 2번(자음군 단순화, 된소리되기), ㉡에서 2번(음절의 끝소리 규칙, 비음화), ㉢에서 1번(구개음화) 일어난 것으로 보아, 음운 변동의 횟수는 같지 않으므로 적절하지 않다. ② ㉠에서 자음군 단순화는 탈락에 해당하므로 음운의 개수가 줄어들었으나, ㉡에서는 교체만 일어나 음운의 개수가 달라지지 않았으므로 적절하지 않다. ③ ㉠에서는 흙[흑]으로 겹받침 중 ‘ㄹ’의 탈락이 일어났으나, ㉢에서는 탈락이 일어나지 않았으므로 적절하지 않다. ⑤ ㉢에서는 새로운 음운이 첨가되는 음운 변동이 일어나지 않았으므로 적절하지 않다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉡의 부엌문→부억문→[부엉문]에서 일어나는 음절의 끝소리 규칙과 비음화는 모두 교체에 해당하며, ㉢의 벼훑이[벼훌치]에서 일어나는 구개음화 역시 교체에 해당하므로, ㉡, ㉢에서 공통적으로 일어난 음운 변동은 교체가 적절하다. ① 음운 변동이 ㉠에서 2번(자음군 단순화, 된소리되기), ㉡에서 2번(음절의 끝소리 규칙, 비음화), ㉢에서 1번(구개음화) 일어난 것으로 보아, 음운 변동의 횟수는 같지 않으므로 적절하지 않다. ② ㉠에서 자음군 단순화는 탈락에 해당하므로 음운의 개수가 줄어들었으나, ㉡에서는 교체만 일어나 음운의 개수가 달라지지 않았으므로 적절하지 않다. ③ ㉠에서는 흙[흑]으로 겹받침 중 ‘ㄹ’의 탈락이 일어났으나, ㉢에서는 탈락이 일어나지 않았으므로 적절하지 않다. ⑤ ㉢에서는 새로운 음운이 첨가되는 음운 변동이 일어나지 않았으므로 적절하지 않다."
     ],
-    "src": "2024 10월 전국연합 고2"
+    "src": "2024 10월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-phonology-030",
@@ -4502,7 +4681,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉡의 부엌문→부억문→[부엉문]에서 일어나는 음절의 끝소리 규칙과 비음화는 모두 교체에 해당하며, ㉢의 벼훑이[벼훌치]에서 일어나는 구개음화 역시 교체에 해당하므로, ㉡, ㉢에서 공통적으로 일어난 음운 변동은 교체가 적절하다. ① 음운 변동이 ㉠에서 2번(자음군 단순화, 된소리되기), ㉡에서 2번(음절의 끝소리 규칙, 비음화), ㉢에서 1번(구개음화) 일어난 것으로 보아, 음운 변동의 횟수는 같지 않으므로 적절하지 않다. ② ㉠에서 자음군 단순화는 탈락에 해당하므로 음운의 개수가 줄어들었으나, ㉡에서는 교체만 일어나 음운의 개수가 달라지지 않았으므로 적절하지 않다. ③ ㉠에서는 흙[흑]으로 겹받침 중 ‘ㄹ’의 탈락이 일어났으나, ㉢에서는 탈락이 일어나지 않았으므로 적절하지 않다. ⑤ ㉢에서는 새로운 음운이 첨가되는 음운 변동이 일어나지 않았으므로 적절하지 않다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉡의 부엌문→부억문→[부엉문]에서 일어나는 음절의 끝소리 규칙과 비음화는 모두 교체에 해당하며, ㉢의 벼훑이[벼훌치]에서 일어나는 구개음화 역시 교체에 해당하므로, ㉡, ㉢에서 공통적으로 일어난 음운 변동은 교체가 적절하다. ① 음운 변동이 ㉠에서 2번(자음군 단순화, 된소리되기), ㉡에서 2번(음절의 끝소리 규칙, 비음화), ㉢에서 1번(구개음화) 일어난 것으로 보아, 음운 변동의 횟수는 같지 않으므로 적절하지 않다. ② ㉠에서 자음군 단순화는 탈락에 해당하므로 음운의 개수가 줄어들었으나, ㉡에서는 교체만 일어나 음운의 개수가 달라지지 않았으므로 적절하지 않다. ③ ㉠에서는 흙[흑]으로 겹받침 중 ‘ㄹ’의 탈락이 일어났으나, ㉢에서는 탈락이 일어나지 않았으므로 적절하지 않다. ⑤ ㉢에서는 새로운 음운이 첨가되는 음운 변동이 일어나지 않았으므로 적절하지 않다."
     ],
-    "src": "2024 10월 전국연합 고2"
+    "src": "2024 10월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-001",
@@ -4522,7 +4702,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘깊이’의 ‘이’는 어미가 아니라 파생 접사에 해당되는 예이다.\n⑤ ‘흐르고’의 ‘고’는 어간 ‘흐르’에 붙어 문법적 기능을 표시하는 어미이다. 따라서 기본형인 ‘흐르다’가 사전에 표제어로 등재된다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘깊이’의 ‘이’는 어미가 아니라 파생 접사에 해당되는 예이다.\n⑤ ‘흐르고’의 ‘고’는 어간 ‘흐르’에 붙어 문법적 기능을 표시하는 어미이다. 따라서 기본형인 ‘흐르다’가 사전에 표제어로 등재된다."
     ],
-    "src": "2018 9월 전국연합 고2"
+    "src": "2018 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-002",
@@ -4542,7 +4723,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘깊이’의 ‘이’는 어미가 아니라 파생 접사에 해당되는 예이다.\n⑤ ‘흐르고’의 ‘고’는 어간 ‘흐르’에 붙어 문법적 기능을 표시하는 어미이다. 따라서 기본형인 ‘흐르다’가 사전에 표제어로 등재된다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘깊이’의 ‘이’는 어미가 아니라 파생 접사에 해당되는 예이다.\n⑤ ‘흐르고’의 ‘고’는 어간 ‘흐르’에 붙어 문법적 기능을 표시하는 어미이다. 따라서 기본형인 ‘흐르다’가 사전에 표제어로 등재된다."
     ],
-    "src": "2018 9월 전국연합 고2"
+    "src": "2018 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-003",
@@ -4562,7 +4744,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘깊이’의 ‘이’는 어미가 아니라 파생 접사에 해당되는 예이다.\n⑤ ‘흐르고’의 ‘고’는 어간 ‘흐르’에 붙어 문법적 기능을 표시하는 어미이다. 따라서 기본형인 ‘흐르다’가 사전에 표제어로 등재된다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘깊이’의 ‘이’는 어미가 아니라 파생 접사에 해당되는 예이다.\n⑤ ‘흐르고’의 ‘고’는 어간 ‘흐르’에 붙어 문법적 기능을 표시하는 어미이다. 따라서 기본형인 ‘흐르다’가 사전에 표제어로 등재된다."
     ],
-    "src": "2018 9월 전국연합 고2"
+    "src": "2018 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-004",
@@ -4582,7 +4765,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘깊이’의 ‘이’는 어미가 아니라 파생 접사에 해당되는 예이다.\n⑤ ‘흐르고’의 ‘고’는 어간 ‘흐르’에 붙어 문법적 기능을 표시하는 어미이다. 따라서 기본형인 ‘흐르다’가 사전에 표제어로 등재된다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘깊이’의 ‘이’는 어미가 아니라 파생 접사에 해당되는 예이다.\n⑤ ‘흐르고’의 ‘고’는 어간 ‘흐르’에 붙어 문법적 기능을 표시하는 어미이다. 따라서 기본형인 ‘흐르다’가 사전에 표제어로 등재된다."
     ],
-    "src": "2018 9월 전국연합 고2"
+    "src": "2018 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-005",
@@ -4602,7 +4786,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘깊이’의 ‘이’는 어미가 아니라 파생 접사에 해당되는 예이다.\n⑤ ‘흐르고’의 ‘고’는 어간 ‘흐르’에 붙어 문법적 기능을 표시하는 어미이다. 따라서 기본형인 ‘흐르다’가 사전에 표제어로 등재된다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘깊이’의 ‘이’는 어미가 아니라 파생 접사에 해당되는 예이다.\n⑤ ‘흐르고’의 ‘고’는 어간 ‘흐르’에 붙어 문법적 기능을 표시하는 어미이다. 따라서 기본형인 ‘흐르다’가 사전에 표제어로 등재된다."
     ],
-    "src": "2018 9월 전국연합 고2"
+    "src": "2018 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-006",
@@ -4622,7 +4807,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠은 ‘피’라는 명사와 ‘땀’이라는 명사가 결합한 합성 명사이고, ㉣은 ‘송이’라는 명사 두 개가 결합한 합성부사이므로 적절하지 않다.\n① ㉠은 사람이나 동물의 혈액을 의미하는 ‘피’와 사람이나 동물의 피부에서 분비되는 액체를 의미하는 ‘땀’이 결합하여 문맥상 ‘노력과 수고’라는 새로운 의미로 사용된 융합 합성어이므로 적절하다. ② ㉢은 ‘봄’과 ‘비’가 결합한 합성 명사이며, 의미상 선행 어근이 후행 어근을 수식하는 종속 합성어이므로 적절하다. ④ ㉡은 대등 합성어이면서 합성 명사이고, ㉢은 종속 합성어이면서 합성 명사이므로 적절하다. ⑤ ㉡은 대등 합성어이면서 합성 명사이지만, ㉣은 대등 합성어이면서 합성 부사이므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠은 ‘피’라는 명사와 ‘땀’이라는 명사가 결합한 합성 명사이고, ㉣은 ‘송이’라는 명사 두 개가 결합한 합성부사이므로 적절하지 않다.\n① ㉠은 사람이나 동물의 혈액을 의미하는 ‘피’와 사람이나 동물의 피부에서 분비되는 액체를 의미하는 ‘땀’이 결합하여 문맥상 ‘노력과 수고’라는 새로운 의미로 사용된 융합 합성어이므로 적절하다. ② ㉢은 ‘봄’과 ‘비’가 결합한 합성 명사이며, 의미상 선행 어근이 후행 어근을 수식하는 종속 합성어이므로 적절하다. ④ ㉡은 대등 합성어이면서 합성 명사이고, ㉢은 종속 합성어이면서 합성 명사이므로 적절하다. ⑤ ㉡은 대등 합성어이면서 합성 명사이지만, ㉣은 대등 합성어이면서 합성 부사이므로 적절하다."
     ],
-    "src": "2018 11월 전국연합 고2"
+    "src": "2018 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-007",
@@ -4642,7 +4828,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠은 ‘피’라는 명사와 ‘땀’이라는 명사가 결합한 합성 명사이고, ㉣은 ‘송이’라는 명사 두 개가 결합한 합성부사이므로 적절하지 않다.\n① ㉠은 사람이나 동물의 혈액을 의미하는 ‘피’와 사람이나 동물의 피부에서 분비되는 액체를 의미하는 ‘땀’이 결합하여 문맥상 ‘노력과 수고’라는 새로운 의미로 사용된 융합 합성어이므로 적절하다. ② ㉢은 ‘봄’과 ‘비’가 결합한 합성 명사이며, 의미상 선행 어근이 후행 어근을 수식하는 종속 합성어이므로 적절하다. ④ ㉡은 대등 합성어이면서 합성 명사이고, ㉢은 종속 합성어이면서 합성 명사이므로 적절하다. ⑤ ㉡은 대등 합성어이면서 합성 명사이지만, ㉣은 대등 합성어이면서 합성 부사이므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠은 ‘피’라는 명사와 ‘땀’이라는 명사가 결합한 합성 명사이고, ㉣은 ‘송이’라는 명사 두 개가 결합한 합성부사이므로 적절하지 않다.\n① ㉠은 사람이나 동물의 혈액을 의미하는 ‘피’와 사람이나 동물의 피부에서 분비되는 액체를 의미하는 ‘땀’이 결합하여 문맥상 ‘노력과 수고’라는 새로운 의미로 사용된 융합 합성어이므로 적절하다. ② ㉢은 ‘봄’과 ‘비’가 결합한 합성 명사이며, 의미상 선행 어근이 후행 어근을 수식하는 종속 합성어이므로 적절하다. ④ ㉡은 대등 합성어이면서 합성 명사이고, ㉢은 종속 합성어이면서 합성 명사이므로 적절하다. ⑤ ㉡은 대등 합성어이면서 합성 명사이지만, ㉣은 대등 합성어이면서 합성 부사이므로 적절하다."
     ],
-    "src": "2018 11월 전국연합 고2"
+    "src": "2018 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-008",
@@ -4662,7 +4849,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠은 ‘피’라는 명사와 ‘땀’이라는 명사가 결합한 합성 명사이고, ㉣은 ‘송이’라는 명사 두 개가 결합한 합성부사이므로 적절하지 않다.\n① ㉠은 사람이나 동물의 혈액을 의미하는 ‘피’와 사람이나 동물의 피부에서 분비되는 액체를 의미하는 ‘땀’이 결합하여 문맥상 ‘노력과 수고’라는 새로운 의미로 사용된 융합 합성어이므로 적절하다. ② ㉢은 ‘봄’과 ‘비’가 결합한 합성 명사이며, 의미상 선행 어근이 후행 어근을 수식하는 종속 합성어이므로 적절하다. ④ ㉡은 대등 합성어이면서 합성 명사이고, ㉢은 종속 합성어이면서 합성 명사이므로 적절하다. ⑤ ㉡은 대등 합성어이면서 합성 명사이지만, ㉣은 대등 합성어이면서 합성 부사이므로 적절하다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠은 ‘피’라는 명사와 ‘땀’이라는 명사가 결합한 합성 명사이고, ㉣은 ‘송이’라는 명사 두 개가 결합한 합성부사이므로 적절하지 않다.\n① ㉠은 사람이나 동물의 혈액을 의미하는 ‘피’와 사람이나 동물의 피부에서 분비되는 액체를 의미하는 ‘땀’이 결합하여 문맥상 ‘노력과 수고’라는 새로운 의미로 사용된 융합 합성어이므로 적절하다. ② ㉢은 ‘봄’과 ‘비’가 결합한 합성 명사이며, 의미상 선행 어근이 후행 어근을 수식하는 종속 합성어이므로 적절하다. ④ ㉡은 대등 합성어이면서 합성 명사이고, ㉢은 종속 합성어이면서 합성 명사이므로 적절하다. ⑤ ㉡은 대등 합성어이면서 합성 명사이지만, ㉣은 대등 합성어이면서 합성 부사이므로 적절하다."
     ],
-    "src": "2018 11월 전국연합 고2"
+    "src": "2018 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-009",
@@ -4682,7 +4870,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠은 ‘피’라는 명사와 ‘땀’이라는 명사가 결합한 합성 명사이고, ㉣은 ‘송이’라는 명사 두 개가 결합한 합성부사이므로 적절하지 않다.\n① ㉠은 사람이나 동물의 혈액을 의미하는 ‘피’와 사람이나 동물의 피부에서 분비되는 액체를 의미하는 ‘땀’이 결합하여 문맥상 ‘노력과 수고’라는 새로운 의미로 사용된 융합 합성어이므로 적절하다. ② ㉢은 ‘봄’과 ‘비’가 결합한 합성 명사이며, 의미상 선행 어근이 후행 어근을 수식하는 종속 합성어이므로 적절하다. ④ ㉡은 대등 합성어이면서 합성 명사이고, ㉢은 종속 합성어이면서 합성 명사이므로 적절하다. ⑤ ㉡은 대등 합성어이면서 합성 명사이지만, ㉣은 대등 합성어이면서 합성 부사이므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠은 ‘피’라는 명사와 ‘땀’이라는 명사가 결합한 합성 명사이고, ㉣은 ‘송이’라는 명사 두 개가 결합한 합성부사이므로 적절하지 않다.\n① ㉠은 사람이나 동물의 혈액을 의미하는 ‘피’와 사람이나 동물의 피부에서 분비되는 액체를 의미하는 ‘땀’이 결합하여 문맥상 ‘노력과 수고’라는 새로운 의미로 사용된 융합 합성어이므로 적절하다. ② ㉢은 ‘봄’과 ‘비’가 결합한 합성 명사이며, 의미상 선행 어근이 후행 어근을 수식하는 종속 합성어이므로 적절하다. ④ ㉡은 대등 합성어이면서 합성 명사이고, ㉢은 종속 합성어이면서 합성 명사이므로 적절하다. ⑤ ㉡은 대등 합성어이면서 합성 명사이지만, ㉣은 대등 합성어이면서 합성 부사이므로 적절하다."
     ],
-    "src": "2018 11월 전국연합 고2"
+    "src": "2018 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-010",
@@ -4702,7 +4891,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠은 ‘피’라는 명사와 ‘땀’이라는 명사가 결합한 합성 명사이고, ㉣은 ‘송이’라는 명사 두 개가 결합한 합성부사이므로 적절하지 않다.\n① ㉠은 사람이나 동물의 혈액을 의미하는 ‘피’와 사람이나 동물의 피부에서 분비되는 액체를 의미하는 ‘땀’이 결합하여 문맥상 ‘노력과 수고’라는 새로운 의미로 사용된 융합 합성어이므로 적절하다. ② ㉢은 ‘봄’과 ‘비’가 결합한 합성 명사이며, 의미상 선행 어근이 후행 어근을 수식하는 종속 합성어이므로 적절하다. ④ ㉡은 대등 합성어이면서 합성 명사이고, ㉢은 종속 합성어이면서 합성 명사이므로 적절하다. ⑤ ㉡은 대등 합성어이면서 합성 명사이지만, ㉣은 대등 합성어이면서 합성 부사이므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠은 ‘피’라는 명사와 ‘땀’이라는 명사가 결합한 합성 명사이고, ㉣은 ‘송이’라는 명사 두 개가 결합한 합성부사이므로 적절하지 않다.\n① ㉠은 사람이나 동물의 혈액을 의미하는 ‘피’와 사람이나 동물의 피부에서 분비되는 액체를 의미하는 ‘땀’이 결합하여 문맥상 ‘노력과 수고’라는 새로운 의미로 사용된 융합 합성어이므로 적절하다. ② ㉢은 ‘봄’과 ‘비’가 결합한 합성 명사이며, 의미상 선행 어근이 후행 어근을 수식하는 종속 합성어이므로 적절하다. ④ ㉡은 대등 합성어이면서 합성 명사이고, ㉢은 종속 합성어이면서 합성 명사이므로 적절하다. ⑤ ㉡은 대등 합성어이면서 합성 명사이지만, ㉣은 대등 합성어이면서 합성 부사이므로 적절하다."
     ],
-    "src": "2018 11월 전국연합 고2"
+    "src": "2018 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-011",
@@ -4722,7 +4912,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘수꿩, 숫양’은 주위 환경에 따라 다른 형태를 가지는 접두사 ‘수-/숫-’이 결합하여 만들어진 단어이지만(㉣), 접두사가 결합하는 단어 ‘꿩’과 ‘양’이 모두 명사이므로 둘 이상의 품사에 결합하여 새로운 단어를 만든다는 설명(㉢)에는 해당하지 않는다.\n[오답풀이] ① ‘군-(접두사)+기침(명사)’, ‘군-(접두사)+살(명사)’이므로 ㉠에 해당한다.\n② ‘빗-(접두사)+나가다(동사)’, ‘빗-(접두사)+맞다(동사)’이며, 동사는 용언이므로 ㉡에 해당한다.\n③ ‘헛-(접두사)+디디다(동사)’, ‘헛-(접두사)+수고(명사)’이므로 ㉢에 해당한다.\n④ ‘새-(접두사)+빨갛다(형용사)’, ‘샛-(접두사)+노랗다(형용사)’이며, 형용사는 용언이므로 ㉡과 ㉣에 모두 해당한다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘수꿩, 숫양’은 주위 환경에 따라 다른 형태를 가지는 접두사 ‘수-/숫-’이 결합하여 만들어진 단어이지만(㉣), 접두사가 결합하는 단어 ‘꿩’과 ‘양’이 모두 명사이므로 둘 이상의 품사에 결합하여 새로운 단어를 만든다는 설명(㉢)에는 해당하지 않는다.\n[오답풀이] ① ‘군-(접두사)+기침(명사)’, ‘군-(접두사)+살(명사)’이므로 ㉠에 해당한다.\n② ‘빗-(접두사)+나가다(동사)’, ‘빗-(접두사)+맞다(동사)’이며, 동사는 용언이므로 ㉡에 해당한다.\n③ ‘헛-(접두사)+디디다(동사)’, ‘헛-(접두사)+수고(명사)’이므로 ㉢에 해당한다.\n④ ‘새-(접두사)+빨갛다(형용사)’, ‘샛-(접두사)+노랗다(형용사)’이며, 형용사는 용언이므로 ㉡과 ㉣에 모두 해당한다."
     ],
-    "src": "2019 6월 전국연합 고2"
+    "src": "2019 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-012",
@@ -4742,7 +4933,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘수꿩, 숫양’은 주위 환경에 따라 다른 형태를 가지는 접두사 ‘수-/숫-’이 결합하여 만들어진 단어이지만(㉣), 접두사가 결합하는 단어 ‘꿩’과 ‘양’이 모두 명사이므로 둘 이상의 품사에 결합하여 새로운 단어를 만든다는 설명(㉢)에는 해당하지 않는다.\n[오답풀이] ① ‘군-(접두사)+기침(명사)’, ‘군-(접두사)+살(명사)’이므로 ㉠에 해당한다.\n② ‘빗-(접두사)+나가다(동사)’, ‘빗-(접두사)+맞다(동사)’이며, 동사는 용언이므로 ㉡에 해당한다.\n③ ‘헛-(접두사)+디디다(동사)’, ‘헛-(접두사)+수고(명사)’이므로 ㉢에 해당한다.\n④ ‘새-(접두사)+빨갛다(형용사)’, ‘샛-(접두사)+노랗다(형용사)’이며, 형용사는 용언이므로 ㉡과 ㉣에 모두 해당한다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘수꿩, 숫양’은 주위 환경에 따라 다른 형태를 가지는 접두사 ‘수-/숫-’이 결합하여 만들어진 단어이지만(㉣), 접두사가 결합하는 단어 ‘꿩’과 ‘양’이 모두 명사이므로 둘 이상의 품사에 결합하여 새로운 단어를 만든다는 설명(㉢)에는 해당하지 않는다.\n[오답풀이] ① ‘군-(접두사)+기침(명사)’, ‘군-(접두사)+살(명사)’이므로 ㉠에 해당한다.\n② ‘빗-(접두사)+나가다(동사)’, ‘빗-(접두사)+맞다(동사)’이며, 동사는 용언이므로 ㉡에 해당한다.\n③ ‘헛-(접두사)+디디다(동사)’, ‘헛-(접두사)+수고(명사)’이므로 ㉢에 해당한다.\n④ ‘새-(접두사)+빨갛다(형용사)’, ‘샛-(접두사)+노랗다(형용사)’이며, 형용사는 용언이므로 ㉡과 ㉣에 모두 해당한다."
     ],
-    "src": "2019 6월 전국연합 고2"
+    "src": "2019 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-013",
@@ -4762,7 +4954,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘수꿩, 숫양’은 주위 환경에 따라 다른 형태를 가지는 접두사 ‘수-/숫-’이 결합하여 만들어진 단어이지만(㉣), 접두사가 결합하는 단어 ‘꿩’과 ‘양’이 모두 명사이므로 둘 이상의 품사에 결합하여 새로운 단어를 만든다는 설명(㉢)에는 해당하지 않는다.\n[오답풀이] ① ‘군-(접두사)+기침(명사)’, ‘군-(접두사)+살(명사)’이므로 ㉠에 해당한다.\n② ‘빗-(접두사)+나가다(동사)’, ‘빗-(접두사)+맞다(동사)’이며, 동사는 용언이므로 ㉡에 해당한다.\n③ ‘헛-(접두사)+디디다(동사)’, ‘헛-(접두사)+수고(명사)’이므로 ㉢에 해당한다.\n④ ‘새-(접두사)+빨갛다(형용사)’, ‘샛-(접두사)+노랗다(형용사)’이며, 형용사는 용언이므로 ㉡과 ㉣에 모두 해당한다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘수꿩, 숫양’은 주위 환경에 따라 다른 형태를 가지는 접두사 ‘수-/숫-’이 결합하여 만들어진 단어이지만(㉣), 접두사가 결합하는 단어 ‘꿩’과 ‘양’이 모두 명사이므로 둘 이상의 품사에 결합하여 새로운 단어를 만든다는 설명(㉢)에는 해당하지 않는다.\n[오답풀이] ① ‘군-(접두사)+기침(명사)’, ‘군-(접두사)+살(명사)’이므로 ㉠에 해당한다.\n② ‘빗-(접두사)+나가다(동사)’, ‘빗-(접두사)+맞다(동사)’이며, 동사는 용언이므로 ㉡에 해당한다.\n③ ‘헛-(접두사)+디디다(동사)’, ‘헛-(접두사)+수고(명사)’이므로 ㉢에 해당한다.\n④ ‘새-(접두사)+빨갛다(형용사)’, ‘샛-(접두사)+노랗다(형용사)’이며, 형용사는 용언이므로 ㉡과 ㉣에 모두 해당한다."
     ],
-    "src": "2019 6월 전국연합 고2"
+    "src": "2019 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-014",
@@ -4782,7 +4975,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘수꿩, 숫양’은 주위 환경에 따라 다른 형태를 가지는 접두사 ‘수-/숫-’이 결합하여 만들어진 단어이지만(㉣), 접두사가 결합하는 단어 ‘꿩’과 ‘양’이 모두 명사이므로 둘 이상의 품사에 결합하여 새로운 단어를 만든다는 설명(㉢)에는 해당하지 않는다.\n[오답풀이] ① ‘군-(접두사)+기침(명사)’, ‘군-(접두사)+살(명사)’이므로 ㉠에 해당한다.\n② ‘빗-(접두사)+나가다(동사)’, ‘빗-(접두사)+맞다(동사)’이며, 동사는 용언이므로 ㉡에 해당한다.\n③ ‘헛-(접두사)+디디다(동사)’, ‘헛-(접두사)+수고(명사)’이므로 ㉢에 해당한다.\n④ ‘새-(접두사)+빨갛다(형용사)’, ‘샛-(접두사)+노랗다(형용사)’이며, 형용사는 용언이므로 ㉡과 ㉣에 모두 해당한다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘수꿩, 숫양’은 주위 환경에 따라 다른 형태를 가지는 접두사 ‘수-/숫-’이 결합하여 만들어진 단어이지만(㉣), 접두사가 결합하는 단어 ‘꿩’과 ‘양’이 모두 명사이므로 둘 이상의 품사에 결합하여 새로운 단어를 만든다는 설명(㉢)에는 해당하지 않는다.\n[오답풀이] ① ‘군-(접두사)+기침(명사)’, ‘군-(접두사)+살(명사)’이므로 ㉠에 해당한다.\n② ‘빗-(접두사)+나가다(동사)’, ‘빗-(접두사)+맞다(동사)’이며, 동사는 용언이므로 ㉡에 해당한다.\n③ ‘헛-(접두사)+디디다(동사)’, ‘헛-(접두사)+수고(명사)’이므로 ㉢에 해당한다.\n④ ‘새-(접두사)+빨갛다(형용사)’, ‘샛-(접두사)+노랗다(형용사)’이며, 형용사는 용언이므로 ㉡과 ㉣에 모두 해당한다."
     ],
-    "src": "2019 6월 전국연합 고2"
+    "src": "2019 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-015",
@@ -4802,7 +4996,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘수꿩, 숫양’은 주위 환경에 따라 다른 형태를 가지는 접두사 ‘수-/숫-’이 결합하여 만들어진 단어이지만(㉣), 접두사가 결합하는 단어 ‘꿩’과 ‘양’이 모두 명사이므로 둘 이상의 품사에 결합하여 새로운 단어를 만든다는 설명(㉢)에는 해당하지 않는다.\n[오답풀이] ① ‘군-(접두사)+기침(명사)’, ‘군-(접두사)+살(명사)’이므로 ㉠에 해당한다.\n② ‘빗-(접두사)+나가다(동사)’, ‘빗-(접두사)+맞다(동사)’이며, 동사는 용언이므로 ㉡에 해당한다.\n③ ‘헛-(접두사)+디디다(동사)’, ‘헛-(접두사)+수고(명사)’이므로 ㉢에 해당한다.\n④ ‘새-(접두사)+빨갛다(형용사)’, ‘샛-(접두사)+노랗다(형용사)’이며, 형용사는 용언이므로 ㉡과 ㉣에 모두 해당한다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘수꿩, 숫양’은 주위 환경에 따라 다른 형태를 가지는 접두사 ‘수-/숫-’이 결합하여 만들어진 단어이지만(㉣), 접두사가 결합하는 단어 ‘꿩’과 ‘양’이 모두 명사이므로 둘 이상의 품사에 결합하여 새로운 단어를 만든다는 설명(㉢)에는 해당하지 않는다.\n[오답풀이] ① ‘군-(접두사)+기침(명사)’, ‘군-(접두사)+살(명사)’이므로 ㉠에 해당한다.\n② ‘빗-(접두사)+나가다(동사)’, ‘빗-(접두사)+맞다(동사)’이며, 동사는 용언이므로 ㉡에 해당한다.\n③ ‘헛-(접두사)+디디다(동사)’, ‘헛-(접두사)+수고(명사)’이므로 ㉢에 해당한다.\n④ ‘새-(접두사)+빨갛다(형용사)’, ‘샛-(접두사)+노랗다(형용사)’이며, 형용사는 용언이므로 ㉡과 ㉣에 모두 해당한다."
     ],
-    "src": "2019 6월 전국연합 고2"
+    "src": "2019 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-016",
@@ -4822,7 +5017,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘더욱이’는 부사 ‘더욱’의 어근에 접사 ‘-이’가 결합된 파생어이고, 접사가 결합했으나 품사는 ‘더욱’과 동일한 부사이므로 적절하지 않다.\n② ‘드넓다’는 형용사 ‘넓다’의 어근에 접사 ‘드-’가 결합된 파생어이고, 품사는 ‘넓다’와 동일한 형용사이므로 적절하다. ③ ‘넓이’는 형용사 ‘넓다’의 어근에 접사 ‘-이’가 결합된 파생어이고, 품사는 명사이므로 적절하다. ④ ‘뒤덮다’는 동사 ‘덮다’의 어근에 접사 ‘뒤-’가 결합된 파생어이고, 품사는 ‘덮다’와 동일한 동사이므로 적절하다. ⑤ ‘덮개’는 동사 ‘덮다’의 어근에 접사 ‘-개’가 결합된 파생어이고, 품사는 명사이므로 적절하다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘더욱이’는 부사 ‘더욱’의 어근에 접사 ‘-이’가 결합된 파생어이고, 접사가 결합했으나 품사는 ‘더욱’과 동일한 부사이므로 적절하지 않다.\n② ‘드넓다’는 형용사 ‘넓다’의 어근에 접사 ‘드-’가 결합된 파생어이고, 품사는 ‘넓다’와 동일한 형용사이므로 적절하다. ③ ‘넓이’는 형용사 ‘넓다’의 어근에 접사 ‘-이’가 결합된 파생어이고, 품사는 명사이므로 적절하다. ④ ‘뒤덮다’는 동사 ‘덮다’의 어근에 접사 ‘뒤-’가 결합된 파생어이고, 품사는 ‘덮다’와 동일한 동사이므로 적절하다. ⑤ ‘덮개’는 동사 ‘덮다’의 어근에 접사 ‘-개’가 결합된 파생어이고, 품사는 명사이므로 적절하다."
     ],
-    "src": "2019 11월 전국연합 고2"
+    "src": "2019 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-017",
@@ -4842,7 +5038,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘더욱이’는 부사 ‘더욱’의 어근에 접사 ‘-이’가 결합된 파생어이고, 접사가 결합했으나 품사는 ‘더욱’과 동일한 부사이므로 적절하지 않다.\n② ‘드넓다’는 형용사 ‘넓다’의 어근에 접사 ‘드-’가 결합된 파생어이고, 품사는 ‘넓다’와 동일한 형용사이므로 적절하다. ③ ‘넓이’는 형용사 ‘넓다’의 어근에 접사 ‘-이’가 결합된 파생어이고, 품사는 명사이므로 적절하다. ④ ‘뒤덮다’는 동사 ‘덮다’의 어근에 접사 ‘뒤-’가 결합된 파생어이고, 품사는 ‘덮다’와 동일한 동사이므로 적절하다. ⑤ ‘덮개’는 동사 ‘덮다’의 어근에 접사 ‘-개’가 결합된 파생어이고, 품사는 명사이므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘더욱이’는 부사 ‘더욱’의 어근에 접사 ‘-이’가 결합된 파생어이고, 접사가 결합했으나 품사는 ‘더욱’과 동일한 부사이므로 적절하지 않다.\n② ‘드넓다’는 형용사 ‘넓다’의 어근에 접사 ‘드-’가 결합된 파생어이고, 품사는 ‘넓다’와 동일한 형용사이므로 적절하다. ③ ‘넓이’는 형용사 ‘넓다’의 어근에 접사 ‘-이’가 결합된 파생어이고, 품사는 명사이므로 적절하다. ④ ‘뒤덮다’는 동사 ‘덮다’의 어근에 접사 ‘뒤-’가 결합된 파생어이고, 품사는 ‘덮다’와 동일한 동사이므로 적절하다. ⑤ ‘덮개’는 동사 ‘덮다’의 어근에 접사 ‘-개’가 결합된 파생어이고, 품사는 명사이므로 적절하다."
     ],
-    "src": "2019 11월 전국연합 고2"
+    "src": "2019 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-018",
@@ -4862,7 +5059,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘더욱이’는 부사 ‘더욱’의 어근에 접사 ‘-이’가 결합된 파생어이고, 접사가 결합했으나 품사는 ‘더욱’과 동일한 부사이므로 적절하지 않다.\n② ‘드넓다’는 형용사 ‘넓다’의 어근에 접사 ‘드-’가 결합된 파생어이고, 품사는 ‘넓다’와 동일한 형용사이므로 적절하다. ③ ‘넓이’는 형용사 ‘넓다’의 어근에 접사 ‘-이’가 결합된 파생어이고, 품사는 명사이므로 적절하다. ④ ‘뒤덮다’는 동사 ‘덮다’의 어근에 접사 ‘뒤-’가 결합된 파생어이고, 품사는 ‘덮다’와 동일한 동사이므로 적절하다. ⑤ ‘덮개’는 동사 ‘덮다’의 어근에 접사 ‘-개’가 결합된 파생어이고, 품사는 명사이므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘더욱이’는 부사 ‘더욱’의 어근에 접사 ‘-이’가 결합된 파생어이고, 접사가 결합했으나 품사는 ‘더욱’과 동일한 부사이므로 적절하지 않다.\n② ‘드넓다’는 형용사 ‘넓다’의 어근에 접사 ‘드-’가 결합된 파생어이고, 품사는 ‘넓다’와 동일한 형용사이므로 적절하다. ③ ‘넓이’는 형용사 ‘넓다’의 어근에 접사 ‘-이’가 결합된 파생어이고, 품사는 명사이므로 적절하다. ④ ‘뒤덮다’는 동사 ‘덮다’의 어근에 접사 ‘뒤-’가 결합된 파생어이고, 품사는 ‘덮다’와 동일한 동사이므로 적절하다. ⑤ ‘덮개’는 동사 ‘덮다’의 어근에 접사 ‘-개’가 결합된 파생어이고, 품사는 명사이므로 적절하다."
     ],
-    "src": "2019 11월 전국연합 고2"
+    "src": "2019 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-019",
@@ -4882,7 +5080,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘더욱이’는 부사 ‘더욱’의 어근에 접사 ‘-이’가 결합된 파생어이고, 접사가 결합했으나 품사는 ‘더욱’과 동일한 부사이므로 적절하지 않다.\n② ‘드넓다’는 형용사 ‘넓다’의 어근에 접사 ‘드-’가 결합된 파생어이고, 품사는 ‘넓다’와 동일한 형용사이므로 적절하다. ③ ‘넓이’는 형용사 ‘넓다’의 어근에 접사 ‘-이’가 결합된 파생어이고, 품사는 명사이므로 적절하다. ④ ‘뒤덮다’는 동사 ‘덮다’의 어근에 접사 ‘뒤-’가 결합된 파생어이고, 품사는 ‘덮다’와 동일한 동사이므로 적절하다. ⑤ ‘덮개’는 동사 ‘덮다’의 어근에 접사 ‘-개’가 결합된 파생어이고, 품사는 명사이므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘더욱이’는 부사 ‘더욱’의 어근에 접사 ‘-이’가 결합된 파생어이고, 접사가 결합했으나 품사는 ‘더욱’과 동일한 부사이므로 적절하지 않다.\n② ‘드넓다’는 형용사 ‘넓다’의 어근에 접사 ‘드-’가 결합된 파생어이고, 품사는 ‘넓다’와 동일한 형용사이므로 적절하다. ③ ‘넓이’는 형용사 ‘넓다’의 어근에 접사 ‘-이’가 결합된 파생어이고, 품사는 명사이므로 적절하다. ④ ‘뒤덮다’는 동사 ‘덮다’의 어근에 접사 ‘뒤-’가 결합된 파생어이고, 품사는 ‘덮다’와 동일한 동사이므로 적절하다. ⑤ ‘덮개’는 동사 ‘덮다’의 어근에 접사 ‘-개’가 결합된 파생어이고, 품사는 명사이므로 적절하다."
     ],
-    "src": "2019 11월 전국연합 고2"
+    "src": "2019 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-020",
@@ -4902,7 +5101,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘더욱이’는 부사 ‘더욱’의 어근에 접사 ‘-이’가 결합된 파생어이고, 접사가 결합했으나 품사는 ‘더욱’과 동일한 부사이므로 적절하지 않다.\n② ‘드넓다’는 형용사 ‘넓다’의 어근에 접사 ‘드-’가 결합된 파생어이고, 품사는 ‘넓다’와 동일한 형용사이므로 적절하다. ③ ‘넓이’는 형용사 ‘넓다’의 어근에 접사 ‘-이’가 결합된 파생어이고, 품사는 명사이므로 적절하다. ④ ‘뒤덮다’는 동사 ‘덮다’의 어근에 접사 ‘뒤-’가 결합된 파생어이고, 품사는 ‘덮다’와 동일한 동사이므로 적절하다. ⑤ ‘덮개’는 동사 ‘덮다’의 어근에 접사 ‘-개’가 결합된 파생어이고, 품사는 명사이므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘더욱이’는 부사 ‘더욱’의 어근에 접사 ‘-이’가 결합된 파생어이고, 접사가 결합했으나 품사는 ‘더욱’과 동일한 부사이므로 적절하지 않다.\n② ‘드넓다’는 형용사 ‘넓다’의 어근에 접사 ‘드-’가 결합된 파생어이고, 품사는 ‘넓다’와 동일한 형용사이므로 적절하다. ③ ‘넓이’는 형용사 ‘넓다’의 어근에 접사 ‘-이’가 결합된 파생어이고, 품사는 명사이므로 적절하다. ④ ‘뒤덮다’는 동사 ‘덮다’의 어근에 접사 ‘뒤-’가 결합된 파생어이고, 품사는 ‘덮다’와 동일한 동사이므로 적절하다. ⑤ ‘덮개’는 동사 ‘덮다’의 어근에 접사 ‘-개’가 결합된 파생어이고, 품사는 명사이므로 적절하다."
     ],
-    "src": "2019 11월 전국연합 고2"
+    "src": "2019 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-021",
@@ -4922,7 +5122,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓑ의 ‘책’은 환경에 따라 ‘책이[채기]’, ‘공책은[공채근]’, ‘책도[책또]’에서는 ‘[책]’으로 ‘책만[챙만]’에서는 ‘[챙]’으로 실현된다. 따라서 ‘책’은 기본형을 따로 정할 필요가 없는 경우에 해당하는 것이 아니라, 이형태가 복수로 존재하여 기본형을 정해 주는 경우에 해당한다.\n① ⓐ의 ‘닭’은 환경에 따라 ‘[닥]’, ‘[당]’ 등으로 실현되며 상보적 분포를 보인다. ⑤ ⓔ의 ‘잎’은 환경에 따라 ‘[입]’, ‘[임]’ 등으로 실현되므로 이들을 대표할 수 있는 형태인 ‘잎’을 기본형으로 설정한다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓑ의 ‘책’은 환경에 따라 ‘책이[채기]’, ‘공책은[공채근]’, ‘책도[책또]’에서는 ‘[책]’으로 ‘책만[챙만]’에서는 ‘[챙]’으로 실현된다. 따라서 ‘책’은 기본형을 따로 정할 필요가 없는 경우에 해당하는 것이 아니라, 이형태가 복수로 존재하여 기본형을 정해 주는 경우에 해당한다.\n① ⓐ의 ‘닭’은 환경에 따라 ‘[닥]’, ‘[당]’ 등으로 실현되며 상보적 분포를 보인다. ⑤ ⓔ의 ‘잎’은 환경에 따라 ‘[입]’, ‘[임]’ 등으로 실현되므로 이들을 대표할 수 있는 형태인 ‘잎’을 기본형으로 설정한다."
     ],
-    "src": "2021 9월 전국연합 고2"
+    "src": "2021 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-022",
@@ -4942,7 +5143,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓑ의 ‘책’은 환경에 따라 ‘책이[채기]’, ‘공책은[공채근]’, ‘책도[책또]’에서는 ‘[책]’으로 ‘책만[챙만]’에서는 ‘[챙]’으로 실현된다. 따라서 ‘책’은 기본형을 따로 정할 필요가 없는 경우에 해당하는 것이 아니라, 이형태가 복수로 존재하여 기본형을 정해 주는 경우에 해당한다.\n① ⓐ의 ‘닭’은 환경에 따라 ‘[닥]’, ‘[당]’ 등으로 실현되며 상보적 분포를 보인다. ⑤ ⓔ의 ‘잎’은 환경에 따라 ‘[입]’, ‘[임]’ 등으로 실현되므로 이들을 대표할 수 있는 형태인 ‘잎’을 기본형으로 설정한다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓑ의 ‘책’은 환경에 따라 ‘책이[채기]’, ‘공책은[공채근]’, ‘책도[책또]’에서는 ‘[책]’으로 ‘책만[챙만]’에서는 ‘[챙]’으로 실현된다. 따라서 ‘책’은 기본형을 따로 정할 필요가 없는 경우에 해당하는 것이 아니라, 이형태가 복수로 존재하여 기본형을 정해 주는 경우에 해당한다.\n① ⓐ의 ‘닭’은 환경에 따라 ‘[닥]’, ‘[당]’ 등으로 실현되며 상보적 분포를 보인다. ⑤ ⓔ의 ‘잎’은 환경에 따라 ‘[입]’, ‘[임]’ 등으로 실현되므로 이들을 대표할 수 있는 형태인 ‘잎’을 기본형으로 설정한다."
     ],
-    "src": "2021 9월 전국연합 고2"
+    "src": "2021 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-023",
@@ -4962,7 +5164,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓑ의 ‘책’은 환경에 따라 ‘책이[채기]’, ‘공책은[공채근]’, ‘책도[책또]’에서는 ‘[책]’으로 ‘책만[챙만]’에서는 ‘[챙]’으로 실현된다. 따라서 ‘책’은 기본형을 따로 정할 필요가 없는 경우에 해당하는 것이 아니라, 이형태가 복수로 존재하여 기본형을 정해 주는 경우에 해당한다.\n① ⓐ의 ‘닭’은 환경에 따라 ‘[닥]’, ‘[당]’ 등으로 실현되며 상보적 분포를 보인다. ⑤ ⓔ의 ‘잎’은 환경에 따라 ‘[입]’, ‘[임]’ 등으로 실현되므로 이들을 대표할 수 있는 형태인 ‘잎’을 기본형으로 설정한다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓑ의 ‘책’은 환경에 따라 ‘책이[채기]’, ‘공책은[공채근]’, ‘책도[책또]’에서는 ‘[책]’으로 ‘책만[챙만]’에서는 ‘[챙]’으로 실현된다. 따라서 ‘책’은 기본형을 따로 정할 필요가 없는 경우에 해당하는 것이 아니라, 이형태가 복수로 존재하여 기본형을 정해 주는 경우에 해당한다.\n① ⓐ의 ‘닭’은 환경에 따라 ‘[닥]’, ‘[당]’ 등으로 실현되며 상보적 분포를 보인다. ⑤ ⓔ의 ‘잎’은 환경에 따라 ‘[입]’, ‘[임]’ 등으로 실현되므로 이들을 대표할 수 있는 형태인 ‘잎’을 기본형으로 설정한다."
     ],
-    "src": "2021 9월 전국연합 고2"
+    "src": "2021 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-024",
@@ -4982,7 +5185,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓑ의 ‘책’은 환경에 따라 ‘책이[채기]’, ‘공책은[공채근]’, ‘책도[책또]’에서는 ‘[책]’으로 ‘책만[챙만]’에서는 ‘[챙]’으로 실현된다. 따라서 ‘책’은 기본형을 따로 정할 필요가 없는 경우에 해당하는 것이 아니라, 이형태가 복수로 존재하여 기본형을 정해 주는 경우에 해당한다.\n① ⓐ의 ‘닭’은 환경에 따라 ‘[닥]’, ‘[당]’ 등으로 실현되며 상보적 분포를 보인다. ⑤ ⓔ의 ‘잎’은 환경에 따라 ‘[입]’, ‘[임]’ 등으로 실현되므로 이들을 대표할 수 있는 형태인 ‘잎’을 기본형으로 설정한다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓑ의 ‘책’은 환경에 따라 ‘책이[채기]’, ‘공책은[공채근]’, ‘책도[책또]’에서는 ‘[책]’으로 ‘책만[챙만]’에서는 ‘[챙]’으로 실현된다. 따라서 ‘책’은 기본형을 따로 정할 필요가 없는 경우에 해당하는 것이 아니라, 이형태가 복수로 존재하여 기본형을 정해 주는 경우에 해당한다.\n① ⓐ의 ‘닭’은 환경에 따라 ‘[닥]’, ‘[당]’ 등으로 실현되며 상보적 분포를 보인다. ⑤ ⓔ의 ‘잎’은 환경에 따라 ‘[입]’, ‘[임]’ 등으로 실현되므로 이들을 대표할 수 있는 형태인 ‘잎’을 기본형으로 설정한다."
     ],
-    "src": "2021 9월 전국연합 고2"
+    "src": "2021 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-025",
@@ -5002,7 +5206,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓑ의 ‘책’은 환경에 따라 ‘책이[채기]’, ‘공책은[공채근]’, ‘책도[책또]’에서는 ‘[책]’으로 ‘책만[챙만]’에서는 ‘[챙]’으로 실현된다. 따라서 ‘책’은 기본형을 따로 정할 필요가 없는 경우에 해당하는 것이 아니라, 이형태가 복수로 존재하여 기본형을 정해 주는 경우에 해당한다.\n① ⓐ의 ‘닭’은 환경에 따라 ‘[닥]’, ‘[당]’ 등으로 실현되며 상보적 분포를 보인다. ⑤ ⓔ의 ‘잎’은 환경에 따라 ‘[입]’, ‘[임]’ 등으로 실현되므로 이들을 대표할 수 있는 형태인 ‘잎’을 기본형으로 설정한다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⓑ의 ‘책’은 환경에 따라 ‘책이[채기]’, ‘공책은[공채근]’, ‘책도[책또]’에서는 ‘[책]’으로 ‘책만[챙만]’에서는 ‘[챙]’으로 실현된다. 따라서 ‘책’은 기본형을 따로 정할 필요가 없는 경우에 해당하는 것이 아니라, 이형태가 복수로 존재하여 기본형을 정해 주는 경우에 해당한다.\n① ⓐ의 ‘닭’은 환경에 따라 ‘[닥]’, ‘[당]’ 등으로 실현되며 상보적 분포를 보인다. ⑤ ⓔ의 ‘잎’은 환경에 따라 ‘[입]’, ‘[임]’ 등으로 실현되므로 이들을 대표할 수 있는 형태인 ‘잎’을 기본형으로 설정한다."
     ],
-    "src": "2021 9월 전국연합 고2"
+    "src": "2021 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-026",
@@ -5022,7 +5227,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘울음보’는 ㉠에서 어근 ‘울음’과 접사 ‘-보’로 분석되고 ㉡에서 어근 ‘울-’과 접사 ‘-(으)ㅁ’으로 분석되므로 적절하다.\n② ‘헛웃음’은 ㉠에서 어근 ‘웃음’과 접사 ‘헛-’으로 분석되고 ㉡에서 어근 ‘웃-’과 접사 ‘-(으)ㅁ’으로 분석된다. 따라서 ㉠에서 어근과 어근으로 분석된다는 진술은 적절하지 않다. ③ ‘손목뼈’는 ㉠에서 어근 ‘손목’과 어근 ‘뼈’로 분석되고 ㉡에서 어근 ‘손’과 어근 ‘목’으로 분석된다. 따라서 ㉠에서 어근과 접사로 분석된다는 진술은 적절하지 않다. ④ ‘얼음길’은 ㉠에서 어근 ‘얼음’과 어근 ‘길’로 분석되고 ㉡에서 어근 ‘얼-’과 접사 ‘-(으)ㅁ’으로 분석된다. 따라서 ㉠에서 어근과 접사로 분석되고, ㉡에서 어근과 어근으로 분석된다는 진술은 적절하지 않다. ⑤ ‘물놀이’는 ㉠에서 어근 ‘물’과 어근 ‘놀이’로 분석되고 ㉡에서 어근 ‘놀-’과 접사 ‘-이’로 분석된다. 따라서 ㉡에서 어근과 어근으로 분석된다는 진술은 적절하지 않다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘울음보’는 ㉠에서 어근 ‘울음’과 접사 ‘-보’로 분석되고 ㉡에서 어근 ‘울-’과 접사 ‘-(으)ㅁ’으로 분석되므로 적절하다.\n② ‘헛웃음’은 ㉠에서 어근 ‘웃음’과 접사 ‘헛-’으로 분석되고 ㉡에서 어근 ‘웃-’과 접사 ‘-(으)ㅁ’으로 분석된다. 따라서 ㉠에서 어근과 어근으로 분석된다는 진술은 적절하지 않다. ③ ‘손목뼈’는 ㉠에서 어근 ‘손목’과 어근 ‘뼈’로 분석되고 ㉡에서 어근 ‘손’과 어근 ‘목’으로 분석된다. 따라서 ㉠에서 어근과 접사로 분석된다는 진술은 적절하지 않다. ④ ‘얼음길’은 ㉠에서 어근 ‘얼음’과 어근 ‘길’로 분석되고 ㉡에서 어근 ‘얼-’과 접사 ‘-(으)ㅁ’으로 분석된다. 따라서 ㉠에서 어근과 접사로 분석되고, ㉡에서 어근과 어근으로 분석된다는 진술은 적절하지 않다. ⑤ ‘물놀이’는 ㉠에서 어근 ‘물’과 어근 ‘놀이’로 분석되고 ㉡에서 어근 ‘놀-’과 접사 ‘-이’로 분석된다. 따라서 ㉡에서 어근과 어근으로 분석된다는 진술은 적절하지 않다."
     ],
-    "src": "2021 11월 전국연합 고2"
+    "src": "2021 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-027",
@@ -5042,7 +5248,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘울음보’는 ㉠에서 어근 ‘울음’과 접사 ‘-보’로 분석되고 ㉡에서 어근 ‘울-’과 접사 ‘-(으)ㅁ’으로 분석되므로 적절하다.\n② ‘헛웃음’은 ㉠에서 어근 ‘웃음’과 접사 ‘헛-’으로 분석되고 ㉡에서 어근 ‘웃-’과 접사 ‘-(으)ㅁ’으로 분석된다. 따라서 ㉠에서 어근과 어근으로 분석된다는 진술은 적절하지 않다. ③ ‘손목뼈’는 ㉠에서 어근 ‘손목’과 어근 ‘뼈’로 분석되고 ㉡에서 어근 ‘손’과 어근 ‘목’으로 분석된다. 따라서 ㉠에서 어근과 접사로 분석된다는 진술은 적절하지 않다. ④ ‘얼음길’은 ㉠에서 어근 ‘얼음’과 어근 ‘길’로 분석되고 ㉡에서 어근 ‘얼-’과 접사 ‘-(으)ㅁ’으로 분석된다. 따라서 ㉠에서 어근과 접사로 분석되고, ㉡에서 어근과 어근으로 분석된다는 진술은 적절하지 않다. ⑤ ‘물놀이’는 ㉠에서 어근 ‘물’과 어근 ‘놀이’로 분석되고 ㉡에서 어근 ‘놀-’과 접사 ‘-이’로 분석된다. 따라서 ㉡에서 어근과 어근으로 분석된다는 진술은 적절하지 않다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘울음보’는 ㉠에서 어근 ‘울음’과 접사 ‘-보’로 분석되고 ㉡에서 어근 ‘울-’과 접사 ‘-(으)ㅁ’으로 분석되므로 적절하다.\n② ‘헛웃음’은 ㉠에서 어근 ‘웃음’과 접사 ‘헛-’으로 분석되고 ㉡에서 어근 ‘웃-’과 접사 ‘-(으)ㅁ’으로 분석된다. 따라서 ㉠에서 어근과 어근으로 분석된다는 진술은 적절하지 않다. ③ ‘손목뼈’는 ㉠에서 어근 ‘손목’과 어근 ‘뼈’로 분석되고 ㉡에서 어근 ‘손’과 어근 ‘목’으로 분석된다. 따라서 ㉠에서 어근과 접사로 분석된다는 진술은 적절하지 않다. ④ ‘얼음길’은 ㉠에서 어근 ‘얼음’과 어근 ‘길’로 분석되고 ㉡에서 어근 ‘얼-’과 접사 ‘-(으)ㅁ’으로 분석된다. 따라서 ㉠에서 어근과 접사로 분석되고, ㉡에서 어근과 어근으로 분석된다는 진술은 적절하지 않다. ⑤ ‘물놀이’는 ㉠에서 어근 ‘물’과 어근 ‘놀이’로 분석되고 ㉡에서 어근 ‘놀-’과 접사 ‘-이’로 분석된다. 따라서 ㉡에서 어근과 어근으로 분석된다는 진술은 적절하지 않다."
     ],
-    "src": "2021 11월 전국연합 고2"
+    "src": "2021 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-028",
@@ -5062,7 +5269,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘울음보’는 ㉠에서 어근 ‘울음’과 접사 ‘-보’로 분석되고 ㉡에서 어근 ‘울-’과 접사 ‘-(으)ㅁ’으로 분석되므로 적절하다.\n② ‘헛웃음’은 ㉠에서 어근 ‘웃음’과 접사 ‘헛-’으로 분석되고 ㉡에서 어근 ‘웃-’과 접사 ‘-(으)ㅁ’으로 분석된다. 따라서 ㉠에서 어근과 어근으로 분석된다는 진술은 적절하지 않다. ③ ‘손목뼈’는 ㉠에서 어근 ‘손목’과 어근 ‘뼈’로 분석되고 ㉡에서 어근 ‘손’과 어근 ‘목’으로 분석된다. 따라서 ㉠에서 어근과 접사로 분석된다는 진술은 적절하지 않다. ④ ‘얼음길’은 ㉠에서 어근 ‘얼음’과 어근 ‘길’로 분석되고 ㉡에서 어근 ‘얼-’과 접사 ‘-(으)ㅁ’으로 분석된다. 따라서 ㉠에서 어근과 접사로 분석되고, ㉡에서 어근과 어근으로 분석된다는 진술은 적절하지 않다. ⑤ ‘물놀이’는 ㉠에서 어근 ‘물’과 어근 ‘놀이’로 분석되고 ㉡에서 어근 ‘놀-’과 접사 ‘-이’로 분석된다. 따라서 ㉡에서 어근과 어근으로 분석된다는 진술은 적절하지 않다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘울음보’는 ㉠에서 어근 ‘울음’과 접사 ‘-보’로 분석되고 ㉡에서 어근 ‘울-’과 접사 ‘-(으)ㅁ’으로 분석되므로 적절하다.\n② ‘헛웃음’은 ㉠에서 어근 ‘웃음’과 접사 ‘헛-’으로 분석되고 ㉡에서 어근 ‘웃-’과 접사 ‘-(으)ㅁ’으로 분석된다. 따라서 ㉠에서 어근과 어근으로 분석된다는 진술은 적절하지 않다. ③ ‘손목뼈’는 ㉠에서 어근 ‘손목’과 어근 ‘뼈’로 분석되고 ㉡에서 어근 ‘손’과 어근 ‘목’으로 분석된다. 따라서 ㉠에서 어근과 접사로 분석된다는 진술은 적절하지 않다. ④ ‘얼음길’은 ㉠에서 어근 ‘얼음’과 어근 ‘길’로 분석되고 ㉡에서 어근 ‘얼-’과 접사 ‘-(으)ㅁ’으로 분석된다. 따라서 ㉠에서 어근과 접사로 분석되고, ㉡에서 어근과 어근으로 분석된다는 진술은 적절하지 않다. ⑤ ‘물놀이’는 ㉠에서 어근 ‘물’과 어근 ‘놀이’로 분석되고 ㉡에서 어근 ‘놀-’과 접사 ‘-이’로 분석된다. 따라서 ㉡에서 어근과 어근으로 분석된다는 진술은 적절하지 않다."
     ],
-    "src": "2021 11월 전국연합 고2"
+    "src": "2021 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-029",
@@ -5082,7 +5290,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘울음보’는 ㉠에서 어근 ‘울음’과 접사 ‘-보’로 분석되고 ㉡에서 어근 ‘울-’과 접사 ‘-(으)ㅁ’으로 분석되므로 적절하다.\n② ‘헛웃음’은 ㉠에서 어근 ‘웃음’과 접사 ‘헛-’으로 분석되고 ㉡에서 어근 ‘웃-’과 접사 ‘-(으)ㅁ’으로 분석된다. 따라서 ㉠에서 어근과 어근으로 분석된다는 진술은 적절하지 않다. ③ ‘손목뼈’는 ㉠에서 어근 ‘손목’과 어근 ‘뼈’로 분석되고 ㉡에서 어근 ‘손’과 어근 ‘목’으로 분석된다. 따라서 ㉠에서 어근과 접사로 분석된다는 진술은 적절하지 않다. ④ ‘얼음길’은 ㉠에서 어근 ‘얼음’과 어근 ‘길’로 분석되고 ㉡에서 어근 ‘얼-’과 접사 ‘-(으)ㅁ’으로 분석된다. 따라서 ㉠에서 어근과 접사로 분석되고, ㉡에서 어근과 어근으로 분석된다는 진술은 적절하지 않다. ⑤ ‘물놀이’는 ㉠에서 어근 ‘물’과 어근 ‘놀이’로 분석되고 ㉡에서 어근 ‘놀-’과 접사 ‘-이’로 분석된다. 따라서 ㉡에서 어근과 어근으로 분석된다는 진술은 적절하지 않다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘울음보’는 ㉠에서 어근 ‘울음’과 접사 ‘-보’로 분석되고 ㉡에서 어근 ‘울-’과 접사 ‘-(으)ㅁ’으로 분석되므로 적절하다.\n② ‘헛웃음’은 ㉠에서 어근 ‘웃음’과 접사 ‘헛-’으로 분석되고 ㉡에서 어근 ‘웃-’과 접사 ‘-(으)ㅁ’으로 분석된다. 따라서 ㉠에서 어근과 어근으로 분석된다는 진술은 적절하지 않다. ③ ‘손목뼈’는 ㉠에서 어근 ‘손목’과 어근 ‘뼈’로 분석되고 ㉡에서 어근 ‘손’과 어근 ‘목’으로 분석된다. 따라서 ㉠에서 어근과 접사로 분석된다는 진술은 적절하지 않다. ④ ‘얼음길’은 ㉠에서 어근 ‘얼음’과 어근 ‘길’로 분석되고 ㉡에서 어근 ‘얼-’과 접사 ‘-(으)ㅁ’으로 분석된다. 따라서 ㉠에서 어근과 접사로 분석되고, ㉡에서 어근과 어근으로 분석된다는 진술은 적절하지 않다. ⑤ ‘물놀이’는 ㉠에서 어근 ‘물’과 어근 ‘놀이’로 분석되고 ㉡에서 어근 ‘놀-’과 접사 ‘-이’로 분석된다. 따라서 ㉡에서 어근과 어근으로 분석된다는 진술은 적절하지 않다."
     ],
-    "src": "2021 11월 전국연합 고2"
+    "src": "2021 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-words-030",
@@ -5102,7 +5311,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘울음보’는 ㉠에서 어근 ‘울음’과 접사 ‘-보’로 분석되고 ㉡에서 어근 ‘울-’과 접사 ‘-(으)ㅁ’으로 분석되므로 적절하다.\n② ‘헛웃음’은 ㉠에서 어근 ‘웃음’과 접사 ‘헛-’으로 분석되고 ㉡에서 어근 ‘웃-’과 접사 ‘-(으)ㅁ’으로 분석된다. 따라서 ㉠에서 어근과 어근으로 분석된다는 진술은 적절하지 않다. ③ ‘손목뼈’는 ㉠에서 어근 ‘손목’과 어근 ‘뼈’로 분석되고 ㉡에서 어근 ‘손’과 어근 ‘목’으로 분석된다. 따라서 ㉠에서 어근과 접사로 분석된다는 진술은 적절하지 않다. ④ ‘얼음길’은 ㉠에서 어근 ‘얼음’과 어근 ‘길’로 분석되고 ㉡에서 어근 ‘얼-’과 접사 ‘-(으)ㅁ’으로 분석된다. 따라서 ㉠에서 어근과 접사로 분석되고, ㉡에서 어근과 어근으로 분석된다는 진술은 적절하지 않다. ⑤ ‘물놀이’는 ㉠에서 어근 ‘물’과 어근 ‘놀이’로 분석되고 ㉡에서 어근 ‘놀-’과 접사 ‘-이’로 분석된다. 따라서 ㉡에서 어근과 어근으로 분석된다는 진술은 적절하지 않다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘울음보’는 ㉠에서 어근 ‘울음’과 접사 ‘-보’로 분석되고 ㉡에서 어근 ‘울-’과 접사 ‘-(으)ㅁ’으로 분석되므로 적절하다.\n② ‘헛웃음’은 ㉠에서 어근 ‘웃음’과 접사 ‘헛-’으로 분석되고 ㉡에서 어근 ‘웃-’과 접사 ‘-(으)ㅁ’으로 분석된다. 따라서 ㉠에서 어근과 어근으로 분석된다는 진술은 적절하지 않다. ③ ‘손목뼈’는 ㉠에서 어근 ‘손목’과 어근 ‘뼈’로 분석되고 ㉡에서 어근 ‘손’과 어근 ‘목’으로 분석된다. 따라서 ㉠에서 어근과 접사로 분석된다는 진술은 적절하지 않다. ④ ‘얼음길’은 ㉠에서 어근 ‘얼음’과 어근 ‘길’로 분석되고 ㉡에서 어근 ‘얼-’과 접사 ‘-(으)ㅁ’으로 분석된다. 따라서 ㉠에서 어근과 접사로 분석되고, ㉡에서 어근과 어근으로 분석된다는 진술은 적절하지 않다. ⑤ ‘물놀이’는 ㉠에서 어근 ‘물’과 어근 ‘놀이’로 분석되고 ㉡에서 어근 ‘놀-’과 접사 ‘-이’로 분석된다. 따라서 ㉡에서 어근과 어근으로 분석된다는 진술은 적절하지 않다."
     ],
-    "src": "2021 11월 전국연합 고2"
+    "src": "2021 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-001",
@@ -5122,7 +5332,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⒷ의 ‘먹어 치우고 일어났다’는 본용언 ‘먹어’, 보조 용언 ‘치우고’, 본용언 ‘일어났다’의 순서로 연결된 경우이므로 적절하지 않다.\n① Ⓐ의 ‘던져서 베어 버렸다’는 본용언 ‘던져서’, 본용언 ‘베어’, 보조 용언 ‘버렸다’의 순서로 연결된 경우이므로 적절하다. ③ Ⓒ의 ‘깨어 있어 행복했다’는  본용언 ‘깨어’, 보조 용언 ‘있어’, 본용언 ‘행복했다’의 순서로 연결된 경우이므로 적절하다. ④ Ⓓ의 ‘앉아 있게 생겼다’는 본용언 ‘앉아’, 보조 용언 ‘있게’, 보조 용언 ‘생겼다’의 순서로 연결된 경우이므로 적절하다. ⑤ Ⓔ의 ‘먹고 싶게 되었다’는 본용언 ‘먹고’, 보조 용언 ‘싶게’, 보조 용언 ‘되었다’의 순서로 연결된 경우이므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⒷ의 ‘먹어 치우고 일어났다’는 본용언 ‘먹어’, 보조 용언 ‘치우고’, 본용언 ‘일어났다’의 순서로 연결된 경우이므로 적절하지 않다.\n① Ⓐ의 ‘던져서 베어 버렸다’는 본용언 ‘던져서’, 본용언 ‘베어’, 보조 용언 ‘버렸다’의 순서로 연결된 경우이므로 적절하다. ③ Ⓒ의 ‘깨어 있어 행복했다’는  본용언 ‘깨어’, 보조 용언 ‘있어’, 본용언 ‘행복했다’의 순서로 연결된 경우이므로 적절하다. ④ Ⓓ의 ‘앉아 있게 생겼다’는 본용언 ‘앉아’, 보조 용언 ‘있게’, 보조 용언 ‘생겼다’의 순서로 연결된 경우이므로 적절하다. ⑤ Ⓔ의 ‘먹고 싶게 되었다’는 본용언 ‘먹고’, 보조 용언 ‘싶게’, 보조 용언 ‘되었다’의 순서로 연결된 경우이므로 적절하다."
     ],
-    "src": "2019 11월 전국연합 고2"
+    "src": "2019 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-002",
@@ -5142,7 +5353,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⒷ의 ‘먹어 치우고 일어났다’는 본용언 ‘먹어’, 보조 용언 ‘치우고’, 본용언 ‘일어났다’의 순서로 연결된 경우이므로 적절하지 않다.\n① Ⓐ의 ‘던져서 베어 버렸다’는 본용언 ‘던져서’, 본용언 ‘베어’, 보조 용언 ‘버렸다’의 순서로 연결된 경우이므로 적절하다. ③ Ⓒ의 ‘깨어 있어 행복했다’는  본용언 ‘깨어’, 보조 용언 ‘있어’, 본용언 ‘행복했다’의 순서로 연결된 경우이므로 적절하다. ④ Ⓓ의 ‘앉아 있게 생겼다’는 본용언 ‘앉아’, 보조 용언 ‘있게’, 보조 용언 ‘생겼다’의 순서로 연결된 경우이므로 적절하다. ⑤ Ⓔ의 ‘먹고 싶게 되었다’는 본용언 ‘먹고’, 보조 용언 ‘싶게’, 보조 용언 ‘되었다’의 순서로 연결된 경우이므로 적절하다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⒷ의 ‘먹어 치우고 일어났다’는 본용언 ‘먹어’, 보조 용언 ‘치우고’, 본용언 ‘일어났다’의 순서로 연결된 경우이므로 적절하지 않다.\n① Ⓐ의 ‘던져서 베어 버렸다’는 본용언 ‘던져서’, 본용언 ‘베어’, 보조 용언 ‘버렸다’의 순서로 연결된 경우이므로 적절하다. ③ Ⓒ의 ‘깨어 있어 행복했다’는  본용언 ‘깨어’, 보조 용언 ‘있어’, 본용언 ‘행복했다’의 순서로 연결된 경우이므로 적절하다. ④ Ⓓ의 ‘앉아 있게 생겼다’는 본용언 ‘앉아’, 보조 용언 ‘있게’, 보조 용언 ‘생겼다’의 순서로 연결된 경우이므로 적절하다. ⑤ Ⓔ의 ‘먹고 싶게 되었다’는 본용언 ‘먹고’, 보조 용언 ‘싶게’, 보조 용언 ‘되었다’의 순서로 연결된 경우이므로 적절하다."
     ],
-    "src": "2019 11월 전국연합 고2"
+    "src": "2019 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-003",
@@ -5162,7 +5374,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⒷ의 ‘먹어 치우고 일어났다’는 본용언 ‘먹어’, 보조 용언 ‘치우고’, 본용언 ‘일어났다’의 순서로 연결된 경우이므로 적절하지 않다.\n① Ⓐ의 ‘던져서 베어 버렸다’는 본용언 ‘던져서’, 본용언 ‘베어’, 보조 용언 ‘버렸다’의 순서로 연결된 경우이므로 적절하다. ③ Ⓒ의 ‘깨어 있어 행복했다’는  본용언 ‘깨어’, 보조 용언 ‘있어’, 본용언 ‘행복했다’의 순서로 연결된 경우이므로 적절하다. ④ Ⓓ의 ‘앉아 있게 생겼다’는 본용언 ‘앉아’, 보조 용언 ‘있게’, 보조 용언 ‘생겼다’의 순서로 연결된 경우이므로 적절하다. ⑤ Ⓔ의 ‘먹고 싶게 되었다’는 본용언 ‘먹고’, 보조 용언 ‘싶게’, 보조 용언 ‘되었다’의 순서로 연결된 경우이므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⒷ의 ‘먹어 치우고 일어났다’는 본용언 ‘먹어’, 보조 용언 ‘치우고’, 본용언 ‘일어났다’의 순서로 연결된 경우이므로 적절하지 않다.\n① Ⓐ의 ‘던져서 베어 버렸다’는 본용언 ‘던져서’, 본용언 ‘베어’, 보조 용언 ‘버렸다’의 순서로 연결된 경우이므로 적절하다. ③ Ⓒ의 ‘깨어 있어 행복했다’는  본용언 ‘깨어’, 보조 용언 ‘있어’, 본용언 ‘행복했다’의 순서로 연결된 경우이므로 적절하다. ④ Ⓓ의 ‘앉아 있게 생겼다’는 본용언 ‘앉아’, 보조 용언 ‘있게’, 보조 용언 ‘생겼다’의 순서로 연결된 경우이므로 적절하다. ⑤ Ⓔ의 ‘먹고 싶게 되었다’는 본용언 ‘먹고’, 보조 용언 ‘싶게’, 보조 용언 ‘되었다’의 순서로 연결된 경우이므로 적절하다."
     ],
-    "src": "2019 11월 전국연합 고2"
+    "src": "2019 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-004",
@@ -5182,7 +5395,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⒷ의 ‘먹어 치우고 일어났다’는 본용언 ‘먹어’, 보조 용언 ‘치우고’, 본용언 ‘일어났다’의 순서로 연결된 경우이므로 적절하지 않다.\n① Ⓐ의 ‘던져서 베어 버렸다’는 본용언 ‘던져서’, 본용언 ‘베어’, 보조 용언 ‘버렸다’의 순서로 연결된 경우이므로 적절하다. ③ Ⓒ의 ‘깨어 있어 행복했다’는  본용언 ‘깨어’, 보조 용언 ‘있어’, 본용언 ‘행복했다’의 순서로 연결된 경우이므로 적절하다. ④ Ⓓ의 ‘앉아 있게 생겼다’는 본용언 ‘앉아’, 보조 용언 ‘있게’, 보조 용언 ‘생겼다’의 순서로 연결된 경우이므로 적절하다. ⑤ Ⓔ의 ‘먹고 싶게 되었다’는 본용언 ‘먹고’, 보조 용언 ‘싶게’, 보조 용언 ‘되었다’의 순서로 연결된 경우이므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⒷ의 ‘먹어 치우고 일어났다’는 본용언 ‘먹어’, 보조 용언 ‘치우고’, 본용언 ‘일어났다’의 순서로 연결된 경우이므로 적절하지 않다.\n① Ⓐ의 ‘던져서 베어 버렸다’는 본용언 ‘던져서’, 본용언 ‘베어’, 보조 용언 ‘버렸다’의 순서로 연결된 경우이므로 적절하다. ③ Ⓒ의 ‘깨어 있어 행복했다’는  본용언 ‘깨어’, 보조 용언 ‘있어’, 본용언 ‘행복했다’의 순서로 연결된 경우이므로 적절하다. ④ Ⓓ의 ‘앉아 있게 생겼다’는 본용언 ‘앉아’, 보조 용언 ‘있게’, 보조 용언 ‘생겼다’의 순서로 연결된 경우이므로 적절하다. ⑤ Ⓔ의 ‘먹고 싶게 되었다’는 본용언 ‘먹고’, 보조 용언 ‘싶게’, 보조 용언 ‘되었다’의 순서로 연결된 경우이므로 적절하다."
     ],
-    "src": "2019 11월 전국연합 고2"
+    "src": "2019 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-005",
@@ -5202,7 +5416,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⒷ의 ‘먹어 치우고 일어났다’는 본용언 ‘먹어’, 보조 용언 ‘치우고’, 본용언 ‘일어났다’의 순서로 연결된 경우이므로 적절하지 않다.\n① Ⓐ의 ‘던져서 베어 버렸다’는 본용언 ‘던져서’, 본용언 ‘베어’, 보조 용언 ‘버렸다’의 순서로 연결된 경우이므로 적절하다. ③ Ⓒ의 ‘깨어 있어 행복했다’는  본용언 ‘깨어’, 보조 용언 ‘있어’, 본용언 ‘행복했다’의 순서로 연결된 경우이므로 적절하다. ④ Ⓓ의 ‘앉아 있게 생겼다’는 본용언 ‘앉아’, 보조 용언 ‘있게’, 보조 용언 ‘생겼다’의 순서로 연결된 경우이므로 적절하다. ⑤ Ⓔ의 ‘먹고 싶게 되었다’는 본용언 ‘먹고’, 보조 용언 ‘싶게’, 보조 용언 ‘되었다’의 순서로 연결된 경우이므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nⒷ의 ‘먹어 치우고 일어났다’는 본용언 ‘먹어’, 보조 용언 ‘치우고’, 본용언 ‘일어났다’의 순서로 연결된 경우이므로 적절하지 않다.\n① Ⓐ의 ‘던져서 베어 버렸다’는 본용언 ‘던져서’, 본용언 ‘베어’, 보조 용언 ‘버렸다’의 순서로 연결된 경우이므로 적절하다. ③ Ⓒ의 ‘깨어 있어 행복했다’는  본용언 ‘깨어’, 보조 용언 ‘있어’, 본용언 ‘행복했다’의 순서로 연결된 경우이므로 적절하다. ④ Ⓓ의 ‘앉아 있게 생겼다’는 본용언 ‘앉아’, 보조 용언 ‘있게’, 보조 용언 ‘생겼다’의 순서로 연결된 경우이므로 적절하다. ⑤ Ⓔ의 ‘먹고 싶게 되었다’는 본용언 ‘먹고’, 보조 용언 ‘싶게’, 보조 용언 ‘되었다’의 순서로 연결된 경우이므로 적절하다."
     ],
-    "src": "2019 11월 전국연합 고2"
+    "src": "2019 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-006",
@@ -5222,7 +5437,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘-음1’의 용례 ‘믿었음’ 뒤에 결합한 ‘이’는 주격 조사이며, ‘옳음’ 뒤에 결합한 ‘을’은 목적격 조사이다. ‘-음2’의 용례 ‘믿음’, ‘묶음’ 뒤에 결합한 ‘을’은 목적격 조사로 ‘-음2’의 뒤에도 ‘-음1’과 마찬가지로 격조사가 결합할 수 있음을 확인할 수 있다.\n[오답풀이] ① ‘-음1’의 뜻풀이 중 ‘어미 ‘-었-’, ‘-겠-’ 뒤에 붙어’와 제시된 용례인 ‘믿었음’을 통해 확인할 수 있다. ② ‘-음1’은 용언의 어간 뒤에 붙는 어미로, ‘-음1’이 결합한 말은 용언의 활용형이므로 본래의 품사는 그대로 유지된다. ③ ‘-음2’의 용례 ‘그는 서랍에서 종이 한 묶음을 꺼냈다.’에서 ‘묶음’을 수식하는 관형어 ‘한’을 통해 확인할 수 있다. ⑤ ‘-음1’의 뜻풀이를 보면 ‘-음1’은 용언이 명사 구실을 하게 하는 명사형 어미로서, 제시된 용례인 ‘믿었음’과 ‘옳음’은 각각 주어인 ‘그는’과 ‘그의 판단이’와 어울려 명사절을 형성함을 알 수 있다. 반면, ‘-음2’의 뜻풀이를 보면 ‘-음2’는 명사를 만드는 접미사로 명사절을 만들 수는 없다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘-음1’의 용례 ‘믿었음’ 뒤에 결합한 ‘이’는 주격 조사이며, ‘옳음’ 뒤에 결합한 ‘을’은 목적격 조사이다. ‘-음2’의 용례 ‘믿음’, ‘묶음’ 뒤에 결합한 ‘을’은 목적격 조사로 ‘-음2’의 뒤에도 ‘-음1’과 마찬가지로 격조사가 결합할 수 있음을 확인할 수 있다.\n[오답풀이] ① ‘-음1’의 뜻풀이 중 ‘어미 ‘-었-’, ‘-겠-’ 뒤에 붙어’와 제시된 용례인 ‘믿었음’을 통해 확인할 수 있다. ② ‘-음1’은 용언의 어간 뒤에 붙는 어미로, ‘-음1’이 결합한 말은 용언의 활용형이므로 본래의 품사는 그대로 유지된다. ③ ‘-음2’의 용례 ‘그는 서랍에서 종이 한 묶음을 꺼냈다.’에서 ‘묶음’을 수식하는 관형어 ‘한’을 통해 확인할 수 있다. ⑤ ‘-음1’의 뜻풀이를 보면 ‘-음1’은 용언이 명사 구실을 하게 하는 명사형 어미로서, 제시된 용례인 ‘믿었음’과 ‘옳음’은 각각 주어인 ‘그는’과 ‘그의 판단이’와 어울려 명사절을 형성함을 알 수 있다. 반면, ‘-음2’의 뜻풀이를 보면 ‘-음2’는 명사를 만드는 접미사로 명사절을 만들 수는 없다."
     ],
-    "src": "2020 3월 전국연합 고2"
+    "src": "2020 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-007",
@@ -5242,7 +5458,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘-음1’의 용례 ‘믿었음’ 뒤에 결합한 ‘이’는 주격 조사이며, ‘옳음’ 뒤에 결합한 ‘을’은 목적격 조사이다. ‘-음2’의 용례 ‘믿음’, ‘묶음’ 뒤에 결합한 ‘을’은 목적격 조사로 ‘-음2’의 뒤에도 ‘-음1’과 마찬가지로 격조사가 결합할 수 있음을 확인할 수 있다.\n[오답풀이] ① ‘-음1’의 뜻풀이 중 ‘어미 ‘-었-’, ‘-겠-’ 뒤에 붙어’와 제시된 용례인 ‘믿었음’을 통해 확인할 수 있다. ② ‘-음1’은 용언의 어간 뒤에 붙는 어미로, ‘-음1’이 결합한 말은 용언의 활용형이므로 본래의 품사는 그대로 유지된다. ③ ‘-음2’의 용례 ‘그는 서랍에서 종이 한 묶음을 꺼냈다.’에서 ‘묶음’을 수식하는 관형어 ‘한’을 통해 확인할 수 있다. ⑤ ‘-음1’의 뜻풀이를 보면 ‘-음1’은 용언이 명사 구실을 하게 하는 명사형 어미로서, 제시된 용례인 ‘믿었음’과 ‘옳음’은 각각 주어인 ‘그는’과 ‘그의 판단이’와 어울려 명사절을 형성함을 알 수 있다. 반면, ‘-음2’의 뜻풀이를 보면 ‘-음2’는 명사를 만드는 접미사로 명사절을 만들 수는 없다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘-음1’의 용례 ‘믿었음’ 뒤에 결합한 ‘이’는 주격 조사이며, ‘옳음’ 뒤에 결합한 ‘을’은 목적격 조사이다. ‘-음2’의 용례 ‘믿음’, ‘묶음’ 뒤에 결합한 ‘을’은 목적격 조사로 ‘-음2’의 뒤에도 ‘-음1’과 마찬가지로 격조사가 결합할 수 있음을 확인할 수 있다.\n[오답풀이] ① ‘-음1’의 뜻풀이 중 ‘어미 ‘-었-’, ‘-겠-’ 뒤에 붙어’와 제시된 용례인 ‘믿었음’을 통해 확인할 수 있다. ② ‘-음1’은 용언의 어간 뒤에 붙는 어미로, ‘-음1’이 결합한 말은 용언의 활용형이므로 본래의 품사는 그대로 유지된다. ③ ‘-음2’의 용례 ‘그는 서랍에서 종이 한 묶음을 꺼냈다.’에서 ‘묶음’을 수식하는 관형어 ‘한’을 통해 확인할 수 있다. ⑤ ‘-음1’의 뜻풀이를 보면 ‘-음1’은 용언이 명사 구실을 하게 하는 명사형 어미로서, 제시된 용례인 ‘믿었음’과 ‘옳음’은 각각 주어인 ‘그는’과 ‘그의 판단이’와 어울려 명사절을 형성함을 알 수 있다. 반면, ‘-음2’의 뜻풀이를 보면 ‘-음2’는 명사를 만드는 접미사로 명사절을 만들 수는 없다."
     ],
-    "src": "2020 3월 전국연합 고2"
+    "src": "2020 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-008",
@@ -5262,7 +5479,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘-음1’의 용례 ‘믿었음’ 뒤에 결합한 ‘이’는 주격 조사이며, ‘옳음’ 뒤에 결합한 ‘을’은 목적격 조사이다. ‘-음2’의 용례 ‘믿음’, ‘묶음’ 뒤에 결합한 ‘을’은 목적격 조사로 ‘-음2’의 뒤에도 ‘-음1’과 마찬가지로 격조사가 결합할 수 있음을 확인할 수 있다.\n[오답풀이] ① ‘-음1’의 뜻풀이 중 ‘어미 ‘-었-’, ‘-겠-’ 뒤에 붙어’와 제시된 용례인 ‘믿었음’을 통해 확인할 수 있다. ② ‘-음1’은 용언의 어간 뒤에 붙는 어미로, ‘-음1’이 결합한 말은 용언의 활용형이므로 본래의 품사는 그대로 유지된다. ③ ‘-음2’의 용례 ‘그는 서랍에서 종이 한 묶음을 꺼냈다.’에서 ‘묶음’을 수식하는 관형어 ‘한’을 통해 확인할 수 있다. ⑤ ‘-음1’의 뜻풀이를 보면 ‘-음1’은 용언이 명사 구실을 하게 하는 명사형 어미로서, 제시된 용례인 ‘믿었음’과 ‘옳음’은 각각 주어인 ‘그는’과 ‘그의 판단이’와 어울려 명사절을 형성함을 알 수 있다. 반면, ‘-음2’의 뜻풀이를 보면 ‘-음2’는 명사를 만드는 접미사로 명사절을 만들 수는 없다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘-음1’의 용례 ‘믿었음’ 뒤에 결합한 ‘이’는 주격 조사이며, ‘옳음’ 뒤에 결합한 ‘을’은 목적격 조사이다. ‘-음2’의 용례 ‘믿음’, ‘묶음’ 뒤에 결합한 ‘을’은 목적격 조사로 ‘-음2’의 뒤에도 ‘-음1’과 마찬가지로 격조사가 결합할 수 있음을 확인할 수 있다.\n[오답풀이] ① ‘-음1’의 뜻풀이 중 ‘어미 ‘-었-’, ‘-겠-’ 뒤에 붙어’와 제시된 용례인 ‘믿었음’을 통해 확인할 수 있다. ② ‘-음1’은 용언의 어간 뒤에 붙는 어미로, ‘-음1’이 결합한 말은 용언의 활용형이므로 본래의 품사는 그대로 유지된다. ③ ‘-음2’의 용례 ‘그는 서랍에서 종이 한 묶음을 꺼냈다.’에서 ‘묶음’을 수식하는 관형어 ‘한’을 통해 확인할 수 있다. ⑤ ‘-음1’의 뜻풀이를 보면 ‘-음1’은 용언이 명사 구실을 하게 하는 명사형 어미로서, 제시된 용례인 ‘믿었음’과 ‘옳음’은 각각 주어인 ‘그는’과 ‘그의 판단이’와 어울려 명사절을 형성함을 알 수 있다. 반면, ‘-음2’의 뜻풀이를 보면 ‘-음2’는 명사를 만드는 접미사로 명사절을 만들 수는 없다."
     ],
-    "src": "2020 3월 전국연합 고2"
+    "src": "2020 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-009",
@@ -5282,7 +5500,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘-음1’의 용례 ‘믿었음’ 뒤에 결합한 ‘이’는 주격 조사이며, ‘옳음’ 뒤에 결합한 ‘을’은 목적격 조사이다. ‘-음2’의 용례 ‘믿음’, ‘묶음’ 뒤에 결합한 ‘을’은 목적격 조사로 ‘-음2’의 뒤에도 ‘-음1’과 마찬가지로 격조사가 결합할 수 있음을 확인할 수 있다.\n[오답풀이] ① ‘-음1’의 뜻풀이 중 ‘어미 ‘-었-’, ‘-겠-’ 뒤에 붙어’와 제시된 용례인 ‘믿었음’을 통해 확인할 수 있다. ② ‘-음1’은 용언의 어간 뒤에 붙는 어미로, ‘-음1’이 결합한 말은 용언의 활용형이므로 본래의 품사는 그대로 유지된다. ③ ‘-음2’의 용례 ‘그는 서랍에서 종이 한 묶음을 꺼냈다.’에서 ‘묶음’을 수식하는 관형어 ‘한’을 통해 확인할 수 있다. ⑤ ‘-음1’의 뜻풀이를 보면 ‘-음1’은 용언이 명사 구실을 하게 하는 명사형 어미로서, 제시된 용례인 ‘믿었음’과 ‘옳음’은 각각 주어인 ‘그는’과 ‘그의 판단이’와 어울려 명사절을 형성함을 알 수 있다. 반면, ‘-음2’의 뜻풀이를 보면 ‘-음2’는 명사를 만드는 접미사로 명사절을 만들 수는 없다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘-음1’의 용례 ‘믿었음’ 뒤에 결합한 ‘이’는 주격 조사이며, ‘옳음’ 뒤에 결합한 ‘을’은 목적격 조사이다. ‘-음2’의 용례 ‘믿음’, ‘묶음’ 뒤에 결합한 ‘을’은 목적격 조사로 ‘-음2’의 뒤에도 ‘-음1’과 마찬가지로 격조사가 결합할 수 있음을 확인할 수 있다.\n[오답풀이] ① ‘-음1’의 뜻풀이 중 ‘어미 ‘-었-’, ‘-겠-’ 뒤에 붙어’와 제시된 용례인 ‘믿었음’을 통해 확인할 수 있다. ② ‘-음1’은 용언의 어간 뒤에 붙는 어미로, ‘-음1’이 결합한 말은 용언의 활용형이므로 본래의 품사는 그대로 유지된다. ③ ‘-음2’의 용례 ‘그는 서랍에서 종이 한 묶음을 꺼냈다.’에서 ‘묶음’을 수식하는 관형어 ‘한’을 통해 확인할 수 있다. ⑤ ‘-음1’의 뜻풀이를 보면 ‘-음1’은 용언이 명사 구실을 하게 하는 명사형 어미로서, 제시된 용례인 ‘믿었음’과 ‘옳음’은 각각 주어인 ‘그는’과 ‘그의 판단이’와 어울려 명사절을 형성함을 알 수 있다. 반면, ‘-음2’의 뜻풀이를 보면 ‘-음2’는 명사를 만드는 접미사로 명사절을 만들 수는 없다."
     ],
-    "src": "2020 3월 전국연합 고2"
+    "src": "2020 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-010",
@@ -5302,7 +5521,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘-음1’의 용례 ‘믿었음’ 뒤에 결합한 ‘이’는 주격 조사이며, ‘옳음’ 뒤에 결합한 ‘을’은 목적격 조사이다. ‘-음2’의 용례 ‘믿음’, ‘묶음’ 뒤에 결합한 ‘을’은 목적격 조사로 ‘-음2’의 뒤에도 ‘-음1’과 마찬가지로 격조사가 결합할 수 있음을 확인할 수 있다.\n[오답풀이] ① ‘-음1’의 뜻풀이 중 ‘어미 ‘-었-’, ‘-겠-’ 뒤에 붙어’와 제시된 용례인 ‘믿었음’을 통해 확인할 수 있다. ② ‘-음1’은 용언의 어간 뒤에 붙는 어미로, ‘-음1’이 결합한 말은 용언의 활용형이므로 본래의 품사는 그대로 유지된다. ③ ‘-음2’의 용례 ‘그는 서랍에서 종이 한 묶음을 꺼냈다.’에서 ‘묶음’을 수식하는 관형어 ‘한’을 통해 확인할 수 있다. ⑤ ‘-음1’의 뜻풀이를 보면 ‘-음1’은 용언이 명사 구실을 하게 하는 명사형 어미로서, 제시된 용례인 ‘믿었음’과 ‘옳음’은 각각 주어인 ‘그는’과 ‘그의 판단이’와 어울려 명사절을 형성함을 알 수 있다. 반면, ‘-음2’의 뜻풀이를 보면 ‘-음2’는 명사를 만드는 접미사로 명사절을 만들 수는 없다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘-음1’의 용례 ‘믿었음’ 뒤에 결합한 ‘이’는 주격 조사이며, ‘옳음’ 뒤에 결합한 ‘을’은 목적격 조사이다. ‘-음2’의 용례 ‘믿음’, ‘묶음’ 뒤에 결합한 ‘을’은 목적격 조사로 ‘-음2’의 뒤에도 ‘-음1’과 마찬가지로 격조사가 결합할 수 있음을 확인할 수 있다.\n[오답풀이] ① ‘-음1’의 뜻풀이 중 ‘어미 ‘-었-’, ‘-겠-’ 뒤에 붙어’와 제시된 용례인 ‘믿었음’을 통해 확인할 수 있다. ② ‘-음1’은 용언의 어간 뒤에 붙는 어미로, ‘-음1’이 결합한 말은 용언의 활용형이므로 본래의 품사는 그대로 유지된다. ③ ‘-음2’의 용례 ‘그는 서랍에서 종이 한 묶음을 꺼냈다.’에서 ‘묶음’을 수식하는 관형어 ‘한’을 통해 확인할 수 있다. ⑤ ‘-음1’의 뜻풀이를 보면 ‘-음1’은 용언이 명사 구실을 하게 하는 명사형 어미로서, 제시된 용례인 ‘믿었음’과 ‘옳음’은 각각 주어인 ‘그는’과 ‘그의 판단이’와 어울려 명사절을 형성함을 알 수 있다. 반면, ‘-음2’의 뜻풀이를 보면 ‘-음2’는 명사를 만드는 접미사로 명사절을 만들 수는 없다."
     ],
-    "src": "2020 3월 전국연합 고2"
+    "src": "2020 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-011",
@@ -5322,7 +5542,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n의존 명사 ‘만’을 수식하는 관형어는 관형사형 어미 ‘-(으)ㄹ’과만 결합할 수 있으므로 선행어 제약이 있다.\n[오답풀이] ① 의존 명사 ‘바’는 ‘바가’와 같이 목적격 조사 이외에 다른 조사와도 결합할 수 있으므로 후행어 제약이 없다. ③ 의존 명사 ‘무렵’은 ‘무렵에’와 같이 서술격 조사 이외에 다른 조사와도 결합할 수 있으므로 후행어 제약이 없다. ④ 의존 명사 ‘리’는 주격 조사와만 결합할 수 있으므로 후행어 제약이 있다. ⑤ 의존 명사 ‘채’를 수식하는 관형어는 관형사형 어미 ‘-(으)ㄴ’과만 결합할 수 있으므로 선행어 제약이 있다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n의존 명사 ‘만’을 수식하는 관형어는 관형사형 어미 ‘-(으)ㄹ’과만 결합할 수 있으므로 선행어 제약이 있다.\n[오답풀이] ① 의존 명사 ‘바’는 ‘바가’와 같이 목적격 조사 이외에 다른 조사와도 결합할 수 있으므로 후행어 제약이 없다. ③ 의존 명사 ‘무렵’은 ‘무렵에’와 같이 서술격 조사 이외에 다른 조사와도 결합할 수 있으므로 후행어 제약이 없다. ④ 의존 명사 ‘리’는 주격 조사와만 결합할 수 있으므로 후행어 제약이 있다. ⑤ 의존 명사 ‘채’를 수식하는 관형어는 관형사형 어미 ‘-(으)ㄴ’과만 결합할 수 있으므로 선행어 제약이 있다."
     ],
-    "src": "2021 3월 전국연합 고2"
+    "src": "2021 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-012",
@@ -5342,7 +5563,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n의존 명사 ‘만’을 수식하는 관형어는 관형사형 어미 ‘-(으)ㄹ’과만 결합할 수 있으므로 선행어 제약이 있다.\n[오답풀이] ① 의존 명사 ‘바’는 ‘바가’와 같이 목적격 조사 이외에 다른 조사와도 결합할 수 있으므로 후행어 제약이 없다. ③ 의존 명사 ‘무렵’은 ‘무렵에’와 같이 서술격 조사 이외에 다른 조사와도 결합할 수 있으므로 후행어 제약이 없다. ④ 의존 명사 ‘리’는 주격 조사와만 결합할 수 있으므로 후행어 제약이 있다. ⑤ 의존 명사 ‘채’를 수식하는 관형어는 관형사형 어미 ‘-(으)ㄴ’과만 결합할 수 있으므로 선행어 제약이 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n의존 명사 ‘만’을 수식하는 관형어는 관형사형 어미 ‘-(으)ㄹ’과만 결합할 수 있으므로 선행어 제약이 있다.\n[오답풀이] ① 의존 명사 ‘바’는 ‘바가’와 같이 목적격 조사 이외에 다른 조사와도 결합할 수 있으므로 후행어 제약이 없다. ③ 의존 명사 ‘무렵’은 ‘무렵에’와 같이 서술격 조사 이외에 다른 조사와도 결합할 수 있으므로 후행어 제약이 없다. ④ 의존 명사 ‘리’는 주격 조사와만 결합할 수 있으므로 후행어 제약이 있다. ⑤ 의존 명사 ‘채’를 수식하는 관형어는 관형사형 어미 ‘-(으)ㄴ’과만 결합할 수 있으므로 선행어 제약이 있다."
     ],
-    "src": "2021 3월 전국연합 고2"
+    "src": "2021 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-013",
@@ -5362,7 +5584,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n의존 명사 ‘만’을 수식하는 관형어는 관형사형 어미 ‘-(으)ㄹ’과만 결합할 수 있으므로 선행어 제약이 있다.\n[오답풀이] ① 의존 명사 ‘바’는 ‘바가’와 같이 목적격 조사 이외에 다른 조사와도 결합할 수 있으므로 후행어 제약이 없다. ③ 의존 명사 ‘무렵’은 ‘무렵에’와 같이 서술격 조사 이외에 다른 조사와도 결합할 수 있으므로 후행어 제약이 없다. ④ 의존 명사 ‘리’는 주격 조사와만 결합할 수 있으므로 후행어 제약이 있다. ⑤ 의존 명사 ‘채’를 수식하는 관형어는 관형사형 어미 ‘-(으)ㄴ’과만 결합할 수 있으므로 선행어 제약이 있다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n의존 명사 ‘만’을 수식하는 관형어는 관형사형 어미 ‘-(으)ㄹ’과만 결합할 수 있으므로 선행어 제약이 있다.\n[오답풀이] ① 의존 명사 ‘바’는 ‘바가’와 같이 목적격 조사 이외에 다른 조사와도 결합할 수 있으므로 후행어 제약이 없다. ③ 의존 명사 ‘무렵’은 ‘무렵에’와 같이 서술격 조사 이외에 다른 조사와도 결합할 수 있으므로 후행어 제약이 없다. ④ 의존 명사 ‘리’는 주격 조사와만 결합할 수 있으므로 후행어 제약이 있다. ⑤ 의존 명사 ‘채’를 수식하는 관형어는 관형사형 어미 ‘-(으)ㄴ’과만 결합할 수 있으므로 선행어 제약이 있다."
     ],
-    "src": "2021 3월 전국연합 고2"
+    "src": "2021 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-014",
@@ -5382,7 +5605,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n의존 명사 ‘만’을 수식하는 관형어는 관형사형 어미 ‘-(으)ㄹ’과만 결합할 수 있으므로 선행어 제약이 있다.\n[오답풀이] ① 의존 명사 ‘바’는 ‘바가’와 같이 목적격 조사 이외에 다른 조사와도 결합할 수 있으므로 후행어 제약이 없다. ③ 의존 명사 ‘무렵’은 ‘무렵에’와 같이 서술격 조사 이외에 다른 조사와도 결합할 수 있으므로 후행어 제약이 없다. ④ 의존 명사 ‘리’는 주격 조사와만 결합할 수 있으므로 후행어 제약이 있다. ⑤ 의존 명사 ‘채’를 수식하는 관형어는 관형사형 어미 ‘-(으)ㄴ’과만 결합할 수 있으므로 선행어 제약이 있다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n의존 명사 ‘만’을 수식하는 관형어는 관형사형 어미 ‘-(으)ㄹ’과만 결합할 수 있으므로 선행어 제약이 있다.\n[오답풀이] ① 의존 명사 ‘바’는 ‘바가’와 같이 목적격 조사 이외에 다른 조사와도 결합할 수 있으므로 후행어 제약이 없다. ③ 의존 명사 ‘무렵’은 ‘무렵에’와 같이 서술격 조사 이외에 다른 조사와도 결합할 수 있으므로 후행어 제약이 없다. ④ 의존 명사 ‘리’는 주격 조사와만 결합할 수 있으므로 후행어 제약이 있다. ⑤ 의존 명사 ‘채’를 수식하는 관형어는 관형사형 어미 ‘-(으)ㄴ’과만 결합할 수 있으므로 선행어 제약이 있다."
     ],
-    "src": "2021 3월 전국연합 고2"
+    "src": "2021 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-015",
@@ -5402,7 +5626,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n의존 명사 ‘만’을 수식하는 관형어는 관형사형 어미 ‘-(으)ㄹ’과만 결합할 수 있으므로 선행어 제약이 있다.\n[오답풀이] ① 의존 명사 ‘바’는 ‘바가’와 같이 목적격 조사 이외에 다른 조사와도 결합할 수 있으므로 후행어 제약이 없다. ③ 의존 명사 ‘무렵’은 ‘무렵에’와 같이 서술격 조사 이외에 다른 조사와도 결합할 수 있으므로 후행어 제약이 없다. ④ 의존 명사 ‘리’는 주격 조사와만 결합할 수 있으므로 후행어 제약이 있다. ⑤ 의존 명사 ‘채’를 수식하는 관형어는 관형사형 어미 ‘-(으)ㄴ’과만 결합할 수 있으므로 선행어 제약이 있다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n의존 명사 ‘만’을 수식하는 관형어는 관형사형 어미 ‘-(으)ㄹ’과만 결합할 수 있으므로 선행어 제약이 있다.\n[오답풀이] ① 의존 명사 ‘바’는 ‘바가’와 같이 목적격 조사 이외에 다른 조사와도 결합할 수 있으므로 후행어 제약이 없다. ③ 의존 명사 ‘무렵’은 ‘무렵에’와 같이 서술격 조사 이외에 다른 조사와도 결합할 수 있으므로 후행어 제약이 없다. ④ 의존 명사 ‘리’는 주격 조사와만 결합할 수 있으므로 후행어 제약이 있다. ⑤ 의존 명사 ‘채’를 수식하는 관형어는 관형사형 어미 ‘-(으)ㄴ’과만 결합할 수 있으므로 선행어 제약이 있다."
     ],
-    "src": "2021 3월 전국연합 고2"
+    "src": "2021 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-016",
@@ -5422,7 +5647,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘차가 경적을 울리며 멈추다.’에서 ‘멈추다’는 ‘사물의 움직임이나 동작이 그치다.’라는 의미를 지니므로 ‘멈추다[1]｢1｣’의 용례에 해당한다.\n[오답풀이] ① ‘그치다｢1｣’의 문형 정보 ‘【(…을)】’에서 ‘그치다｢1｣’은 주어만을 필요로 하는 자동사로도 쓰이고, 대상이 되는 목적어를 필요로 하는 타동사로도 쓰임을 알 수 있으며, 이는 ‘그치다｢1｣’이 자동사로 쓰일 때의 용례 ‘비가 그치다.’와 타동사로 쓰일 때의 용례 ‘아이가 울음을 그치다.’에서 재확인할 수 있다. ② ‘그치다｢2｣’의 문형 정보 ‘【…에】【…으로】’에서 ‘그치다｢2｣’가 부사어를 반드시 필요로 함을 알 수 있으며, 이는 용례의 부사어 ‘절반 정도에’, ‘예감으로’를 통해 재확인할 수 있다. ④ 다의어란 두 가지 이상의 뜻을 가진 단어로, ‘그치다’와 ‘멈추다’는 하나의 표제어 아래에 두 가지 이상의 의미가 제시되어 있으므로 다의어이다. ⑤ ‘그치다｢1｣’과 ‘멈추다’의 뜻풀이와 용례를 보면 ‘그치다｢1｣’은 ‘일이나 움직임이 멈추거나 끝나다. 또는 그렇게 하다.’라는 뜻을, ‘멈추다’는 ‘사물의 움직임이나 동작이 그치다. 또는 그치게 하다.’라는 유사한 의미를 지니고 있음을 확인할 수 있으므로 두 단어는 유의 관계에 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘차가 경적을 울리며 멈추다.’에서 ‘멈추다’는 ‘사물의 움직임이나 동작이 그치다.’라는 의미를 지니므로 ‘멈추다[1]｢1｣’의 용례에 해당한다.\n[오답풀이] ① ‘그치다｢1｣’의 문형 정보 ‘【(…을)】’에서 ‘그치다｢1｣’은 주어만을 필요로 하는 자동사로도 쓰이고, 대상이 되는 목적어를 필요로 하는 타동사로도 쓰임을 알 수 있으며, 이는 ‘그치다｢1｣’이 자동사로 쓰일 때의 용례 ‘비가 그치다.’와 타동사로 쓰일 때의 용례 ‘아이가 울음을 그치다.’에서 재확인할 수 있다. ② ‘그치다｢2｣’의 문형 정보 ‘【…에】【…으로】’에서 ‘그치다｢2｣’가 부사어를 반드시 필요로 함을 알 수 있으며, 이는 용례의 부사어 ‘절반 정도에’, ‘예감으로’를 통해 재확인할 수 있다. ④ 다의어란 두 가지 이상의 뜻을 가진 단어로, ‘그치다’와 ‘멈추다’는 하나의 표제어 아래에 두 가지 이상의 의미가 제시되어 있으므로 다의어이다. ⑤ ‘그치다｢1｣’과 ‘멈추다’의 뜻풀이와 용례를 보면 ‘그치다｢1｣’은 ‘일이나 움직임이 멈추거나 끝나다. 또는 그렇게 하다.’라는 뜻을, ‘멈추다’는 ‘사물의 움직임이나 동작이 그치다. 또는 그치게 하다.’라는 유사한 의미를 지니고 있음을 확인할 수 있으므로 두 단어는 유의 관계에 있다."
     ],
-    "src": "2019 3월 전국연합 고2"
+    "src": "2019 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-017",
@@ -5442,7 +5668,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘차가 경적을 울리며 멈추다.’에서 ‘멈추다’는 ‘사물의 움직임이나 동작이 그치다.’라는 의미를 지니므로 ‘멈추다[1]｢1｣’의 용례에 해당한다.\n[오답풀이] ① ‘그치다｢1｣’의 문형 정보 ‘【(…을)】’에서 ‘그치다｢1｣’은 주어만을 필요로 하는 자동사로도 쓰이고, 대상이 되는 목적어를 필요로 하는 타동사로도 쓰임을 알 수 있으며, 이는 ‘그치다｢1｣’이 자동사로 쓰일 때의 용례 ‘비가 그치다.’와 타동사로 쓰일 때의 용례 ‘아이가 울음을 그치다.’에서 재확인할 수 있다. ② ‘그치다｢2｣’의 문형 정보 ‘【…에】【…으로】’에서 ‘그치다｢2｣’가 부사어를 반드시 필요로 함을 알 수 있으며, 이는 용례의 부사어 ‘절반 정도에’, ‘예감으로’를 통해 재확인할 수 있다. ④ 다의어란 두 가지 이상의 뜻을 가진 단어로, ‘그치다’와 ‘멈추다’는 하나의 표제어 아래에 두 가지 이상의 의미가 제시되어 있으므로 다의어이다. ⑤ ‘그치다｢1｣’과 ‘멈추다’의 뜻풀이와 용례를 보면 ‘그치다｢1｣’은 ‘일이나 움직임이 멈추거나 끝나다. 또는 그렇게 하다.’라는 뜻을, ‘멈추다’는 ‘사물의 움직임이나 동작이 그치다. 또는 그치게 하다.’라는 유사한 의미를 지니고 있음을 확인할 수 있으므로 두 단어는 유의 관계에 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘차가 경적을 울리며 멈추다.’에서 ‘멈추다’는 ‘사물의 움직임이나 동작이 그치다.’라는 의미를 지니므로 ‘멈추다[1]｢1｣’의 용례에 해당한다.\n[오답풀이] ① ‘그치다｢1｣’의 문형 정보 ‘【(…을)】’에서 ‘그치다｢1｣’은 주어만을 필요로 하는 자동사로도 쓰이고, 대상이 되는 목적어를 필요로 하는 타동사로도 쓰임을 알 수 있으며, 이는 ‘그치다｢1｣’이 자동사로 쓰일 때의 용례 ‘비가 그치다.’와 타동사로 쓰일 때의 용례 ‘아이가 울음을 그치다.’에서 재확인할 수 있다. ② ‘그치다｢2｣’의 문형 정보 ‘【…에】【…으로】’에서 ‘그치다｢2｣’가 부사어를 반드시 필요로 함을 알 수 있으며, 이는 용례의 부사어 ‘절반 정도에’, ‘예감으로’를 통해 재확인할 수 있다. ④ 다의어란 두 가지 이상의 뜻을 가진 단어로, ‘그치다’와 ‘멈추다’는 하나의 표제어 아래에 두 가지 이상의 의미가 제시되어 있으므로 다의어이다. ⑤ ‘그치다｢1｣’과 ‘멈추다’의 뜻풀이와 용례를 보면 ‘그치다｢1｣’은 ‘일이나 움직임이 멈추거나 끝나다. 또는 그렇게 하다.’라는 뜻을, ‘멈추다’는 ‘사물의 움직임이나 동작이 그치다. 또는 그치게 하다.’라는 유사한 의미를 지니고 있음을 확인할 수 있으므로 두 단어는 유의 관계에 있다."
     ],
-    "src": "2019 3월 전국연합 고2"
+    "src": "2019 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-018",
@@ -5462,7 +5689,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘차가 경적을 울리며 멈추다.’에서 ‘멈추다’는 ‘사물의 움직임이나 동작이 그치다.’라는 의미를 지니므로 ‘멈추다[1]｢1｣’의 용례에 해당한다.\n[오답풀이] ① ‘그치다｢1｣’의 문형 정보 ‘【(…을)】’에서 ‘그치다｢1｣’은 주어만을 필요로 하는 자동사로도 쓰이고, 대상이 되는 목적어를 필요로 하는 타동사로도 쓰임을 알 수 있으며, 이는 ‘그치다｢1｣’이 자동사로 쓰일 때의 용례 ‘비가 그치다.’와 타동사로 쓰일 때의 용례 ‘아이가 울음을 그치다.’에서 재확인할 수 있다. ② ‘그치다｢2｣’의 문형 정보 ‘【…에】【…으로】’에서 ‘그치다｢2｣’가 부사어를 반드시 필요로 함을 알 수 있으며, 이는 용례의 부사어 ‘절반 정도에’, ‘예감으로’를 통해 재확인할 수 있다. ④ 다의어란 두 가지 이상의 뜻을 가진 단어로, ‘그치다’와 ‘멈추다’는 하나의 표제어 아래에 두 가지 이상의 의미가 제시되어 있으므로 다의어이다. ⑤ ‘그치다｢1｣’과 ‘멈추다’의 뜻풀이와 용례를 보면 ‘그치다｢1｣’은 ‘일이나 움직임이 멈추거나 끝나다. 또는 그렇게 하다.’라는 뜻을, ‘멈추다’는 ‘사물의 움직임이나 동작이 그치다. 또는 그치게 하다.’라는 유사한 의미를 지니고 있음을 확인할 수 있으므로 두 단어는 유의 관계에 있다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘차가 경적을 울리며 멈추다.’에서 ‘멈추다’는 ‘사물의 움직임이나 동작이 그치다.’라는 의미를 지니므로 ‘멈추다[1]｢1｣’의 용례에 해당한다.\n[오답풀이] ① ‘그치다｢1｣’의 문형 정보 ‘【(…을)】’에서 ‘그치다｢1｣’은 주어만을 필요로 하는 자동사로도 쓰이고, 대상이 되는 목적어를 필요로 하는 타동사로도 쓰임을 알 수 있으며, 이는 ‘그치다｢1｣’이 자동사로 쓰일 때의 용례 ‘비가 그치다.’와 타동사로 쓰일 때의 용례 ‘아이가 울음을 그치다.’에서 재확인할 수 있다. ② ‘그치다｢2｣’의 문형 정보 ‘【…에】【…으로】’에서 ‘그치다｢2｣’가 부사어를 반드시 필요로 함을 알 수 있으며, 이는 용례의 부사어 ‘절반 정도에’, ‘예감으로’를 통해 재확인할 수 있다. ④ 다의어란 두 가지 이상의 뜻을 가진 단어로, ‘그치다’와 ‘멈추다’는 하나의 표제어 아래에 두 가지 이상의 의미가 제시되어 있으므로 다의어이다. ⑤ ‘그치다｢1｣’과 ‘멈추다’의 뜻풀이와 용례를 보면 ‘그치다｢1｣’은 ‘일이나 움직임이 멈추거나 끝나다. 또는 그렇게 하다.’라는 뜻을, ‘멈추다’는 ‘사물의 움직임이나 동작이 그치다. 또는 그치게 하다.’라는 유사한 의미를 지니고 있음을 확인할 수 있으므로 두 단어는 유의 관계에 있다."
     ],
-    "src": "2019 3월 전국연합 고2"
+    "src": "2019 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-019",
@@ -5482,7 +5710,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘차가 경적을 울리며 멈추다.’에서 ‘멈추다’는 ‘사물의 움직임이나 동작이 그치다.’라는 의미를 지니므로 ‘멈추다[1]｢1｣’의 용례에 해당한다.\n[오답풀이] ① ‘그치다｢1｣’의 문형 정보 ‘【(…을)】’에서 ‘그치다｢1｣’은 주어만을 필요로 하는 자동사로도 쓰이고, 대상이 되는 목적어를 필요로 하는 타동사로도 쓰임을 알 수 있으며, 이는 ‘그치다｢1｣’이 자동사로 쓰일 때의 용례 ‘비가 그치다.’와 타동사로 쓰일 때의 용례 ‘아이가 울음을 그치다.’에서 재확인할 수 있다. ② ‘그치다｢2｣’의 문형 정보 ‘【…에】【…으로】’에서 ‘그치다｢2｣’가 부사어를 반드시 필요로 함을 알 수 있으며, 이는 용례의 부사어 ‘절반 정도에’, ‘예감으로’를 통해 재확인할 수 있다. ④ 다의어란 두 가지 이상의 뜻을 가진 단어로, ‘그치다’와 ‘멈추다’는 하나의 표제어 아래에 두 가지 이상의 의미가 제시되어 있으므로 다의어이다. ⑤ ‘그치다｢1｣’과 ‘멈추다’의 뜻풀이와 용례를 보면 ‘그치다｢1｣’은 ‘일이나 움직임이 멈추거나 끝나다. 또는 그렇게 하다.’라는 뜻을, ‘멈추다’는 ‘사물의 움직임이나 동작이 그치다. 또는 그치게 하다.’라는 유사한 의미를 지니고 있음을 확인할 수 있으므로 두 단어는 유의 관계에 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘차가 경적을 울리며 멈추다.’에서 ‘멈추다’는 ‘사물의 움직임이나 동작이 그치다.’라는 의미를 지니므로 ‘멈추다[1]｢1｣’의 용례에 해당한다.\n[오답풀이] ① ‘그치다｢1｣’의 문형 정보 ‘【(…을)】’에서 ‘그치다｢1｣’은 주어만을 필요로 하는 자동사로도 쓰이고, 대상이 되는 목적어를 필요로 하는 타동사로도 쓰임을 알 수 있으며, 이는 ‘그치다｢1｣’이 자동사로 쓰일 때의 용례 ‘비가 그치다.’와 타동사로 쓰일 때의 용례 ‘아이가 울음을 그치다.’에서 재확인할 수 있다. ② ‘그치다｢2｣’의 문형 정보 ‘【…에】【…으로】’에서 ‘그치다｢2｣’가 부사어를 반드시 필요로 함을 알 수 있으며, 이는 용례의 부사어 ‘절반 정도에’, ‘예감으로’를 통해 재확인할 수 있다. ④ 다의어란 두 가지 이상의 뜻을 가진 단어로, ‘그치다’와 ‘멈추다’는 하나의 표제어 아래에 두 가지 이상의 의미가 제시되어 있으므로 다의어이다. ⑤ ‘그치다｢1｣’과 ‘멈추다’의 뜻풀이와 용례를 보면 ‘그치다｢1｣’은 ‘일이나 움직임이 멈추거나 끝나다. 또는 그렇게 하다.’라는 뜻을, ‘멈추다’는 ‘사물의 움직임이나 동작이 그치다. 또는 그치게 하다.’라는 유사한 의미를 지니고 있음을 확인할 수 있으므로 두 단어는 유의 관계에 있다."
     ],
-    "src": "2019 3월 전국연합 고2"
+    "src": "2019 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-020",
@@ -5502,7 +5731,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘차가 경적을 울리며 멈추다.’에서 ‘멈추다’는 ‘사물의 움직임이나 동작이 그치다.’라는 의미를 지니므로 ‘멈추다[1]｢1｣’의 용례에 해당한다.\n[오답풀이] ① ‘그치다｢1｣’의 문형 정보 ‘【(…을)】’에서 ‘그치다｢1｣’은 주어만을 필요로 하는 자동사로도 쓰이고, 대상이 되는 목적어를 필요로 하는 타동사로도 쓰임을 알 수 있으며, 이는 ‘그치다｢1｣’이 자동사로 쓰일 때의 용례 ‘비가 그치다.’와 타동사로 쓰일 때의 용례 ‘아이가 울음을 그치다.’에서 재확인할 수 있다. ② ‘그치다｢2｣’의 문형 정보 ‘【…에】【…으로】’에서 ‘그치다｢2｣’가 부사어를 반드시 필요로 함을 알 수 있으며, 이는 용례의 부사어 ‘절반 정도에’, ‘예감으로’를 통해 재확인할 수 있다. ④ 다의어란 두 가지 이상의 뜻을 가진 단어로, ‘그치다’와 ‘멈추다’는 하나의 표제어 아래에 두 가지 이상의 의미가 제시되어 있으므로 다의어이다. ⑤ ‘그치다｢1｣’과 ‘멈추다’의 뜻풀이와 용례를 보면 ‘그치다｢1｣’은 ‘일이나 움직임이 멈추거나 끝나다. 또는 그렇게 하다.’라는 뜻을, ‘멈추다’는 ‘사물의 움직임이나 동작이 그치다. 또는 그치게 하다.’라는 유사한 의미를 지니고 있음을 확인할 수 있으므로 두 단어는 유의 관계에 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘차가 경적을 울리며 멈추다.’에서 ‘멈추다’는 ‘사물의 움직임이나 동작이 그치다.’라는 의미를 지니므로 ‘멈추다[1]｢1｣’의 용례에 해당한다.\n[오답풀이] ① ‘그치다｢1｣’의 문형 정보 ‘【(…을)】’에서 ‘그치다｢1｣’은 주어만을 필요로 하는 자동사로도 쓰이고, 대상이 되는 목적어를 필요로 하는 타동사로도 쓰임을 알 수 있으며, 이는 ‘그치다｢1｣’이 자동사로 쓰일 때의 용례 ‘비가 그치다.’와 타동사로 쓰일 때의 용례 ‘아이가 울음을 그치다.’에서 재확인할 수 있다. ② ‘그치다｢2｣’의 문형 정보 ‘【…에】【…으로】’에서 ‘그치다｢2｣’가 부사어를 반드시 필요로 함을 알 수 있으며, 이는 용례의 부사어 ‘절반 정도에’, ‘예감으로’를 통해 재확인할 수 있다. ④ 다의어란 두 가지 이상의 뜻을 가진 단어로, ‘그치다’와 ‘멈추다’는 하나의 표제어 아래에 두 가지 이상의 의미가 제시되어 있으므로 다의어이다. ⑤ ‘그치다｢1｣’과 ‘멈추다’의 뜻풀이와 용례를 보면 ‘그치다｢1｣’은 ‘일이나 움직임이 멈추거나 끝나다. 또는 그렇게 하다.’라는 뜻을, ‘멈추다’는 ‘사물의 움직임이나 동작이 그치다. 또는 그치게 하다.’라는 유사한 의미를 지니고 있음을 확인할 수 있으므로 두 단어는 유의 관계에 있다."
     ],
-    "src": "2019 3월 전국연합 고2"
+    "src": "2019 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-021",
@@ -5522,7 +5752,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n원문 선지의 분류는 적절하지 않습니다.\n제시된 분류 기준에서 보조 용언 ‘않다’는 앞에 오는 본용언의 품사를 따름을 알 수 있다. 따라서 ⓐ의 ‘않겠다’는  보조 형용사로, ⓒ의 ‘않았다’는 보조 동사로 보아야 한다. 제시된 분류 기준에서 보조 용언 ‘보다’가 어떤 일을 경험한다는 의미를 나타내는 경우에는 보조 동사이고, 앞말이 뜻하는 행동이나 상태에 대한 걱정이라는 의미를 나타내는 경우에는 보조 형용사임을 알 수 있다. 따라서 ⓑ의 ‘봐’는 보조 형용사로, ⓔ의 ‘보지’는 보조 동사로 보아야 한다. 제시된 분류 기준에서 보조 용언 ‘하다’는 앞말의 행동이나 상태에 대한 바람이라는 의미를 나타내는 경우에는 보조 동사임을 알 수 있다. 따라서 ⓓ의 ‘한다’는 보조 동사로 보아야 한다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n원문 선지의 분류는 적절하지 않습니다.\n제시된 분류 기준에서 보조 용언 ‘않다’는 앞에 오는 본용언의 품사를 따름을 알 수 있다. 따라서 ⓐ의 ‘않겠다’는  보조 형용사로, ⓒ의 ‘않았다’는 보조 동사로 보아야 한다. 제시된 분류 기준에서 보조 용언 ‘보다’가 어떤 일을 경험한다는 의미를 나타내는 경우에는 보조 동사이고, 앞말이 뜻하는 행동이나 상태에 대한 걱정이라는 의미를 나타내는 경우에는 보조 형용사임을 알 수 있다. 따라서 ⓑ의 ‘봐’는 보조 형용사로, ⓔ의 ‘보지’는 보조 동사로 보아야 한다. 제시된 분류 기준에서 보조 용언 ‘하다’는 앞말의 행동이나 상태에 대한 바람이라는 의미를 나타내는 경우에는 보조 동사임을 알 수 있다. 따라서 ⓓ의 ‘한다’는 보조 동사로 보아야 한다."
     ],
-    "src": "2019 11월 전국연합 고2"
+    "src": "2019 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-022",
@@ -5542,7 +5773,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n원문 선지의 분류는 적절하지 않습니다.\n제시된 분류 기준에서 보조 용언 ‘않다’는 앞에 오는 본용언의 품사를 따름을 알 수 있다. 따라서 ⓐ의 ‘않겠다’는  보조 형용사로, ⓒ의 ‘않았다’는 보조 동사로 보아야 한다. 제시된 분류 기준에서 보조 용언 ‘보다’가 어떤 일을 경험한다는 의미를 나타내는 경우에는 보조 동사이고, 앞말이 뜻하는 행동이나 상태에 대한 걱정이라는 의미를 나타내는 경우에는 보조 형용사임을 알 수 있다. 따라서 ⓑ의 ‘봐’는 보조 형용사로, ⓔ의 ‘보지’는 보조 동사로 보아야 한다. 제시된 분류 기준에서 보조 용언 ‘하다’는 앞말의 행동이나 상태에 대한 바람이라는 의미를 나타내는 경우에는 보조 동사임을 알 수 있다. 따라서 ⓓ의 ‘한다’는 보조 동사로 보아야 한다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n원문 선지의 분류는 적절하지 않습니다.\n제시된 분류 기준에서 보조 용언 ‘않다’는 앞에 오는 본용언의 품사를 따름을 알 수 있다. 따라서 ⓐ의 ‘않겠다’는  보조 형용사로, ⓒ의 ‘않았다’는 보조 동사로 보아야 한다. 제시된 분류 기준에서 보조 용언 ‘보다’가 어떤 일을 경험한다는 의미를 나타내는 경우에는 보조 동사이고, 앞말이 뜻하는 행동이나 상태에 대한 걱정이라는 의미를 나타내는 경우에는 보조 형용사임을 알 수 있다. 따라서 ⓑ의 ‘봐’는 보조 형용사로, ⓔ의 ‘보지’는 보조 동사로 보아야 한다. 제시된 분류 기준에서 보조 용언 ‘하다’는 앞말의 행동이나 상태에 대한 바람이라는 의미를 나타내는 경우에는 보조 동사임을 알 수 있다. 따라서 ⓓ의 ‘한다’는 보조 동사로 보아야 한다."
     ],
-    "src": "2019 11월 전국연합 고2"
+    "src": "2019 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-023",
@@ -5562,7 +5794,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n원문 선지의 분류는 적절하지 않습니다.\n제시된 분류 기준에서 보조 용언 ‘않다’는 앞에 오는 본용언의 품사를 따름을 알 수 있다. 따라서 ⓐ의 ‘않겠다’는  보조 형용사로, ⓒ의 ‘않았다’는 보조 동사로 보아야 한다. 제시된 분류 기준에서 보조 용언 ‘보다’가 어떤 일을 경험한다는 의미를 나타내는 경우에는 보조 동사이고, 앞말이 뜻하는 행동이나 상태에 대한 걱정이라는 의미를 나타내는 경우에는 보조 형용사임을 알 수 있다. 따라서 ⓑ의 ‘봐’는 보조 형용사로, ⓔ의 ‘보지’는 보조 동사로 보아야 한다. 제시된 분류 기준에서 보조 용언 ‘하다’는 앞말의 행동이나 상태에 대한 바람이라는 의미를 나타내는 경우에는 보조 동사임을 알 수 있다. 따라서 ⓓ의 ‘한다’는 보조 동사로 보아야 한다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n원문 선지의 분류는 적절하지 않습니다.\n제시된 분류 기준에서 보조 용언 ‘않다’는 앞에 오는 본용언의 품사를 따름을 알 수 있다. 따라서 ⓐ의 ‘않겠다’는  보조 형용사로, ⓒ의 ‘않았다’는 보조 동사로 보아야 한다. 제시된 분류 기준에서 보조 용언 ‘보다’가 어떤 일을 경험한다는 의미를 나타내는 경우에는 보조 동사이고, 앞말이 뜻하는 행동이나 상태에 대한 걱정이라는 의미를 나타내는 경우에는 보조 형용사임을 알 수 있다. 따라서 ⓑ의 ‘봐’는 보조 형용사로, ⓔ의 ‘보지’는 보조 동사로 보아야 한다. 제시된 분류 기준에서 보조 용언 ‘하다’는 앞말의 행동이나 상태에 대한 바람이라는 의미를 나타내는 경우에는 보조 동사임을 알 수 있다. 따라서 ⓓ의 ‘한다’는 보조 동사로 보아야 한다."
     ],
-    "src": "2019 11월 전국연합 고2"
+    "src": "2019 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-024",
@@ -5582,7 +5815,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n원문 선지의 분류는 적절하지 않습니다.\n제시된 분류 기준에서 보조 용언 ‘않다’는 앞에 오는 본용언의 품사를 따름을 알 수 있다. 따라서 ⓐ의 ‘않겠다’는  보조 형용사로, ⓒ의 ‘않았다’는 보조 동사로 보아야 한다. 제시된 분류 기준에서 보조 용언 ‘보다’가 어떤 일을 경험한다는 의미를 나타내는 경우에는 보조 동사이고, 앞말이 뜻하는 행동이나 상태에 대한 걱정이라는 의미를 나타내는 경우에는 보조 형용사임을 알 수 있다. 따라서 ⓑ의 ‘봐’는 보조 형용사로, ⓔ의 ‘보지’는 보조 동사로 보아야 한다. 제시된 분류 기준에서 보조 용언 ‘하다’는 앞말의 행동이나 상태에 대한 바람이라는 의미를 나타내는 경우에는 보조 동사임을 알 수 있다. 따라서 ⓓ의 ‘한다’는 보조 동사로 보아야 한다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n원문 선지의 분류는 적절하지 않습니다.\n제시된 분류 기준에서 보조 용언 ‘않다’는 앞에 오는 본용언의 품사를 따름을 알 수 있다. 따라서 ⓐ의 ‘않겠다’는  보조 형용사로, ⓒ의 ‘않았다’는 보조 동사로 보아야 한다. 제시된 분류 기준에서 보조 용언 ‘보다’가 어떤 일을 경험한다는 의미를 나타내는 경우에는 보조 동사이고, 앞말이 뜻하는 행동이나 상태에 대한 걱정이라는 의미를 나타내는 경우에는 보조 형용사임을 알 수 있다. 따라서 ⓑ의 ‘봐’는 보조 형용사로, ⓔ의 ‘보지’는 보조 동사로 보아야 한다. 제시된 분류 기준에서 보조 용언 ‘하다’는 앞말의 행동이나 상태에 대한 바람이라는 의미를 나타내는 경우에는 보조 동사임을 알 수 있다. 따라서 ⓓ의 ‘한다’는 보조 동사로 보아야 한다."
     ],
-    "src": "2019 11월 전국연합 고2"
+    "src": "2019 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-025",
@@ -5602,7 +5836,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n원문 선지의 분류는 적절합니다.\n제시된 분류 기준에서 보조 용언 ‘않다’는 앞에 오는 본용언의 품사를 따름을 알 수 있다. 따라서 ⓐ의 ‘않겠다’는  보조 형용사로, ⓒ의 ‘않았다’는 보조 동사로 보아야 한다. 제시된 분류 기준에서 보조 용언 ‘보다’가 어떤 일을 경험한다는 의미를 나타내는 경우에는 보조 동사이고, 앞말이 뜻하는 행동이나 상태에 대한 걱정이라는 의미를 나타내는 경우에는 보조 형용사임을 알 수 있다. 따라서 ⓑ의 ‘봐’는 보조 형용사로, ⓔ의 ‘보지’는 보조 동사로 보아야 한다. 제시된 분류 기준에서 보조 용언 ‘하다’는 앞말의 행동이나 상태에 대한 바람이라는 의미를 나타내는 경우에는 보조 동사임을 알 수 있다. 따라서 ⓓ의 ‘한다’는 보조 동사로 보아야 한다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n원문 선지의 분류는 적절합니다.\n제시된 분류 기준에서 보조 용언 ‘않다’는 앞에 오는 본용언의 품사를 따름을 알 수 있다. 따라서 ⓐ의 ‘않겠다’는  보조 형용사로, ⓒ의 ‘않았다’는 보조 동사로 보아야 한다. 제시된 분류 기준에서 보조 용언 ‘보다’가 어떤 일을 경험한다는 의미를 나타내는 경우에는 보조 동사이고, 앞말이 뜻하는 행동이나 상태에 대한 걱정이라는 의미를 나타내는 경우에는 보조 형용사임을 알 수 있다. 따라서 ⓑ의 ‘봐’는 보조 형용사로, ⓔ의 ‘보지’는 보조 동사로 보아야 한다. 제시된 분류 기준에서 보조 용언 ‘하다’는 앞말의 행동이나 상태에 대한 바람이라는 의미를 나타내는 경우에는 보조 동사임을 알 수 있다. 따라서 ⓓ의 ‘한다’는 보조 동사로 보아야 한다."
     ],
-    "src": "2019 11월 전국연합 고2"
+    "src": "2019 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-026",
@@ -5622,7 +5857,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉮ 보조적 연결 어미 ‘-고’는 단어와 단어를 잇는 기능을 하나, ‘나무가 태풍을 못 견디고 쓰러졌다.’에서 ‘-고’는 ‘나무가 태풍을 못 견뎠다.’와 ‘나무가 쓰러졌다.’의 문장과 문장을 이어 준다. 또, ‘나무가 태풍을 못 견디고서 쓰러졌다.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 있다. 따라서 보조적 연결 어미의 쓰임으로 적절하지 않다. ① ‘그가 떠나고 말았다.’에서 ‘-고’는 본용언 ‘떠나다’에 ‘앞말이 뜻하는 행동이 끝내 실현됨’이라는 의미를 지닌 보조 용언 ‘말다’를 이어 주는 기능을 한다. 또, ‘그가 떠나고서 말았다.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ② ‘자꾸 따지고 들지 마라.’에서 ‘-고’는 본용언 ‘따지다’에 ‘앞말이 뜻하는 행동을 거칠고 다그치듯이 함’이라는 의미를 지닌 보조 용언 ‘들다’를 이어 주는 기능을 한다. 또, ‘자꾸 따지고서 들지 마라.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ③ ‘너 아직도 울고 있구나.’에서 ‘-고’는 본용언 ‘울다’에 ‘앞말이 뜻하는 행동이 계속 진행됨’이라는 의미를 지닌 보조 용언 ‘있다’를 이어 주는 기능을 한다. 또, ‘너 아직도 울고서 있구나.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ④ ‘빨리 숙제부터 하고 나서 놀아라.’에서 ‘-고’는 본용언 ‘하다’에 ‘앞말이 뜻하는 행동이 끝났음’이라는 의미를 지닌 보조 용언 ‘나다’를 이어 주는 기능을 한다. 또, ‘빨리 숙제부터 하고서 나서 놀아라.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉮ 보조적 연결 어미 ‘-고’는 단어와 단어를 잇는 기능을 하나, ‘나무가 태풍을 못 견디고 쓰러졌다.’에서 ‘-고’는 ‘나무가 태풍을 못 견뎠다.’와 ‘나무가 쓰러졌다.’의 문장과 문장을 이어 준다. 또, ‘나무가 태풍을 못 견디고서 쓰러졌다.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 있다. 따라서 보조적 연결 어미의 쓰임으로 적절하지 않다. ① ‘그가 떠나고 말았다.’에서 ‘-고’는 본용언 ‘떠나다’에 ‘앞말이 뜻하는 행동이 끝내 실현됨’이라는 의미를 지닌 보조 용언 ‘말다’를 이어 주는 기능을 한다. 또, ‘그가 떠나고서 말았다.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ② ‘자꾸 따지고 들지 마라.’에서 ‘-고’는 본용언 ‘따지다’에 ‘앞말이 뜻하는 행동을 거칠고 다그치듯이 함’이라는 의미를 지닌 보조 용언 ‘들다’를 이어 주는 기능을 한다. 또, ‘자꾸 따지고서 들지 마라.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ③ ‘너 아직도 울고 있구나.’에서 ‘-고’는 본용언 ‘울다’에 ‘앞말이 뜻하는 행동이 계속 진행됨’이라는 의미를 지닌 보조 용언 ‘있다’를 이어 주는 기능을 한다. 또, ‘너 아직도 울고서 있구나.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ④ ‘빨리 숙제부터 하고 나서 놀아라.’에서 ‘-고’는 본용언 ‘하다’에 ‘앞말이 뜻하는 행동이 끝났음’이라는 의미를 지닌 보조 용언 ‘나다’를 이어 주는 기능을 한다. 또, ‘빨리 숙제부터 하고서 나서 놀아라.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다."
     ],
-    "src": "2024 10월 전국연합 고2"
+    "src": "2024 10월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-027",
@@ -5642,7 +5878,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉮ 보조적 연결 어미 ‘-고’는 단어와 단어를 잇는 기능을 하나, ‘나무가 태풍을 못 견디고 쓰러졌다.’에서 ‘-고’는 ‘나무가 태풍을 못 견뎠다.’와 ‘나무가 쓰러졌다.’의 문장과 문장을 이어 준다. 또, ‘나무가 태풍을 못 견디고서 쓰러졌다.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 있다. 따라서 보조적 연결 어미의 쓰임으로 적절하지 않다. ① ‘그가 떠나고 말았다.’에서 ‘-고’는 본용언 ‘떠나다’에 ‘앞말이 뜻하는 행동이 끝내 실현됨’이라는 의미를 지닌 보조 용언 ‘말다’를 이어 주는 기능을 한다. 또, ‘그가 떠나고서 말았다.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ② ‘자꾸 따지고 들지 마라.’에서 ‘-고’는 본용언 ‘따지다’에 ‘앞말이 뜻하는 행동을 거칠고 다그치듯이 함’이라는 의미를 지닌 보조 용언 ‘들다’를 이어 주는 기능을 한다. 또, ‘자꾸 따지고서 들지 마라.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ③ ‘너 아직도 울고 있구나.’에서 ‘-고’는 본용언 ‘울다’에 ‘앞말이 뜻하는 행동이 계속 진행됨’이라는 의미를 지닌 보조 용언 ‘있다’를 이어 주는 기능을 한다. 또, ‘너 아직도 울고서 있구나.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ④ ‘빨리 숙제부터 하고 나서 놀아라.’에서 ‘-고’는 본용언 ‘하다’에 ‘앞말이 뜻하는 행동이 끝났음’이라는 의미를 지닌 보조 용언 ‘나다’를 이어 주는 기능을 한다. 또, ‘빨리 숙제부터 하고서 나서 놀아라.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉮ 보조적 연결 어미 ‘-고’는 단어와 단어를 잇는 기능을 하나, ‘나무가 태풍을 못 견디고 쓰러졌다.’에서 ‘-고’는 ‘나무가 태풍을 못 견뎠다.’와 ‘나무가 쓰러졌다.’의 문장과 문장을 이어 준다. 또, ‘나무가 태풍을 못 견디고서 쓰러졌다.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 있다. 따라서 보조적 연결 어미의 쓰임으로 적절하지 않다. ① ‘그가 떠나고 말았다.’에서 ‘-고’는 본용언 ‘떠나다’에 ‘앞말이 뜻하는 행동이 끝내 실현됨’이라는 의미를 지닌 보조 용언 ‘말다’를 이어 주는 기능을 한다. 또, ‘그가 떠나고서 말았다.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ② ‘자꾸 따지고 들지 마라.’에서 ‘-고’는 본용언 ‘따지다’에 ‘앞말이 뜻하는 행동을 거칠고 다그치듯이 함’이라는 의미를 지닌 보조 용언 ‘들다’를 이어 주는 기능을 한다. 또, ‘자꾸 따지고서 들지 마라.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ③ ‘너 아직도 울고 있구나.’에서 ‘-고’는 본용언 ‘울다’에 ‘앞말이 뜻하는 행동이 계속 진행됨’이라는 의미를 지닌 보조 용언 ‘있다’를 이어 주는 기능을 한다. 또, ‘너 아직도 울고서 있구나.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ④ ‘빨리 숙제부터 하고 나서 놀아라.’에서 ‘-고’는 본용언 ‘하다’에 ‘앞말이 뜻하는 행동이 끝났음’이라는 의미를 지닌 보조 용언 ‘나다’를 이어 주는 기능을 한다. 또, ‘빨리 숙제부터 하고서 나서 놀아라.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다."
     ],
-    "src": "2024 10월 전국연합 고2"
+    "src": "2024 10월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-028",
@@ -5662,7 +5899,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉮ 보조적 연결 어미 ‘-고’는 단어와 단어를 잇는 기능을 하나, ‘나무가 태풍을 못 견디고 쓰러졌다.’에서 ‘-고’는 ‘나무가 태풍을 못 견뎠다.’와 ‘나무가 쓰러졌다.’의 문장과 문장을 이어 준다. 또, ‘나무가 태풍을 못 견디고서 쓰러졌다.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 있다. 따라서 보조적 연결 어미의 쓰임으로 적절하지 않다. ① ‘그가 떠나고 말았다.’에서 ‘-고’는 본용언 ‘떠나다’에 ‘앞말이 뜻하는 행동이 끝내 실현됨’이라는 의미를 지닌 보조 용언 ‘말다’를 이어 주는 기능을 한다. 또, ‘그가 떠나고서 말았다.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ② ‘자꾸 따지고 들지 마라.’에서 ‘-고’는 본용언 ‘따지다’에 ‘앞말이 뜻하는 행동을 거칠고 다그치듯이 함’이라는 의미를 지닌 보조 용언 ‘들다’를 이어 주는 기능을 한다. 또, ‘자꾸 따지고서 들지 마라.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ③ ‘너 아직도 울고 있구나.’에서 ‘-고’는 본용언 ‘울다’에 ‘앞말이 뜻하는 행동이 계속 진행됨’이라는 의미를 지닌 보조 용언 ‘있다’를 이어 주는 기능을 한다. 또, ‘너 아직도 울고서 있구나.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ④ ‘빨리 숙제부터 하고 나서 놀아라.’에서 ‘-고’는 본용언 ‘하다’에 ‘앞말이 뜻하는 행동이 끝났음’이라는 의미를 지닌 보조 용언 ‘나다’를 이어 주는 기능을 한다. 또, ‘빨리 숙제부터 하고서 나서 놀아라.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉮ 보조적 연결 어미 ‘-고’는 단어와 단어를 잇는 기능을 하나, ‘나무가 태풍을 못 견디고 쓰러졌다.’에서 ‘-고’는 ‘나무가 태풍을 못 견뎠다.’와 ‘나무가 쓰러졌다.’의 문장과 문장을 이어 준다. 또, ‘나무가 태풍을 못 견디고서 쓰러졌다.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 있다. 따라서 보조적 연결 어미의 쓰임으로 적절하지 않다. ① ‘그가 떠나고 말았다.’에서 ‘-고’는 본용언 ‘떠나다’에 ‘앞말이 뜻하는 행동이 끝내 실현됨’이라는 의미를 지닌 보조 용언 ‘말다’를 이어 주는 기능을 한다. 또, ‘그가 떠나고서 말았다.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ② ‘자꾸 따지고 들지 마라.’에서 ‘-고’는 본용언 ‘따지다’에 ‘앞말이 뜻하는 행동을 거칠고 다그치듯이 함’이라는 의미를 지닌 보조 용언 ‘들다’를 이어 주는 기능을 한다. 또, ‘자꾸 따지고서 들지 마라.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ③ ‘너 아직도 울고 있구나.’에서 ‘-고’는 본용언 ‘울다’에 ‘앞말이 뜻하는 행동이 계속 진행됨’이라는 의미를 지닌 보조 용언 ‘있다’를 이어 주는 기능을 한다. 또, ‘너 아직도 울고서 있구나.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ④ ‘빨리 숙제부터 하고 나서 놀아라.’에서 ‘-고’는 본용언 ‘하다’에 ‘앞말이 뜻하는 행동이 끝났음’이라는 의미를 지닌 보조 용언 ‘나다’를 이어 주는 기능을 한다. 또, ‘빨리 숙제부터 하고서 나서 놀아라.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다."
     ],
-    "src": "2024 10월 전국연합 고2"
+    "src": "2024 10월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-029",
@@ -5682,7 +5920,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉮ 보조적 연결 어미 ‘-고’는 단어와 단어를 잇는 기능을 하나, ‘나무가 태풍을 못 견디고 쓰러졌다.’에서 ‘-고’는 ‘나무가 태풍을 못 견뎠다.’와 ‘나무가 쓰러졌다.’의 문장과 문장을 이어 준다. 또, ‘나무가 태풍을 못 견디고서 쓰러졌다.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 있다. 따라서 보조적 연결 어미의 쓰임으로 적절하지 않다. ① ‘그가 떠나고 말았다.’에서 ‘-고’는 본용언 ‘떠나다’에 ‘앞말이 뜻하는 행동이 끝내 실현됨’이라는 의미를 지닌 보조 용언 ‘말다’를 이어 주는 기능을 한다. 또, ‘그가 떠나고서 말았다.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ② ‘자꾸 따지고 들지 마라.’에서 ‘-고’는 본용언 ‘따지다’에 ‘앞말이 뜻하는 행동을 거칠고 다그치듯이 함’이라는 의미를 지닌 보조 용언 ‘들다’를 이어 주는 기능을 한다. 또, ‘자꾸 따지고서 들지 마라.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ③ ‘너 아직도 울고 있구나.’에서 ‘-고’는 본용언 ‘울다’에 ‘앞말이 뜻하는 행동이 계속 진행됨’이라는 의미를 지닌 보조 용언 ‘있다’를 이어 주는 기능을 한다. 또, ‘너 아직도 울고서 있구나.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ④ ‘빨리 숙제부터 하고 나서 놀아라.’에서 ‘-고’는 본용언 ‘하다’에 ‘앞말이 뜻하는 행동이 끝났음’이라는 의미를 지닌 보조 용언 ‘나다’를 이어 주는 기능을 한다. 또, ‘빨리 숙제부터 하고서 나서 놀아라.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉮ 보조적 연결 어미 ‘-고’는 단어와 단어를 잇는 기능을 하나, ‘나무가 태풍을 못 견디고 쓰러졌다.’에서 ‘-고’는 ‘나무가 태풍을 못 견뎠다.’와 ‘나무가 쓰러졌다.’의 문장과 문장을 이어 준다. 또, ‘나무가 태풍을 못 견디고서 쓰러졌다.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 있다. 따라서 보조적 연결 어미의 쓰임으로 적절하지 않다. ① ‘그가 떠나고 말았다.’에서 ‘-고’는 본용언 ‘떠나다’에 ‘앞말이 뜻하는 행동이 끝내 실현됨’이라는 의미를 지닌 보조 용언 ‘말다’를 이어 주는 기능을 한다. 또, ‘그가 떠나고서 말았다.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ② ‘자꾸 따지고 들지 마라.’에서 ‘-고’는 본용언 ‘따지다’에 ‘앞말이 뜻하는 행동을 거칠고 다그치듯이 함’이라는 의미를 지닌 보조 용언 ‘들다’를 이어 주는 기능을 한다. 또, ‘자꾸 따지고서 들지 마라.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ③ ‘너 아직도 울고 있구나.’에서 ‘-고’는 본용언 ‘울다’에 ‘앞말이 뜻하는 행동이 계속 진행됨’이라는 의미를 지닌 보조 용언 ‘있다’를 이어 주는 기능을 한다. 또, ‘너 아직도 울고서 있구나.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ④ ‘빨리 숙제부터 하고 나서 놀아라.’에서 ‘-고’는 본용언 ‘하다’에 ‘앞말이 뜻하는 행동이 끝났음’이라는 의미를 지닌 보조 용언 ‘나다’를 이어 주는 기능을 한다. 또, ‘빨리 숙제부터 하고서 나서 놀아라.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다."
     ],
-    "src": "2024 10월 전국연합 고2"
+    "src": "2024 10월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-parts-030",
@@ -5702,7 +5941,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉮ 보조적 연결 어미 ‘-고’는 단어와 단어를 잇는 기능을 하나, ‘나무가 태풍을 못 견디고 쓰러졌다.’에서 ‘-고’는 ‘나무가 태풍을 못 견뎠다.’와 ‘나무가 쓰러졌다.’의 문장과 문장을 이어 준다. 또, ‘나무가 태풍을 못 견디고서 쓰러졌다.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 있다. 따라서 보조적 연결 어미의 쓰임으로 적절하지 않다. ① ‘그가 떠나고 말았다.’에서 ‘-고’는 본용언 ‘떠나다’에 ‘앞말이 뜻하는 행동이 끝내 실현됨’이라는 의미를 지닌 보조 용언 ‘말다’를 이어 주는 기능을 한다. 또, ‘그가 떠나고서 말았다.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ② ‘자꾸 따지고 들지 마라.’에서 ‘-고’는 본용언 ‘따지다’에 ‘앞말이 뜻하는 행동을 거칠고 다그치듯이 함’이라는 의미를 지닌 보조 용언 ‘들다’를 이어 주는 기능을 한다. 또, ‘자꾸 따지고서 들지 마라.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ③ ‘너 아직도 울고 있구나.’에서 ‘-고’는 본용언 ‘울다’에 ‘앞말이 뜻하는 행동이 계속 진행됨’이라는 의미를 지닌 보조 용언 ‘있다’를 이어 주는 기능을 한다. 또, ‘너 아직도 울고서 있구나.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ④ ‘빨리 숙제부터 하고 나서 놀아라.’에서 ‘-고’는 본용언 ‘하다’에 ‘앞말이 뜻하는 행동이 끝났음’이라는 의미를 지닌 보조 용언 ‘나다’를 이어 주는 기능을 한다. 또, ‘빨리 숙제부터 하고서 나서 놀아라.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉮ 보조적 연결 어미 ‘-고’는 단어와 단어를 잇는 기능을 하나, ‘나무가 태풍을 못 견디고 쓰러졌다.’에서 ‘-고’는 ‘나무가 태풍을 못 견뎠다.’와 ‘나무가 쓰러졌다.’의 문장과 문장을 이어 준다. 또, ‘나무가 태풍을 못 견디고서 쓰러졌다.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 있다. 따라서 보조적 연결 어미의 쓰임으로 적절하지 않다. ① ‘그가 떠나고 말았다.’에서 ‘-고’는 본용언 ‘떠나다’에 ‘앞말이 뜻하는 행동이 끝내 실현됨’이라는 의미를 지닌 보조 용언 ‘말다’를 이어 주는 기능을 한다. 또, ‘그가 떠나고서 말았다.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ② ‘자꾸 따지고 들지 마라.’에서 ‘-고’는 본용언 ‘따지다’에 ‘앞말이 뜻하는 행동을 거칠고 다그치듯이 함’이라는 의미를 지닌 보조 용언 ‘들다’를 이어 주는 기능을 한다. 또, ‘자꾸 따지고서 들지 마라.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ③ ‘너 아직도 울고 있구나.’에서 ‘-고’는 본용언 ‘울다’에 ‘앞말이 뜻하는 행동이 계속 진행됨’이라는 의미를 지닌 보조 용언 ‘있다’를 이어 주는 기능을 한다. 또, ‘너 아직도 울고서 있구나.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다. ④ ‘빨리 숙제부터 하고 나서 놀아라.’에서 ‘-고’는 본용언 ‘하다’에 ‘앞말이 뜻하는 행동이 끝났음’이라는 의미를 지닌 보조 용언 ‘나다’를 이어 주는 기능을 한다. 또, ‘빨리 숙제부터 하고서 나서 놀아라.’와 같이 ‘-고’ 뒤에 ‘-서’가 붙을 수 없으므로 ‘-고’는 보조적 연결 어미로 적절하다."
     ],
-    "src": "2024 10월 전국연합 고2"
+    "src": "2024 10월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-001",
@@ -5722,7 +5962,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n겹문장은 절과 절이 이어지거나 절이 전체 문장의 한 성분으로 안기면서 이루어진다. (나)와 (다)에서 ㉢과 ㉤은 전체 문장의 관형어와 목적어 기능을 하며 안기어 있다. (가)는 ㉠과 ㉡의 절이 이어져 이루어진 겹문장이다.\n[오답풀이] ① ㉠은 ㉡에 대하여 ‘조건’의 의미를 갖는다. 따라서 두 절의 위치를 바꾸면 의미가 달라진다.\n② ㉢은 관형절로 ‘마을’을 꾸며 주는 역할을 한다.\n③ ㉤은 명사절로 전체 문장의 목적어 역할을 한다. 따라서 목적어가 생략될 경우 전체 문장의 의미는 불완전해진다.\n⑤ (가)~(다)는 모두 ‘주어+서술어’의 관계가 문장 속에 두 번씩 나타나고 있는 겹문장이다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n겹문장은 절과 절이 이어지거나 절이 전체 문장의 한 성분으로 안기면서 이루어진다. (나)와 (다)에서 ㉢과 ㉤은 전체 문장의 관형어와 목적어 기능을 하며 안기어 있다. (가)는 ㉠과 ㉡의 절이 이어져 이루어진 겹문장이다.\n[오답풀이] ① ㉠은 ㉡에 대하여 ‘조건’의 의미를 갖는다. 따라서 두 절의 위치를 바꾸면 의미가 달라진다.\n② ㉢은 관형절로 ‘마을’을 꾸며 주는 역할을 한다.\n③ ㉤은 명사절로 전체 문장의 목적어 역할을 한다. 따라서 목적어가 생략될 경우 전체 문장의 의미는 불완전해진다.\n⑤ (가)~(다)는 모두 ‘주어+서술어’의 관계가 문장 속에 두 번씩 나타나고 있는 겹문장이다."
     ],
-    "src": "2018 6월 전국연합 고2"
+    "src": "2018 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-002",
@@ -5742,7 +5983,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n겹문장은 절과 절이 이어지거나 절이 전체 문장의 한 성분으로 안기면서 이루어진다. (나)와 (다)에서 ㉢과 ㉤은 전체 문장의 관형어와 목적어 기능을 하며 안기어 있다. (가)는 ㉠과 ㉡의 절이 이어져 이루어진 겹문장이다.\n[오답풀이] ① ㉠은 ㉡에 대하여 ‘조건’의 의미를 갖는다. 따라서 두 절의 위치를 바꾸면 의미가 달라진다.\n② ㉢은 관형절로 ‘마을’을 꾸며 주는 역할을 한다.\n③ ㉤은 명사절로 전체 문장의 목적어 역할을 한다. 따라서 목적어가 생략될 경우 전체 문장의 의미는 불완전해진다.\n⑤ (가)~(다)는 모두 ‘주어+서술어’의 관계가 문장 속에 두 번씩 나타나고 있는 겹문장이다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n겹문장은 절과 절이 이어지거나 절이 전체 문장의 한 성분으로 안기면서 이루어진다. (나)와 (다)에서 ㉢과 ㉤은 전체 문장의 관형어와 목적어 기능을 하며 안기어 있다. (가)는 ㉠과 ㉡의 절이 이어져 이루어진 겹문장이다.\n[오답풀이] ① ㉠은 ㉡에 대하여 ‘조건’의 의미를 갖는다. 따라서 두 절의 위치를 바꾸면 의미가 달라진다.\n② ㉢은 관형절로 ‘마을’을 꾸며 주는 역할을 한다.\n③ ㉤은 명사절로 전체 문장의 목적어 역할을 한다. 따라서 목적어가 생략될 경우 전체 문장의 의미는 불완전해진다.\n⑤ (가)~(다)는 모두 ‘주어+서술어’의 관계가 문장 속에 두 번씩 나타나고 있는 겹문장이다."
     ],
-    "src": "2018 6월 전국연합 고2"
+    "src": "2018 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-003",
@@ -5762,7 +6004,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n겹문장은 절과 절이 이어지거나 절이 전체 문장의 한 성분으로 안기면서 이루어진다. (나)와 (다)에서 ㉢과 ㉤은 전체 문장의 관형어와 목적어 기능을 하며 안기어 있다. (가)는 ㉠과 ㉡의 절이 이어져 이루어진 겹문장이다.\n[오답풀이] ① ㉠은 ㉡에 대하여 ‘조건’의 의미를 갖는다. 따라서 두 절의 위치를 바꾸면 의미가 달라진다.\n② ㉢은 관형절로 ‘마을’을 꾸며 주는 역할을 한다.\n③ ㉤은 명사절로 전체 문장의 목적어 역할을 한다. 따라서 목적어가 생략될 경우 전체 문장의 의미는 불완전해진다.\n⑤ (가)~(다)는 모두 ‘주어+서술어’의 관계가 문장 속에 두 번씩 나타나고 있는 겹문장이다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n겹문장은 절과 절이 이어지거나 절이 전체 문장의 한 성분으로 안기면서 이루어진다. (나)와 (다)에서 ㉢과 ㉤은 전체 문장의 관형어와 목적어 기능을 하며 안기어 있다. (가)는 ㉠과 ㉡의 절이 이어져 이루어진 겹문장이다.\n[오답풀이] ① ㉠은 ㉡에 대하여 ‘조건’의 의미를 갖는다. 따라서 두 절의 위치를 바꾸면 의미가 달라진다.\n② ㉢은 관형절로 ‘마을’을 꾸며 주는 역할을 한다.\n③ ㉤은 명사절로 전체 문장의 목적어 역할을 한다. 따라서 목적어가 생략될 경우 전체 문장의 의미는 불완전해진다.\n⑤ (가)~(다)는 모두 ‘주어+서술어’의 관계가 문장 속에 두 번씩 나타나고 있는 겹문장이다."
     ],
-    "src": "2018 6월 전국연합 고2"
+    "src": "2018 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-004",
@@ -5782,7 +6025,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n겹문장은 절과 절이 이어지거나 절이 전체 문장의 한 성분으로 안기면서 이루어진다. (나)와 (다)에서 ㉢과 ㉤은 전체 문장의 관형어와 목적어 기능을 하며 안기어 있다. (가)는 ㉠과 ㉡의 절이 이어져 이루어진 겹문장이다.\n[오답풀이] ① ㉠은 ㉡에 대하여 ‘조건’의 의미를 갖는다. 따라서 두 절의 위치를 바꾸면 의미가 달라진다.\n② ㉢은 관형절로 ‘마을’을 꾸며 주는 역할을 한다.\n③ ㉤은 명사절로 전체 문장의 목적어 역할을 한다. 따라서 목적어가 생략될 경우 전체 문장의 의미는 불완전해진다.\n⑤ (가)~(다)는 모두 ‘주어+서술어’의 관계가 문장 속에 두 번씩 나타나고 있는 겹문장이다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n겹문장은 절과 절이 이어지거나 절이 전체 문장의 한 성분으로 안기면서 이루어진다. (나)와 (다)에서 ㉢과 ㉤은 전체 문장의 관형어와 목적어 기능을 하며 안기어 있다. (가)는 ㉠과 ㉡의 절이 이어져 이루어진 겹문장이다.\n[오답풀이] ① ㉠은 ㉡에 대하여 ‘조건’의 의미를 갖는다. 따라서 두 절의 위치를 바꾸면 의미가 달라진다.\n② ㉢은 관형절로 ‘마을’을 꾸며 주는 역할을 한다.\n③ ㉤은 명사절로 전체 문장의 목적어 역할을 한다. 따라서 목적어가 생략될 경우 전체 문장의 의미는 불완전해진다.\n⑤ (가)~(다)는 모두 ‘주어+서술어’의 관계가 문장 속에 두 번씩 나타나고 있는 겹문장이다."
     ],
-    "src": "2018 6월 전국연합 고2"
+    "src": "2018 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-005",
@@ -5802,7 +6046,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n겹문장은 절과 절이 이어지거나 절이 전체 문장의 한 성분으로 안기면서 이루어진다. (나)와 (다)에서 ㉢과 ㉤은 전체 문장의 관형어와 목적어 기능을 하며 안기어 있다. (가)는 ㉠과 ㉡의 절이 이어져 이루어진 겹문장이다.\n[오답풀이] ① ㉠은 ㉡에 대하여 ‘조건’의 의미를 갖는다. 따라서 두 절의 위치를 바꾸면 의미가 달라진다.\n② ㉢은 관형절로 ‘마을’을 꾸며 주는 역할을 한다.\n③ ㉤은 명사절로 전체 문장의 목적어 역할을 한다. 따라서 목적어가 생략될 경우 전체 문장의 의미는 불완전해진다.\n⑤ (가)~(다)는 모두 ‘주어+서술어’의 관계가 문장 속에 두 번씩 나타나고 있는 겹문장이다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n겹문장은 절과 절이 이어지거나 절이 전체 문장의 한 성분으로 안기면서 이루어진다. (나)와 (다)에서 ㉢과 ㉤은 전체 문장의 관형어와 목적어 기능을 하며 안기어 있다. (가)는 ㉠과 ㉡의 절이 이어져 이루어진 겹문장이다.\n[오답풀이] ① ㉠은 ㉡에 대하여 ‘조건’의 의미를 갖는다. 따라서 두 절의 위치를 바꾸면 의미가 달라진다.\n② ㉢은 관형절로 ‘마을’을 꾸며 주는 역할을 한다.\n③ ㉤은 명사절로 전체 문장의 목적어 역할을 한다. 따라서 목적어가 생략될 경우 전체 문장의 의미는 불완전해진다.\n⑤ (가)~(다)는 모두 ‘주어+서술어’의 관계가 문장 속에 두 번씩 나타나고 있는 겹문장이다."
     ],
-    "src": "2018 6월 전국연합 고2"
+    "src": "2018 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-006",
@@ -5822,7 +6067,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠ ‘누나가 주인임이 밝혀졌다.’에서 ‘누나가 주인임’은 명사절이고 안은문장 안에서 주어의 기능을 한다. ㉡ ‘삼촌은 농담을 던짐으로써 분위기를 풀었다.’에서 ‘(삼촌이) 농담을 던짐’은 명사절이고 안은문장 안에서 부사어의 기능을 한다. ㉢ ‘형은 동생이 고향으로 돌아오기만 기다렸다.’에서 ‘동생이 고향으로 돌아오기’는 명사절이고 안은문장 안에서 목적어의 기능을 한다.\n㉠~㉢의 안긴문장은 모두 명사절로 종류는 동일하다. ㉠의 안긴문장은 주어, ㉡의 안긴문장은 부사어, ㉢의 안긴문장은 목적어로 안은문장 안에서 각각 다른 기능을 한다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠ ‘누나가 주인임이 밝혀졌다.’에서 ‘누나가 주인임’은 명사절이고 안은문장 안에서 주어의 기능을 한다. ㉡ ‘삼촌은 농담을 던짐으로써 분위기를 풀었다.’에서 ‘(삼촌이) 농담을 던짐’은 명사절이고 안은문장 안에서 부사어의 기능을 한다. ㉢ ‘형은 동생이 고향으로 돌아오기만 기다렸다.’에서 ‘동생이 고향으로 돌아오기’는 명사절이고 안은문장 안에서 목적어의 기능을 한다.\n㉠~㉢의 안긴문장은 모두 명사절로 종류는 동일하다. ㉠의 안긴문장은 주어, ㉡의 안긴문장은 부사어, ㉢의 안긴문장은 목적어로 안은문장 안에서 각각 다른 기능을 한다."
     ],
-    "src": "2020 9월 전국연합 고2"
+    "src": "2020 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-007",
@@ -5842,7 +6088,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠ ‘누나가 주인임이 밝혀졌다.’에서 ‘누나가 주인임’은 명사절이고 안은문장 안에서 주어의 기능을 한다. ㉡ ‘삼촌은 농담을 던짐으로써 분위기를 풀었다.’에서 ‘(삼촌이) 농담을 던짐’은 명사절이고 안은문장 안에서 부사어의 기능을 한다. ㉢ ‘형은 동생이 고향으로 돌아오기만 기다렸다.’에서 ‘동생이 고향으로 돌아오기’는 명사절이고 안은문장 안에서 목적어의 기능을 한다.\n㉠~㉢의 안긴문장은 모두 명사절로 종류는 동일하다. ㉠의 안긴문장은 주어, ㉡의 안긴문장은 부사어, ㉢의 안긴문장은 목적어로 안은문장 안에서 각각 다른 기능을 한다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠ ‘누나가 주인임이 밝혀졌다.’에서 ‘누나가 주인임’은 명사절이고 안은문장 안에서 주어의 기능을 한다. ㉡ ‘삼촌은 농담을 던짐으로써 분위기를 풀었다.’에서 ‘(삼촌이) 농담을 던짐’은 명사절이고 안은문장 안에서 부사어의 기능을 한다. ㉢ ‘형은 동생이 고향으로 돌아오기만 기다렸다.’에서 ‘동생이 고향으로 돌아오기’는 명사절이고 안은문장 안에서 목적어의 기능을 한다.\n㉠~㉢의 안긴문장은 모두 명사절로 종류는 동일하다. ㉠의 안긴문장은 주어, ㉡의 안긴문장은 부사어, ㉢의 안긴문장은 목적어로 안은문장 안에서 각각 다른 기능을 한다."
     ],
-    "src": "2020 9월 전국연합 고2"
+    "src": "2020 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-008",
@@ -5862,7 +6109,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠ ‘누나가 주인임이 밝혀졌다.’에서 ‘누나가 주인임’은 명사절이고 안은문장 안에서 주어의 기능을 한다. ㉡ ‘삼촌은 농담을 던짐으로써 분위기를 풀었다.’에서 ‘(삼촌이) 농담을 던짐’은 명사절이고 안은문장 안에서 부사어의 기능을 한다. ㉢ ‘형은 동생이 고향으로 돌아오기만 기다렸다.’에서 ‘동생이 고향으로 돌아오기’는 명사절이고 안은문장 안에서 목적어의 기능을 한다.\n㉠~㉢의 안긴문장은 모두 명사절로 종류는 동일하다. ㉠의 안긴문장은 주어, ㉡의 안긴문장은 부사어, ㉢의 안긴문장은 목적어로 안은문장 안에서 각각 다른 기능을 한다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠ ‘누나가 주인임이 밝혀졌다.’에서 ‘누나가 주인임’은 명사절이고 안은문장 안에서 주어의 기능을 한다. ㉡ ‘삼촌은 농담을 던짐으로써 분위기를 풀었다.’에서 ‘(삼촌이) 농담을 던짐’은 명사절이고 안은문장 안에서 부사어의 기능을 한다. ㉢ ‘형은 동생이 고향으로 돌아오기만 기다렸다.’에서 ‘동생이 고향으로 돌아오기’는 명사절이고 안은문장 안에서 목적어의 기능을 한다.\n㉠~㉢의 안긴문장은 모두 명사절로 종류는 동일하다. ㉠의 안긴문장은 주어, ㉡의 안긴문장은 부사어, ㉢의 안긴문장은 목적어로 안은문장 안에서 각각 다른 기능을 한다."
     ],
-    "src": "2020 9월 전국연합 고2"
+    "src": "2020 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-009",
@@ -5882,7 +6130,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠ ‘누나가 주인임이 밝혀졌다.’에서 ‘누나가 주인임’은 명사절이고 안은문장 안에서 주어의 기능을 한다. ㉡ ‘삼촌은 농담을 던짐으로써 분위기를 풀었다.’에서 ‘(삼촌이) 농담을 던짐’은 명사절이고 안은문장 안에서 부사어의 기능을 한다. ㉢ ‘형은 동생이 고향으로 돌아오기만 기다렸다.’에서 ‘동생이 고향으로 돌아오기’는 명사절이고 안은문장 안에서 목적어의 기능을 한다.\n㉠~㉢의 안긴문장은 모두 명사절로 종류는 동일하다. ㉠의 안긴문장은 주어, ㉡의 안긴문장은 부사어, ㉢의 안긴문장은 목적어로 안은문장 안에서 각각 다른 기능을 한다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠ ‘누나가 주인임이 밝혀졌다.’에서 ‘누나가 주인임’은 명사절이고 안은문장 안에서 주어의 기능을 한다. ㉡ ‘삼촌은 농담을 던짐으로써 분위기를 풀었다.’에서 ‘(삼촌이) 농담을 던짐’은 명사절이고 안은문장 안에서 부사어의 기능을 한다. ㉢ ‘형은 동생이 고향으로 돌아오기만 기다렸다.’에서 ‘동생이 고향으로 돌아오기’는 명사절이고 안은문장 안에서 목적어의 기능을 한다.\n㉠~㉢의 안긴문장은 모두 명사절로 종류는 동일하다. ㉠의 안긴문장은 주어, ㉡의 안긴문장은 부사어, ㉢의 안긴문장은 목적어로 안은문장 안에서 각각 다른 기능을 한다."
     ],
-    "src": "2020 9월 전국연합 고2"
+    "src": "2020 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-010",
@@ -5902,7 +6151,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠ ‘누나가 주인임이 밝혀졌다.’에서 ‘누나가 주인임’은 명사절이고 안은문장 안에서 주어의 기능을 한다. ㉡ ‘삼촌은 농담을 던짐으로써 분위기를 풀었다.’에서 ‘(삼촌이) 농담을 던짐’은 명사절이고 안은문장 안에서 부사어의 기능을 한다. ㉢ ‘형은 동생이 고향으로 돌아오기만 기다렸다.’에서 ‘동생이 고향으로 돌아오기’는 명사절이고 안은문장 안에서 목적어의 기능을 한다.\n㉠~㉢의 안긴문장은 모두 명사절로 종류는 동일하다. ㉠의 안긴문장은 주어, ㉡의 안긴문장은 부사어, ㉢의 안긴문장은 목적어로 안은문장 안에서 각각 다른 기능을 한다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠ ‘누나가 주인임이 밝혀졌다.’에서 ‘누나가 주인임’은 명사절이고 안은문장 안에서 주어의 기능을 한다. ㉡ ‘삼촌은 농담을 던짐으로써 분위기를 풀었다.’에서 ‘(삼촌이) 농담을 던짐’은 명사절이고 안은문장 안에서 부사어의 기능을 한다. ㉢ ‘형은 동생이 고향으로 돌아오기만 기다렸다.’에서 ‘동생이 고향으로 돌아오기’는 명사절이고 안은문장 안에서 목적어의 기능을 한다.\n㉠~㉢의 안긴문장은 모두 명사절로 종류는 동일하다. ㉠의 안긴문장은 주어, ㉡의 안긴문장은 부사어, ㉢의 안긴문장은 목적어로 안은문장 안에서 각각 다른 기능을 한다."
     ],
-    "src": "2020 9월 전국연합 고2"
+    "src": "2020 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-011",
@@ -5922,7 +6172,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄴ은 안긴문장 ‘사진이 벽에 걸려 있다.’와 안은문장 ‘나는 사진을 떠올렸다.’에서 공통된 체언인 ‘사진’이 생략된 관형절을 안은 문장이라는 점에서 Ⓐ와 같은 유형이므로 적절하지 않다.\n① ㄱ은 안긴문장 ‘그가 시를 지었다.’에서 안은문장‘시는 감동적이었다.’와의 공통된 체언인 ‘시’를 생략하여 관형절 ‘그가 지은’을 만들었다는 점에서 적절하다. ③ ㄷ은 ‘그가 한국에 돌아왔다.’라는 안긴문장이 생략된 성분 없이 체언 ‘소문’을 수식하는 관형어로 쓰이고 있다는 점에서 적절하다. ④ ㄹ은 관형절인 ‘그 사람이 나를 속일’이 문장의 필수 성분을 모두 갖추고 있다는 점에서 적절하다. ⑤ ㅁ은 안긴문장 ‘땀이 이마에 흘렀다.’와 안은문장 ‘나는 수건으로 땀을 닦았다.’의 공통된 체언인 ‘땀’이 관형절 ‘이마에 흐르는’에서 생략되어 있다는 점에서 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄴ은 안긴문장 ‘사진이 벽에 걸려 있다.’와 안은문장 ‘나는 사진을 떠올렸다.’에서 공통된 체언인 ‘사진’이 생략된 관형절을 안은 문장이라는 점에서 Ⓐ와 같은 유형이므로 적절하지 않다.\n① ㄱ은 안긴문장 ‘그가 시를 지었다.’에서 안은문장‘시는 감동적이었다.’와의 공통된 체언인 ‘시’를 생략하여 관형절 ‘그가 지은’을 만들었다는 점에서 적절하다. ③ ㄷ은 ‘그가 한국에 돌아왔다.’라는 안긴문장이 생략된 성분 없이 체언 ‘소문’을 수식하는 관형어로 쓰이고 있다는 점에서 적절하다. ④ ㄹ은 관형절인 ‘그 사람이 나를 속일’이 문장의 필수 성분을 모두 갖추고 있다는 점에서 적절하다. ⑤ ㅁ은 안긴문장 ‘땀이 이마에 흘렀다.’와 안은문장 ‘나는 수건으로 땀을 닦았다.’의 공통된 체언인 ‘땀’이 관형절 ‘이마에 흐르는’에서 생략되어 있다는 점에서 적절하다."
     ],
-    "src": "2020 11월 전국연합 고2"
+    "src": "2020 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-012",
@@ -5942,7 +6193,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄴ은 안긴문장 ‘사진이 벽에 걸려 있다.’와 안은문장 ‘나는 사진을 떠올렸다.’에서 공통된 체언인 ‘사진’이 생략된 관형절을 안은 문장이라는 점에서 Ⓐ와 같은 유형이므로 적절하지 않다.\n① ㄱ은 안긴문장 ‘그가 시를 지었다.’에서 안은문장‘시는 감동적이었다.’와의 공통된 체언인 ‘시’를 생략하여 관형절 ‘그가 지은’을 만들었다는 점에서 적절하다. ③ ㄷ은 ‘그가 한국에 돌아왔다.’라는 안긴문장이 생략된 성분 없이 체언 ‘소문’을 수식하는 관형어로 쓰이고 있다는 점에서 적절하다. ④ ㄹ은 관형절인 ‘그 사람이 나를 속일’이 문장의 필수 성분을 모두 갖추고 있다는 점에서 적절하다. ⑤ ㅁ은 안긴문장 ‘땀이 이마에 흘렀다.’와 안은문장 ‘나는 수건으로 땀을 닦았다.’의 공통된 체언인 ‘땀’이 관형절 ‘이마에 흐르는’에서 생략되어 있다는 점에서 적절하다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄴ은 안긴문장 ‘사진이 벽에 걸려 있다.’와 안은문장 ‘나는 사진을 떠올렸다.’에서 공통된 체언인 ‘사진’이 생략된 관형절을 안은 문장이라는 점에서 Ⓐ와 같은 유형이므로 적절하지 않다.\n① ㄱ은 안긴문장 ‘그가 시를 지었다.’에서 안은문장‘시는 감동적이었다.’와의 공통된 체언인 ‘시’를 생략하여 관형절 ‘그가 지은’을 만들었다는 점에서 적절하다. ③ ㄷ은 ‘그가 한국에 돌아왔다.’라는 안긴문장이 생략된 성분 없이 체언 ‘소문’을 수식하는 관형어로 쓰이고 있다는 점에서 적절하다. ④ ㄹ은 관형절인 ‘그 사람이 나를 속일’이 문장의 필수 성분을 모두 갖추고 있다는 점에서 적절하다. ⑤ ㅁ은 안긴문장 ‘땀이 이마에 흘렀다.’와 안은문장 ‘나는 수건으로 땀을 닦았다.’의 공통된 체언인 ‘땀’이 관형절 ‘이마에 흐르는’에서 생략되어 있다는 점에서 적절하다."
     ],
-    "src": "2020 11월 전국연합 고2"
+    "src": "2020 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-013",
@@ -5962,7 +6214,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄴ은 안긴문장 ‘사진이 벽에 걸려 있다.’와 안은문장 ‘나는 사진을 떠올렸다.’에서 공통된 체언인 ‘사진’이 생략된 관형절을 안은 문장이라는 점에서 Ⓐ와 같은 유형이므로 적절하지 않다.\n① ㄱ은 안긴문장 ‘그가 시를 지었다.’에서 안은문장‘시는 감동적이었다.’와의 공통된 체언인 ‘시’를 생략하여 관형절 ‘그가 지은’을 만들었다는 점에서 적절하다. ③ ㄷ은 ‘그가 한국에 돌아왔다.’라는 안긴문장이 생략된 성분 없이 체언 ‘소문’을 수식하는 관형어로 쓰이고 있다는 점에서 적절하다. ④ ㄹ은 관형절인 ‘그 사람이 나를 속일’이 문장의 필수 성분을 모두 갖추고 있다는 점에서 적절하다. ⑤ ㅁ은 안긴문장 ‘땀이 이마에 흘렀다.’와 안은문장 ‘나는 수건으로 땀을 닦았다.’의 공통된 체언인 ‘땀’이 관형절 ‘이마에 흐르는’에서 생략되어 있다는 점에서 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄴ은 안긴문장 ‘사진이 벽에 걸려 있다.’와 안은문장 ‘나는 사진을 떠올렸다.’에서 공통된 체언인 ‘사진’이 생략된 관형절을 안은 문장이라는 점에서 Ⓐ와 같은 유형이므로 적절하지 않다.\n① ㄱ은 안긴문장 ‘그가 시를 지었다.’에서 안은문장‘시는 감동적이었다.’와의 공통된 체언인 ‘시’를 생략하여 관형절 ‘그가 지은’을 만들었다는 점에서 적절하다. ③ ㄷ은 ‘그가 한국에 돌아왔다.’라는 안긴문장이 생략된 성분 없이 체언 ‘소문’을 수식하는 관형어로 쓰이고 있다는 점에서 적절하다. ④ ㄹ은 관형절인 ‘그 사람이 나를 속일’이 문장의 필수 성분을 모두 갖추고 있다는 점에서 적절하다. ⑤ ㅁ은 안긴문장 ‘땀이 이마에 흘렀다.’와 안은문장 ‘나는 수건으로 땀을 닦았다.’의 공통된 체언인 ‘땀’이 관형절 ‘이마에 흐르는’에서 생략되어 있다는 점에서 적절하다."
     ],
-    "src": "2020 11월 전국연합 고2"
+    "src": "2020 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-014",
@@ -5982,7 +6235,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄴ은 안긴문장 ‘사진이 벽에 걸려 있다.’와 안은문장 ‘나는 사진을 떠올렸다.’에서 공통된 체언인 ‘사진’이 생략된 관형절을 안은 문장이라는 점에서 Ⓐ와 같은 유형이므로 적절하지 않다.\n① ㄱ은 안긴문장 ‘그가 시를 지었다.’에서 안은문장‘시는 감동적이었다.’와의 공통된 체언인 ‘시’를 생략하여 관형절 ‘그가 지은’을 만들었다는 점에서 적절하다. ③ ㄷ은 ‘그가 한국에 돌아왔다.’라는 안긴문장이 생략된 성분 없이 체언 ‘소문’을 수식하는 관형어로 쓰이고 있다는 점에서 적절하다. ④ ㄹ은 관형절인 ‘그 사람이 나를 속일’이 문장의 필수 성분을 모두 갖추고 있다는 점에서 적절하다. ⑤ ㅁ은 안긴문장 ‘땀이 이마에 흘렀다.’와 안은문장 ‘나는 수건으로 땀을 닦았다.’의 공통된 체언인 ‘땀’이 관형절 ‘이마에 흐르는’에서 생략되어 있다는 점에서 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄴ은 안긴문장 ‘사진이 벽에 걸려 있다.’와 안은문장 ‘나는 사진을 떠올렸다.’에서 공통된 체언인 ‘사진’이 생략된 관형절을 안은 문장이라는 점에서 Ⓐ와 같은 유형이므로 적절하지 않다.\n① ㄱ은 안긴문장 ‘그가 시를 지었다.’에서 안은문장‘시는 감동적이었다.’와의 공통된 체언인 ‘시’를 생략하여 관형절 ‘그가 지은’을 만들었다는 점에서 적절하다. ③ ㄷ은 ‘그가 한국에 돌아왔다.’라는 안긴문장이 생략된 성분 없이 체언 ‘소문’을 수식하는 관형어로 쓰이고 있다는 점에서 적절하다. ④ ㄹ은 관형절인 ‘그 사람이 나를 속일’이 문장의 필수 성분을 모두 갖추고 있다는 점에서 적절하다. ⑤ ㅁ은 안긴문장 ‘땀이 이마에 흘렀다.’와 안은문장 ‘나는 수건으로 땀을 닦았다.’의 공통된 체언인 ‘땀’이 관형절 ‘이마에 흐르는’에서 생략되어 있다는 점에서 적절하다."
     ],
-    "src": "2020 11월 전국연합 고2"
+    "src": "2020 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-015",
@@ -6002,7 +6256,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄴ은 안긴문장 ‘사진이 벽에 걸려 있다.’와 안은문장 ‘나는 사진을 떠올렸다.’에서 공통된 체언인 ‘사진’이 생략된 관형절을 안은 문장이라는 점에서 Ⓐ와 같은 유형이므로 적절하지 않다.\n① ㄱ은 안긴문장 ‘그가 시를 지었다.’에서 안은문장‘시는 감동적이었다.’와의 공통된 체언인 ‘시’를 생략하여 관형절 ‘그가 지은’을 만들었다는 점에서 적절하다. ③ ㄷ은 ‘그가 한국에 돌아왔다.’라는 안긴문장이 생략된 성분 없이 체언 ‘소문’을 수식하는 관형어로 쓰이고 있다는 점에서 적절하다. ④ ㄹ은 관형절인 ‘그 사람이 나를 속일’이 문장의 필수 성분을 모두 갖추고 있다는 점에서 적절하다. ⑤ ㅁ은 안긴문장 ‘땀이 이마에 흘렀다.’와 안은문장 ‘나는 수건으로 땀을 닦았다.’의 공통된 체언인 ‘땀’이 관형절 ‘이마에 흐르는’에서 생략되어 있다는 점에서 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄴ은 안긴문장 ‘사진이 벽에 걸려 있다.’와 안은문장 ‘나는 사진을 떠올렸다.’에서 공통된 체언인 ‘사진’이 생략된 관형절을 안은 문장이라는 점에서 Ⓐ와 같은 유형이므로 적절하지 않다.\n① ㄱ은 안긴문장 ‘그가 시를 지었다.’에서 안은문장‘시는 감동적이었다.’와의 공통된 체언인 ‘시’를 생략하여 관형절 ‘그가 지은’을 만들었다는 점에서 적절하다. ③ ㄷ은 ‘그가 한국에 돌아왔다.’라는 안긴문장이 생략된 성분 없이 체언 ‘소문’을 수식하는 관형어로 쓰이고 있다는 점에서 적절하다. ④ ㄹ은 관형절인 ‘그 사람이 나를 속일’이 문장의 필수 성분을 모두 갖추고 있다는 점에서 적절하다. ⑤ ㅁ은 안긴문장 ‘땀이 이마에 흘렀다.’와 안은문장 ‘나는 수건으로 땀을 닦았다.’의 공통된 체언인 ‘땀’이 관형절 ‘이마에 흐르는’에서 생략되어 있다는 점에서 적절하다."
     ],
-    "src": "2020 11월 전국연합 고2"
+    "src": "2020 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-016",
@@ -6022,7 +6277,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄴ은 홑문장으로 서술어는 ‘좋아한다’ 1개이며, ㄷ은 겹문장 중 이어진문장으로 서술어는 ‘시인이자’와 ‘선생님이다’ 2개이다.\n① ㄱ은 서술절을 가진 안은문장으로 주어 ‘나는’과 서술어의 역할을 하는 서술절 ‘키가 크다’로 이루어져 있고, ‘키가 크다’는 주어 ‘키가’와 서술어 ‘크다’로 이루어져 있다. ㄷ은 이어진문장으로 앞 절의 주어 ‘그녀는’, 서술어 ‘시인이자’, 뒤 절의 주어 ‘그녀는’, 서술어 ‘선생님이다’로 이루어져 있다. 따라서 ㄱ과 ㄷ을 이루고 있는 문장 성분은 주어와 서술어로 동일하다. ② ㄱ은 ‘나는’이 안은문장의 주어이고 ‘키가 크다’라는 서술절이 서술어의 역할을 하는, 서술절을 가진 안은문장이다. ㄹ은 ‘그녀가 사과를 먹고’와 ‘나는 배를 먹는다’라는 2개의 절이 대등하게 이어져 있다. 따라서 ㄱ, ㄹ은 모두 주어와 서술어의 관계가 두 번 나타나 있다. ④ ㄴ의 ‘나는’은 주어, ‘여름만’은 목적어이고, ㄹ의 ‘그녀가’, ‘나는’은 주어, ‘사과를’, ‘배를’은 목적어이므로 ㄴ과 ㄹ은 모두 주어와 목적어를 포함하고 있다. ⑤ ㄷ과 ㄹ은 대등하게 연결된 이어진문장으로, ㄷ은 ‘‒자’라는 대등적 연결 어미를, ㄹ은 ‘‒고’라는 대등적 연결 어미를 포함하고 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄴ은 홑문장으로 서술어는 ‘좋아한다’ 1개이며, ㄷ은 겹문장 중 이어진문장으로 서술어는 ‘시인이자’와 ‘선생님이다’ 2개이다.\n① ㄱ은 서술절을 가진 안은문장으로 주어 ‘나는’과 서술어의 역할을 하는 서술절 ‘키가 크다’로 이루어져 있고, ‘키가 크다’는 주어 ‘키가’와 서술어 ‘크다’로 이루어져 있다. ㄷ은 이어진문장으로 앞 절의 주어 ‘그녀는’, 서술어 ‘시인이자’, 뒤 절의 주어 ‘그녀는’, 서술어 ‘선생님이다’로 이루어져 있다. 따라서 ㄱ과 ㄷ을 이루고 있는 문장 성분은 주어와 서술어로 동일하다. ② ㄱ은 ‘나는’이 안은문장의 주어이고 ‘키가 크다’라는 서술절이 서술어의 역할을 하는, 서술절을 가진 안은문장이다. ㄹ은 ‘그녀가 사과를 먹고’와 ‘나는 배를 먹는다’라는 2개의 절이 대등하게 이어져 있다. 따라서 ㄱ, ㄹ은 모두 주어와 서술어의 관계가 두 번 나타나 있다. ④ ㄴ의 ‘나는’은 주어, ‘여름만’은 목적어이고, ㄹ의 ‘그녀가’, ‘나는’은 주어, ‘사과를’, ‘배를’은 목적어이므로 ㄴ과 ㄹ은 모두 주어와 목적어를 포함하고 있다. ⑤ ㄷ과 ㄹ은 대등하게 연결된 이어진문장으로, ㄷ은 ‘‒자’라는 대등적 연결 어미를, ㄹ은 ‘‒고’라는 대등적 연결 어미를 포함하고 있다."
     ],
-    "src": "2021 9월 전국연합 고2"
+    "src": "2021 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-017",
@@ -6042,7 +6298,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄴ은 홑문장으로 서술어는 ‘좋아한다’ 1개이며, ㄷ은 겹문장 중 이어진문장으로 서술어는 ‘시인이자’와 ‘선생님이다’ 2개이다.\n① ㄱ은 서술절을 가진 안은문장으로 주어 ‘나는’과 서술어의 역할을 하는 서술절 ‘키가 크다’로 이루어져 있고, ‘키가 크다’는 주어 ‘키가’와 서술어 ‘크다’로 이루어져 있다. ㄷ은 이어진문장으로 앞 절의 주어 ‘그녀는’, 서술어 ‘시인이자’, 뒤 절의 주어 ‘그녀는’, 서술어 ‘선생님이다’로 이루어져 있다. 따라서 ㄱ과 ㄷ을 이루고 있는 문장 성분은 주어와 서술어로 동일하다. ② ㄱ은 ‘나는’이 안은문장의 주어이고 ‘키가 크다’라는 서술절이 서술어의 역할을 하는, 서술절을 가진 안은문장이다. ㄹ은 ‘그녀가 사과를 먹고’와 ‘나는 배를 먹는다’라는 2개의 절이 대등하게 이어져 있다. 따라서 ㄱ, ㄹ은 모두 주어와 서술어의 관계가 두 번 나타나 있다. ④ ㄴ의 ‘나는’은 주어, ‘여름만’은 목적어이고, ㄹ의 ‘그녀가’, ‘나는’은 주어, ‘사과를’, ‘배를’은 목적어이므로 ㄴ과 ㄹ은 모두 주어와 목적어를 포함하고 있다. ⑤ ㄷ과 ㄹ은 대등하게 연결된 이어진문장으로, ㄷ은 ‘‒자’라는 대등적 연결 어미를, ㄹ은 ‘‒고’라는 대등적 연결 어미를 포함하고 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄴ은 홑문장으로 서술어는 ‘좋아한다’ 1개이며, ㄷ은 겹문장 중 이어진문장으로 서술어는 ‘시인이자’와 ‘선생님이다’ 2개이다.\n① ㄱ은 서술절을 가진 안은문장으로 주어 ‘나는’과 서술어의 역할을 하는 서술절 ‘키가 크다’로 이루어져 있고, ‘키가 크다’는 주어 ‘키가’와 서술어 ‘크다’로 이루어져 있다. ㄷ은 이어진문장으로 앞 절의 주어 ‘그녀는’, 서술어 ‘시인이자’, 뒤 절의 주어 ‘그녀는’, 서술어 ‘선생님이다’로 이루어져 있다. 따라서 ㄱ과 ㄷ을 이루고 있는 문장 성분은 주어와 서술어로 동일하다. ② ㄱ은 ‘나는’이 안은문장의 주어이고 ‘키가 크다’라는 서술절이 서술어의 역할을 하는, 서술절을 가진 안은문장이다. ㄹ은 ‘그녀가 사과를 먹고’와 ‘나는 배를 먹는다’라는 2개의 절이 대등하게 이어져 있다. 따라서 ㄱ, ㄹ은 모두 주어와 서술어의 관계가 두 번 나타나 있다. ④ ㄴ의 ‘나는’은 주어, ‘여름만’은 목적어이고, ㄹ의 ‘그녀가’, ‘나는’은 주어, ‘사과를’, ‘배를’은 목적어이므로 ㄴ과 ㄹ은 모두 주어와 목적어를 포함하고 있다. ⑤ ㄷ과 ㄹ은 대등하게 연결된 이어진문장으로, ㄷ은 ‘‒자’라는 대등적 연결 어미를, ㄹ은 ‘‒고’라는 대등적 연결 어미를 포함하고 있다."
     ],
-    "src": "2021 9월 전국연합 고2"
+    "src": "2021 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-018",
@@ -6062,7 +6319,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄴ은 홑문장으로 서술어는 ‘좋아한다’ 1개이며, ㄷ은 겹문장 중 이어진문장으로 서술어는 ‘시인이자’와 ‘선생님이다’ 2개이다.\n① ㄱ은 서술절을 가진 안은문장으로 주어 ‘나는’과 서술어의 역할을 하는 서술절 ‘키가 크다’로 이루어져 있고, ‘키가 크다’는 주어 ‘키가’와 서술어 ‘크다’로 이루어져 있다. ㄷ은 이어진문장으로 앞 절의 주어 ‘그녀는’, 서술어 ‘시인이자’, 뒤 절의 주어 ‘그녀는’, 서술어 ‘선생님이다’로 이루어져 있다. 따라서 ㄱ과 ㄷ을 이루고 있는 문장 성분은 주어와 서술어로 동일하다. ② ㄱ은 ‘나는’이 안은문장의 주어이고 ‘키가 크다’라는 서술절이 서술어의 역할을 하는, 서술절을 가진 안은문장이다. ㄹ은 ‘그녀가 사과를 먹고’와 ‘나는 배를 먹는다’라는 2개의 절이 대등하게 이어져 있다. 따라서 ㄱ, ㄹ은 모두 주어와 서술어의 관계가 두 번 나타나 있다. ④ ㄴ의 ‘나는’은 주어, ‘여름만’은 목적어이고, ㄹ의 ‘그녀가’, ‘나는’은 주어, ‘사과를’, ‘배를’은 목적어이므로 ㄴ과 ㄹ은 모두 주어와 목적어를 포함하고 있다. ⑤ ㄷ과 ㄹ은 대등하게 연결된 이어진문장으로, ㄷ은 ‘‒자’라는 대등적 연결 어미를, ㄹ은 ‘‒고’라는 대등적 연결 어미를 포함하고 있다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄴ은 홑문장으로 서술어는 ‘좋아한다’ 1개이며, ㄷ은 겹문장 중 이어진문장으로 서술어는 ‘시인이자’와 ‘선생님이다’ 2개이다.\n① ㄱ은 서술절을 가진 안은문장으로 주어 ‘나는’과 서술어의 역할을 하는 서술절 ‘키가 크다’로 이루어져 있고, ‘키가 크다’는 주어 ‘키가’와 서술어 ‘크다’로 이루어져 있다. ㄷ은 이어진문장으로 앞 절의 주어 ‘그녀는’, 서술어 ‘시인이자’, 뒤 절의 주어 ‘그녀는’, 서술어 ‘선생님이다’로 이루어져 있다. 따라서 ㄱ과 ㄷ을 이루고 있는 문장 성분은 주어와 서술어로 동일하다. ② ㄱ은 ‘나는’이 안은문장의 주어이고 ‘키가 크다’라는 서술절이 서술어의 역할을 하는, 서술절을 가진 안은문장이다. ㄹ은 ‘그녀가 사과를 먹고’와 ‘나는 배를 먹는다’라는 2개의 절이 대등하게 이어져 있다. 따라서 ㄱ, ㄹ은 모두 주어와 서술어의 관계가 두 번 나타나 있다. ④ ㄴ의 ‘나는’은 주어, ‘여름만’은 목적어이고, ㄹ의 ‘그녀가’, ‘나는’은 주어, ‘사과를’, ‘배를’은 목적어이므로 ㄴ과 ㄹ은 모두 주어와 목적어를 포함하고 있다. ⑤ ㄷ과 ㄹ은 대등하게 연결된 이어진문장으로, ㄷ은 ‘‒자’라는 대등적 연결 어미를, ㄹ은 ‘‒고’라는 대등적 연결 어미를 포함하고 있다."
     ],
-    "src": "2021 9월 전국연합 고2"
+    "src": "2021 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-019",
@@ -6082,7 +6340,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄴ은 홑문장으로 서술어는 ‘좋아한다’ 1개이며, ㄷ은 겹문장 중 이어진문장으로 서술어는 ‘시인이자’와 ‘선생님이다’ 2개이다.\n① ㄱ은 서술절을 가진 안은문장으로 주어 ‘나는’과 서술어의 역할을 하는 서술절 ‘키가 크다’로 이루어져 있고, ‘키가 크다’는 주어 ‘키가’와 서술어 ‘크다’로 이루어져 있다. ㄷ은 이어진문장으로 앞 절의 주어 ‘그녀는’, 서술어 ‘시인이자’, 뒤 절의 주어 ‘그녀는’, 서술어 ‘선생님이다’로 이루어져 있다. 따라서 ㄱ과 ㄷ을 이루고 있는 문장 성분은 주어와 서술어로 동일하다. ② ㄱ은 ‘나는’이 안은문장의 주어이고 ‘키가 크다’라는 서술절이 서술어의 역할을 하는, 서술절을 가진 안은문장이다. ㄹ은 ‘그녀가 사과를 먹고’와 ‘나는 배를 먹는다’라는 2개의 절이 대등하게 이어져 있다. 따라서 ㄱ, ㄹ은 모두 주어와 서술어의 관계가 두 번 나타나 있다. ④ ㄴ의 ‘나는’은 주어, ‘여름만’은 목적어이고, ㄹ의 ‘그녀가’, ‘나는’은 주어, ‘사과를’, ‘배를’은 목적어이므로 ㄴ과 ㄹ은 모두 주어와 목적어를 포함하고 있다. ⑤ ㄷ과 ㄹ은 대등하게 연결된 이어진문장으로, ㄷ은 ‘‒자’라는 대등적 연결 어미를, ㄹ은 ‘‒고’라는 대등적 연결 어미를 포함하고 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄴ은 홑문장으로 서술어는 ‘좋아한다’ 1개이며, ㄷ은 겹문장 중 이어진문장으로 서술어는 ‘시인이자’와 ‘선생님이다’ 2개이다.\n① ㄱ은 서술절을 가진 안은문장으로 주어 ‘나는’과 서술어의 역할을 하는 서술절 ‘키가 크다’로 이루어져 있고, ‘키가 크다’는 주어 ‘키가’와 서술어 ‘크다’로 이루어져 있다. ㄷ은 이어진문장으로 앞 절의 주어 ‘그녀는’, 서술어 ‘시인이자’, 뒤 절의 주어 ‘그녀는’, 서술어 ‘선생님이다’로 이루어져 있다. 따라서 ㄱ과 ㄷ을 이루고 있는 문장 성분은 주어와 서술어로 동일하다. ② ㄱ은 ‘나는’이 안은문장의 주어이고 ‘키가 크다’라는 서술절이 서술어의 역할을 하는, 서술절을 가진 안은문장이다. ㄹ은 ‘그녀가 사과를 먹고’와 ‘나는 배를 먹는다’라는 2개의 절이 대등하게 이어져 있다. 따라서 ㄱ, ㄹ은 모두 주어와 서술어의 관계가 두 번 나타나 있다. ④ ㄴ의 ‘나는’은 주어, ‘여름만’은 목적어이고, ㄹ의 ‘그녀가’, ‘나는’은 주어, ‘사과를’, ‘배를’은 목적어이므로 ㄴ과 ㄹ은 모두 주어와 목적어를 포함하고 있다. ⑤ ㄷ과 ㄹ은 대등하게 연결된 이어진문장으로, ㄷ은 ‘‒자’라는 대등적 연결 어미를, ㄹ은 ‘‒고’라는 대등적 연결 어미를 포함하고 있다."
     ],
-    "src": "2021 9월 전국연합 고2"
+    "src": "2021 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-020",
@@ -6102,7 +6361,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄴ은 홑문장으로 서술어는 ‘좋아한다’ 1개이며, ㄷ은 겹문장 중 이어진문장으로 서술어는 ‘시인이자’와 ‘선생님이다’ 2개이다.\n① ㄱ은 서술절을 가진 안은문장으로 주어 ‘나는’과 서술어의 역할을 하는 서술절 ‘키가 크다’로 이루어져 있고, ‘키가 크다’는 주어 ‘키가’와 서술어 ‘크다’로 이루어져 있다. ㄷ은 이어진문장으로 앞 절의 주어 ‘그녀는’, 서술어 ‘시인이자’, 뒤 절의 주어 ‘그녀는’, 서술어 ‘선생님이다’로 이루어져 있다. 따라서 ㄱ과 ㄷ을 이루고 있는 문장 성분은 주어와 서술어로 동일하다. ② ㄱ은 ‘나는’이 안은문장의 주어이고 ‘키가 크다’라는 서술절이 서술어의 역할을 하는, 서술절을 가진 안은문장이다. ㄹ은 ‘그녀가 사과를 먹고’와 ‘나는 배를 먹는다’라는 2개의 절이 대등하게 이어져 있다. 따라서 ㄱ, ㄹ은 모두 주어와 서술어의 관계가 두 번 나타나 있다. ④ ㄴ의 ‘나는’은 주어, ‘여름만’은 목적어이고, ㄹ의 ‘그녀가’, ‘나는’은 주어, ‘사과를’, ‘배를’은 목적어이므로 ㄴ과 ㄹ은 모두 주어와 목적어를 포함하고 있다. ⑤ ㄷ과 ㄹ은 대등하게 연결된 이어진문장으로, ㄷ은 ‘‒자’라는 대등적 연결 어미를, ㄹ은 ‘‒고’라는 대등적 연결 어미를 포함하고 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄴ은 홑문장으로 서술어는 ‘좋아한다’ 1개이며, ㄷ은 겹문장 중 이어진문장으로 서술어는 ‘시인이자’와 ‘선생님이다’ 2개이다.\n① ㄱ은 서술절을 가진 안은문장으로 주어 ‘나는’과 서술어의 역할을 하는 서술절 ‘키가 크다’로 이루어져 있고, ‘키가 크다’는 주어 ‘키가’와 서술어 ‘크다’로 이루어져 있다. ㄷ은 이어진문장으로 앞 절의 주어 ‘그녀는’, 서술어 ‘시인이자’, 뒤 절의 주어 ‘그녀는’, 서술어 ‘선생님이다’로 이루어져 있다. 따라서 ㄱ과 ㄷ을 이루고 있는 문장 성분은 주어와 서술어로 동일하다. ② ㄱ은 ‘나는’이 안은문장의 주어이고 ‘키가 크다’라는 서술절이 서술어의 역할을 하는, 서술절을 가진 안은문장이다. ㄹ은 ‘그녀가 사과를 먹고’와 ‘나는 배를 먹는다’라는 2개의 절이 대등하게 이어져 있다. 따라서 ㄱ, ㄹ은 모두 주어와 서술어의 관계가 두 번 나타나 있다. ④ ㄴ의 ‘나는’은 주어, ‘여름만’은 목적어이고, ㄹ의 ‘그녀가’, ‘나는’은 주어, ‘사과를’, ‘배를’은 목적어이므로 ㄴ과 ㄹ은 모두 주어와 목적어를 포함하고 있다. ⑤ ㄷ과 ㄹ은 대등하게 연결된 이어진문장으로, ㄷ은 ‘‒자’라는 대등적 연결 어미를, ㄹ은 ‘‒고’라는 대등적 연결 어미를 포함하고 있다."
     ],
-    "src": "2021 9월 전국연합 고2"
+    "src": "2021 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-021",
@@ -6122,7 +6382,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄷ의 안긴문장인 ‘수업이 끝나기’에는 생략된 필수 성분이 없다. ㄹ의 안긴문장인 ‘조종사가 된’에는 안은문장과 공통되는 요소인 주어 ‘소년이’가 생략되어 있다고 볼 수 있다. ‘조종사가’는 보어이다. ① ㄱ의 안긴문장인 ‘여행을 가기’에는 주어 ‘내가’가 생략되어 있다. ② ㄴ의 안긴문장은 ‘그녀가 착함’이다. 안긴문장의 주어는 ‘그녀가’, 안은문장의 주어는 ‘우리는’이다. ③ ㄴ과 ㄷ의 안긴문장은 각각 목적격 조사 ‘을’, ‘를’과 결합하여 안은문장의 목적어로 쓰인다. ⑤ ㄱ의 안긴문장은 명사절, ㄹ의 안긴문장은 관형사절로 서로 종류가 다르지만, 안은문장에서 각각 체언을 수식하는 관형어로 쓰인다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄷ의 안긴문장인 ‘수업이 끝나기’에는 생략된 필수 성분이 없다. ㄹ의 안긴문장인 ‘조종사가 된’에는 안은문장과 공통되는 요소인 주어 ‘소년이’가 생략되어 있다고 볼 수 있다. ‘조종사가’는 보어이다. ① ㄱ의 안긴문장인 ‘여행을 가기’에는 주어 ‘내가’가 생략되어 있다. ② ㄴ의 안긴문장은 ‘그녀가 착함’이다. 안긴문장의 주어는 ‘그녀가’, 안은문장의 주어는 ‘우리는’이다. ③ ㄴ과 ㄷ의 안긴문장은 각각 목적격 조사 ‘을’, ‘를’과 결합하여 안은문장의 목적어로 쓰인다. ⑤ ㄱ의 안긴문장은 명사절, ㄹ의 안긴문장은 관형사절로 서로 종류가 다르지만, 안은문장에서 각각 체언을 수식하는 관형어로 쓰인다."
     ],
-    "src": "2023 3월 전국연합 고2"
+    "src": "2023 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-022",
@@ -6142,7 +6403,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄷ의 안긴문장인 ‘수업이 끝나기’에는 생략된 필수 성분이 없다. ㄹ의 안긴문장인 ‘조종사가 된’에는 안은문장과 공통되는 요소인 주어 ‘소년이’가 생략되어 있다고 볼 수 있다. ‘조종사가’는 보어이다. ① ㄱ의 안긴문장인 ‘여행을 가기’에는 주어 ‘내가’가 생략되어 있다. ② ㄴ의 안긴문장은 ‘그녀가 착함’이다. 안긴문장의 주어는 ‘그녀가’, 안은문장의 주어는 ‘우리는’이다. ③ ㄴ과 ㄷ의 안긴문장은 각각 목적격 조사 ‘을’, ‘를’과 결합하여 안은문장의 목적어로 쓰인다. ⑤ ㄱ의 안긴문장은 명사절, ㄹ의 안긴문장은 관형사절로 서로 종류가 다르지만, 안은문장에서 각각 체언을 수식하는 관형어로 쓰인다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄷ의 안긴문장인 ‘수업이 끝나기’에는 생략된 필수 성분이 없다. ㄹ의 안긴문장인 ‘조종사가 된’에는 안은문장과 공통되는 요소인 주어 ‘소년이’가 생략되어 있다고 볼 수 있다. ‘조종사가’는 보어이다. ① ㄱ의 안긴문장인 ‘여행을 가기’에는 주어 ‘내가’가 생략되어 있다. ② ㄴ의 안긴문장은 ‘그녀가 착함’이다. 안긴문장의 주어는 ‘그녀가’, 안은문장의 주어는 ‘우리는’이다. ③ ㄴ과 ㄷ의 안긴문장은 각각 목적격 조사 ‘을’, ‘를’과 결합하여 안은문장의 목적어로 쓰인다. ⑤ ㄱ의 안긴문장은 명사절, ㄹ의 안긴문장은 관형사절로 서로 종류가 다르지만, 안은문장에서 각각 체언을 수식하는 관형어로 쓰인다."
     ],
-    "src": "2023 3월 전국연합 고2"
+    "src": "2023 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-023",
@@ -6162,7 +6424,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄷ의 안긴문장인 ‘수업이 끝나기’에는 생략된 필수 성분이 없다. ㄹ의 안긴문장인 ‘조종사가 된’에는 안은문장과 공통되는 요소인 주어 ‘소년이’가 생략되어 있다고 볼 수 있다. ‘조종사가’는 보어이다. ① ㄱ의 안긴문장인 ‘여행을 가기’에는 주어 ‘내가’가 생략되어 있다. ② ㄴ의 안긴문장은 ‘그녀가 착함’이다. 안긴문장의 주어는 ‘그녀가’, 안은문장의 주어는 ‘우리는’이다. ③ ㄴ과 ㄷ의 안긴문장은 각각 목적격 조사 ‘을’, ‘를’과 결합하여 안은문장의 목적어로 쓰인다. ⑤ ㄱ의 안긴문장은 명사절, ㄹ의 안긴문장은 관형사절로 서로 종류가 다르지만, 안은문장에서 각각 체언을 수식하는 관형어로 쓰인다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄷ의 안긴문장인 ‘수업이 끝나기’에는 생략된 필수 성분이 없다. ㄹ의 안긴문장인 ‘조종사가 된’에는 안은문장과 공통되는 요소인 주어 ‘소년이’가 생략되어 있다고 볼 수 있다. ‘조종사가’는 보어이다. ① ㄱ의 안긴문장인 ‘여행을 가기’에는 주어 ‘내가’가 생략되어 있다. ② ㄴ의 안긴문장은 ‘그녀가 착함’이다. 안긴문장의 주어는 ‘그녀가’, 안은문장의 주어는 ‘우리는’이다. ③ ㄴ과 ㄷ의 안긴문장은 각각 목적격 조사 ‘을’, ‘를’과 결합하여 안은문장의 목적어로 쓰인다. ⑤ ㄱ의 안긴문장은 명사절, ㄹ의 안긴문장은 관형사절로 서로 종류가 다르지만, 안은문장에서 각각 체언을 수식하는 관형어로 쓰인다."
     ],
-    "src": "2023 3월 전국연합 고2"
+    "src": "2023 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-024",
@@ -6182,7 +6445,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄷ의 안긴문장인 ‘수업이 끝나기’에는 생략된 필수 성분이 없다. ㄹ의 안긴문장인 ‘조종사가 된’에는 안은문장과 공통되는 요소인 주어 ‘소년이’가 생략되어 있다고 볼 수 있다. ‘조종사가’는 보어이다. ① ㄱ의 안긴문장인 ‘여행을 가기’에는 주어 ‘내가’가 생략되어 있다. ② ㄴ의 안긴문장은 ‘그녀가 착함’이다. 안긴문장의 주어는 ‘그녀가’, 안은문장의 주어는 ‘우리는’이다. ③ ㄴ과 ㄷ의 안긴문장은 각각 목적격 조사 ‘을’, ‘를’과 결합하여 안은문장의 목적어로 쓰인다. ⑤ ㄱ의 안긴문장은 명사절, ㄹ의 안긴문장은 관형사절로 서로 종류가 다르지만, 안은문장에서 각각 체언을 수식하는 관형어로 쓰인다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄷ의 안긴문장인 ‘수업이 끝나기’에는 생략된 필수 성분이 없다. ㄹ의 안긴문장인 ‘조종사가 된’에는 안은문장과 공통되는 요소인 주어 ‘소년이’가 생략되어 있다고 볼 수 있다. ‘조종사가’는 보어이다. ① ㄱ의 안긴문장인 ‘여행을 가기’에는 주어 ‘내가’가 생략되어 있다. ② ㄴ의 안긴문장은 ‘그녀가 착함’이다. 안긴문장의 주어는 ‘그녀가’, 안은문장의 주어는 ‘우리는’이다. ③ ㄴ과 ㄷ의 안긴문장은 각각 목적격 조사 ‘을’, ‘를’과 결합하여 안은문장의 목적어로 쓰인다. ⑤ ㄱ의 안긴문장은 명사절, ㄹ의 안긴문장은 관형사절로 서로 종류가 다르지만, 안은문장에서 각각 체언을 수식하는 관형어로 쓰인다."
     ],
-    "src": "2023 3월 전국연합 고2"
+    "src": "2023 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-025",
@@ -6202,7 +6466,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄷ의 안긴문장인 ‘수업이 끝나기’에는 생략된 필수 성분이 없다. ㄹ의 안긴문장인 ‘조종사가 된’에는 안은문장과 공통되는 요소인 주어 ‘소년이’가 생략되어 있다고 볼 수 있다. ‘조종사가’는 보어이다. ① ㄱ의 안긴문장인 ‘여행을 가기’에는 주어 ‘내가’가 생략되어 있다. ② ㄴ의 안긴문장은 ‘그녀가 착함’이다. 안긴문장의 주어는 ‘그녀가’, 안은문장의 주어는 ‘우리는’이다. ③ ㄴ과 ㄷ의 안긴문장은 각각 목적격 조사 ‘을’, ‘를’과 결합하여 안은문장의 목적어로 쓰인다. ⑤ ㄱ의 안긴문장은 명사절, ㄹ의 안긴문장은 관형사절로 서로 종류가 다르지만, 안은문장에서 각각 체언을 수식하는 관형어로 쓰인다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㄷ의 안긴문장인 ‘수업이 끝나기’에는 생략된 필수 성분이 없다. ㄹ의 안긴문장인 ‘조종사가 된’에는 안은문장과 공통되는 요소인 주어 ‘소년이’가 생략되어 있다고 볼 수 있다. ‘조종사가’는 보어이다. ① ㄱ의 안긴문장인 ‘여행을 가기’에는 주어 ‘내가’가 생략되어 있다. ② ㄴ의 안긴문장은 ‘그녀가 착함’이다. 안긴문장의 주어는 ‘그녀가’, 안은문장의 주어는 ‘우리는’이다. ③ ㄴ과 ㄷ의 안긴문장은 각각 목적격 조사 ‘을’, ‘를’과 결합하여 안은문장의 목적어로 쓰인다. ⑤ ㄱ의 안긴문장은 명사절, ㄹ의 안긴문장은 관형사절로 서로 종류가 다르지만, 안은문장에서 각각 체언을 수식하는 관형어로 쓰인다."
     ],
-    "src": "2023 3월 전국연합 고2"
+    "src": "2023 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-026",
@@ -6222,7 +6487,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘그는 영수가 집에 간다고 했다.’는 인용을 나타내는 조사 ‘고’가 쓰인 인용절을 가진 안은문장이다. 안은문장의 주어는 ‘그는’이고 안긴문장의 주어는 ‘영수가’이므로 안긴문장의 주어가 생략되어 있지 않다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘그는 영수가 집에 간다고 했다.’는 인용을 나타내는 조사 ‘고’가 쓰인 인용절을 가진 안은문장이다. 안은문장의 주어는 ‘그는’이고 안긴문장의 주어는 ‘영수가’이므로 안긴문장의 주어가 생략되어 있지 않다."
     ],
-    "src": "2024 9월 전국연합 고2"
+    "src": "2024 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-027",
@@ -6242,7 +6508,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘그는 영수가 집에 간다고 했다.’는 인용을 나타내는 조사 ‘고’가 쓰인 인용절을 가진 안은문장이다. 안은문장의 주어는 ‘그는’이고 안긴문장의 주어는 ‘영수가’이므로 안긴문장의 주어가 생략되어 있지 않다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘그는 영수가 집에 간다고 했다.’는 인용을 나타내는 조사 ‘고’가 쓰인 인용절을 가진 안은문장이다. 안은문장의 주어는 ‘그는’이고 안긴문장의 주어는 ‘영수가’이므로 안긴문장의 주어가 생략되어 있지 않다."
     ],
-    "src": "2024 9월 전국연합 고2"
+    "src": "2024 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-028",
@@ -6262,7 +6529,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘그는 영수가 집에 간다고 했다.’는 인용을 나타내는 조사 ‘고’가 쓰인 인용절을 가진 안은문장이다. 안은문장의 주어는 ‘그는’이고 안긴문장의 주어는 ‘영수가’이므로 안긴문장의 주어가 생략되어 있지 않다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘그는 영수가 집에 간다고 했다.’는 인용을 나타내는 조사 ‘고’가 쓰인 인용절을 가진 안은문장이다. 안은문장의 주어는 ‘그는’이고 안긴문장의 주어는 ‘영수가’이므로 안긴문장의 주어가 생략되어 있지 않다."
     ],
-    "src": "2024 9월 전국연합 고2"
+    "src": "2024 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-029",
@@ -6282,7 +6550,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘그는 영수가 집에 간다고 했다.’는 인용을 나타내는 조사 ‘고’가 쓰인 인용절을 가진 안은문장이다. 안은문장의 주어는 ‘그는’이고 안긴문장의 주어는 ‘영수가’이므로 안긴문장의 주어가 생략되어 있지 않다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘그는 영수가 집에 간다고 했다.’는 인용을 나타내는 조사 ‘고’가 쓰인 인용절을 가진 안은문장이다. 안은문장의 주어는 ‘그는’이고 안긴문장의 주어는 ‘영수가’이므로 안긴문장의 주어가 생략되어 있지 않다."
     ],
-    "src": "2024 9월 전국연합 고2"
+    "src": "2024 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-sentences-030",
@@ -6302,7 +6571,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘그는 영수가 집에 간다고 했다.’는 인용을 나타내는 조사 ‘고’가 쓰인 인용절을 가진 안은문장이다. 안은문장의 주어는 ‘그는’이고 안긴문장의 주어는 ‘영수가’이므로 안긴문장의 주어가 생략되어 있지 않다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘그는 영수가 집에 간다고 했다.’는 인용을 나타내는 조사 ‘고’가 쓰인 인용절을 가진 안은문장이다. 안은문장의 주어는 ‘그는’이고 안긴문장의 주어는 ‘영수가’이므로 안긴문장의 주어가 생략되어 있지 않다."
     ],
-    "src": "2024 9월 전국연합 고2"
+    "src": "2024 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-001",
@@ -6322,7 +6592,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠의 주동문의 주어 ‘철수가’는 사동문에서 ‘철수를’이라는 목적어로 바뀌었지만, ㉡의 주동문의 주어 ‘동생이’는 사동문에서 ‘동생에게’라는 부사어로 바뀌었으므로 적절하지 않다.\n①　㉡의 사동문은 ‘-이-’라는 사동 접미사를 활용한 형태를 보이고 있다. 하지만 ㉠은 사동 접미사를 활용한 사동문을 만들 수 없으므로 적절하다. ② ㉢의 사동문에서 사동 접미사 ‘-기-’ 대신 ‘-게 하다’를 활용해 사동문을 만들면 ‘인부들이 이삿짐을 방으로 옮게 하다.’와 같이 어색한 문장이 되므로 적절하다. ④ ㉠과 ㉡은 모두 주동문이 사동문으로 되면서 ‘내가’와 ‘누나가’라는 새로운 주어가 생겼으므로 적절하다. ⑤ ㉠, ㉡과 달리 ㉢은 사동문에 대응하는 주동문이 비문이므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠의 주동문의 주어 ‘철수가’는 사동문에서 ‘철수를’이라는 목적어로 바뀌었지만, ㉡의 주동문의 주어 ‘동생이’는 사동문에서 ‘동생에게’라는 부사어로 바뀌었으므로 적절하지 않다.\n①　㉡의 사동문은 ‘-이-’라는 사동 접미사를 활용한 형태를 보이고 있다. 하지만 ㉠은 사동 접미사를 활용한 사동문을 만들 수 없으므로 적절하다. ② ㉢의 사동문에서 사동 접미사 ‘-기-’ 대신 ‘-게 하다’를 활용해 사동문을 만들면 ‘인부들이 이삿짐을 방으로 옮게 하다.’와 같이 어색한 문장이 되므로 적절하다. ④ ㉠과 ㉡은 모두 주동문이 사동문으로 되면서 ‘내가’와 ‘누나가’라는 새로운 주어가 생겼으므로 적절하다. ⑤ ㉠, ㉡과 달리 ㉢은 사동문에 대응하는 주동문이 비문이므로 적절하다."
     ],
-    "src": "2018 11월 전국연합 고2"
+    "src": "2018 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-002",
@@ -6342,7 +6613,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠의 주동문의 주어 ‘철수가’는 사동문에서 ‘철수를’이라는 목적어로 바뀌었지만, ㉡의 주동문의 주어 ‘동생이’는 사동문에서 ‘동생에게’라는 부사어로 바뀌었으므로 적절하지 않다.\n①　㉡의 사동문은 ‘-이-’라는 사동 접미사를 활용한 형태를 보이고 있다. 하지만 ㉠은 사동 접미사를 활용한 사동문을 만들 수 없으므로 적절하다. ② ㉢의 사동문에서 사동 접미사 ‘-기-’ 대신 ‘-게 하다’를 활용해 사동문을 만들면 ‘인부들이 이삿짐을 방으로 옮게 하다.’와 같이 어색한 문장이 되므로 적절하다. ④ ㉠과 ㉡은 모두 주동문이 사동문으로 되면서 ‘내가’와 ‘누나가’라는 새로운 주어가 생겼으므로 적절하다. ⑤ ㉠, ㉡과 달리 ㉢은 사동문에 대응하는 주동문이 비문이므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠의 주동문의 주어 ‘철수가’는 사동문에서 ‘철수를’이라는 목적어로 바뀌었지만, ㉡의 주동문의 주어 ‘동생이’는 사동문에서 ‘동생에게’라는 부사어로 바뀌었으므로 적절하지 않다.\n①　㉡의 사동문은 ‘-이-’라는 사동 접미사를 활용한 형태를 보이고 있다. 하지만 ㉠은 사동 접미사를 활용한 사동문을 만들 수 없으므로 적절하다. ② ㉢의 사동문에서 사동 접미사 ‘-기-’ 대신 ‘-게 하다’를 활용해 사동문을 만들면 ‘인부들이 이삿짐을 방으로 옮게 하다.’와 같이 어색한 문장이 되므로 적절하다. ④ ㉠과 ㉡은 모두 주동문이 사동문으로 되면서 ‘내가’와 ‘누나가’라는 새로운 주어가 생겼으므로 적절하다. ⑤ ㉠, ㉡과 달리 ㉢은 사동문에 대응하는 주동문이 비문이므로 적절하다."
     ],
-    "src": "2018 11월 전국연합 고2"
+    "src": "2018 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-003",
@@ -6362,7 +6634,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠의 주동문의 주어 ‘철수가’는 사동문에서 ‘철수를’이라는 목적어로 바뀌었지만, ㉡의 주동문의 주어 ‘동생이’는 사동문에서 ‘동생에게’라는 부사어로 바뀌었으므로 적절하지 않다.\n①　㉡의 사동문은 ‘-이-’라는 사동 접미사를 활용한 형태를 보이고 있다. 하지만 ㉠은 사동 접미사를 활용한 사동문을 만들 수 없으므로 적절하다. ② ㉢의 사동문에서 사동 접미사 ‘-기-’ 대신 ‘-게 하다’를 활용해 사동문을 만들면 ‘인부들이 이삿짐을 방으로 옮게 하다.’와 같이 어색한 문장이 되므로 적절하다. ④ ㉠과 ㉡은 모두 주동문이 사동문으로 되면서 ‘내가’와 ‘누나가’라는 새로운 주어가 생겼으므로 적절하다. ⑤ ㉠, ㉡과 달리 ㉢은 사동문에 대응하는 주동문이 비문이므로 적절하다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠의 주동문의 주어 ‘철수가’는 사동문에서 ‘철수를’이라는 목적어로 바뀌었지만, ㉡의 주동문의 주어 ‘동생이’는 사동문에서 ‘동생에게’라는 부사어로 바뀌었으므로 적절하지 않다.\n①　㉡의 사동문은 ‘-이-’라는 사동 접미사를 활용한 형태를 보이고 있다. 하지만 ㉠은 사동 접미사를 활용한 사동문을 만들 수 없으므로 적절하다. ② ㉢의 사동문에서 사동 접미사 ‘-기-’ 대신 ‘-게 하다’를 활용해 사동문을 만들면 ‘인부들이 이삿짐을 방으로 옮게 하다.’와 같이 어색한 문장이 되므로 적절하다. ④ ㉠과 ㉡은 모두 주동문이 사동문으로 되면서 ‘내가’와 ‘누나가’라는 새로운 주어가 생겼으므로 적절하다. ⑤ ㉠, ㉡과 달리 ㉢은 사동문에 대응하는 주동문이 비문이므로 적절하다."
     ],
-    "src": "2018 11월 전국연합 고2"
+    "src": "2018 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-004",
@@ -6382,7 +6655,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠의 주동문의 주어 ‘철수가’는 사동문에서 ‘철수를’이라는 목적어로 바뀌었지만, ㉡의 주동문의 주어 ‘동생이’는 사동문에서 ‘동생에게’라는 부사어로 바뀌었으므로 적절하지 않다.\n①　㉡의 사동문은 ‘-이-’라는 사동 접미사를 활용한 형태를 보이고 있다. 하지만 ㉠은 사동 접미사를 활용한 사동문을 만들 수 없으므로 적절하다. ② ㉢의 사동문에서 사동 접미사 ‘-기-’ 대신 ‘-게 하다’를 활용해 사동문을 만들면 ‘인부들이 이삿짐을 방으로 옮게 하다.’와 같이 어색한 문장이 되므로 적절하다. ④ ㉠과 ㉡은 모두 주동문이 사동문으로 되면서 ‘내가’와 ‘누나가’라는 새로운 주어가 생겼으므로 적절하다. ⑤ ㉠, ㉡과 달리 ㉢은 사동문에 대응하는 주동문이 비문이므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠의 주동문의 주어 ‘철수가’는 사동문에서 ‘철수를’이라는 목적어로 바뀌었지만, ㉡의 주동문의 주어 ‘동생이’는 사동문에서 ‘동생에게’라는 부사어로 바뀌었으므로 적절하지 않다.\n①　㉡의 사동문은 ‘-이-’라는 사동 접미사를 활용한 형태를 보이고 있다. 하지만 ㉠은 사동 접미사를 활용한 사동문을 만들 수 없으므로 적절하다. ② ㉢의 사동문에서 사동 접미사 ‘-기-’ 대신 ‘-게 하다’를 활용해 사동문을 만들면 ‘인부들이 이삿짐을 방으로 옮게 하다.’와 같이 어색한 문장이 되므로 적절하다. ④ ㉠과 ㉡은 모두 주동문이 사동문으로 되면서 ‘내가’와 ‘누나가’라는 새로운 주어가 생겼으므로 적절하다. ⑤ ㉠, ㉡과 달리 ㉢은 사동문에 대응하는 주동문이 비문이므로 적절하다."
     ],
-    "src": "2018 11월 전국연합 고2"
+    "src": "2018 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-005",
@@ -6402,7 +6676,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠의 주동문의 주어 ‘철수가’는 사동문에서 ‘철수를’이라는 목적어로 바뀌었지만, ㉡의 주동문의 주어 ‘동생이’는 사동문에서 ‘동생에게’라는 부사어로 바뀌었으므로 적절하지 않다.\n①　㉡의 사동문은 ‘-이-’라는 사동 접미사를 활용한 형태를 보이고 있다. 하지만 ㉠은 사동 접미사를 활용한 사동문을 만들 수 없으므로 적절하다. ② ㉢의 사동문에서 사동 접미사 ‘-기-’ 대신 ‘-게 하다’를 활용해 사동문을 만들면 ‘인부들이 이삿짐을 방으로 옮게 하다.’와 같이 어색한 문장이 되므로 적절하다. ④ ㉠과 ㉡은 모두 주동문이 사동문으로 되면서 ‘내가’와 ‘누나가’라는 새로운 주어가 생겼으므로 적절하다. ⑤ ㉠, ㉡과 달리 ㉢은 사동문에 대응하는 주동문이 비문이므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠의 주동문의 주어 ‘철수가’는 사동문에서 ‘철수를’이라는 목적어로 바뀌었지만, ㉡의 주동문의 주어 ‘동생이’는 사동문에서 ‘동생에게’라는 부사어로 바뀌었으므로 적절하지 않다.\n①　㉡의 사동문은 ‘-이-’라는 사동 접미사를 활용한 형태를 보이고 있다. 하지만 ㉠은 사동 접미사를 활용한 사동문을 만들 수 없으므로 적절하다. ② ㉢의 사동문에서 사동 접미사 ‘-기-’ 대신 ‘-게 하다’를 활용해 사동문을 만들면 ‘인부들이 이삿짐을 방으로 옮게 하다.’와 같이 어색한 문장이 되므로 적절하다. ④ ㉠과 ㉡은 모두 주동문이 사동문으로 되면서 ‘내가’와 ‘누나가’라는 새로운 주어가 생겼으므로 적절하다. ⑤ ㉠, ㉡과 달리 ㉢은 사동문에 대응하는 주동문이 비문이므로 적절하다."
     ],
-    "src": "2018 11월 전국연합 고2"
+    "src": "2018 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-006",
@@ -6422,7 +6697,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉡에서 주체인 ‘아ᄃᆞᆯ’을 높이지 않으므로 적절하지 않다.\n[오답풀이] ① ‘니르샤ᄃᆡ’의 선어말 어미 ‘-샤-’를 통해 주체 높임법이 실현된 것은 확인되지만, 주체는 생략되어 드러나지 않는다.\n② ‘묻ᄌᆞᆸ고’의 선어말 어미 ‘-ᄌᆞᆸ-’을 통해 객체 높임법이 실현된 것을 확인할 수 있다.\n③ ‘오시니ᅌᅵᆺ고’의 선어말 어미 ‘-시-’를 통해 주체 높임법이 실현된 것을 확인할 수 있다.\n⑤ ‘뫼ᅀᆞᆸ고’의 선어말 어미 ‘-ᅀᆞᆸ-’을 통해 객체인 ‘어마님’을 높이고 있음을 확인할 수 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉡에서 주체인 ‘아ᄃᆞᆯ’을 높이지 않으므로 적절하지 않다.\n[오답풀이] ① ‘니르샤ᄃᆡ’의 선어말 어미 ‘-샤-’를 통해 주체 높임법이 실현된 것은 확인되지만, 주체는 생략되어 드러나지 않는다.\n② ‘묻ᄌᆞᆸ고’의 선어말 어미 ‘-ᄌᆞᆸ-’을 통해 객체 높임법이 실현된 것을 확인할 수 있다.\n③ ‘오시니ᅌᅵᆺ고’의 선어말 어미 ‘-시-’를 통해 주체 높임법이 실현된 것을 확인할 수 있다.\n⑤ ‘뫼ᅀᆞᆸ고’의 선어말 어미 ‘-ᅀᆞᆸ-’을 통해 객체인 ‘어마님’을 높이고 있음을 확인할 수 있다."
     ],
-    "src": "2019 6월 전국연합 고2"
+    "src": "2019 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-007",
@@ -6442,7 +6718,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉡에서 주체인 ‘아ᄃᆞᆯ’을 높이지 않으므로 적절하지 않다.\n[오답풀이] ① ‘니르샤ᄃᆡ’의 선어말 어미 ‘-샤-’를 통해 주체 높임법이 실현된 것은 확인되지만, 주체는 생략되어 드러나지 않는다.\n② ‘묻ᄌᆞᆸ고’의 선어말 어미 ‘-ᄌᆞᆸ-’을 통해 객체 높임법이 실현된 것을 확인할 수 있다.\n③ ‘오시니ᅌᅵᆺ고’의 선어말 어미 ‘-시-’를 통해 주체 높임법이 실현된 것을 확인할 수 있다.\n⑤ ‘뫼ᅀᆞᆸ고’의 선어말 어미 ‘-ᅀᆞᆸ-’을 통해 객체인 ‘어마님’을 높이고 있음을 확인할 수 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉡에서 주체인 ‘아ᄃᆞᆯ’을 높이지 않으므로 적절하지 않다.\n[오답풀이] ① ‘니르샤ᄃᆡ’의 선어말 어미 ‘-샤-’를 통해 주체 높임법이 실현된 것은 확인되지만, 주체는 생략되어 드러나지 않는다.\n② ‘묻ᄌᆞᆸ고’의 선어말 어미 ‘-ᄌᆞᆸ-’을 통해 객체 높임법이 실현된 것을 확인할 수 있다.\n③ ‘오시니ᅌᅵᆺ고’의 선어말 어미 ‘-시-’를 통해 주체 높임법이 실현된 것을 확인할 수 있다.\n⑤ ‘뫼ᅀᆞᆸ고’의 선어말 어미 ‘-ᅀᆞᆸ-’을 통해 객체인 ‘어마님’을 높이고 있음을 확인할 수 있다."
     ],
-    "src": "2019 6월 전국연합 고2"
+    "src": "2019 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-008",
@@ -6462,7 +6739,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉡에서 주체인 ‘아ᄃᆞᆯ’을 높이지 않으므로 적절하지 않다.\n[오답풀이] ① ‘니르샤ᄃᆡ’의 선어말 어미 ‘-샤-’를 통해 주체 높임법이 실현된 것은 확인되지만, 주체는 생략되어 드러나지 않는다.\n② ‘묻ᄌᆞᆸ고’의 선어말 어미 ‘-ᄌᆞᆸ-’을 통해 객체 높임법이 실현된 것을 확인할 수 있다.\n③ ‘오시니ᅌᅵᆺ고’의 선어말 어미 ‘-시-’를 통해 주체 높임법이 실현된 것을 확인할 수 있다.\n⑤ ‘뫼ᅀᆞᆸ고’의 선어말 어미 ‘-ᅀᆞᆸ-’을 통해 객체인 ‘어마님’을 높이고 있음을 확인할 수 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉡에서 주체인 ‘아ᄃᆞᆯ’을 높이지 않으므로 적절하지 않다.\n[오답풀이] ① ‘니르샤ᄃᆡ’의 선어말 어미 ‘-샤-’를 통해 주체 높임법이 실현된 것은 확인되지만, 주체는 생략되어 드러나지 않는다.\n② ‘묻ᄌᆞᆸ고’의 선어말 어미 ‘-ᄌᆞᆸ-’을 통해 객체 높임법이 실현된 것을 확인할 수 있다.\n③ ‘오시니ᅌᅵᆺ고’의 선어말 어미 ‘-시-’를 통해 주체 높임법이 실현된 것을 확인할 수 있다.\n⑤ ‘뫼ᅀᆞᆸ고’의 선어말 어미 ‘-ᅀᆞᆸ-’을 통해 객체인 ‘어마님’을 높이고 있음을 확인할 수 있다."
     ],
-    "src": "2019 6월 전국연합 고2"
+    "src": "2019 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-009",
@@ -6482,7 +6760,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉡에서 주체인 ‘아ᄃᆞᆯ’을 높이지 않으므로 적절하지 않다.\n[오답풀이] ① ‘니르샤ᄃᆡ’의 선어말 어미 ‘-샤-’를 통해 주체 높임법이 실현된 것은 확인되지만, 주체는 생략되어 드러나지 않는다.\n② ‘묻ᄌᆞᆸ고’의 선어말 어미 ‘-ᄌᆞᆸ-’을 통해 객체 높임법이 실현된 것을 확인할 수 있다.\n③ ‘오시니ᅌᅵᆺ고’의 선어말 어미 ‘-시-’를 통해 주체 높임법이 실현된 것을 확인할 수 있다.\n⑤ ‘뫼ᅀᆞᆸ고’의 선어말 어미 ‘-ᅀᆞᆸ-’을 통해 객체인 ‘어마님’을 높이고 있음을 확인할 수 있다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉡에서 주체인 ‘아ᄃᆞᆯ’을 높이지 않으므로 적절하지 않다.\n[오답풀이] ① ‘니르샤ᄃᆡ’의 선어말 어미 ‘-샤-’를 통해 주체 높임법이 실현된 것은 확인되지만, 주체는 생략되어 드러나지 않는다.\n② ‘묻ᄌᆞᆸ고’의 선어말 어미 ‘-ᄌᆞᆸ-’을 통해 객체 높임법이 실현된 것을 확인할 수 있다.\n③ ‘오시니ᅌᅵᆺ고’의 선어말 어미 ‘-시-’를 통해 주체 높임법이 실현된 것을 확인할 수 있다.\n⑤ ‘뫼ᅀᆞᆸ고’의 선어말 어미 ‘-ᅀᆞᆸ-’을 통해 객체인 ‘어마님’을 높이고 있음을 확인할 수 있다."
     ],
-    "src": "2019 6월 전국연합 고2"
+    "src": "2019 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-010",
@@ -6502,7 +6781,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉡에서 주체인 ‘아ᄃᆞᆯ’을 높이지 않으므로 적절하지 않다.\n[오답풀이] ① ‘니르샤ᄃᆡ’의 선어말 어미 ‘-샤-’를 통해 주체 높임법이 실현된 것은 확인되지만, 주체는 생략되어 드러나지 않는다.\n② ‘묻ᄌᆞᆸ고’의 선어말 어미 ‘-ᄌᆞᆸ-’을 통해 객체 높임법이 실현된 것을 확인할 수 있다.\n③ ‘오시니ᅌᅵᆺ고’의 선어말 어미 ‘-시-’를 통해 주체 높임법이 실현된 것을 확인할 수 있다.\n⑤ ‘뫼ᅀᆞᆸ고’의 선어말 어미 ‘-ᅀᆞᆸ-’을 통해 객체인 ‘어마님’을 높이고 있음을 확인할 수 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉡에서 주체인 ‘아ᄃᆞᆯ’을 높이지 않으므로 적절하지 않다.\n[오답풀이] ① ‘니르샤ᄃᆡ’의 선어말 어미 ‘-샤-’를 통해 주체 높임법이 실현된 것은 확인되지만, 주체는 생략되어 드러나지 않는다.\n② ‘묻ᄌᆞᆸ고’의 선어말 어미 ‘-ᄌᆞᆸ-’을 통해 객체 높임법이 실현된 것을 확인할 수 있다.\n③ ‘오시니ᅌᅵᆺ고’의 선어말 어미 ‘-시-’를 통해 주체 높임법이 실현된 것을 확인할 수 있다.\n⑤ ‘뫼ᅀᆞᆸ고’의 선어말 어미 ‘-ᅀᆞᆸ-’을 통해 객체인 ‘어마님’을 높이고 있음을 확인할 수 있다."
     ],
-    "src": "2019 6월 전국연합 고2"
+    "src": "2019 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-011",
@@ -6522,7 +6802,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉣에서 ‘대통령’을 뽑은 행위의 주체는 ‘국민들’이다. ㉣은 행위의 주체가 누구나 아는 사람이어서 말할 필요가 없을 때 피동 표현을 사용할 수 있는 경우이다.\n① ㉠에서 쏘는 행위의 주체는 ‘벌’이고 행위의 대상은 ‘그’이다. ㉠은 ‘그’를 부각하기 위해 피동 표현을 사용한 경우이다. ② ㉡은 피동 표현을 통해 ‘편지’를 찢은 주체인 ‘나’를 밝히지 않고 있다. ③ ㉢은 행위의 주체인 ‘기자’가 중요하지 않을 때 피동 표현을 사용할 수 있는 경우이다. ⑤ ㉤은 ‘날씨’를 푼 행위의 주체를 분명히 설정하기 어려워 피동 표현을 사용한 경우이다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉣에서 ‘대통령’을 뽑은 행위의 주체는 ‘국민들’이다. ㉣은 행위의 주체가 누구나 아는 사람이어서 말할 필요가 없을 때 피동 표현을 사용할 수 있는 경우이다.\n① ㉠에서 쏘는 행위의 주체는 ‘벌’이고 행위의 대상은 ‘그’이다. ㉠은 ‘그’를 부각하기 위해 피동 표현을 사용한 경우이다. ② ㉡은 피동 표현을 통해 ‘편지’를 찢은 주체인 ‘나’를 밝히지 않고 있다. ③ ㉢은 행위의 주체인 ‘기자’가 중요하지 않을 때 피동 표현을 사용할 수 있는 경우이다. ⑤ ㉤은 ‘날씨’를 푼 행위의 주체를 분명히 설정하기 어려워 피동 표현을 사용한 경우이다."
     ],
-    "src": "2021 9월 전국연합 고2"
+    "src": "2021 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-012",
@@ -6542,7 +6823,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉣에서 ‘대통령’을 뽑은 행위의 주체는 ‘국민들’이다. ㉣은 행위의 주체가 누구나 아는 사람이어서 말할 필요가 없을 때 피동 표현을 사용할 수 있는 경우이다.\n① ㉠에서 쏘는 행위의 주체는 ‘벌’이고 행위의 대상은 ‘그’이다. ㉠은 ‘그’를 부각하기 위해 피동 표현을 사용한 경우이다. ② ㉡은 피동 표현을 통해 ‘편지’를 찢은 주체인 ‘나’를 밝히지 않고 있다. ③ ㉢은 행위의 주체인 ‘기자’가 중요하지 않을 때 피동 표현을 사용할 수 있는 경우이다. ⑤ ㉤은 ‘날씨’를 푼 행위의 주체를 분명히 설정하기 어려워 피동 표현을 사용한 경우이다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉣에서 ‘대통령’을 뽑은 행위의 주체는 ‘국민들’이다. ㉣은 행위의 주체가 누구나 아는 사람이어서 말할 필요가 없을 때 피동 표현을 사용할 수 있는 경우이다.\n① ㉠에서 쏘는 행위의 주체는 ‘벌’이고 행위의 대상은 ‘그’이다. ㉠은 ‘그’를 부각하기 위해 피동 표현을 사용한 경우이다. ② ㉡은 피동 표현을 통해 ‘편지’를 찢은 주체인 ‘나’를 밝히지 않고 있다. ③ ㉢은 행위의 주체인 ‘기자’가 중요하지 않을 때 피동 표현을 사용할 수 있는 경우이다. ⑤ ㉤은 ‘날씨’를 푼 행위의 주체를 분명히 설정하기 어려워 피동 표현을 사용한 경우이다."
     ],
-    "src": "2021 9월 전국연합 고2"
+    "src": "2021 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-013",
@@ -6562,7 +6844,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉣에서 ‘대통령’을 뽑은 행위의 주체는 ‘국민들’이다. ㉣은 행위의 주체가 누구나 아는 사람이어서 말할 필요가 없을 때 피동 표현을 사용할 수 있는 경우이다.\n① ㉠에서 쏘는 행위의 주체는 ‘벌’이고 행위의 대상은 ‘그’이다. ㉠은 ‘그’를 부각하기 위해 피동 표현을 사용한 경우이다. ② ㉡은 피동 표현을 통해 ‘편지’를 찢은 주체인 ‘나’를 밝히지 않고 있다. ③ ㉢은 행위의 주체인 ‘기자’가 중요하지 않을 때 피동 표현을 사용할 수 있는 경우이다. ⑤ ㉤은 ‘날씨’를 푼 행위의 주체를 분명히 설정하기 어려워 피동 표현을 사용한 경우이다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉣에서 ‘대통령’을 뽑은 행위의 주체는 ‘국민들’이다. ㉣은 행위의 주체가 누구나 아는 사람이어서 말할 필요가 없을 때 피동 표현을 사용할 수 있는 경우이다.\n① ㉠에서 쏘는 행위의 주체는 ‘벌’이고 행위의 대상은 ‘그’이다. ㉠은 ‘그’를 부각하기 위해 피동 표현을 사용한 경우이다. ② ㉡은 피동 표현을 통해 ‘편지’를 찢은 주체인 ‘나’를 밝히지 않고 있다. ③ ㉢은 행위의 주체인 ‘기자’가 중요하지 않을 때 피동 표현을 사용할 수 있는 경우이다. ⑤ ㉤은 ‘날씨’를 푼 행위의 주체를 분명히 설정하기 어려워 피동 표현을 사용한 경우이다."
     ],
-    "src": "2021 9월 전국연합 고2"
+    "src": "2021 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-014",
@@ -6582,7 +6865,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉣에서 ‘대통령’을 뽑은 행위의 주체는 ‘국민들’이다. ㉣은 행위의 주체가 누구나 아는 사람이어서 말할 필요가 없을 때 피동 표현을 사용할 수 있는 경우이다.\n① ㉠에서 쏘는 행위의 주체는 ‘벌’이고 행위의 대상은 ‘그’이다. ㉠은 ‘그’를 부각하기 위해 피동 표현을 사용한 경우이다. ② ㉡은 피동 표현을 통해 ‘편지’를 찢은 주체인 ‘나’를 밝히지 않고 있다. ③ ㉢은 행위의 주체인 ‘기자’가 중요하지 않을 때 피동 표현을 사용할 수 있는 경우이다. ⑤ ㉤은 ‘날씨’를 푼 행위의 주체를 분명히 설정하기 어려워 피동 표현을 사용한 경우이다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉣에서 ‘대통령’을 뽑은 행위의 주체는 ‘국민들’이다. ㉣은 행위의 주체가 누구나 아는 사람이어서 말할 필요가 없을 때 피동 표현을 사용할 수 있는 경우이다.\n① ㉠에서 쏘는 행위의 주체는 ‘벌’이고 행위의 대상은 ‘그’이다. ㉠은 ‘그’를 부각하기 위해 피동 표현을 사용한 경우이다. ② ㉡은 피동 표현을 통해 ‘편지’를 찢은 주체인 ‘나’를 밝히지 않고 있다. ③ ㉢은 행위의 주체인 ‘기자’가 중요하지 않을 때 피동 표현을 사용할 수 있는 경우이다. ⑤ ㉤은 ‘날씨’를 푼 행위의 주체를 분명히 설정하기 어려워 피동 표현을 사용한 경우이다."
     ],
-    "src": "2021 9월 전국연합 고2"
+    "src": "2021 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-015",
@@ -6602,7 +6886,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉣에서 ‘대통령’을 뽑은 행위의 주체는 ‘국민들’이다. ㉣은 행위의 주체가 누구나 아는 사람이어서 말할 필요가 없을 때 피동 표현을 사용할 수 있는 경우이다.\n① ㉠에서 쏘는 행위의 주체는 ‘벌’이고 행위의 대상은 ‘그’이다. ㉠은 ‘그’를 부각하기 위해 피동 표현을 사용한 경우이다. ② ㉡은 피동 표현을 통해 ‘편지’를 찢은 주체인 ‘나’를 밝히지 않고 있다. ③ ㉢은 행위의 주체인 ‘기자’가 중요하지 않을 때 피동 표현을 사용할 수 있는 경우이다. ⑤ ㉤은 ‘날씨’를 푼 행위의 주체를 분명히 설정하기 어려워 피동 표현을 사용한 경우이다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉣에서 ‘대통령’을 뽑은 행위의 주체는 ‘국민들’이다. ㉣은 행위의 주체가 누구나 아는 사람이어서 말할 필요가 없을 때 피동 표현을 사용할 수 있는 경우이다.\n① ㉠에서 쏘는 행위의 주체는 ‘벌’이고 행위의 대상은 ‘그’이다. ㉠은 ‘그’를 부각하기 위해 피동 표현을 사용한 경우이다. ② ㉡은 피동 표현을 통해 ‘편지’를 찢은 주체인 ‘나’를 밝히지 않고 있다. ③ ㉢은 행위의 주체인 ‘기자’가 중요하지 않을 때 피동 표현을 사용할 수 있는 경우이다. ⑤ ㉤은 ‘날씨’를 푼 행위의 주체를 분명히 설정하기 어려워 피동 표현을 사용한 경우이다."
     ],
-    "src": "2021 9월 전국연합 고2"
+    "src": "2021 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-016",
@@ -6622,7 +6907,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㅁ의 주체인 ‘아버지’는 화자에게 높임의 대상이지만, 청자인 ‘할아버지’에게는 높임의 대상이 아니다. 따라서 화자는 주체인 ‘아버지’와 청자인 ‘할아버지’의 관계를 고려하여 ‘할아버지’ 앞에서 ‘아버지’를 높이지 않고 있다. 한편 청자인 ‘할아버지’는 화자에게 높임의 대상이다. 따라서 화자는 ‘-습니다’를 사용하여 상대 높임을 실현하고 있다.\n[오답풀이] ① ㄱ의 화자는 선생님의 소유물인 ‘책’에 대한 높임을 ‘-시-’로 실현함으로써 ‘선생님’을 간접적으로 높이고 있다. ② ㄴ은 방송이라는 공적 담화의 객관성을 고려해 ‘세종대왕’을 높이지 않고 있다. ③ ㄷ의 주체인 ‘어린이’는 화자에게 높임의 대상이 아니지만, 화자는 수업이라는 공적인 담화 상황을 고려하여 ‘어린이’에 대한 높임을 ‘-시-’로 실현하고 있다. ④ ㄹ의 주체인 ‘엄마’는 화자에게 높임의 대상이 아니지만, 청자인 ‘손자’에게는 높임의 대상이다. 따라서 화자는 주체인 ‘엄마’와 청자인 ‘손자’의 관계를 고려하여 ‘손자’ 앞에서 ‘엄마’에 대한 높임을 ‘-시-’로 실현하고 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㅁ의 주체인 ‘아버지’는 화자에게 높임의 대상이지만, 청자인 ‘할아버지’에게는 높임의 대상이 아니다. 따라서 화자는 주체인 ‘아버지’와 청자인 ‘할아버지’의 관계를 고려하여 ‘할아버지’ 앞에서 ‘아버지’를 높이지 않고 있다. 한편 청자인 ‘할아버지’는 화자에게 높임의 대상이다. 따라서 화자는 ‘-습니다’를 사용하여 상대 높임을 실현하고 있다.\n[오답풀이] ① ㄱ의 화자는 선생님의 소유물인 ‘책’에 대한 높임을 ‘-시-’로 실현함으로써 ‘선생님’을 간접적으로 높이고 있다. ② ㄴ은 방송이라는 공적 담화의 객관성을 고려해 ‘세종대왕’을 높이지 않고 있다. ③ ㄷ의 주체인 ‘어린이’는 화자에게 높임의 대상이 아니지만, 화자는 수업이라는 공적인 담화 상황을 고려하여 ‘어린이’에 대한 높임을 ‘-시-’로 실현하고 있다. ④ ㄹ의 주체인 ‘엄마’는 화자에게 높임의 대상이 아니지만, 청자인 ‘손자’에게는 높임의 대상이다. 따라서 화자는 주체인 ‘엄마’와 청자인 ‘손자’의 관계를 고려하여 ‘손자’ 앞에서 ‘엄마’에 대한 높임을 ‘-시-’로 실현하고 있다."
     ],
-    "src": "2022 3월 전국연합 고2"
+    "src": "2022 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-017",
@@ -6642,7 +6928,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㅁ의 주체인 ‘아버지’는 화자에게 높임의 대상이지만, 청자인 ‘할아버지’에게는 높임의 대상이 아니다. 따라서 화자는 주체인 ‘아버지’와 청자인 ‘할아버지’의 관계를 고려하여 ‘할아버지’ 앞에서 ‘아버지’를 높이지 않고 있다. 한편 청자인 ‘할아버지’는 화자에게 높임의 대상이다. 따라서 화자는 ‘-습니다’를 사용하여 상대 높임을 실현하고 있다.\n[오답풀이] ① ㄱ의 화자는 선생님의 소유물인 ‘책’에 대한 높임을 ‘-시-’로 실현함으로써 ‘선생님’을 간접적으로 높이고 있다. ② ㄴ은 방송이라는 공적 담화의 객관성을 고려해 ‘세종대왕’을 높이지 않고 있다. ③ ㄷ의 주체인 ‘어린이’는 화자에게 높임의 대상이 아니지만, 화자는 수업이라는 공적인 담화 상황을 고려하여 ‘어린이’에 대한 높임을 ‘-시-’로 실현하고 있다. ④ ㄹ의 주체인 ‘엄마’는 화자에게 높임의 대상이 아니지만, 청자인 ‘손자’에게는 높임의 대상이다. 따라서 화자는 주체인 ‘엄마’와 청자인 ‘손자’의 관계를 고려하여 ‘손자’ 앞에서 ‘엄마’에 대한 높임을 ‘-시-’로 실현하고 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㅁ의 주체인 ‘아버지’는 화자에게 높임의 대상이지만, 청자인 ‘할아버지’에게는 높임의 대상이 아니다. 따라서 화자는 주체인 ‘아버지’와 청자인 ‘할아버지’의 관계를 고려하여 ‘할아버지’ 앞에서 ‘아버지’를 높이지 않고 있다. 한편 청자인 ‘할아버지’는 화자에게 높임의 대상이다. 따라서 화자는 ‘-습니다’를 사용하여 상대 높임을 실현하고 있다.\n[오답풀이] ① ㄱ의 화자는 선생님의 소유물인 ‘책’에 대한 높임을 ‘-시-’로 실현함으로써 ‘선생님’을 간접적으로 높이고 있다. ② ㄴ은 방송이라는 공적 담화의 객관성을 고려해 ‘세종대왕’을 높이지 않고 있다. ③ ㄷ의 주체인 ‘어린이’는 화자에게 높임의 대상이 아니지만, 화자는 수업이라는 공적인 담화 상황을 고려하여 ‘어린이’에 대한 높임을 ‘-시-’로 실현하고 있다. ④ ㄹ의 주체인 ‘엄마’는 화자에게 높임의 대상이 아니지만, 청자인 ‘손자’에게는 높임의 대상이다. 따라서 화자는 주체인 ‘엄마’와 청자인 ‘손자’의 관계를 고려하여 ‘손자’ 앞에서 ‘엄마’에 대한 높임을 ‘-시-’로 실현하고 있다."
     ],
-    "src": "2022 3월 전국연합 고2"
+    "src": "2022 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-018",
@@ -6662,7 +6949,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㅁ의 주체인 ‘아버지’는 화자에게 높임의 대상이지만, 청자인 ‘할아버지’에게는 높임의 대상이 아니다. 따라서 화자는 주체인 ‘아버지’와 청자인 ‘할아버지’의 관계를 고려하여 ‘할아버지’ 앞에서 ‘아버지’를 높이지 않고 있다. 한편 청자인 ‘할아버지’는 화자에게 높임의 대상이다. 따라서 화자는 ‘-습니다’를 사용하여 상대 높임을 실현하고 있다.\n[오답풀이] ① ㄱ의 화자는 선생님의 소유물인 ‘책’에 대한 높임을 ‘-시-’로 실현함으로써 ‘선생님’을 간접적으로 높이고 있다. ② ㄴ은 방송이라는 공적 담화의 객관성을 고려해 ‘세종대왕’을 높이지 않고 있다. ③ ㄷ의 주체인 ‘어린이’는 화자에게 높임의 대상이 아니지만, 화자는 수업이라는 공적인 담화 상황을 고려하여 ‘어린이’에 대한 높임을 ‘-시-’로 실현하고 있다. ④ ㄹ의 주체인 ‘엄마’는 화자에게 높임의 대상이 아니지만, 청자인 ‘손자’에게는 높임의 대상이다. 따라서 화자는 주체인 ‘엄마’와 청자인 ‘손자’의 관계를 고려하여 ‘손자’ 앞에서 ‘엄마’에 대한 높임을 ‘-시-’로 실현하고 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㅁ의 주체인 ‘아버지’는 화자에게 높임의 대상이지만, 청자인 ‘할아버지’에게는 높임의 대상이 아니다. 따라서 화자는 주체인 ‘아버지’와 청자인 ‘할아버지’의 관계를 고려하여 ‘할아버지’ 앞에서 ‘아버지’를 높이지 않고 있다. 한편 청자인 ‘할아버지’는 화자에게 높임의 대상이다. 따라서 화자는 ‘-습니다’를 사용하여 상대 높임을 실현하고 있다.\n[오답풀이] ① ㄱ의 화자는 선생님의 소유물인 ‘책’에 대한 높임을 ‘-시-’로 실현함으로써 ‘선생님’을 간접적으로 높이고 있다. ② ㄴ은 방송이라는 공적 담화의 객관성을 고려해 ‘세종대왕’을 높이지 않고 있다. ③ ㄷ의 주체인 ‘어린이’는 화자에게 높임의 대상이 아니지만, 화자는 수업이라는 공적인 담화 상황을 고려하여 ‘어린이’에 대한 높임을 ‘-시-’로 실현하고 있다. ④ ㄹ의 주체인 ‘엄마’는 화자에게 높임의 대상이 아니지만, 청자인 ‘손자’에게는 높임의 대상이다. 따라서 화자는 주체인 ‘엄마’와 청자인 ‘손자’의 관계를 고려하여 ‘손자’ 앞에서 ‘엄마’에 대한 높임을 ‘-시-’로 실현하고 있다."
     ],
-    "src": "2022 3월 전국연합 고2"
+    "src": "2022 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-019",
@@ -6682,7 +6970,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㅁ의 주체인 ‘아버지’는 화자에게 높임의 대상이지만, 청자인 ‘할아버지’에게는 높임의 대상이 아니다. 따라서 화자는 주체인 ‘아버지’와 청자인 ‘할아버지’의 관계를 고려하여 ‘할아버지’ 앞에서 ‘아버지’를 높이지 않고 있다. 한편 청자인 ‘할아버지’는 화자에게 높임의 대상이다. 따라서 화자는 ‘-습니다’를 사용하여 상대 높임을 실현하고 있다.\n[오답풀이] ① ㄱ의 화자는 선생님의 소유물인 ‘책’에 대한 높임을 ‘-시-’로 실현함으로써 ‘선생님’을 간접적으로 높이고 있다. ② ㄴ은 방송이라는 공적 담화의 객관성을 고려해 ‘세종대왕’을 높이지 않고 있다. ③ ㄷ의 주체인 ‘어린이’는 화자에게 높임의 대상이 아니지만, 화자는 수업이라는 공적인 담화 상황을 고려하여 ‘어린이’에 대한 높임을 ‘-시-’로 실현하고 있다. ④ ㄹ의 주체인 ‘엄마’는 화자에게 높임의 대상이 아니지만, 청자인 ‘손자’에게는 높임의 대상이다. 따라서 화자는 주체인 ‘엄마’와 청자인 ‘손자’의 관계를 고려하여 ‘손자’ 앞에서 ‘엄마’에 대한 높임을 ‘-시-’로 실현하고 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㅁ의 주체인 ‘아버지’는 화자에게 높임의 대상이지만, 청자인 ‘할아버지’에게는 높임의 대상이 아니다. 따라서 화자는 주체인 ‘아버지’와 청자인 ‘할아버지’의 관계를 고려하여 ‘할아버지’ 앞에서 ‘아버지’를 높이지 않고 있다. 한편 청자인 ‘할아버지’는 화자에게 높임의 대상이다. 따라서 화자는 ‘-습니다’를 사용하여 상대 높임을 실현하고 있다.\n[오답풀이] ① ㄱ의 화자는 선생님의 소유물인 ‘책’에 대한 높임을 ‘-시-’로 실현함으로써 ‘선생님’을 간접적으로 높이고 있다. ② ㄴ은 방송이라는 공적 담화의 객관성을 고려해 ‘세종대왕’을 높이지 않고 있다. ③ ㄷ의 주체인 ‘어린이’는 화자에게 높임의 대상이 아니지만, 화자는 수업이라는 공적인 담화 상황을 고려하여 ‘어린이’에 대한 높임을 ‘-시-’로 실현하고 있다. ④ ㄹ의 주체인 ‘엄마’는 화자에게 높임의 대상이 아니지만, 청자인 ‘손자’에게는 높임의 대상이다. 따라서 화자는 주체인 ‘엄마’와 청자인 ‘손자’의 관계를 고려하여 ‘손자’ 앞에서 ‘엄마’에 대한 높임을 ‘-시-’로 실현하고 있다."
     ],
-    "src": "2022 3월 전국연합 고2"
+    "src": "2022 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-020",
@@ -6702,7 +6991,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㅁ의 주체인 ‘아버지’는 화자에게 높임의 대상이지만, 청자인 ‘할아버지’에게는 높임의 대상이 아니다. 따라서 화자는 주체인 ‘아버지’와 청자인 ‘할아버지’의 관계를 고려하여 ‘할아버지’ 앞에서 ‘아버지’를 높이지 않고 있다. 한편 청자인 ‘할아버지’는 화자에게 높임의 대상이다. 따라서 화자는 ‘-습니다’를 사용하여 상대 높임을 실현하고 있다.\n[오답풀이] ① ㄱ의 화자는 선생님의 소유물인 ‘책’에 대한 높임을 ‘-시-’로 실현함으로써 ‘선생님’을 간접적으로 높이고 있다. ② ㄴ은 방송이라는 공적 담화의 객관성을 고려해 ‘세종대왕’을 높이지 않고 있다. ③ ㄷ의 주체인 ‘어린이’는 화자에게 높임의 대상이 아니지만, 화자는 수업이라는 공적인 담화 상황을 고려하여 ‘어린이’에 대한 높임을 ‘-시-’로 실현하고 있다. ④ ㄹ의 주체인 ‘엄마’는 화자에게 높임의 대상이 아니지만, 청자인 ‘손자’에게는 높임의 대상이다. 따라서 화자는 주체인 ‘엄마’와 청자인 ‘손자’의 관계를 고려하여 ‘손자’ 앞에서 ‘엄마’에 대한 높임을 ‘-시-’로 실현하고 있다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\nㅁ의 주체인 ‘아버지’는 화자에게 높임의 대상이지만, 청자인 ‘할아버지’에게는 높임의 대상이 아니다. 따라서 화자는 주체인 ‘아버지’와 청자인 ‘할아버지’의 관계를 고려하여 ‘할아버지’ 앞에서 ‘아버지’를 높이지 않고 있다. 한편 청자인 ‘할아버지’는 화자에게 높임의 대상이다. 따라서 화자는 ‘-습니다’를 사용하여 상대 높임을 실현하고 있다.\n[오답풀이] ① ㄱ의 화자는 선생님의 소유물인 ‘책’에 대한 높임을 ‘-시-’로 실현함으로써 ‘선생님’을 간접적으로 높이고 있다. ② ㄴ은 방송이라는 공적 담화의 객관성을 고려해 ‘세종대왕’을 높이지 않고 있다. ③ ㄷ의 주체인 ‘어린이’는 화자에게 높임의 대상이 아니지만, 화자는 수업이라는 공적인 담화 상황을 고려하여 ‘어린이’에 대한 높임을 ‘-시-’로 실현하고 있다. ④ ㄹ의 주체인 ‘엄마’는 화자에게 높임의 대상이 아니지만, 청자인 ‘손자’에게는 높임의 대상이다. 따라서 화자는 주체인 ‘엄마’와 청자인 ‘손자’의 관계를 고려하여 ‘손자’ 앞에서 ‘엄마’에 대한 높임을 ‘-시-’로 실현하고 있다."
     ],
-    "src": "2022 3월 전국연합 고2"
+    "src": "2022 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-021",
@@ -6722,7 +7012,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘어제’ 형이 ‘내일’ 시험을 본다고 말한 것은 인용을 하는 화자가 말한 시점을 기준으로 할 때, 형이 ‘오늘’ 시험을 본다는 것을 의미한다. 따라서 [자료]의 간접 인용에서의 시간 표현은 ‘오늘’이 적절하므로, 시간 표현 ‘오늘’을 ‘어제’로 바꿔야 한다는 설명은 적절하지 않다.\n[오답풀이] ① ‘자기’는 앞서 언급한 ‘형’을 다시 가리키는 3인칭 재귀 대명사로, ‘나’를 ‘자기’로 바르게 바꿨다는 설명은 적절하다. ③ ‘이곳’은 인용을 하는 화자의 관점에서 먼 거리에 있는 ‘형’이 위치한 곳을 가리키므로, ‘이곳’을 ‘그곳’으로 바르게 바꿨다는 설명은 적절하다. ④ 평서문은 간접 인용에서 종결 어미가 ‘-다’로 바뀌므로, ‘-아’를 ‘-다’로 바르게 바꿨다는 설명은 적절하다. ⑤ 간접 인용에서는 조사 ‘고’가 쓰이므로, 직접 인용에 쓰이는 조사 ‘라고’를 ‘고’로 바꿔야 한다는 설명은 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘어제’ 형이 ‘내일’ 시험을 본다고 말한 것은 인용을 하는 화자가 말한 시점을 기준으로 할 때, 형이 ‘오늘’ 시험을 본다는 것을 의미한다. 따라서 [자료]의 간접 인용에서의 시간 표현은 ‘오늘’이 적절하므로, 시간 표현 ‘오늘’을 ‘어제’로 바꿔야 한다는 설명은 적절하지 않다.\n[오답풀이] ① ‘자기’는 앞서 언급한 ‘형’을 다시 가리키는 3인칭 재귀 대명사로, ‘나’를 ‘자기’로 바르게 바꿨다는 설명은 적절하다. ③ ‘이곳’은 인용을 하는 화자의 관점에서 먼 거리에 있는 ‘형’이 위치한 곳을 가리키므로, ‘이곳’을 ‘그곳’으로 바르게 바꿨다는 설명은 적절하다. ④ 평서문은 간접 인용에서 종결 어미가 ‘-다’로 바뀌므로, ‘-아’를 ‘-다’로 바르게 바꿨다는 설명은 적절하다. ⑤ 간접 인용에서는 조사 ‘고’가 쓰이므로, 직접 인용에 쓰이는 조사 ‘라고’를 ‘고’로 바꿔야 한다는 설명은 적절하다."
     ],
-    "src": "2022 3월 전국연합 고2"
+    "src": "2022 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-022",
@@ -6742,7 +7033,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘어제’ 형이 ‘내일’ 시험을 본다고 말한 것은 인용을 하는 화자가 말한 시점을 기준으로 할 때, 형이 ‘오늘’ 시험을 본다는 것을 의미한다. 따라서 [자료]의 간접 인용에서의 시간 표현은 ‘오늘’이 적절하므로, 시간 표현 ‘오늘’을 ‘어제’로 바꿔야 한다는 설명은 적절하지 않다.\n[오답풀이] ① ‘자기’는 앞서 언급한 ‘형’을 다시 가리키는 3인칭 재귀 대명사로, ‘나’를 ‘자기’로 바르게 바꿨다는 설명은 적절하다. ③ ‘이곳’은 인용을 하는 화자의 관점에서 먼 거리에 있는 ‘형’이 위치한 곳을 가리키므로, ‘이곳’을 ‘그곳’으로 바르게 바꿨다는 설명은 적절하다. ④ 평서문은 간접 인용에서 종결 어미가 ‘-다’로 바뀌므로, ‘-아’를 ‘-다’로 바르게 바꿨다는 설명은 적절하다. ⑤ 간접 인용에서는 조사 ‘고’가 쓰이므로, 직접 인용에 쓰이는 조사 ‘라고’를 ‘고’로 바꿔야 한다는 설명은 적절하다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘어제’ 형이 ‘내일’ 시험을 본다고 말한 것은 인용을 하는 화자가 말한 시점을 기준으로 할 때, 형이 ‘오늘’ 시험을 본다는 것을 의미한다. 따라서 [자료]의 간접 인용에서의 시간 표현은 ‘오늘’이 적절하므로, 시간 표현 ‘오늘’을 ‘어제’로 바꿔야 한다는 설명은 적절하지 않다.\n[오답풀이] ① ‘자기’는 앞서 언급한 ‘형’을 다시 가리키는 3인칭 재귀 대명사로, ‘나’를 ‘자기’로 바르게 바꿨다는 설명은 적절하다. ③ ‘이곳’은 인용을 하는 화자의 관점에서 먼 거리에 있는 ‘형’이 위치한 곳을 가리키므로, ‘이곳’을 ‘그곳’으로 바르게 바꿨다는 설명은 적절하다. ④ 평서문은 간접 인용에서 종결 어미가 ‘-다’로 바뀌므로, ‘-아’를 ‘-다’로 바르게 바꿨다는 설명은 적절하다. ⑤ 간접 인용에서는 조사 ‘고’가 쓰이므로, 직접 인용에 쓰이는 조사 ‘라고’를 ‘고’로 바꿔야 한다는 설명은 적절하다."
     ],
-    "src": "2022 3월 전국연합 고2"
+    "src": "2022 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-023",
@@ -6762,7 +7054,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘어제’ 형이 ‘내일’ 시험을 본다고 말한 것은 인용을 하는 화자가 말한 시점을 기준으로 할 때, 형이 ‘오늘’ 시험을 본다는 것을 의미한다. 따라서 [자료]의 간접 인용에서의 시간 표현은 ‘오늘’이 적절하므로, 시간 표현 ‘오늘’을 ‘어제’로 바꿔야 한다는 설명은 적절하지 않다.\n[오답풀이] ① ‘자기’는 앞서 언급한 ‘형’을 다시 가리키는 3인칭 재귀 대명사로, ‘나’를 ‘자기’로 바르게 바꿨다는 설명은 적절하다. ③ ‘이곳’은 인용을 하는 화자의 관점에서 먼 거리에 있는 ‘형’이 위치한 곳을 가리키므로, ‘이곳’을 ‘그곳’으로 바르게 바꿨다는 설명은 적절하다. ④ 평서문은 간접 인용에서 종결 어미가 ‘-다’로 바뀌므로, ‘-아’를 ‘-다’로 바르게 바꿨다는 설명은 적절하다. ⑤ 간접 인용에서는 조사 ‘고’가 쓰이므로, 직접 인용에 쓰이는 조사 ‘라고’를 ‘고’로 바꿔야 한다는 설명은 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘어제’ 형이 ‘내일’ 시험을 본다고 말한 것은 인용을 하는 화자가 말한 시점을 기준으로 할 때, 형이 ‘오늘’ 시험을 본다는 것을 의미한다. 따라서 [자료]의 간접 인용에서의 시간 표현은 ‘오늘’이 적절하므로, 시간 표현 ‘오늘’을 ‘어제’로 바꿔야 한다는 설명은 적절하지 않다.\n[오답풀이] ① ‘자기’는 앞서 언급한 ‘형’을 다시 가리키는 3인칭 재귀 대명사로, ‘나’를 ‘자기’로 바르게 바꿨다는 설명은 적절하다. ③ ‘이곳’은 인용을 하는 화자의 관점에서 먼 거리에 있는 ‘형’이 위치한 곳을 가리키므로, ‘이곳’을 ‘그곳’으로 바르게 바꿨다는 설명은 적절하다. ④ 평서문은 간접 인용에서 종결 어미가 ‘-다’로 바뀌므로, ‘-아’를 ‘-다’로 바르게 바꿨다는 설명은 적절하다. ⑤ 간접 인용에서는 조사 ‘고’가 쓰이므로, 직접 인용에 쓰이는 조사 ‘라고’를 ‘고’로 바꿔야 한다는 설명은 적절하다."
     ],
-    "src": "2022 3월 전국연합 고2"
+    "src": "2022 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-024",
@@ -6782,7 +7075,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘어제’ 형이 ‘내일’ 시험을 본다고 말한 것은 인용을 하는 화자가 말한 시점을 기준으로 할 때, 형이 ‘오늘’ 시험을 본다는 것을 의미한다. 따라서 [자료]의 간접 인용에서의 시간 표현은 ‘오늘’이 적절하므로, 시간 표현 ‘오늘’을 ‘어제’로 바꿔야 한다는 설명은 적절하지 않다.\n[오답풀이] ① ‘자기’는 앞서 언급한 ‘형’을 다시 가리키는 3인칭 재귀 대명사로, ‘나’를 ‘자기’로 바르게 바꿨다는 설명은 적절하다. ③ ‘이곳’은 인용을 하는 화자의 관점에서 먼 거리에 있는 ‘형’이 위치한 곳을 가리키므로, ‘이곳’을 ‘그곳’으로 바르게 바꿨다는 설명은 적절하다. ④ 평서문은 간접 인용에서 종결 어미가 ‘-다’로 바뀌므로, ‘-아’를 ‘-다’로 바르게 바꿨다는 설명은 적절하다. ⑤ 간접 인용에서는 조사 ‘고’가 쓰이므로, 직접 인용에 쓰이는 조사 ‘라고’를 ‘고’로 바꿔야 한다는 설명은 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘어제’ 형이 ‘내일’ 시험을 본다고 말한 것은 인용을 하는 화자가 말한 시점을 기준으로 할 때, 형이 ‘오늘’ 시험을 본다는 것을 의미한다. 따라서 [자료]의 간접 인용에서의 시간 표현은 ‘오늘’이 적절하므로, 시간 표현 ‘오늘’을 ‘어제’로 바꿔야 한다는 설명은 적절하지 않다.\n[오답풀이] ① ‘자기’는 앞서 언급한 ‘형’을 다시 가리키는 3인칭 재귀 대명사로, ‘나’를 ‘자기’로 바르게 바꿨다는 설명은 적절하다. ③ ‘이곳’은 인용을 하는 화자의 관점에서 먼 거리에 있는 ‘형’이 위치한 곳을 가리키므로, ‘이곳’을 ‘그곳’으로 바르게 바꿨다는 설명은 적절하다. ④ 평서문은 간접 인용에서 종결 어미가 ‘-다’로 바뀌므로, ‘-아’를 ‘-다’로 바르게 바꿨다는 설명은 적절하다. ⑤ 간접 인용에서는 조사 ‘고’가 쓰이므로, 직접 인용에 쓰이는 조사 ‘라고’를 ‘고’로 바꿔야 한다는 설명은 적절하다."
     ],
-    "src": "2022 3월 전국연합 고2"
+    "src": "2022 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-025",
@@ -6802,7 +7096,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘어제’ 형이 ‘내일’ 시험을 본다고 말한 것은 인용을 하는 화자가 말한 시점을 기준으로 할 때, 형이 ‘오늘’ 시험을 본다는 것을 의미한다. 따라서 [자료]의 간접 인용에서의 시간 표현은 ‘오늘’이 적절하므로, 시간 표현 ‘오늘’을 ‘어제’로 바꿔야 한다는 설명은 적절하지 않다.\n[오답풀이] ① ‘자기’는 앞서 언급한 ‘형’을 다시 가리키는 3인칭 재귀 대명사로, ‘나’를 ‘자기’로 바르게 바꿨다는 설명은 적절하다. ③ ‘이곳’은 인용을 하는 화자의 관점에서 먼 거리에 있는 ‘형’이 위치한 곳을 가리키므로, ‘이곳’을 ‘그곳’으로 바르게 바꿨다는 설명은 적절하다. ④ 평서문은 간접 인용에서 종결 어미가 ‘-다’로 바뀌므로, ‘-아’를 ‘-다’로 바르게 바꿨다는 설명은 적절하다. ⑤ 간접 인용에서는 조사 ‘고’가 쓰이므로, 직접 인용에 쓰이는 조사 ‘라고’를 ‘고’로 바꿔야 한다는 설명은 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘어제’ 형이 ‘내일’ 시험을 본다고 말한 것은 인용을 하는 화자가 말한 시점을 기준으로 할 때, 형이 ‘오늘’ 시험을 본다는 것을 의미한다. 따라서 [자료]의 간접 인용에서의 시간 표현은 ‘오늘’이 적절하므로, 시간 표현 ‘오늘’을 ‘어제’로 바꿔야 한다는 설명은 적절하지 않다.\n[오답풀이] ① ‘자기’는 앞서 언급한 ‘형’을 다시 가리키는 3인칭 재귀 대명사로, ‘나’를 ‘자기’로 바르게 바꿨다는 설명은 적절하다. ③ ‘이곳’은 인용을 하는 화자의 관점에서 먼 거리에 있는 ‘형’이 위치한 곳을 가리키므로, ‘이곳’을 ‘그곳’으로 바르게 바꿨다는 설명은 적절하다. ④ 평서문은 간접 인용에서 종결 어미가 ‘-다’로 바뀌므로, ‘-아’를 ‘-다’로 바르게 바꿨다는 설명은 적절하다. ⑤ 간접 인용에서는 조사 ‘고’가 쓰이므로, 직접 인용에 쓰이는 조사 ‘라고’를 ‘고’로 바꿔야 한다는 설명은 적절하다."
     ],
-    "src": "2022 3월 전국연합 고2"
+    "src": "2022 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-026",
@@ -6822,7 +7117,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠의 ‘잡혔다’의 ‘잡히다’는 ‘말 따위가 문제로 삼아지다.’라는 의미를 지닌 피동사로 사용되었으므로 피동 접미사가 사용된 경우이고, ㉡의 ‘잡혔다’에서 ‘잡히다’는 ‘담보로 맡기다.’라는 의미를 지닌 사동사로 사용되었으므로 사동 접미사가 사용된 경우이다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠의 ‘잡혔다’의 ‘잡히다’는 ‘말 따위가 문제로 삼아지다.’라는 의미를 지닌 피동사로 사용되었으므로 피동 접미사가 사용된 경우이고, ㉡의 ‘잡혔다’에서 ‘잡히다’는 ‘담보로 맡기다.’라는 의미를 지닌 사동사로 사용되었으므로 사동 접미사가 사용된 경우이다."
     ],
-    "src": "2023 11월 전국연합 고2"
+    "src": "2023 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-027",
@@ -6842,7 +7138,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠의 ‘잡혔다’의 ‘잡히다’는 ‘말 따위가 문제로 삼아지다.’라는 의미를 지닌 피동사로 사용되었으므로 피동 접미사가 사용된 경우이고, ㉡의 ‘잡혔다’에서 ‘잡히다’는 ‘담보로 맡기다.’라는 의미를 지닌 사동사로 사용되었으므로 사동 접미사가 사용된 경우이다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠의 ‘잡혔다’의 ‘잡히다’는 ‘말 따위가 문제로 삼아지다.’라는 의미를 지닌 피동사로 사용되었으므로 피동 접미사가 사용된 경우이고, ㉡의 ‘잡혔다’에서 ‘잡히다’는 ‘담보로 맡기다.’라는 의미를 지닌 사동사로 사용되었으므로 사동 접미사가 사용된 경우이다."
     ],
-    "src": "2023 11월 전국연합 고2"
+    "src": "2023 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-028",
@@ -6862,7 +7159,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠의 ‘잡혔다’의 ‘잡히다’는 ‘말 따위가 문제로 삼아지다.’라는 의미를 지닌 피동사로 사용되었으므로 피동 접미사가 사용된 경우이고, ㉡의 ‘잡혔다’에서 ‘잡히다’는 ‘담보로 맡기다.’라는 의미를 지닌 사동사로 사용되었으므로 사동 접미사가 사용된 경우이다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠의 ‘잡혔다’의 ‘잡히다’는 ‘말 따위가 문제로 삼아지다.’라는 의미를 지닌 피동사로 사용되었으므로 피동 접미사가 사용된 경우이고, ㉡의 ‘잡혔다’에서 ‘잡히다’는 ‘담보로 맡기다.’라는 의미를 지닌 사동사로 사용되었으므로 사동 접미사가 사용된 경우이다."
     ],
-    "src": "2023 11월 전국연합 고2"
+    "src": "2023 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-029",
@@ -6882,7 +7180,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠의 ‘잡혔다’의 ‘잡히다’는 ‘말 따위가 문제로 삼아지다.’라는 의미를 지닌 피동사로 사용되었으므로 피동 접미사가 사용된 경우이고, ㉡의 ‘잡혔다’에서 ‘잡히다’는 ‘담보로 맡기다.’라는 의미를 지닌 사동사로 사용되었으므로 사동 접미사가 사용된 경우이다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠의 ‘잡혔다’의 ‘잡히다’는 ‘말 따위가 문제로 삼아지다.’라는 의미를 지닌 피동사로 사용되었으므로 피동 접미사가 사용된 경우이고, ㉡의 ‘잡혔다’에서 ‘잡히다’는 ‘담보로 맡기다.’라는 의미를 지닌 사동사로 사용되었으므로 사동 접미사가 사용된 경우이다."
     ],
-    "src": "2023 11월 전국연합 고2"
+    "src": "2023 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-expression-030",
@@ -6902,7 +7201,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠의 ‘잡혔다’의 ‘잡히다’는 ‘말 따위가 문제로 삼아지다.’라는 의미를 지닌 피동사로 사용되었으므로 피동 접미사가 사용된 경우이고, ㉡의 ‘잡혔다’에서 ‘잡히다’는 ‘담보로 맡기다.’라는 의미를 지닌 사동사로 사용되었으므로 사동 접미사가 사용된 경우이다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉠의 ‘잡혔다’의 ‘잡히다’는 ‘말 따위가 문제로 삼아지다.’라는 의미를 지닌 피동사로 사용되었으므로 피동 접미사가 사용된 경우이고, ㉡의 ‘잡혔다’에서 ‘잡히다’는 ‘담보로 맡기다.’라는 의미를 지닌 사동사로 사용되었으므로 사동 접미사가 사용된 경우이다."
     ],
-    "src": "2023 11월 전국연합 고2"
+    "src": "2023 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-001",
@@ -6922,7 +7222,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘옷깃’은 명사 ‘옷’과 명사 ‘깃’이 결합하여 만들어진 합성 명사이다. 그리고 발음은 [옫낃]으로 둘째 어근의 첫소리 ‘ㄱ’이 된소리 ‘ㄲ’으로 바뀌는 현상이 나타난다. 하지만 이 때 나타나는 현상은 [ㄱ, ㄷ, ㅂ]으로 발음되는 받침 ‘ㄱ(ㄲ, ㅋ, ㄳ, ㄺ), ㄷ(ㅅ, ㅆ, ㅈ, ㅊ, ㅌ), ㅂ(ㅍ, ㄼ, ㄿ, ㅄ)’ 뒤에서 ‘ㄱ, ㄷ, ㅂ, ㅅ, ㅈ’은 된소리인 [ㄲ, ㄸ, ㅃ, ㅆ, ㅉ]으로 각각 발음되는 된소리되기에 해당하는 것으로, 사잇소리 현상의 앞 어근의 끝소리가 울림소리이고 뒤 어근의 첫소리가 안울림 예사소리이면 뒤의 예사소리가 된소리로 바뀌는 현상과는 다르다.\n[오답풀이] ① ‘빨랫돌’은 ‘빨래’와 ‘돌’이 결합하여 만들어진 합성 명사로, 앞 어근의 끝소리가 울림소리인데 뒤 어근의 첫소리인 안울림 예사소리가 된소리로 바뀐다는 점으로 볼 때, ㉮에 해당하는 예이다. ③ ‘홑이불’의 발음은 [혼니불]로, 발음할 때 ‘ㄴ’의 첨가가 나타난다. 하지만 ‘홑이불’은 접사 ‘홑-’과 명사 ‘이불’이 결합하여 만들어진 파생 명사이다. ④ ‘뱃머리’는 ‘배’와 ‘머리’가 결합하여 만들어진 합성 명사로, ‘ㅁ’으로 시작하는 뒤 어근의 앞에서 모음으로 끝난 앞 어근의 끝소리에 ‘ㄴ’이 첨가된다는 점으로 볼 때, ㉯에 해당하는 예이다. ⑤ ‘깻잎’은 ‘깨’와 ‘잎’이 결합하여 만들어진 합성 명사로, 앞 어근이 모음으로 끝나고 뒤 어근이 ‘ㅣ’로 시작되는데 앞 어근의 끝소리와 뒤 어근의 첫소리에 모두 ‘ㄴ’이 첨가된다는 점으로 볼 때, ㉯에 해당하는 예이다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘옷깃’은 명사 ‘옷’과 명사 ‘깃’이 결합하여 만들어진 합성 명사이다. 그리고 발음은 [옫낃]으로 둘째 어근의 첫소리 ‘ㄱ’이 된소리 ‘ㄲ’으로 바뀌는 현상이 나타난다. 하지만 이 때 나타나는 현상은 [ㄱ, ㄷ, ㅂ]으로 발음되는 받침 ‘ㄱ(ㄲ, ㅋ, ㄳ, ㄺ), ㄷ(ㅅ, ㅆ, ㅈ, ㅊ, ㅌ), ㅂ(ㅍ, ㄼ, ㄿ, ㅄ)’ 뒤에서 ‘ㄱ, ㄷ, ㅂ, ㅅ, ㅈ’은 된소리인 [ㄲ, ㄸ, ㅃ, ㅆ, ㅉ]으로 각각 발음되는 된소리되기에 해당하는 것으로, 사잇소리 현상의 앞 어근의 끝소리가 울림소리이고 뒤 어근의 첫소리가 안울림 예사소리이면 뒤의 예사소리가 된소리로 바뀌는 현상과는 다르다.\n[오답풀이] ① ‘빨랫돌’은 ‘빨래’와 ‘돌’이 결합하여 만들어진 합성 명사로, 앞 어근의 끝소리가 울림소리인데 뒤 어근의 첫소리인 안울림 예사소리가 된소리로 바뀐다는 점으로 볼 때, ㉮에 해당하는 예이다. ③ ‘홑이불’의 발음은 [혼니불]로, 발음할 때 ‘ㄴ’의 첨가가 나타난다. 하지만 ‘홑이불’은 접사 ‘홑-’과 명사 ‘이불’이 결합하여 만들어진 파생 명사이다. ④ ‘뱃머리’는 ‘배’와 ‘머리’가 결합하여 만들어진 합성 명사로, ‘ㅁ’으로 시작하는 뒤 어근의 앞에서 모음으로 끝난 앞 어근의 끝소리에 ‘ㄴ’이 첨가된다는 점으로 볼 때, ㉯에 해당하는 예이다. ⑤ ‘깻잎’은 ‘깨’와 ‘잎’이 결합하여 만들어진 합성 명사로, 앞 어근이 모음으로 끝나고 뒤 어근이 ‘ㅣ’로 시작되는데 앞 어근의 끝소리와 뒤 어근의 첫소리에 모두 ‘ㄴ’이 첨가된다는 점으로 볼 때, ㉯에 해당하는 예이다."
     ],
-    "src": "2018 3월 전국연합 고2"
+    "src": "2018 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-002",
@@ -6942,7 +7243,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘옷깃’은 명사 ‘옷’과 명사 ‘깃’이 결합하여 만들어진 합성 명사이다. 그리고 발음은 [옫낃]으로 둘째 어근의 첫소리 ‘ㄱ’이 된소리 ‘ㄲ’으로 바뀌는 현상이 나타난다. 하지만 이 때 나타나는 현상은 [ㄱ, ㄷ, ㅂ]으로 발음되는 받침 ‘ㄱ(ㄲ, ㅋ, ㄳ, ㄺ), ㄷ(ㅅ, ㅆ, ㅈ, ㅊ, ㅌ), ㅂ(ㅍ, ㄼ, ㄿ, ㅄ)’ 뒤에서 ‘ㄱ, ㄷ, ㅂ, ㅅ, ㅈ’은 된소리인 [ㄲ, ㄸ, ㅃ, ㅆ, ㅉ]으로 각각 발음되는 된소리되기에 해당하는 것으로, 사잇소리 현상의 앞 어근의 끝소리가 울림소리이고 뒤 어근의 첫소리가 안울림 예사소리이면 뒤의 예사소리가 된소리로 바뀌는 현상과는 다르다.\n[오답풀이] ① ‘빨랫돌’은 ‘빨래’와 ‘돌’이 결합하여 만들어진 합성 명사로, 앞 어근의 끝소리가 울림소리인데 뒤 어근의 첫소리인 안울림 예사소리가 된소리로 바뀐다는 점으로 볼 때, ㉮에 해당하는 예이다. ③ ‘홑이불’의 발음은 [혼니불]로, 발음할 때 ‘ㄴ’의 첨가가 나타난다. 하지만 ‘홑이불’은 접사 ‘홑-’과 명사 ‘이불’이 결합하여 만들어진 파생 명사이다. ④ ‘뱃머리’는 ‘배’와 ‘머리’가 결합하여 만들어진 합성 명사로, ‘ㅁ’으로 시작하는 뒤 어근의 앞에서 모음으로 끝난 앞 어근의 끝소리에 ‘ㄴ’이 첨가된다는 점으로 볼 때, ㉯에 해당하는 예이다. ⑤ ‘깻잎’은 ‘깨’와 ‘잎’이 결합하여 만들어진 합성 명사로, 앞 어근이 모음으로 끝나고 뒤 어근이 ‘ㅣ’로 시작되는데 앞 어근의 끝소리와 뒤 어근의 첫소리에 모두 ‘ㄴ’이 첨가된다는 점으로 볼 때, ㉯에 해당하는 예이다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘옷깃’은 명사 ‘옷’과 명사 ‘깃’이 결합하여 만들어진 합성 명사이다. 그리고 발음은 [옫낃]으로 둘째 어근의 첫소리 ‘ㄱ’이 된소리 ‘ㄲ’으로 바뀌는 현상이 나타난다. 하지만 이 때 나타나는 현상은 [ㄱ, ㄷ, ㅂ]으로 발음되는 받침 ‘ㄱ(ㄲ, ㅋ, ㄳ, ㄺ), ㄷ(ㅅ, ㅆ, ㅈ, ㅊ, ㅌ), ㅂ(ㅍ, ㄼ, ㄿ, ㅄ)’ 뒤에서 ‘ㄱ, ㄷ, ㅂ, ㅅ, ㅈ’은 된소리인 [ㄲ, ㄸ, ㅃ, ㅆ, ㅉ]으로 각각 발음되는 된소리되기에 해당하는 것으로, 사잇소리 현상의 앞 어근의 끝소리가 울림소리이고 뒤 어근의 첫소리가 안울림 예사소리이면 뒤의 예사소리가 된소리로 바뀌는 현상과는 다르다.\n[오답풀이] ① ‘빨랫돌’은 ‘빨래’와 ‘돌’이 결합하여 만들어진 합성 명사로, 앞 어근의 끝소리가 울림소리인데 뒤 어근의 첫소리인 안울림 예사소리가 된소리로 바뀐다는 점으로 볼 때, ㉮에 해당하는 예이다. ③ ‘홑이불’의 발음은 [혼니불]로, 발음할 때 ‘ㄴ’의 첨가가 나타난다. 하지만 ‘홑이불’은 접사 ‘홑-’과 명사 ‘이불’이 결합하여 만들어진 파생 명사이다. ④ ‘뱃머리’는 ‘배’와 ‘머리’가 결합하여 만들어진 합성 명사로, ‘ㅁ’으로 시작하는 뒤 어근의 앞에서 모음으로 끝난 앞 어근의 끝소리에 ‘ㄴ’이 첨가된다는 점으로 볼 때, ㉯에 해당하는 예이다. ⑤ ‘깻잎’은 ‘깨’와 ‘잎’이 결합하여 만들어진 합성 명사로, 앞 어근이 모음으로 끝나고 뒤 어근이 ‘ㅣ’로 시작되는데 앞 어근의 끝소리와 뒤 어근의 첫소리에 모두 ‘ㄴ’이 첨가된다는 점으로 볼 때, ㉯에 해당하는 예이다."
     ],
-    "src": "2018 3월 전국연합 고2"
+    "src": "2018 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-003",
@@ -6962,7 +7264,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘옷깃’은 명사 ‘옷’과 명사 ‘깃’이 결합하여 만들어진 합성 명사이다. 그리고 발음은 [옫낃]으로 둘째 어근의 첫소리 ‘ㄱ’이 된소리 ‘ㄲ’으로 바뀌는 현상이 나타난다. 하지만 이 때 나타나는 현상은 [ㄱ, ㄷ, ㅂ]으로 발음되는 받침 ‘ㄱ(ㄲ, ㅋ, ㄳ, ㄺ), ㄷ(ㅅ, ㅆ, ㅈ, ㅊ, ㅌ), ㅂ(ㅍ, ㄼ, ㄿ, ㅄ)’ 뒤에서 ‘ㄱ, ㄷ, ㅂ, ㅅ, ㅈ’은 된소리인 [ㄲ, ㄸ, ㅃ, ㅆ, ㅉ]으로 각각 발음되는 된소리되기에 해당하는 것으로, 사잇소리 현상의 앞 어근의 끝소리가 울림소리이고 뒤 어근의 첫소리가 안울림 예사소리이면 뒤의 예사소리가 된소리로 바뀌는 현상과는 다르다.\n[오답풀이] ① ‘빨랫돌’은 ‘빨래’와 ‘돌’이 결합하여 만들어진 합성 명사로, 앞 어근의 끝소리가 울림소리인데 뒤 어근의 첫소리인 안울림 예사소리가 된소리로 바뀐다는 점으로 볼 때, ㉮에 해당하는 예이다. ③ ‘홑이불’의 발음은 [혼니불]로, 발음할 때 ‘ㄴ’의 첨가가 나타난다. 하지만 ‘홑이불’은 접사 ‘홑-’과 명사 ‘이불’이 결합하여 만들어진 파생 명사이다. ④ ‘뱃머리’는 ‘배’와 ‘머리’가 결합하여 만들어진 합성 명사로, ‘ㅁ’으로 시작하는 뒤 어근의 앞에서 모음으로 끝난 앞 어근의 끝소리에 ‘ㄴ’이 첨가된다는 점으로 볼 때, ㉯에 해당하는 예이다. ⑤ ‘깻잎’은 ‘깨’와 ‘잎’이 결합하여 만들어진 합성 명사로, 앞 어근이 모음으로 끝나고 뒤 어근이 ‘ㅣ’로 시작되는데 앞 어근의 끝소리와 뒤 어근의 첫소리에 모두 ‘ㄴ’이 첨가된다는 점으로 볼 때, ㉯에 해당하는 예이다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘옷깃’은 명사 ‘옷’과 명사 ‘깃’이 결합하여 만들어진 합성 명사이다. 그리고 발음은 [옫낃]으로 둘째 어근의 첫소리 ‘ㄱ’이 된소리 ‘ㄲ’으로 바뀌는 현상이 나타난다. 하지만 이 때 나타나는 현상은 [ㄱ, ㄷ, ㅂ]으로 발음되는 받침 ‘ㄱ(ㄲ, ㅋ, ㄳ, ㄺ), ㄷ(ㅅ, ㅆ, ㅈ, ㅊ, ㅌ), ㅂ(ㅍ, ㄼ, ㄿ, ㅄ)’ 뒤에서 ‘ㄱ, ㄷ, ㅂ, ㅅ, ㅈ’은 된소리인 [ㄲ, ㄸ, ㅃ, ㅆ, ㅉ]으로 각각 발음되는 된소리되기에 해당하는 것으로, 사잇소리 현상의 앞 어근의 끝소리가 울림소리이고 뒤 어근의 첫소리가 안울림 예사소리이면 뒤의 예사소리가 된소리로 바뀌는 현상과는 다르다.\n[오답풀이] ① ‘빨랫돌’은 ‘빨래’와 ‘돌’이 결합하여 만들어진 합성 명사로, 앞 어근의 끝소리가 울림소리인데 뒤 어근의 첫소리인 안울림 예사소리가 된소리로 바뀐다는 점으로 볼 때, ㉮에 해당하는 예이다. ③ ‘홑이불’의 발음은 [혼니불]로, 발음할 때 ‘ㄴ’의 첨가가 나타난다. 하지만 ‘홑이불’은 접사 ‘홑-’과 명사 ‘이불’이 결합하여 만들어진 파생 명사이다. ④ ‘뱃머리’는 ‘배’와 ‘머리’가 결합하여 만들어진 합성 명사로, ‘ㅁ’으로 시작하는 뒤 어근의 앞에서 모음으로 끝난 앞 어근의 끝소리에 ‘ㄴ’이 첨가된다는 점으로 볼 때, ㉯에 해당하는 예이다. ⑤ ‘깻잎’은 ‘깨’와 ‘잎’이 결합하여 만들어진 합성 명사로, 앞 어근이 모음으로 끝나고 뒤 어근이 ‘ㅣ’로 시작되는데 앞 어근의 끝소리와 뒤 어근의 첫소리에 모두 ‘ㄴ’이 첨가된다는 점으로 볼 때, ㉯에 해당하는 예이다."
     ],
-    "src": "2018 3월 전국연합 고2"
+    "src": "2018 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-004",
@@ -6982,7 +7285,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘옷깃’은 명사 ‘옷’과 명사 ‘깃’이 결합하여 만들어진 합성 명사이다. 그리고 발음은 [옫낃]으로 둘째 어근의 첫소리 ‘ㄱ’이 된소리 ‘ㄲ’으로 바뀌는 현상이 나타난다. 하지만 이 때 나타나는 현상은 [ㄱ, ㄷ, ㅂ]으로 발음되는 받침 ‘ㄱ(ㄲ, ㅋ, ㄳ, ㄺ), ㄷ(ㅅ, ㅆ, ㅈ, ㅊ, ㅌ), ㅂ(ㅍ, ㄼ, ㄿ, ㅄ)’ 뒤에서 ‘ㄱ, ㄷ, ㅂ, ㅅ, ㅈ’은 된소리인 [ㄲ, ㄸ, ㅃ, ㅆ, ㅉ]으로 각각 발음되는 된소리되기에 해당하는 것으로, 사잇소리 현상의 앞 어근의 끝소리가 울림소리이고 뒤 어근의 첫소리가 안울림 예사소리이면 뒤의 예사소리가 된소리로 바뀌는 현상과는 다르다.\n[오답풀이] ① ‘빨랫돌’은 ‘빨래’와 ‘돌’이 결합하여 만들어진 합성 명사로, 앞 어근의 끝소리가 울림소리인데 뒤 어근의 첫소리인 안울림 예사소리가 된소리로 바뀐다는 점으로 볼 때, ㉮에 해당하는 예이다. ③ ‘홑이불’의 발음은 [혼니불]로, 발음할 때 ‘ㄴ’의 첨가가 나타난다. 하지만 ‘홑이불’은 접사 ‘홑-’과 명사 ‘이불’이 결합하여 만들어진 파생 명사이다. ④ ‘뱃머리’는 ‘배’와 ‘머리’가 결합하여 만들어진 합성 명사로, ‘ㅁ’으로 시작하는 뒤 어근의 앞에서 모음으로 끝난 앞 어근의 끝소리에 ‘ㄴ’이 첨가된다는 점으로 볼 때, ㉯에 해당하는 예이다. ⑤ ‘깻잎’은 ‘깨’와 ‘잎’이 결합하여 만들어진 합성 명사로, 앞 어근이 모음으로 끝나고 뒤 어근이 ‘ㅣ’로 시작되는데 앞 어근의 끝소리와 뒤 어근의 첫소리에 모두 ‘ㄴ’이 첨가된다는 점으로 볼 때, ㉯에 해당하는 예이다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘옷깃’은 명사 ‘옷’과 명사 ‘깃’이 결합하여 만들어진 합성 명사이다. 그리고 발음은 [옫낃]으로 둘째 어근의 첫소리 ‘ㄱ’이 된소리 ‘ㄲ’으로 바뀌는 현상이 나타난다. 하지만 이 때 나타나는 현상은 [ㄱ, ㄷ, ㅂ]으로 발음되는 받침 ‘ㄱ(ㄲ, ㅋ, ㄳ, ㄺ), ㄷ(ㅅ, ㅆ, ㅈ, ㅊ, ㅌ), ㅂ(ㅍ, ㄼ, ㄿ, ㅄ)’ 뒤에서 ‘ㄱ, ㄷ, ㅂ, ㅅ, ㅈ’은 된소리인 [ㄲ, ㄸ, ㅃ, ㅆ, ㅉ]으로 각각 발음되는 된소리되기에 해당하는 것으로, 사잇소리 현상의 앞 어근의 끝소리가 울림소리이고 뒤 어근의 첫소리가 안울림 예사소리이면 뒤의 예사소리가 된소리로 바뀌는 현상과는 다르다.\n[오답풀이] ① ‘빨랫돌’은 ‘빨래’와 ‘돌’이 결합하여 만들어진 합성 명사로, 앞 어근의 끝소리가 울림소리인데 뒤 어근의 첫소리인 안울림 예사소리가 된소리로 바뀐다는 점으로 볼 때, ㉮에 해당하는 예이다. ③ ‘홑이불’의 발음은 [혼니불]로, 발음할 때 ‘ㄴ’의 첨가가 나타난다. 하지만 ‘홑이불’은 접사 ‘홑-’과 명사 ‘이불’이 결합하여 만들어진 파생 명사이다. ④ ‘뱃머리’는 ‘배’와 ‘머리’가 결합하여 만들어진 합성 명사로, ‘ㅁ’으로 시작하는 뒤 어근의 앞에서 모음으로 끝난 앞 어근의 끝소리에 ‘ㄴ’이 첨가된다는 점으로 볼 때, ㉯에 해당하는 예이다. ⑤ ‘깻잎’은 ‘깨’와 ‘잎’이 결합하여 만들어진 합성 명사로, 앞 어근이 모음으로 끝나고 뒤 어근이 ‘ㅣ’로 시작되는데 앞 어근의 끝소리와 뒤 어근의 첫소리에 모두 ‘ㄴ’이 첨가된다는 점으로 볼 때, ㉯에 해당하는 예이다."
     ],
-    "src": "2018 3월 전국연합 고2"
+    "src": "2018 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-005",
@@ -7002,7 +7306,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘옷깃’은 명사 ‘옷’과 명사 ‘깃’이 결합하여 만들어진 합성 명사이다. 그리고 발음은 [옫낃]으로 둘째 어근의 첫소리 ‘ㄱ’이 된소리 ‘ㄲ’으로 바뀌는 현상이 나타난다. 하지만 이 때 나타나는 현상은 [ㄱ, ㄷ, ㅂ]으로 발음되는 받침 ‘ㄱ(ㄲ, ㅋ, ㄳ, ㄺ), ㄷ(ㅅ, ㅆ, ㅈ, ㅊ, ㅌ), ㅂ(ㅍ, ㄼ, ㄿ, ㅄ)’ 뒤에서 ‘ㄱ, ㄷ, ㅂ, ㅅ, ㅈ’은 된소리인 [ㄲ, ㄸ, ㅃ, ㅆ, ㅉ]으로 각각 발음되는 된소리되기에 해당하는 것으로, 사잇소리 현상의 앞 어근의 끝소리가 울림소리이고 뒤 어근의 첫소리가 안울림 예사소리이면 뒤의 예사소리가 된소리로 바뀌는 현상과는 다르다.\n[오답풀이] ① ‘빨랫돌’은 ‘빨래’와 ‘돌’이 결합하여 만들어진 합성 명사로, 앞 어근의 끝소리가 울림소리인데 뒤 어근의 첫소리인 안울림 예사소리가 된소리로 바뀐다는 점으로 볼 때, ㉮에 해당하는 예이다. ③ ‘홑이불’의 발음은 [혼니불]로, 발음할 때 ‘ㄴ’의 첨가가 나타난다. 하지만 ‘홑이불’은 접사 ‘홑-’과 명사 ‘이불’이 결합하여 만들어진 파생 명사이다. ④ ‘뱃머리’는 ‘배’와 ‘머리’가 결합하여 만들어진 합성 명사로, ‘ㅁ’으로 시작하는 뒤 어근의 앞에서 모음으로 끝난 앞 어근의 끝소리에 ‘ㄴ’이 첨가된다는 점으로 볼 때, ㉯에 해당하는 예이다. ⑤ ‘깻잎’은 ‘깨’와 ‘잎’이 결합하여 만들어진 합성 명사로, 앞 어근이 모음으로 끝나고 뒤 어근이 ‘ㅣ’로 시작되는데 앞 어근의 끝소리와 뒤 어근의 첫소리에 모두 ‘ㄴ’이 첨가된다는 점으로 볼 때, ㉯에 해당하는 예이다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘옷깃’은 명사 ‘옷’과 명사 ‘깃’이 결합하여 만들어진 합성 명사이다. 그리고 발음은 [옫낃]으로 둘째 어근의 첫소리 ‘ㄱ’이 된소리 ‘ㄲ’으로 바뀌는 현상이 나타난다. 하지만 이 때 나타나는 현상은 [ㄱ, ㄷ, ㅂ]으로 발음되는 받침 ‘ㄱ(ㄲ, ㅋ, ㄳ, ㄺ), ㄷ(ㅅ, ㅆ, ㅈ, ㅊ, ㅌ), ㅂ(ㅍ, ㄼ, ㄿ, ㅄ)’ 뒤에서 ‘ㄱ, ㄷ, ㅂ, ㅅ, ㅈ’은 된소리인 [ㄲ, ㄸ, ㅃ, ㅆ, ㅉ]으로 각각 발음되는 된소리되기에 해당하는 것으로, 사잇소리 현상의 앞 어근의 끝소리가 울림소리이고 뒤 어근의 첫소리가 안울림 예사소리이면 뒤의 예사소리가 된소리로 바뀌는 현상과는 다르다.\n[오답풀이] ① ‘빨랫돌’은 ‘빨래’와 ‘돌’이 결합하여 만들어진 합성 명사로, 앞 어근의 끝소리가 울림소리인데 뒤 어근의 첫소리인 안울림 예사소리가 된소리로 바뀐다는 점으로 볼 때, ㉮에 해당하는 예이다. ③ ‘홑이불’의 발음은 [혼니불]로, 발음할 때 ‘ㄴ’의 첨가가 나타난다. 하지만 ‘홑이불’은 접사 ‘홑-’과 명사 ‘이불’이 결합하여 만들어진 파생 명사이다. ④ ‘뱃머리’는 ‘배’와 ‘머리’가 결합하여 만들어진 합성 명사로, ‘ㅁ’으로 시작하는 뒤 어근의 앞에서 모음으로 끝난 앞 어근의 끝소리에 ‘ㄴ’이 첨가된다는 점으로 볼 때, ㉯에 해당하는 예이다. ⑤ ‘깻잎’은 ‘깨’와 ‘잎’이 결합하여 만들어진 합성 명사로, 앞 어근이 모음으로 끝나고 뒤 어근이 ‘ㅣ’로 시작되는데 앞 어근의 끝소리와 뒤 어근의 첫소리에 모두 ‘ㄴ’이 첨가된다는 점으로 볼 때, ㉯에 해당하는 예이다."
     ],
-    "src": "2018 3월 전국연합 고2"
+    "src": "2018 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-006",
@@ -7022,7 +7327,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘뜯어먹다’는 ‘뜯어’와 ‘먹다’ 사이에 ‘서’를 넣을 수 있으므로 ㉠에 해당하여 사전에 표제어로 실리지 않는다.\n① ‘헌가방’은 ‘헌 내 가방’과 같이 중간에 다른 말이 끼어들 수 있으므로 ㉠에 해당하며 사전에 표제어로 실리지 않는다.\n② ‘놓고가다’는 ‘놓고’와 ‘가다’ 사이에 ‘서’를 넣을 수 있으므로 ㉠에 해당하며 사전에 표제어로 실리지 않는다.\n④ ‘뜬소문’은 ‘근거 없이 떠도는 소문’이라는 의미로 중간에 다른 말이 끼어들면 의미가 변하므로 ㉡에 해당하여 사전에 표제어로 실린다.\n⑤ ‘알아듣다’는 ‘남의 말을 듣고 그 뜻을 알다’의 의미로 구성 요소의 배열이 순차적이지 않아 ㉢에 해당하는 합성어이며, 합성어는 사전에 표제어로 실리므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘뜯어먹다’는 ‘뜯어’와 ‘먹다’ 사이에 ‘서’를 넣을 수 있으므로 ㉠에 해당하여 사전에 표제어로 실리지 않는다.\n① ‘헌가방’은 ‘헌 내 가방’과 같이 중간에 다른 말이 끼어들 수 있으므로 ㉠에 해당하며 사전에 표제어로 실리지 않는다.\n② ‘놓고가다’는 ‘놓고’와 ‘가다’ 사이에 ‘서’를 넣을 수 있으므로 ㉠에 해당하며 사전에 표제어로 실리지 않는다.\n④ ‘뜬소문’은 ‘근거 없이 떠도는 소문’이라는 의미로 중간에 다른 말이 끼어들면 의미가 변하므로 ㉡에 해당하여 사전에 표제어로 실린다.\n⑤ ‘알아듣다’는 ‘남의 말을 듣고 그 뜻을 알다’의 의미로 구성 요소의 배열이 순차적이지 않아 ㉢에 해당하는 합성어이며, 합성어는 사전에 표제어로 실리므로 적절하다."
     ],
-    "src": "2019 9월 전국연합 고2"
+    "src": "2019 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-007",
@@ -7042,7 +7348,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘뜯어먹다’는 ‘뜯어’와 ‘먹다’ 사이에 ‘서’를 넣을 수 있으므로 ㉠에 해당하여 사전에 표제어로 실리지 않는다.\n① ‘헌가방’은 ‘헌 내 가방’과 같이 중간에 다른 말이 끼어들 수 있으므로 ㉠에 해당하며 사전에 표제어로 실리지 않는다.\n② ‘놓고가다’는 ‘놓고’와 ‘가다’ 사이에 ‘서’를 넣을 수 있으므로 ㉠에 해당하며 사전에 표제어로 실리지 않는다.\n④ ‘뜬소문’은 ‘근거 없이 떠도는 소문’이라는 의미로 중간에 다른 말이 끼어들면 의미가 변하므로 ㉡에 해당하여 사전에 표제어로 실린다.\n⑤ ‘알아듣다’는 ‘남의 말을 듣고 그 뜻을 알다’의 의미로 구성 요소의 배열이 순차적이지 않아 ㉢에 해당하는 합성어이며, 합성어는 사전에 표제어로 실리므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘뜯어먹다’는 ‘뜯어’와 ‘먹다’ 사이에 ‘서’를 넣을 수 있으므로 ㉠에 해당하여 사전에 표제어로 실리지 않는다.\n① ‘헌가방’은 ‘헌 내 가방’과 같이 중간에 다른 말이 끼어들 수 있으므로 ㉠에 해당하며 사전에 표제어로 실리지 않는다.\n② ‘놓고가다’는 ‘놓고’와 ‘가다’ 사이에 ‘서’를 넣을 수 있으므로 ㉠에 해당하며 사전에 표제어로 실리지 않는다.\n④ ‘뜬소문’은 ‘근거 없이 떠도는 소문’이라는 의미로 중간에 다른 말이 끼어들면 의미가 변하므로 ㉡에 해당하여 사전에 표제어로 실린다.\n⑤ ‘알아듣다’는 ‘남의 말을 듣고 그 뜻을 알다’의 의미로 구성 요소의 배열이 순차적이지 않아 ㉢에 해당하는 합성어이며, 합성어는 사전에 표제어로 실리므로 적절하다."
     ],
-    "src": "2019 9월 전국연합 고2"
+    "src": "2019 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-008",
@@ -7062,7 +7369,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘뜯어먹다’는 ‘뜯어’와 ‘먹다’ 사이에 ‘서’를 넣을 수 있으므로 ㉠에 해당하여 사전에 표제어로 실리지 않는다.\n① ‘헌가방’은 ‘헌 내 가방’과 같이 중간에 다른 말이 끼어들 수 있으므로 ㉠에 해당하며 사전에 표제어로 실리지 않는다.\n② ‘놓고가다’는 ‘놓고’와 ‘가다’ 사이에 ‘서’를 넣을 수 있으므로 ㉠에 해당하며 사전에 표제어로 실리지 않는다.\n④ ‘뜬소문’은 ‘근거 없이 떠도는 소문’이라는 의미로 중간에 다른 말이 끼어들면 의미가 변하므로 ㉡에 해당하여 사전에 표제어로 실린다.\n⑤ ‘알아듣다’는 ‘남의 말을 듣고 그 뜻을 알다’의 의미로 구성 요소의 배열이 순차적이지 않아 ㉢에 해당하는 합성어이며, 합성어는 사전에 표제어로 실리므로 적절하다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘뜯어먹다’는 ‘뜯어’와 ‘먹다’ 사이에 ‘서’를 넣을 수 있으므로 ㉠에 해당하여 사전에 표제어로 실리지 않는다.\n① ‘헌가방’은 ‘헌 내 가방’과 같이 중간에 다른 말이 끼어들 수 있으므로 ㉠에 해당하며 사전에 표제어로 실리지 않는다.\n② ‘놓고가다’는 ‘놓고’와 ‘가다’ 사이에 ‘서’를 넣을 수 있으므로 ㉠에 해당하며 사전에 표제어로 실리지 않는다.\n④ ‘뜬소문’은 ‘근거 없이 떠도는 소문’이라는 의미로 중간에 다른 말이 끼어들면 의미가 변하므로 ㉡에 해당하여 사전에 표제어로 실린다.\n⑤ ‘알아듣다’는 ‘남의 말을 듣고 그 뜻을 알다’의 의미로 구성 요소의 배열이 순차적이지 않아 ㉢에 해당하는 합성어이며, 합성어는 사전에 표제어로 실리므로 적절하다."
     ],
-    "src": "2019 9월 전국연합 고2"
+    "src": "2019 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-009",
@@ -7082,7 +7390,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘뜯어먹다’는 ‘뜯어’와 ‘먹다’ 사이에 ‘서’를 넣을 수 있으므로 ㉠에 해당하여 사전에 표제어로 실리지 않는다.\n① ‘헌가방’은 ‘헌 내 가방’과 같이 중간에 다른 말이 끼어들 수 있으므로 ㉠에 해당하며 사전에 표제어로 실리지 않는다.\n② ‘놓고가다’는 ‘놓고’와 ‘가다’ 사이에 ‘서’를 넣을 수 있으므로 ㉠에 해당하며 사전에 표제어로 실리지 않는다.\n④ ‘뜬소문’은 ‘근거 없이 떠도는 소문’이라는 의미로 중간에 다른 말이 끼어들면 의미가 변하므로 ㉡에 해당하여 사전에 표제어로 실린다.\n⑤ ‘알아듣다’는 ‘남의 말을 듣고 그 뜻을 알다’의 의미로 구성 요소의 배열이 순차적이지 않아 ㉢에 해당하는 합성어이며, 합성어는 사전에 표제어로 실리므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘뜯어먹다’는 ‘뜯어’와 ‘먹다’ 사이에 ‘서’를 넣을 수 있으므로 ㉠에 해당하여 사전에 표제어로 실리지 않는다.\n① ‘헌가방’은 ‘헌 내 가방’과 같이 중간에 다른 말이 끼어들 수 있으므로 ㉠에 해당하며 사전에 표제어로 실리지 않는다.\n② ‘놓고가다’는 ‘놓고’와 ‘가다’ 사이에 ‘서’를 넣을 수 있으므로 ㉠에 해당하며 사전에 표제어로 실리지 않는다.\n④ ‘뜬소문’은 ‘근거 없이 떠도는 소문’이라는 의미로 중간에 다른 말이 끼어들면 의미가 변하므로 ㉡에 해당하여 사전에 표제어로 실린다.\n⑤ ‘알아듣다’는 ‘남의 말을 듣고 그 뜻을 알다’의 의미로 구성 요소의 배열이 순차적이지 않아 ㉢에 해당하는 합성어이며, 합성어는 사전에 표제어로 실리므로 적절하다."
     ],
-    "src": "2019 9월 전국연합 고2"
+    "src": "2019 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-010",
@@ -7102,7 +7411,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘뜯어먹다’는 ‘뜯어’와 ‘먹다’ 사이에 ‘서’를 넣을 수 있으므로 ㉠에 해당하여 사전에 표제어로 실리지 않는다.\n① ‘헌가방’은 ‘헌 내 가방’과 같이 중간에 다른 말이 끼어들 수 있으므로 ㉠에 해당하며 사전에 표제어로 실리지 않는다.\n② ‘놓고가다’는 ‘놓고’와 ‘가다’ 사이에 ‘서’를 넣을 수 있으므로 ㉠에 해당하며 사전에 표제어로 실리지 않는다.\n④ ‘뜬소문’은 ‘근거 없이 떠도는 소문’이라는 의미로 중간에 다른 말이 끼어들면 의미가 변하므로 ㉡에 해당하여 사전에 표제어로 실린다.\n⑤ ‘알아듣다’는 ‘남의 말을 듣고 그 뜻을 알다’의 의미로 구성 요소의 배열이 순차적이지 않아 ㉢에 해당하는 합성어이며, 합성어는 사전에 표제어로 실리므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘뜯어먹다’는 ‘뜯어’와 ‘먹다’ 사이에 ‘서’를 넣을 수 있으므로 ㉠에 해당하여 사전에 표제어로 실리지 않는다.\n① ‘헌가방’은 ‘헌 내 가방’과 같이 중간에 다른 말이 끼어들 수 있으므로 ㉠에 해당하며 사전에 표제어로 실리지 않는다.\n② ‘놓고가다’는 ‘놓고’와 ‘가다’ 사이에 ‘서’를 넣을 수 있으므로 ㉠에 해당하며 사전에 표제어로 실리지 않는다.\n④ ‘뜬소문’은 ‘근거 없이 떠도는 소문’이라는 의미로 중간에 다른 말이 끼어들면 의미가 변하므로 ㉡에 해당하여 사전에 표제어로 실린다.\n⑤ ‘알아듣다’는 ‘남의 말을 듣고 그 뜻을 알다’의 의미로 구성 요소의 배열이 순차적이지 않아 ㉢에 해당하는 합성어이며, 합성어는 사전에 표제어로 실리므로 적절하다."
     ],
-    "src": "2019 9월 전국연합 고2"
+    "src": "2019 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-011",
@@ -7122,7 +7432,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘읽는데’의 ‘데’는 데 ｢의존 명사｣｢2｣의 ‘일’이나 ‘것’의 의미이며 ‘읽는’이라는 용언의 관형사형인 관형어의 수식을 받고 있는 의존 명사이므로 ‘읽는’과 ‘데’ 사이를 띄어 ‘읽는∨데’로 써야 한다.\n② ‘가는데’의 ‘데’는 뒤 절에서 비가 오기 시작한 것을 설명하기 위하여 상관되는 상황인 ‘학교에 가는 상황’을 미리 말하기 위해 사용한 연결 어미 ‘–는데’의 일부이다. 따라서 어간 ‘가-’에 ‘-는데’라는 어미가 결합한 것이므로 ‘가는데’로 붙여 써야 한다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘읽는데’의 ‘데’는 데 ｢의존 명사｣｢2｣의 ‘일’이나 ‘것’의 의미이며 ‘읽는’이라는 용언의 관형사형인 관형어의 수식을 받고 있는 의존 명사이므로 ‘읽는’과 ‘데’ 사이를 띄어 ‘읽는∨데’로 써야 한다.\n② ‘가는데’의 ‘데’는 뒤 절에서 비가 오기 시작한 것을 설명하기 위하여 상관되는 상황인 ‘학교에 가는 상황’을 미리 말하기 위해 사용한 연결 어미 ‘–는데’의 일부이다. 따라서 어간 ‘가-’에 ‘-는데’라는 어미가 결합한 것이므로 ‘가는데’로 붙여 써야 한다."
     ],
-    "src": "2019 9월 전국연합 고2"
+    "src": "2019 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-012",
@@ -7142,7 +7453,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘읽는데’의 ‘데’는 데 ｢의존 명사｣｢2｣의 ‘일’이나 ‘것’의 의미이며 ‘읽는’이라는 용언의 관형사형인 관형어의 수식을 받고 있는 의존 명사이므로 ‘읽는’과 ‘데’ 사이를 띄어 ‘읽는∨데’로 써야 한다.\n② ‘가는데’의 ‘데’는 뒤 절에서 비가 오기 시작한 것을 설명하기 위하여 상관되는 상황인 ‘학교에 가는 상황’을 미리 말하기 위해 사용한 연결 어미 ‘–는데’의 일부이다. 따라서 어간 ‘가-’에 ‘-는데’라는 어미가 결합한 것이므로 ‘가는데’로 붙여 써야 한다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘읽는데’의 ‘데’는 데 ｢의존 명사｣｢2｣의 ‘일’이나 ‘것’의 의미이며 ‘읽는’이라는 용언의 관형사형인 관형어의 수식을 받고 있는 의존 명사이므로 ‘읽는’과 ‘데’ 사이를 띄어 ‘읽는∨데’로 써야 한다.\n② ‘가는데’의 ‘데’는 뒤 절에서 비가 오기 시작한 것을 설명하기 위하여 상관되는 상황인 ‘학교에 가는 상황’을 미리 말하기 위해 사용한 연결 어미 ‘–는데’의 일부이다. 따라서 어간 ‘가-’에 ‘-는데’라는 어미가 결합한 것이므로 ‘가는데’로 붙여 써야 한다."
     ],
-    "src": "2019 9월 전국연합 고2"
+    "src": "2019 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-013",
@@ -7162,7 +7474,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘읽는데’의 ‘데’는 데 ｢의존 명사｣｢2｣의 ‘일’이나 ‘것’의 의미이며 ‘읽는’이라는 용언의 관형사형인 관형어의 수식을 받고 있는 의존 명사이므로 ‘읽는’과 ‘데’ 사이를 띄어 ‘읽는∨데’로 써야 한다.\n② ‘가는데’의 ‘데’는 뒤 절에서 비가 오기 시작한 것을 설명하기 위하여 상관되는 상황인 ‘학교에 가는 상황’을 미리 말하기 위해 사용한 연결 어미 ‘–는데’의 일부이다. 따라서 어간 ‘가-’에 ‘-는데’라는 어미가 결합한 것이므로 ‘가는데’로 붙여 써야 한다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘읽는데’의 ‘데’는 데 ｢의존 명사｣｢2｣의 ‘일’이나 ‘것’의 의미이며 ‘읽는’이라는 용언의 관형사형인 관형어의 수식을 받고 있는 의존 명사이므로 ‘읽는’과 ‘데’ 사이를 띄어 ‘읽는∨데’로 써야 한다.\n② ‘가는데’의 ‘데’는 뒤 절에서 비가 오기 시작한 것을 설명하기 위하여 상관되는 상황인 ‘학교에 가는 상황’을 미리 말하기 위해 사용한 연결 어미 ‘–는데’의 일부이다. 따라서 어간 ‘가-’에 ‘-는데’라는 어미가 결합한 것이므로 ‘가는데’로 붙여 써야 한다."
     ],
-    "src": "2019 9월 전국연합 고2"
+    "src": "2019 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-014",
@@ -7182,7 +7495,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘읽는데’의 ‘데’는 데 ｢의존 명사｣｢2｣의 ‘일’이나 ‘것’의 의미이며 ‘읽는’이라는 용언의 관형사형인 관형어의 수식을 받고 있는 의존 명사이므로 ‘읽는’과 ‘데’ 사이를 띄어 ‘읽는∨데’로 써야 한다.\n② ‘가는데’의 ‘데’는 뒤 절에서 비가 오기 시작한 것을 설명하기 위하여 상관되는 상황인 ‘학교에 가는 상황’을 미리 말하기 위해 사용한 연결 어미 ‘–는데’의 일부이다. 따라서 어간 ‘가-’에 ‘-는데’라는 어미가 결합한 것이므로 ‘가는데’로 붙여 써야 한다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘읽는데’의 ‘데’는 데 ｢의존 명사｣｢2｣의 ‘일’이나 ‘것’의 의미이며 ‘읽는’이라는 용언의 관형사형인 관형어의 수식을 받고 있는 의존 명사이므로 ‘읽는’과 ‘데’ 사이를 띄어 ‘읽는∨데’로 써야 한다.\n② ‘가는데’의 ‘데’는 뒤 절에서 비가 오기 시작한 것을 설명하기 위하여 상관되는 상황인 ‘학교에 가는 상황’을 미리 말하기 위해 사용한 연결 어미 ‘–는데’의 일부이다. 따라서 어간 ‘가-’에 ‘-는데’라는 어미가 결합한 것이므로 ‘가는데’로 붙여 써야 한다."
     ],
-    "src": "2019 9월 전국연합 고2"
+    "src": "2019 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-015",
@@ -7202,7 +7516,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘읽는데’의 ‘데’는 데 ｢의존 명사｣｢2｣의 ‘일’이나 ‘것’의 의미이며 ‘읽는’이라는 용언의 관형사형인 관형어의 수식을 받고 있는 의존 명사이므로 ‘읽는’과 ‘데’ 사이를 띄어 ‘읽는∨데’로 써야 한다.\n② ‘가는데’의 ‘데’는 뒤 절에서 비가 오기 시작한 것을 설명하기 위하여 상관되는 상황인 ‘학교에 가는 상황’을 미리 말하기 위해 사용한 연결 어미 ‘–는데’의 일부이다. 따라서 어간 ‘가-’에 ‘-는데’라는 어미가 결합한 것이므로 ‘가는데’로 붙여 써야 한다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘읽는데’의 ‘데’는 데 ｢의존 명사｣｢2｣의 ‘일’이나 ‘것’의 의미이며 ‘읽는’이라는 용언의 관형사형인 관형어의 수식을 받고 있는 의존 명사이므로 ‘읽는’과 ‘데’ 사이를 띄어 ‘읽는∨데’로 써야 한다.\n② ‘가는데’의 ‘데’는 뒤 절에서 비가 오기 시작한 것을 설명하기 위하여 상관되는 상황인 ‘학교에 가는 상황’을 미리 말하기 위해 사용한 연결 어미 ‘–는데’의 일부이다. 따라서 어간 ‘가-’에 ‘-는데’라는 어미가 결합한 것이므로 ‘가는데’로 붙여 써야 한다."
     ],
-    "src": "2019 9월 전국연합 고2"
+    "src": "2019 9월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-016",
@@ -7222,7 +7537,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘만큼’은 관형어 ‘노력한’의 수식을 받는 의존 명사이므로, 앞말과 띄어 써야 한다.\n[오답풀이] ② ‘만큼’은 체언 ‘형’ 뒤에 붙는 조사이므로 앞말과 붙여 써야 한다. ③ ‘만큼’은 관형어 ‘몰랐던’의 수식을 받는 의존 명사이므로, 앞말과 띄어 써야 한다. ④ ‘만큼’은 관형어 ‘바랄’의 수식을 받는 의존 명사이므로 앞말과 띄어 써야 한다. ⑤ ‘만큼’은 체언 ‘고향’ 뒤에 붙는 조사이므로 앞말과 붙여 써야 한다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘만큼’은 관형어 ‘노력한’의 수식을 받는 의존 명사이므로, 앞말과 띄어 써야 한다.\n[오답풀이] ② ‘만큼’은 체언 ‘형’ 뒤에 붙는 조사이므로 앞말과 붙여 써야 한다. ③ ‘만큼’은 관형어 ‘몰랐던’의 수식을 받는 의존 명사이므로, 앞말과 띄어 써야 한다. ④ ‘만큼’은 관형어 ‘바랄’의 수식을 받는 의존 명사이므로 앞말과 띄어 써야 한다. ⑤ ‘만큼’은 체언 ‘고향’ 뒤에 붙는 조사이므로 앞말과 붙여 써야 한다."
     ],
-    "src": "2021 3월 전국연합 고2"
+    "src": "2021 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-017",
@@ -7242,7 +7558,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘만큼’은 관형어 ‘노력한’의 수식을 받는 의존 명사이므로, 앞말과 띄어 써야 한다.\n[오답풀이] ② ‘만큼’은 체언 ‘형’ 뒤에 붙는 조사이므로 앞말과 붙여 써야 한다. ③ ‘만큼’은 관형어 ‘몰랐던’의 수식을 받는 의존 명사이므로, 앞말과 띄어 써야 한다. ④ ‘만큼’은 관형어 ‘바랄’의 수식을 받는 의존 명사이므로 앞말과 띄어 써야 한다. ⑤ ‘만큼’은 체언 ‘고향’ 뒤에 붙는 조사이므로 앞말과 붙여 써야 한다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘만큼’은 관형어 ‘노력한’의 수식을 받는 의존 명사이므로, 앞말과 띄어 써야 한다.\n[오답풀이] ② ‘만큼’은 체언 ‘형’ 뒤에 붙는 조사이므로 앞말과 붙여 써야 한다. ③ ‘만큼’은 관형어 ‘몰랐던’의 수식을 받는 의존 명사이므로, 앞말과 띄어 써야 한다. ④ ‘만큼’은 관형어 ‘바랄’의 수식을 받는 의존 명사이므로 앞말과 띄어 써야 한다. ⑤ ‘만큼’은 체언 ‘고향’ 뒤에 붙는 조사이므로 앞말과 붙여 써야 한다."
     ],
-    "src": "2021 3월 전국연합 고2"
+    "src": "2021 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-018",
@@ -7262,7 +7579,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘만큼’은 관형어 ‘노력한’의 수식을 받는 의존 명사이므로, 앞말과 띄어 써야 한다.\n[오답풀이] ② ‘만큼’은 체언 ‘형’ 뒤에 붙는 조사이므로 앞말과 붙여 써야 한다. ③ ‘만큼’은 관형어 ‘몰랐던’의 수식을 받는 의존 명사이므로, 앞말과 띄어 써야 한다. ④ ‘만큼’은 관형어 ‘바랄’의 수식을 받는 의존 명사이므로 앞말과 띄어 써야 한다. ⑤ ‘만큼’은 체언 ‘고향’ 뒤에 붙는 조사이므로 앞말과 붙여 써야 한다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘만큼’은 관형어 ‘노력한’의 수식을 받는 의존 명사이므로, 앞말과 띄어 써야 한다.\n[오답풀이] ② ‘만큼’은 체언 ‘형’ 뒤에 붙는 조사이므로 앞말과 붙여 써야 한다. ③ ‘만큼’은 관형어 ‘몰랐던’의 수식을 받는 의존 명사이므로, 앞말과 띄어 써야 한다. ④ ‘만큼’은 관형어 ‘바랄’의 수식을 받는 의존 명사이므로 앞말과 띄어 써야 한다. ⑤ ‘만큼’은 체언 ‘고향’ 뒤에 붙는 조사이므로 앞말과 붙여 써야 한다."
     ],
-    "src": "2021 3월 전국연합 고2"
+    "src": "2021 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-019",
@@ -7282,7 +7600,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘만큼’은 관형어 ‘노력한’의 수식을 받는 의존 명사이므로, 앞말과 띄어 써야 한다.\n[오답풀이] ② ‘만큼’은 체언 ‘형’ 뒤에 붙는 조사이므로 앞말과 붙여 써야 한다. ③ ‘만큼’은 관형어 ‘몰랐던’의 수식을 받는 의존 명사이므로, 앞말과 띄어 써야 한다. ④ ‘만큼’은 관형어 ‘바랄’의 수식을 받는 의존 명사이므로 앞말과 띄어 써야 한다. ⑤ ‘만큼’은 체언 ‘고향’ 뒤에 붙는 조사이므로 앞말과 붙여 써야 한다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘만큼’은 관형어 ‘노력한’의 수식을 받는 의존 명사이므로, 앞말과 띄어 써야 한다.\n[오답풀이] ② ‘만큼’은 체언 ‘형’ 뒤에 붙는 조사이므로 앞말과 붙여 써야 한다. ③ ‘만큼’은 관형어 ‘몰랐던’의 수식을 받는 의존 명사이므로, 앞말과 띄어 써야 한다. ④ ‘만큼’은 관형어 ‘바랄’의 수식을 받는 의존 명사이므로 앞말과 띄어 써야 한다. ⑤ ‘만큼’은 체언 ‘고향’ 뒤에 붙는 조사이므로 앞말과 붙여 써야 한다."
     ],
-    "src": "2021 3월 전국연합 고2"
+    "src": "2021 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-020",
@@ -7302,7 +7621,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘만큼’은 관형어 ‘노력한’의 수식을 받는 의존 명사이므로, 앞말과 띄어 써야 한다.\n[오답풀이] ② ‘만큼’은 체언 ‘형’ 뒤에 붙는 조사이므로 앞말과 붙여 써야 한다. ③ ‘만큼’은 관형어 ‘몰랐던’의 수식을 받는 의존 명사이므로, 앞말과 띄어 써야 한다. ④ ‘만큼’은 관형어 ‘바랄’의 수식을 받는 의존 명사이므로 앞말과 띄어 써야 한다. ⑤ ‘만큼’은 체언 ‘고향’ 뒤에 붙는 조사이므로 앞말과 붙여 써야 한다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘만큼’은 관형어 ‘노력한’의 수식을 받는 의존 명사이므로, 앞말과 띄어 써야 한다.\n[오답풀이] ② ‘만큼’은 체언 ‘형’ 뒤에 붙는 조사이므로 앞말과 붙여 써야 한다. ③ ‘만큼’은 관형어 ‘몰랐던’의 수식을 받는 의존 명사이므로, 앞말과 띄어 써야 한다. ④ ‘만큼’은 관형어 ‘바랄’의 수식을 받는 의존 명사이므로 앞말과 띄어 써야 한다. ⑤ ‘만큼’은 체언 ‘고향’ 뒤에 붙는 조사이므로 앞말과 붙여 써야 한다."
     ],
-    "src": "2021 3월 전국연합 고2"
+    "src": "2021 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-021",
@@ -7322,7 +7642,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n현대 국어의 ‘살코기’는 중세 국어의 ‘ᄉᆞᆯㅎ’과 ‘고기’가 결합하여 ‘ㅎ 종성 체언’의 흔적이 남은 단어이다. 제시된 중세 국어 자료에 의하면, ‘ㅎ 종성 체언’은 단독형으로 쓰일 때에는 ‘ㅎ’이 나타나지 않았으므로, ‘살코기’의 ‘살’은 중세 국어에서 단독으로 쓰일 경우 ‘ᄉᆞᆯ’의 형태로 사용되었을 것이다.\n[오답풀이] ① ‘안팎’은 ‘안’과 ‘밖’이 어울려 쓰인 것으로 ‘안ㅎ’의 흔적이 남은 경우에 해당한다. ② ‘수캐’는 중세 국어에서 ‘수ㅎ’와 ‘개’가 어울려 쓰인 것으로 ‘수’의 ‘ㅎ’ 종성이 ‘ㄱ’과 어울려 ‘ㅋ’이 되는 거센소리되기가 이루어진 것이다. ④ 중세 국어에서 ‘나라’는 ‘ㅎ 종성 체언’으로, 모음으로 시작하는 조사 ‘이’와 결합할 경우 ‘ㅎ’을 이어 적어 ‘나라히’와 같은 형태로 나타난다. ⑤ ‘암평아리’는 중세 국어에서 ‘ㅎ 종성 체언’인 ‘암ㅎ’과 ‘병아리’가 결합하여 ‘암평아리’가 된 단어로, ‘ㅎ 종성 체언’의 흔적이 남은 단어이다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n현대 국어의 ‘살코기’는 중세 국어의 ‘ᄉᆞᆯㅎ’과 ‘고기’가 결합하여 ‘ㅎ 종성 체언’의 흔적이 남은 단어이다. 제시된 중세 국어 자료에 의하면, ‘ㅎ 종성 체언’은 단독형으로 쓰일 때에는 ‘ㅎ’이 나타나지 않았으므로, ‘살코기’의 ‘살’은 중세 국어에서 단독으로 쓰일 경우 ‘ᄉᆞᆯ’의 형태로 사용되었을 것이다.\n[오답풀이] ① ‘안팎’은 ‘안’과 ‘밖’이 어울려 쓰인 것으로 ‘안ㅎ’의 흔적이 남은 경우에 해당한다. ② ‘수캐’는 중세 국어에서 ‘수ㅎ’와 ‘개’가 어울려 쓰인 것으로 ‘수’의 ‘ㅎ’ 종성이 ‘ㄱ’과 어울려 ‘ㅋ’이 되는 거센소리되기가 이루어진 것이다. ④ 중세 국어에서 ‘나라’는 ‘ㅎ 종성 체언’으로, 모음으로 시작하는 조사 ‘이’와 결합할 경우 ‘ㅎ’을 이어 적어 ‘나라히’와 같은 형태로 나타난다. ⑤ ‘암평아리’는 중세 국어에서 ‘ㅎ 종성 체언’인 ‘암ㅎ’과 ‘병아리’가 결합하여 ‘암평아리’가 된 단어로, ‘ㅎ 종성 체언’의 흔적이 남은 단어이다."
     ],
-    "src": "2021 3월 전국연합 고2"
+    "src": "2021 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-022",
@@ -7342,7 +7663,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n현대 국어의 ‘살코기’는 중세 국어의 ‘ᄉᆞᆯㅎ’과 ‘고기’가 결합하여 ‘ㅎ 종성 체언’의 흔적이 남은 단어이다. 제시된 중세 국어 자료에 의하면, ‘ㅎ 종성 체언’은 단독형으로 쓰일 때에는 ‘ㅎ’이 나타나지 않았으므로, ‘살코기’의 ‘살’은 중세 국어에서 단독으로 쓰일 경우 ‘ᄉᆞᆯ’의 형태로 사용되었을 것이다.\n[오답풀이] ① ‘안팎’은 ‘안’과 ‘밖’이 어울려 쓰인 것으로 ‘안ㅎ’의 흔적이 남은 경우에 해당한다. ② ‘수캐’는 중세 국어에서 ‘수ㅎ’와 ‘개’가 어울려 쓰인 것으로 ‘수’의 ‘ㅎ’ 종성이 ‘ㄱ’과 어울려 ‘ㅋ’이 되는 거센소리되기가 이루어진 것이다. ④ 중세 국어에서 ‘나라’는 ‘ㅎ 종성 체언’으로, 모음으로 시작하는 조사 ‘이’와 결합할 경우 ‘ㅎ’을 이어 적어 ‘나라히’와 같은 형태로 나타난다. ⑤ ‘암평아리’는 중세 국어에서 ‘ㅎ 종성 체언’인 ‘암ㅎ’과 ‘병아리’가 결합하여 ‘암평아리’가 된 단어로, ‘ㅎ 종성 체언’의 흔적이 남은 단어이다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n현대 국어의 ‘살코기’는 중세 국어의 ‘ᄉᆞᆯㅎ’과 ‘고기’가 결합하여 ‘ㅎ 종성 체언’의 흔적이 남은 단어이다. 제시된 중세 국어 자료에 의하면, ‘ㅎ 종성 체언’은 단독형으로 쓰일 때에는 ‘ㅎ’이 나타나지 않았으므로, ‘살코기’의 ‘살’은 중세 국어에서 단독으로 쓰일 경우 ‘ᄉᆞᆯ’의 형태로 사용되었을 것이다.\n[오답풀이] ① ‘안팎’은 ‘안’과 ‘밖’이 어울려 쓰인 것으로 ‘안ㅎ’의 흔적이 남은 경우에 해당한다. ② ‘수캐’는 중세 국어에서 ‘수ㅎ’와 ‘개’가 어울려 쓰인 것으로 ‘수’의 ‘ㅎ’ 종성이 ‘ㄱ’과 어울려 ‘ㅋ’이 되는 거센소리되기가 이루어진 것이다. ④ 중세 국어에서 ‘나라’는 ‘ㅎ 종성 체언’으로, 모음으로 시작하는 조사 ‘이’와 결합할 경우 ‘ㅎ’을 이어 적어 ‘나라히’와 같은 형태로 나타난다. ⑤ ‘암평아리’는 중세 국어에서 ‘ㅎ 종성 체언’인 ‘암ㅎ’과 ‘병아리’가 결합하여 ‘암평아리’가 된 단어로, ‘ㅎ 종성 체언’의 흔적이 남은 단어이다."
     ],
-    "src": "2021 3월 전국연합 고2"
+    "src": "2021 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-023",
@@ -7362,7 +7684,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n현대 국어의 ‘살코기’는 중세 국어의 ‘ᄉᆞᆯㅎ’과 ‘고기’가 결합하여 ‘ㅎ 종성 체언’의 흔적이 남은 단어이다. 제시된 중세 국어 자료에 의하면, ‘ㅎ 종성 체언’은 단독형으로 쓰일 때에는 ‘ㅎ’이 나타나지 않았으므로, ‘살코기’의 ‘살’은 중세 국어에서 단독으로 쓰일 경우 ‘ᄉᆞᆯ’의 형태로 사용되었을 것이다.\n[오답풀이] ① ‘안팎’은 ‘안’과 ‘밖’이 어울려 쓰인 것으로 ‘안ㅎ’의 흔적이 남은 경우에 해당한다. ② ‘수캐’는 중세 국어에서 ‘수ㅎ’와 ‘개’가 어울려 쓰인 것으로 ‘수’의 ‘ㅎ’ 종성이 ‘ㄱ’과 어울려 ‘ㅋ’이 되는 거센소리되기가 이루어진 것이다. ④ 중세 국어에서 ‘나라’는 ‘ㅎ 종성 체언’으로, 모음으로 시작하는 조사 ‘이’와 결합할 경우 ‘ㅎ’을 이어 적어 ‘나라히’와 같은 형태로 나타난다. ⑤ ‘암평아리’는 중세 국어에서 ‘ㅎ 종성 체언’인 ‘암ㅎ’과 ‘병아리’가 결합하여 ‘암평아리’가 된 단어로, ‘ㅎ 종성 체언’의 흔적이 남은 단어이다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n현대 국어의 ‘살코기’는 중세 국어의 ‘ᄉᆞᆯㅎ’과 ‘고기’가 결합하여 ‘ㅎ 종성 체언’의 흔적이 남은 단어이다. 제시된 중세 국어 자료에 의하면, ‘ㅎ 종성 체언’은 단독형으로 쓰일 때에는 ‘ㅎ’이 나타나지 않았으므로, ‘살코기’의 ‘살’은 중세 국어에서 단독으로 쓰일 경우 ‘ᄉᆞᆯ’의 형태로 사용되었을 것이다.\n[오답풀이] ① ‘안팎’은 ‘안’과 ‘밖’이 어울려 쓰인 것으로 ‘안ㅎ’의 흔적이 남은 경우에 해당한다. ② ‘수캐’는 중세 국어에서 ‘수ㅎ’와 ‘개’가 어울려 쓰인 것으로 ‘수’의 ‘ㅎ’ 종성이 ‘ㄱ’과 어울려 ‘ㅋ’이 되는 거센소리되기가 이루어진 것이다. ④ 중세 국어에서 ‘나라’는 ‘ㅎ 종성 체언’으로, 모음으로 시작하는 조사 ‘이’와 결합할 경우 ‘ㅎ’을 이어 적어 ‘나라히’와 같은 형태로 나타난다. ⑤ ‘암평아리’는 중세 국어에서 ‘ㅎ 종성 체언’인 ‘암ㅎ’과 ‘병아리’가 결합하여 ‘암평아리’가 된 단어로, ‘ㅎ 종성 체언’의 흔적이 남은 단어이다."
     ],
-    "src": "2021 3월 전국연합 고2"
+    "src": "2021 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-024",
@@ -7382,7 +7705,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n현대 국어의 ‘살코기’는 중세 국어의 ‘ᄉᆞᆯㅎ’과 ‘고기’가 결합하여 ‘ㅎ 종성 체언’의 흔적이 남은 단어이다. 제시된 중세 국어 자료에 의하면, ‘ㅎ 종성 체언’은 단독형으로 쓰일 때에는 ‘ㅎ’이 나타나지 않았으므로, ‘살코기’의 ‘살’은 중세 국어에서 단독으로 쓰일 경우 ‘ᄉᆞᆯ’의 형태로 사용되었을 것이다.\n[오답풀이] ① ‘안팎’은 ‘안’과 ‘밖’이 어울려 쓰인 것으로 ‘안ㅎ’의 흔적이 남은 경우에 해당한다. ② ‘수캐’는 중세 국어에서 ‘수ㅎ’와 ‘개’가 어울려 쓰인 것으로 ‘수’의 ‘ㅎ’ 종성이 ‘ㄱ’과 어울려 ‘ㅋ’이 되는 거센소리되기가 이루어진 것이다. ④ 중세 국어에서 ‘나라’는 ‘ㅎ 종성 체언’으로, 모음으로 시작하는 조사 ‘이’와 결합할 경우 ‘ㅎ’을 이어 적어 ‘나라히’와 같은 형태로 나타난다. ⑤ ‘암평아리’는 중세 국어에서 ‘ㅎ 종성 체언’인 ‘암ㅎ’과 ‘병아리’가 결합하여 ‘암평아리’가 된 단어로, ‘ㅎ 종성 체언’의 흔적이 남은 단어이다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n현대 국어의 ‘살코기’는 중세 국어의 ‘ᄉᆞᆯㅎ’과 ‘고기’가 결합하여 ‘ㅎ 종성 체언’의 흔적이 남은 단어이다. 제시된 중세 국어 자료에 의하면, ‘ㅎ 종성 체언’은 단독형으로 쓰일 때에는 ‘ㅎ’이 나타나지 않았으므로, ‘살코기’의 ‘살’은 중세 국어에서 단독으로 쓰일 경우 ‘ᄉᆞᆯ’의 형태로 사용되었을 것이다.\n[오답풀이] ① ‘안팎’은 ‘안’과 ‘밖’이 어울려 쓰인 것으로 ‘안ㅎ’의 흔적이 남은 경우에 해당한다. ② ‘수캐’는 중세 국어에서 ‘수ㅎ’와 ‘개’가 어울려 쓰인 것으로 ‘수’의 ‘ㅎ’ 종성이 ‘ㄱ’과 어울려 ‘ㅋ’이 되는 거센소리되기가 이루어진 것이다. ④ 중세 국어에서 ‘나라’는 ‘ㅎ 종성 체언’으로, 모음으로 시작하는 조사 ‘이’와 결합할 경우 ‘ㅎ’을 이어 적어 ‘나라히’와 같은 형태로 나타난다. ⑤ ‘암평아리’는 중세 국어에서 ‘ㅎ 종성 체언’인 ‘암ㅎ’과 ‘병아리’가 결합하여 ‘암평아리’가 된 단어로, ‘ㅎ 종성 체언’의 흔적이 남은 단어이다."
     ],
-    "src": "2021 3월 전국연합 고2"
+    "src": "2021 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-025",
@@ -7402,7 +7726,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n현대 국어의 ‘살코기’는 중세 국어의 ‘ᄉᆞᆯㅎ’과 ‘고기’가 결합하여 ‘ㅎ 종성 체언’의 흔적이 남은 단어이다. 제시된 중세 국어 자료에 의하면, ‘ㅎ 종성 체언’은 단독형으로 쓰일 때에는 ‘ㅎ’이 나타나지 않았으므로, ‘살코기’의 ‘살’은 중세 국어에서 단독으로 쓰일 경우 ‘ᄉᆞᆯ’의 형태로 사용되었을 것이다.\n[오답풀이] ① ‘안팎’은 ‘안’과 ‘밖’이 어울려 쓰인 것으로 ‘안ㅎ’의 흔적이 남은 경우에 해당한다. ② ‘수캐’는 중세 국어에서 ‘수ㅎ’와 ‘개’가 어울려 쓰인 것으로 ‘수’의 ‘ㅎ’ 종성이 ‘ㄱ’과 어울려 ‘ㅋ’이 되는 거센소리되기가 이루어진 것이다. ④ 중세 국어에서 ‘나라’는 ‘ㅎ 종성 체언’으로, 모음으로 시작하는 조사 ‘이’와 결합할 경우 ‘ㅎ’을 이어 적어 ‘나라히’와 같은 형태로 나타난다. ⑤ ‘암평아리’는 중세 국어에서 ‘ㅎ 종성 체언’인 ‘암ㅎ’과 ‘병아리’가 결합하여 ‘암평아리’가 된 단어로, ‘ㅎ 종성 체언’의 흔적이 남은 단어이다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n현대 국어의 ‘살코기’는 중세 국어의 ‘ᄉᆞᆯㅎ’과 ‘고기’가 결합하여 ‘ㅎ 종성 체언’의 흔적이 남은 단어이다. 제시된 중세 국어 자료에 의하면, ‘ㅎ 종성 체언’은 단독형으로 쓰일 때에는 ‘ㅎ’이 나타나지 않았으므로, ‘살코기’의 ‘살’은 중세 국어에서 단독으로 쓰일 경우 ‘ᄉᆞᆯ’의 형태로 사용되었을 것이다.\n[오답풀이] ① ‘안팎’은 ‘안’과 ‘밖’이 어울려 쓰인 것으로 ‘안ㅎ’의 흔적이 남은 경우에 해당한다. ② ‘수캐’는 중세 국어에서 ‘수ㅎ’와 ‘개’가 어울려 쓰인 것으로 ‘수’의 ‘ㅎ’ 종성이 ‘ㄱ’과 어울려 ‘ㅋ’이 되는 거센소리되기가 이루어진 것이다. ④ 중세 국어에서 ‘나라’는 ‘ㅎ 종성 체언’으로, 모음으로 시작하는 조사 ‘이’와 결합할 경우 ‘ㅎ’을 이어 적어 ‘나라히’와 같은 형태로 나타난다. ⑤ ‘암평아리’는 중세 국어에서 ‘ㅎ 종성 체언’인 ‘암ㅎ’과 ‘병아리’가 결합하여 ‘암평아리’가 된 단어로, ‘ㅎ 종성 체언’의 흔적이 남은 단어이다."
     ],
-    "src": "2021 3월 전국연합 고2"
+    "src": "2021 3월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-026",
@@ -7422,7 +7747,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘저 친구, 저러다가 큰일 한번 내겠어.’는 쉼표를 ‘문장 앞부분에서 조사 없이 쓰인 제시어나 주제어의 뒤에 쓰’는 예에 해당한다. ㉡의 ‘문장의 연결 관계를 분명히 하고자 할 때 절과 절 사이에 쓴다.’에 해당하는 예는 ‘콩 심은 데 콩 나고, 팥 심은 데 팥 난다.’ 등이다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘저 친구, 저러다가 큰일 한번 내겠어.’는 쉼표를 ‘문장 앞부분에서 조사 없이 쓰인 제시어나 주제어의 뒤에 쓰’는 예에 해당한다. ㉡의 ‘문장의 연결 관계를 분명히 하고자 할 때 절과 절 사이에 쓴다.’에 해당하는 예는 ‘콩 심은 데 콩 나고, 팥 심은 데 팥 난다.’ 등이다."
     ],
-    "src": "2021 6월 전국연합 고2"
+    "src": "2021 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-027",
@@ -7442,7 +7768,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘저 친구, 저러다가 큰일 한번 내겠어.’는 쉼표를 ‘문장 앞부분에서 조사 없이 쓰인 제시어나 주제어의 뒤에 쓰’는 예에 해당한다. ㉡의 ‘문장의 연결 관계를 분명히 하고자 할 때 절과 절 사이에 쓴다.’에 해당하는 예는 ‘콩 심은 데 콩 나고, 팥 심은 데 팥 난다.’ 등이다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘저 친구, 저러다가 큰일 한번 내겠어.’는 쉼표를 ‘문장 앞부분에서 조사 없이 쓰인 제시어나 주제어의 뒤에 쓰’는 예에 해당한다. ㉡의 ‘문장의 연결 관계를 분명히 하고자 할 때 절과 절 사이에 쓴다.’에 해당하는 예는 ‘콩 심은 데 콩 나고, 팥 심은 데 팥 난다.’ 등이다."
     ],
-    "src": "2021 6월 전국연합 고2"
+    "src": "2021 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-028",
@@ -7462,7 +7789,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘저 친구, 저러다가 큰일 한번 내겠어.’는 쉼표를 ‘문장 앞부분에서 조사 없이 쓰인 제시어나 주제어의 뒤에 쓰’는 예에 해당한다. ㉡의 ‘문장의 연결 관계를 분명히 하고자 할 때 절과 절 사이에 쓴다.’에 해당하는 예는 ‘콩 심은 데 콩 나고, 팥 심은 데 팥 난다.’ 등이다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘저 친구, 저러다가 큰일 한번 내겠어.’는 쉼표를 ‘문장 앞부분에서 조사 없이 쓰인 제시어나 주제어의 뒤에 쓰’는 예에 해당한다. ㉡의 ‘문장의 연결 관계를 분명히 하고자 할 때 절과 절 사이에 쓴다.’에 해당하는 예는 ‘콩 심은 데 콩 나고, 팥 심은 데 팥 난다.’ 등이다."
     ],
-    "src": "2021 6월 전국연합 고2"
+    "src": "2021 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-029",
@@ -7482,7 +7810,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘저 친구, 저러다가 큰일 한번 내겠어.’는 쉼표를 ‘문장 앞부분에서 조사 없이 쓰인 제시어나 주제어의 뒤에 쓰’는 예에 해당한다. ㉡의 ‘문장의 연결 관계를 분명히 하고자 할 때 절과 절 사이에 쓴다.’에 해당하는 예는 ‘콩 심은 데 콩 나고, 팥 심은 데 팥 난다.’ 등이다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘저 친구, 저러다가 큰일 한번 내겠어.’는 쉼표를 ‘문장 앞부분에서 조사 없이 쓰인 제시어나 주제어의 뒤에 쓰’는 예에 해당한다. ㉡의 ‘문장의 연결 관계를 분명히 하고자 할 때 절과 절 사이에 쓴다.’에 해당하는 예는 ‘콩 심은 데 콩 나고, 팥 심은 데 팥 난다.’ 등이다."
     ],
-    "src": "2021 6월 전국연합 고2"
+    "src": "2021 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-spelling-030",
@@ -7502,7 +7831,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘저 친구, 저러다가 큰일 한번 내겠어.’는 쉼표를 ‘문장 앞부분에서 조사 없이 쓰인 제시어나 주제어의 뒤에 쓰’는 예에 해당한다. ㉡의 ‘문장의 연결 관계를 분명히 하고자 할 때 절과 절 사이에 쓴다.’에 해당하는 예는 ‘콩 심은 데 콩 나고, 팥 심은 데 팥 난다.’ 등이다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘저 친구, 저러다가 큰일 한번 내겠어.’는 쉼표를 ‘문장 앞부분에서 조사 없이 쓰인 제시어나 주제어의 뒤에 쓰’는 예에 해당한다. ㉡의 ‘문장의 연결 관계를 분명히 하고자 할 때 절과 절 사이에 쓴다.’에 해당하는 예는 ‘콩 심은 데 콩 나고, 팥 심은 데 팥 난다.’ 등이다."
     ],
-    "src": "2021 6월 전국연합 고2"
+    "src": "2021 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-001",
@@ -7522,7 +7852,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉤은 ‘어느’에 목적격 조사가 결합한 형태로, ㉤에 사용된 ‘어느’는 현대 국어의 ‘어느 것’이라는 의미를 가진 옛말이므로 대명사이다. 이는 <보기 2>의 ‘어느 02’에 해당하므로 적절하지 않다.\n① ㉠은 체언 ‘나라’를 수식하고 있으므로 관형사이다. 따라서 <보기 2>의 ‘어느 01’과 품사가 동일하다는 진술은 적절하다. ② ㉡은 ‘어느’에 주격 조사 ‘ㅣ’가 붙은 형태이다. ㉡에 사용된 ‘어느’는 현대 국어의 ‘어느 것’이라는 의미를 가진 옛말이므로 대명사이다. 따라서 <보기 2>의 ‘어느 02’에 해당하므로 적절하다. ③ ㉢은 용언인 ‘듣ᄌᆞᄫᅩ리ᅌᅵᆺ고’를 수식하고 있으므로 부사이다. 따라서 <보기 2>의 ‘어느 03’으로 쓰였다는 진술은 적절하다. ④ ㉣은 용언인 ‘플리’를 수식하는 부사이고, <보기 2>의 ‘어느 01’은 관형사이므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉤은 ‘어느’에 목적격 조사가 결합한 형태로, ㉤에 사용된 ‘어느’는 현대 국어의 ‘어느 것’이라는 의미를 가진 옛말이므로 대명사이다. 이는 <보기 2>의 ‘어느 02’에 해당하므로 적절하지 않다.\n① ㉠은 체언 ‘나라’를 수식하고 있으므로 관형사이다. 따라서 <보기 2>의 ‘어느 01’과 품사가 동일하다는 진술은 적절하다. ② ㉡은 ‘어느’에 주격 조사 ‘ㅣ’가 붙은 형태이다. ㉡에 사용된 ‘어느’는 현대 국어의 ‘어느 것’이라는 의미를 가진 옛말이므로 대명사이다. 따라서 <보기 2>의 ‘어느 02’에 해당하므로 적절하다. ③ ㉢은 용언인 ‘듣ᄌᆞᄫᅩ리ᅌᅵᆺ고’를 수식하고 있으므로 부사이다. 따라서 <보기 2>의 ‘어느 03’으로 쓰였다는 진술은 적절하다. ④ ㉣은 용언인 ‘플리’를 수식하는 부사이고, <보기 2>의 ‘어느 01’은 관형사이므로 적절하다."
     ],
-    "src": "2018 11월 전국연합 고2"
+    "src": "2018 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-002",
@@ -7542,7 +7873,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉤은 ‘어느’에 목적격 조사가 결합한 형태로, ㉤에 사용된 ‘어느’는 현대 국어의 ‘어느 것’이라는 의미를 가진 옛말이므로 대명사이다. 이는 <보기 2>의 ‘어느 02’에 해당하므로 적절하지 않다.\n① ㉠은 체언 ‘나라’를 수식하고 있으므로 관형사이다. 따라서 <보기 2>의 ‘어느 01’과 품사가 동일하다는 진술은 적절하다. ② ㉡은 ‘어느’에 주격 조사 ‘ㅣ’가 붙은 형태이다. ㉡에 사용된 ‘어느’는 현대 국어의 ‘어느 것’이라는 의미를 가진 옛말이므로 대명사이다. 따라서 <보기 2>의 ‘어느 02’에 해당하므로 적절하다. ③ ㉢은 용언인 ‘듣ᄌᆞᄫᅩ리ᅌᅵᆺ고’를 수식하고 있으므로 부사이다. 따라서 <보기 2>의 ‘어느 03’으로 쓰였다는 진술은 적절하다. ④ ㉣은 용언인 ‘플리’를 수식하는 부사이고, <보기 2>의 ‘어느 01’은 관형사이므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉤은 ‘어느’에 목적격 조사가 결합한 형태로, ㉤에 사용된 ‘어느’는 현대 국어의 ‘어느 것’이라는 의미를 가진 옛말이므로 대명사이다. 이는 <보기 2>의 ‘어느 02’에 해당하므로 적절하지 않다.\n① ㉠은 체언 ‘나라’를 수식하고 있으므로 관형사이다. 따라서 <보기 2>의 ‘어느 01’과 품사가 동일하다는 진술은 적절하다. ② ㉡은 ‘어느’에 주격 조사 ‘ㅣ’가 붙은 형태이다. ㉡에 사용된 ‘어느’는 현대 국어의 ‘어느 것’이라는 의미를 가진 옛말이므로 대명사이다. 따라서 <보기 2>의 ‘어느 02’에 해당하므로 적절하다. ③ ㉢은 용언인 ‘듣ᄌᆞᄫᅩ리ᅌᅵᆺ고’를 수식하고 있으므로 부사이다. 따라서 <보기 2>의 ‘어느 03’으로 쓰였다는 진술은 적절하다. ④ ㉣은 용언인 ‘플리’를 수식하는 부사이고, <보기 2>의 ‘어느 01’은 관형사이므로 적절하다."
     ],
-    "src": "2018 11월 전국연합 고2"
+    "src": "2018 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-003",
@@ -7562,7 +7894,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉤은 ‘어느’에 목적격 조사가 결합한 형태로, ㉤에 사용된 ‘어느’는 현대 국어의 ‘어느 것’이라는 의미를 가진 옛말이므로 대명사이다. 이는 <보기 2>의 ‘어느 02’에 해당하므로 적절하지 않다.\n① ㉠은 체언 ‘나라’를 수식하고 있으므로 관형사이다. 따라서 <보기 2>의 ‘어느 01’과 품사가 동일하다는 진술은 적절하다. ② ㉡은 ‘어느’에 주격 조사 ‘ㅣ’가 붙은 형태이다. ㉡에 사용된 ‘어느’는 현대 국어의 ‘어느 것’이라는 의미를 가진 옛말이므로 대명사이다. 따라서 <보기 2>의 ‘어느 02’에 해당하므로 적절하다. ③ ㉢은 용언인 ‘듣ᄌᆞᄫᅩ리ᅌᅵᆺ고’를 수식하고 있으므로 부사이다. 따라서 <보기 2>의 ‘어느 03’으로 쓰였다는 진술은 적절하다. ④ ㉣은 용언인 ‘플리’를 수식하는 부사이고, <보기 2>의 ‘어느 01’은 관형사이므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉤은 ‘어느’에 목적격 조사가 결합한 형태로, ㉤에 사용된 ‘어느’는 현대 국어의 ‘어느 것’이라는 의미를 가진 옛말이므로 대명사이다. 이는 <보기 2>의 ‘어느 02’에 해당하므로 적절하지 않다.\n① ㉠은 체언 ‘나라’를 수식하고 있으므로 관형사이다. 따라서 <보기 2>의 ‘어느 01’과 품사가 동일하다는 진술은 적절하다. ② ㉡은 ‘어느’에 주격 조사 ‘ㅣ’가 붙은 형태이다. ㉡에 사용된 ‘어느’는 현대 국어의 ‘어느 것’이라는 의미를 가진 옛말이므로 대명사이다. 따라서 <보기 2>의 ‘어느 02’에 해당하므로 적절하다. ③ ㉢은 용언인 ‘듣ᄌᆞᄫᅩ리ᅌᅵᆺ고’를 수식하고 있으므로 부사이다. 따라서 <보기 2>의 ‘어느 03’으로 쓰였다는 진술은 적절하다. ④ ㉣은 용언인 ‘플리’를 수식하는 부사이고, <보기 2>의 ‘어느 01’은 관형사이므로 적절하다."
     ],
-    "src": "2018 11월 전국연합 고2"
+    "src": "2018 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-004",
@@ -7582,7 +7915,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉤은 ‘어느’에 목적격 조사가 결합한 형태로, ㉤에 사용된 ‘어느’는 현대 국어의 ‘어느 것’이라는 의미를 가진 옛말이므로 대명사이다. 이는 <보기 2>의 ‘어느 02’에 해당하므로 적절하지 않다.\n① ㉠은 체언 ‘나라’를 수식하고 있으므로 관형사이다. 따라서 <보기 2>의 ‘어느 01’과 품사가 동일하다는 진술은 적절하다. ② ㉡은 ‘어느’에 주격 조사 ‘ㅣ’가 붙은 형태이다. ㉡에 사용된 ‘어느’는 현대 국어의 ‘어느 것’이라는 의미를 가진 옛말이므로 대명사이다. 따라서 <보기 2>의 ‘어느 02’에 해당하므로 적절하다. ③ ㉢은 용언인 ‘듣ᄌᆞᄫᅩ리ᅌᅵᆺ고’를 수식하고 있으므로 부사이다. 따라서 <보기 2>의 ‘어느 03’으로 쓰였다는 진술은 적절하다. ④ ㉣은 용언인 ‘플리’를 수식하는 부사이고, <보기 2>의 ‘어느 01’은 관형사이므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉤은 ‘어느’에 목적격 조사가 결합한 형태로, ㉤에 사용된 ‘어느’는 현대 국어의 ‘어느 것’이라는 의미를 가진 옛말이므로 대명사이다. 이는 <보기 2>의 ‘어느 02’에 해당하므로 적절하지 않다.\n① ㉠은 체언 ‘나라’를 수식하고 있으므로 관형사이다. 따라서 <보기 2>의 ‘어느 01’과 품사가 동일하다는 진술은 적절하다. ② ㉡은 ‘어느’에 주격 조사 ‘ㅣ’가 붙은 형태이다. ㉡에 사용된 ‘어느’는 현대 국어의 ‘어느 것’이라는 의미를 가진 옛말이므로 대명사이다. 따라서 <보기 2>의 ‘어느 02’에 해당하므로 적절하다. ③ ㉢은 용언인 ‘듣ᄌᆞᄫᅩ리ᅌᅵᆺ고’를 수식하고 있으므로 부사이다. 따라서 <보기 2>의 ‘어느 03’으로 쓰였다는 진술은 적절하다. ④ ㉣은 용언인 ‘플리’를 수식하는 부사이고, <보기 2>의 ‘어느 01’은 관형사이므로 적절하다."
     ],
-    "src": "2018 11월 전국연합 고2"
+    "src": "2018 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-005",
@@ -7602,7 +7936,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉤은 ‘어느’에 목적격 조사가 결합한 형태로, ㉤에 사용된 ‘어느’는 현대 국어의 ‘어느 것’이라는 의미를 가진 옛말이므로 대명사이다. 이는 <보기 2>의 ‘어느 02’에 해당하므로 적절하지 않다.\n① ㉠은 체언 ‘나라’를 수식하고 있으므로 관형사이다. 따라서 <보기 2>의 ‘어느 01’과 품사가 동일하다는 진술은 적절하다. ② ㉡은 ‘어느’에 주격 조사 ‘ㅣ’가 붙은 형태이다. ㉡에 사용된 ‘어느’는 현대 국어의 ‘어느 것’이라는 의미를 가진 옛말이므로 대명사이다. 따라서 <보기 2>의 ‘어느 02’에 해당하므로 적절하다. ③ ㉢은 용언인 ‘듣ᄌᆞᄫᅩ리ᅌᅵᆺ고’를 수식하고 있으므로 부사이다. 따라서 <보기 2>의 ‘어느 03’으로 쓰였다는 진술은 적절하다. ④ ㉣은 용언인 ‘플리’를 수식하는 부사이고, <보기 2>의 ‘어느 01’은 관형사이므로 적절하다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉤은 ‘어느’에 목적격 조사가 결합한 형태로, ㉤에 사용된 ‘어느’는 현대 국어의 ‘어느 것’이라는 의미를 가진 옛말이므로 대명사이다. 이는 <보기 2>의 ‘어느 02’에 해당하므로 적절하지 않다.\n① ㉠은 체언 ‘나라’를 수식하고 있으므로 관형사이다. 따라서 <보기 2>의 ‘어느 01’과 품사가 동일하다는 진술은 적절하다. ② ㉡은 ‘어느’에 주격 조사 ‘ㅣ’가 붙은 형태이다. ㉡에 사용된 ‘어느’는 현대 국어의 ‘어느 것’이라는 의미를 가진 옛말이므로 대명사이다. 따라서 <보기 2>의 ‘어느 02’에 해당하므로 적절하다. ③ ㉢은 용언인 ‘듣ᄌᆞᄫᅩ리ᅌᅵᆺ고’를 수식하고 있으므로 부사이다. 따라서 <보기 2>의 ‘어느 03’으로 쓰였다는 진술은 적절하다. ④ ㉣은 용언인 ‘플리’를 수식하는 부사이고, <보기 2>의 ‘어느 01’은 관형사이므로 적절하다."
     ],
-    "src": "2018 11월 전국연합 고2"
+    "src": "2018 11월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-006",
@@ -7622,7 +7957,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘얼굴’은 중세 국어에서 ‘형체’라는 의미를 가지고 있었으나, 현대 국어에서는 ‘낯’이라는 의미로만 사용되고 있어서 중세보다 의미가 축소되었다.\n[오답풀이] ① ‘기픈’은 어간의 받침 ‘ㅍ’을 어미의 첫소리로 옮겨 소리 나는 대로 표기한 것이다.\n② ‘뮐ᄊᆡ’는 현대 국어에서는 사용되지 않는 단어이다.\n③ ‘ᄅᆞᆯ’은 현대 국어의 ‘를’과 형태가 다르다.\n④ ‘ᄡᅳᇙ디면’에는 현대 국어에서 쓰이지 않는 어두자음군 ‘ㅄ’이 사용되었다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘얼굴’은 중세 국어에서 ‘형체’라는 의미를 가지고 있었으나, 현대 국어에서는 ‘낯’이라는 의미로만 사용되고 있어서 중세보다 의미가 축소되었다.\n[오답풀이] ① ‘기픈’은 어간의 받침 ‘ㅍ’을 어미의 첫소리로 옮겨 소리 나는 대로 표기한 것이다.\n② ‘뮐ᄊᆡ’는 현대 국어에서는 사용되지 않는 단어이다.\n③ ‘ᄅᆞᆯ’은 현대 국어의 ‘를’과 형태가 다르다.\n④ ‘ᄡᅳᇙ디면’에는 현대 국어에서 쓰이지 않는 어두자음군 ‘ㅄ’이 사용되었다."
     ],
-    "src": "2020 6월 전국연합 고2"
+    "src": "2020 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-007",
@@ -7642,7 +7978,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘얼굴’은 중세 국어에서 ‘형체’라는 의미를 가지고 있었으나, 현대 국어에서는 ‘낯’이라는 의미로만 사용되고 있어서 중세보다 의미가 축소되었다.\n[오답풀이] ① ‘기픈’은 어간의 받침 ‘ㅍ’을 어미의 첫소리로 옮겨 소리 나는 대로 표기한 것이다.\n② ‘뮐ᄊᆡ’는 현대 국어에서는 사용되지 않는 단어이다.\n③ ‘ᄅᆞᆯ’은 현대 국어의 ‘를’과 형태가 다르다.\n④ ‘ᄡᅳᇙ디면’에는 현대 국어에서 쓰이지 않는 어두자음군 ‘ㅄ’이 사용되었다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘얼굴’은 중세 국어에서 ‘형체’라는 의미를 가지고 있었으나, 현대 국어에서는 ‘낯’이라는 의미로만 사용되고 있어서 중세보다 의미가 축소되었다.\n[오답풀이] ① ‘기픈’은 어간의 받침 ‘ㅍ’을 어미의 첫소리로 옮겨 소리 나는 대로 표기한 것이다.\n② ‘뮐ᄊᆡ’는 현대 국어에서는 사용되지 않는 단어이다.\n③ ‘ᄅᆞᆯ’은 현대 국어의 ‘를’과 형태가 다르다.\n④ ‘ᄡᅳᇙ디면’에는 현대 국어에서 쓰이지 않는 어두자음군 ‘ㅄ’이 사용되었다."
     ],
-    "src": "2020 6월 전국연합 고2"
+    "src": "2020 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-008",
@@ -7662,7 +7999,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘얼굴’은 중세 국어에서 ‘형체’라는 의미를 가지고 있었으나, 현대 국어에서는 ‘낯’이라는 의미로만 사용되고 있어서 중세보다 의미가 축소되었다.\n[오답풀이] ① ‘기픈’은 어간의 받침 ‘ㅍ’을 어미의 첫소리로 옮겨 소리 나는 대로 표기한 것이다.\n② ‘뮐ᄊᆡ’는 현대 국어에서는 사용되지 않는 단어이다.\n③ ‘ᄅᆞᆯ’은 현대 국어의 ‘를’과 형태가 다르다.\n④ ‘ᄡᅳᇙ디면’에는 현대 국어에서 쓰이지 않는 어두자음군 ‘ㅄ’이 사용되었다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘얼굴’은 중세 국어에서 ‘형체’라는 의미를 가지고 있었으나, 현대 국어에서는 ‘낯’이라는 의미로만 사용되고 있어서 중세보다 의미가 축소되었다.\n[오답풀이] ① ‘기픈’은 어간의 받침 ‘ㅍ’을 어미의 첫소리로 옮겨 소리 나는 대로 표기한 것이다.\n② ‘뮐ᄊᆡ’는 현대 국어에서는 사용되지 않는 단어이다.\n③ ‘ᄅᆞᆯ’은 현대 국어의 ‘를’과 형태가 다르다.\n④ ‘ᄡᅳᇙ디면’에는 현대 국어에서 쓰이지 않는 어두자음군 ‘ㅄ’이 사용되었다."
     ],
-    "src": "2020 6월 전국연합 고2"
+    "src": "2020 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-009",
@@ -7682,7 +8020,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘얼굴’은 중세 국어에서 ‘형체’라는 의미를 가지고 있었으나, 현대 국어에서는 ‘낯’이라는 의미로만 사용되고 있어서 중세보다 의미가 축소되었다.\n[오답풀이] ① ‘기픈’은 어간의 받침 ‘ㅍ’을 어미의 첫소리로 옮겨 소리 나는 대로 표기한 것이다.\n② ‘뮐ᄊᆡ’는 현대 국어에서는 사용되지 않는 단어이다.\n③ ‘ᄅᆞᆯ’은 현대 국어의 ‘를’과 형태가 다르다.\n④ ‘ᄡᅳᇙ디면’에는 현대 국어에서 쓰이지 않는 어두자음군 ‘ㅄ’이 사용되었다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘얼굴’은 중세 국어에서 ‘형체’라는 의미를 가지고 있었으나, 현대 국어에서는 ‘낯’이라는 의미로만 사용되고 있어서 중세보다 의미가 축소되었다.\n[오답풀이] ① ‘기픈’은 어간의 받침 ‘ㅍ’을 어미의 첫소리로 옮겨 소리 나는 대로 표기한 것이다.\n② ‘뮐ᄊᆡ’는 현대 국어에서는 사용되지 않는 단어이다.\n③ ‘ᄅᆞᆯ’은 현대 국어의 ‘를’과 형태가 다르다.\n④ ‘ᄡᅳᇙ디면’에는 현대 국어에서 쓰이지 않는 어두자음군 ‘ㅄ’이 사용되었다."
     ],
-    "src": "2020 6월 전국연합 고2"
+    "src": "2020 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-010",
@@ -7702,7 +8041,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘얼굴’은 중세 국어에서 ‘형체’라는 의미를 가지고 있었으나, 현대 국어에서는 ‘낯’이라는 의미로만 사용되고 있어서 중세보다 의미가 축소되었다.\n[오답풀이] ① ‘기픈’은 어간의 받침 ‘ㅍ’을 어미의 첫소리로 옮겨 소리 나는 대로 표기한 것이다.\n② ‘뮐ᄊᆡ’는 현대 국어에서는 사용되지 않는 단어이다.\n③ ‘ᄅᆞᆯ’은 현대 국어의 ‘를’과 형태가 다르다.\n④ ‘ᄡᅳᇙ디면’에는 현대 국어에서 쓰이지 않는 어두자음군 ‘ㅄ’이 사용되었다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘얼굴’은 중세 국어에서 ‘형체’라는 의미를 가지고 있었으나, 현대 국어에서는 ‘낯’이라는 의미로만 사용되고 있어서 중세보다 의미가 축소되었다.\n[오답풀이] ① ‘기픈’은 어간의 받침 ‘ㅍ’을 어미의 첫소리로 옮겨 소리 나는 대로 표기한 것이다.\n② ‘뮐ᄊᆡ’는 현대 국어에서는 사용되지 않는 단어이다.\n③ ‘ᄅᆞᆯ’은 현대 국어의 ‘를’과 형태가 다르다.\n④ ‘ᄡᅳᇙ디면’에는 현대 국어에서 쓰이지 않는 어두자음군 ‘ㅄ’이 사용되었다."
     ],
-    "src": "2020 6월 전국연합 고2"
+    "src": "2020 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-011",
@@ -7722,7 +8062,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n<보기>의 [탐구 결과]에 따르면, ㄱ과 ㄴ은 판정 의문문, ㄷ과 ㄹ은 설명 의문문이다. 그리고 4문단에 의하면, ㄱ의 ‘가’와 ㄷ의 ‘고’는 의문문을 만드는 보조사이고, ㄴ의 ‘-녀’와 ㄹ의 ‘-뇨’는 의문문을 만드는 종결 어미이다. 중세 국어에서는 판정 의문문에는 ‘아/어’ 계통의 보조사나 종결 어미가 사용되었고, 설명 의문문에는 ‘오’ 계통의 보조사나 종결 어미가 사용되었다. 따라서 <보기>의 사례들을 통해 중세 국어에서는 판정 의문문에 사용되는 보조사나 종결 어미의 형태가 설명 의문문과 달랐다고 판단할 수 있다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n<보기>의 [탐구 결과]에 따르면, ㄱ과 ㄴ은 판정 의문문, ㄷ과 ㄹ은 설명 의문문이다. 그리고 4문단에 의하면, ㄱ의 ‘가’와 ㄷ의 ‘고’는 의문문을 만드는 보조사이고, ㄴ의 ‘-녀’와 ㄹ의 ‘-뇨’는 의문문을 만드는 종결 어미이다. 중세 국어에서는 판정 의문문에는 ‘아/어’ 계통의 보조사나 종결 어미가 사용되었고, 설명 의문문에는 ‘오’ 계통의 보조사나 종결 어미가 사용되었다. 따라서 <보기>의 사례들을 통해 중세 국어에서는 판정 의문문에 사용되는 보조사나 종결 어미의 형태가 설명 의문문과 달랐다고 판단할 수 있다."
     ],
-    "src": "2021 6월 전국연합 고2"
+    "src": "2021 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-012",
@@ -7742,7 +8083,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n<보기>의 [탐구 결과]에 따르면, ㄱ과 ㄴ은 판정 의문문, ㄷ과 ㄹ은 설명 의문문이다. 그리고 4문단에 의하면, ㄱ의 ‘가’와 ㄷ의 ‘고’는 의문문을 만드는 보조사이고, ㄴ의 ‘-녀’와 ㄹ의 ‘-뇨’는 의문문을 만드는 종결 어미이다. 중세 국어에서는 판정 의문문에는 ‘아/어’ 계통의 보조사나 종결 어미가 사용되었고, 설명 의문문에는 ‘오’ 계통의 보조사나 종결 어미가 사용되었다. 따라서 <보기>의 사례들을 통해 중세 국어에서는 판정 의문문에 사용되는 보조사나 종결 어미의 형태가 설명 의문문과 달랐다고 판단할 수 있다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n<보기>의 [탐구 결과]에 따르면, ㄱ과 ㄴ은 판정 의문문, ㄷ과 ㄹ은 설명 의문문이다. 그리고 4문단에 의하면, ㄱ의 ‘가’와 ㄷ의 ‘고’는 의문문을 만드는 보조사이고, ㄴ의 ‘-녀’와 ㄹ의 ‘-뇨’는 의문문을 만드는 종결 어미이다. 중세 국어에서는 판정 의문문에는 ‘아/어’ 계통의 보조사나 종결 어미가 사용되었고, 설명 의문문에는 ‘오’ 계통의 보조사나 종결 어미가 사용되었다. 따라서 <보기>의 사례들을 통해 중세 국어에서는 판정 의문문에 사용되는 보조사나 종결 어미의 형태가 설명 의문문과 달랐다고 판단할 수 있다."
     ],
-    "src": "2021 6월 전국연합 고2"
+    "src": "2021 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-013",
@@ -7762,7 +8104,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n<보기>의 [탐구 결과]에 따르면, ㄱ과 ㄴ은 판정 의문문, ㄷ과 ㄹ은 설명 의문문이다. 그리고 4문단에 의하면, ㄱ의 ‘가’와 ㄷ의 ‘고’는 의문문을 만드는 보조사이고, ㄴ의 ‘-녀’와 ㄹ의 ‘-뇨’는 의문문을 만드는 종결 어미이다. 중세 국어에서는 판정 의문문에는 ‘아/어’ 계통의 보조사나 종결 어미가 사용되었고, 설명 의문문에는 ‘오’ 계통의 보조사나 종결 어미가 사용되었다. 따라서 <보기>의 사례들을 통해 중세 국어에서는 판정 의문문에 사용되는 보조사나 종결 어미의 형태가 설명 의문문과 달랐다고 판단할 수 있다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n<보기>의 [탐구 결과]에 따르면, ㄱ과 ㄴ은 판정 의문문, ㄷ과 ㄹ은 설명 의문문이다. 그리고 4문단에 의하면, ㄱ의 ‘가’와 ㄷ의 ‘고’는 의문문을 만드는 보조사이고, ㄴ의 ‘-녀’와 ㄹ의 ‘-뇨’는 의문문을 만드는 종결 어미이다. 중세 국어에서는 판정 의문문에는 ‘아/어’ 계통의 보조사나 종결 어미가 사용되었고, 설명 의문문에는 ‘오’ 계통의 보조사나 종결 어미가 사용되었다. 따라서 <보기>의 사례들을 통해 중세 국어에서는 판정 의문문에 사용되는 보조사나 종결 어미의 형태가 설명 의문문과 달랐다고 판단할 수 있다."
     ],
-    "src": "2021 6월 전국연합 고2"
+    "src": "2021 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-014",
@@ -7782,7 +8125,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n<보기>의 [탐구 결과]에 따르면, ㄱ과 ㄴ은 판정 의문문, ㄷ과 ㄹ은 설명 의문문이다. 그리고 4문단에 의하면, ㄱ의 ‘가’와 ㄷ의 ‘고’는 의문문을 만드는 보조사이고, ㄴ의 ‘-녀’와 ㄹ의 ‘-뇨’는 의문문을 만드는 종결 어미이다. 중세 국어에서는 판정 의문문에는 ‘아/어’ 계통의 보조사나 종결 어미가 사용되었고, 설명 의문문에는 ‘오’ 계통의 보조사나 종결 어미가 사용되었다. 따라서 <보기>의 사례들을 통해 중세 국어에서는 판정 의문문에 사용되는 보조사나 종결 어미의 형태가 설명 의문문과 달랐다고 판단할 수 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n<보기>의 [탐구 결과]에 따르면, ㄱ과 ㄴ은 판정 의문문, ㄷ과 ㄹ은 설명 의문문이다. 그리고 4문단에 의하면, ㄱ의 ‘가’와 ㄷ의 ‘고’는 의문문을 만드는 보조사이고, ㄴ의 ‘-녀’와 ㄹ의 ‘-뇨’는 의문문을 만드는 종결 어미이다. 중세 국어에서는 판정 의문문에는 ‘아/어’ 계통의 보조사나 종결 어미가 사용되었고, 설명 의문문에는 ‘오’ 계통의 보조사나 종결 어미가 사용되었다. 따라서 <보기>의 사례들을 통해 중세 국어에서는 판정 의문문에 사용되는 보조사나 종결 어미의 형태가 설명 의문문과 달랐다고 판단할 수 있다."
     ],
-    "src": "2021 6월 전국연합 고2"
+    "src": "2021 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-015",
@@ -7802,7 +8146,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n<보기>의 [탐구 결과]에 따르면, ㄱ과 ㄴ은 판정 의문문, ㄷ과 ㄹ은 설명 의문문이다. 그리고 4문단에 의하면, ㄱ의 ‘가’와 ㄷ의 ‘고’는 의문문을 만드는 보조사이고, ㄴ의 ‘-녀’와 ㄹ의 ‘-뇨’는 의문문을 만드는 종결 어미이다. 중세 국어에서는 판정 의문문에는 ‘아/어’ 계통의 보조사나 종결 어미가 사용되었고, 설명 의문문에는 ‘오’ 계통의 보조사나 종결 어미가 사용되었다. 따라서 <보기>의 사례들을 통해 중세 국어에서는 판정 의문문에 사용되는 보조사나 종결 어미의 형태가 설명 의문문과 달랐다고 판단할 수 있다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n<보기>의 [탐구 결과]에 따르면, ㄱ과 ㄴ은 판정 의문문, ㄷ과 ㄹ은 설명 의문문이다. 그리고 4문단에 의하면, ㄱ의 ‘가’와 ㄷ의 ‘고’는 의문문을 만드는 보조사이고, ㄴ의 ‘-녀’와 ㄹ의 ‘-뇨’는 의문문을 만드는 종결 어미이다. 중세 국어에서는 판정 의문문에는 ‘아/어’ 계통의 보조사나 종결 어미가 사용되었고, 설명 의문문에는 ‘오’ 계통의 보조사나 종결 어미가 사용되었다. 따라서 <보기>의 사례들을 통해 중세 국어에서는 판정 의문문에 사용되는 보조사나 종결 어미의 형태가 설명 의문문과 달랐다고 판단할 수 있다."
     ],
-    "src": "2021 6월 전국연합 고2"
+    "src": "2021 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-016",
@@ -7822,7 +8167,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉢에서는 ‘선혜’를 높이는 주체 높임 선어말 어미인 ‘-샤-’가 사용되었음을 확인할 수 있다.\n[오답풀이] ① ㉠은 현대 국어에서 ‘이르되’로 쓰는 것으로 보아, 중세 국어에는 두음 법칙이 적용되지 않았음을 확인할 수 있다.\n② ㉡은 현대 국어에서 ‘좇음이’로 쓰는 것으로 보아, 중세 국어에는 이어 적기가 사용되었음을 확인할 수 있다.\n④ ㉣은 현대 국어에서 ‘석 달을’로 쓰는 것으로 보아, 중세 국어에는 체언에 조사가 결합할 때 모음조화를 지켰음을 확인할 수 있다.\n⑤ ㉤에서 ‘ㅿ’은 현대 국어에서 쓰이지 않는 자음임을 확인할 수 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉢에서는 ‘선혜’를 높이는 주체 높임 선어말 어미인 ‘-샤-’가 사용되었음을 확인할 수 있다.\n[오답풀이] ① ㉠은 현대 국어에서 ‘이르되’로 쓰는 것으로 보아, 중세 국어에는 두음 법칙이 적용되지 않았음을 확인할 수 있다.\n② ㉡은 현대 국어에서 ‘좇음이’로 쓰는 것으로 보아, 중세 국어에는 이어 적기가 사용되었음을 확인할 수 있다.\n④ ㉣은 현대 국어에서 ‘석 달을’로 쓰는 것으로 보아, 중세 국어에는 체언에 조사가 결합할 때 모음조화를 지켰음을 확인할 수 있다.\n⑤ ㉤에서 ‘ㅿ’은 현대 국어에서 쓰이지 않는 자음임을 확인할 수 있다."
     ],
-    "src": "2022 6월 전국연합 고2"
+    "src": "2022 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-017",
@@ -7842,7 +8188,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉢에서는 ‘선혜’를 높이는 주체 높임 선어말 어미인 ‘-샤-’가 사용되었음을 확인할 수 있다.\n[오답풀이] ① ㉠은 현대 국어에서 ‘이르되’로 쓰는 것으로 보아, 중세 국어에는 두음 법칙이 적용되지 않았음을 확인할 수 있다.\n② ㉡은 현대 국어에서 ‘좇음이’로 쓰는 것으로 보아, 중세 국어에는 이어 적기가 사용되었음을 확인할 수 있다.\n④ ㉣은 현대 국어에서 ‘석 달을’로 쓰는 것으로 보아, 중세 국어에는 체언에 조사가 결합할 때 모음조화를 지켰음을 확인할 수 있다.\n⑤ ㉤에서 ‘ㅿ’은 현대 국어에서 쓰이지 않는 자음임을 확인할 수 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉢에서는 ‘선혜’를 높이는 주체 높임 선어말 어미인 ‘-샤-’가 사용되었음을 확인할 수 있다.\n[오답풀이] ① ㉠은 현대 국어에서 ‘이르되’로 쓰는 것으로 보아, 중세 국어에는 두음 법칙이 적용되지 않았음을 확인할 수 있다.\n② ㉡은 현대 국어에서 ‘좇음이’로 쓰는 것으로 보아, 중세 국어에는 이어 적기가 사용되었음을 확인할 수 있다.\n④ ㉣은 현대 국어에서 ‘석 달을’로 쓰는 것으로 보아, 중세 국어에는 체언에 조사가 결합할 때 모음조화를 지켰음을 확인할 수 있다.\n⑤ ㉤에서 ‘ㅿ’은 현대 국어에서 쓰이지 않는 자음임을 확인할 수 있다."
     ],
-    "src": "2022 6월 전국연합 고2"
+    "src": "2022 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-018",
@@ -7862,7 +8209,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉢에서는 ‘선혜’를 높이는 주체 높임 선어말 어미인 ‘-샤-’가 사용되었음을 확인할 수 있다.\n[오답풀이] ① ㉠은 현대 국어에서 ‘이르되’로 쓰는 것으로 보아, 중세 국어에는 두음 법칙이 적용되지 않았음을 확인할 수 있다.\n② ㉡은 현대 국어에서 ‘좇음이’로 쓰는 것으로 보아, 중세 국어에는 이어 적기가 사용되었음을 확인할 수 있다.\n④ ㉣은 현대 국어에서 ‘석 달을’로 쓰는 것으로 보아, 중세 국어에는 체언에 조사가 결합할 때 모음조화를 지켰음을 확인할 수 있다.\n⑤ ㉤에서 ‘ㅿ’은 현대 국어에서 쓰이지 않는 자음임을 확인할 수 있다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉢에서는 ‘선혜’를 높이는 주체 높임 선어말 어미인 ‘-샤-’가 사용되었음을 확인할 수 있다.\n[오답풀이] ① ㉠은 현대 국어에서 ‘이르되’로 쓰는 것으로 보아, 중세 국어에는 두음 법칙이 적용되지 않았음을 확인할 수 있다.\n② ㉡은 현대 국어에서 ‘좇음이’로 쓰는 것으로 보아, 중세 국어에는 이어 적기가 사용되었음을 확인할 수 있다.\n④ ㉣은 현대 국어에서 ‘석 달을’로 쓰는 것으로 보아, 중세 국어에는 체언에 조사가 결합할 때 모음조화를 지켰음을 확인할 수 있다.\n⑤ ㉤에서 ‘ㅿ’은 현대 국어에서 쓰이지 않는 자음임을 확인할 수 있다."
     ],
-    "src": "2022 6월 전국연합 고2"
+    "src": "2022 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-019",
@@ -7882,7 +8230,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉢에서는 ‘선혜’를 높이는 주체 높임 선어말 어미인 ‘-샤-’가 사용되었음을 확인할 수 있다.\n[오답풀이] ① ㉠은 현대 국어에서 ‘이르되’로 쓰는 것으로 보아, 중세 국어에는 두음 법칙이 적용되지 않았음을 확인할 수 있다.\n② ㉡은 현대 국어에서 ‘좇음이’로 쓰는 것으로 보아, 중세 국어에는 이어 적기가 사용되었음을 확인할 수 있다.\n④ ㉣은 현대 국어에서 ‘석 달을’로 쓰는 것으로 보아, 중세 국어에는 체언에 조사가 결합할 때 모음조화를 지켰음을 확인할 수 있다.\n⑤ ㉤에서 ‘ㅿ’은 현대 국어에서 쓰이지 않는 자음임을 확인할 수 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉢에서는 ‘선혜’를 높이는 주체 높임 선어말 어미인 ‘-샤-’가 사용되었음을 확인할 수 있다.\n[오답풀이] ① ㉠은 현대 국어에서 ‘이르되’로 쓰는 것으로 보아, 중세 국어에는 두음 법칙이 적용되지 않았음을 확인할 수 있다.\n② ㉡은 현대 국어에서 ‘좇음이’로 쓰는 것으로 보아, 중세 국어에는 이어 적기가 사용되었음을 확인할 수 있다.\n④ ㉣은 현대 국어에서 ‘석 달을’로 쓰는 것으로 보아, 중세 국어에는 체언에 조사가 결합할 때 모음조화를 지켰음을 확인할 수 있다.\n⑤ ㉤에서 ‘ㅿ’은 현대 국어에서 쓰이지 않는 자음임을 확인할 수 있다."
     ],
-    "src": "2022 6월 전국연합 고2"
+    "src": "2022 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-020",
@@ -7902,7 +8251,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉢에서는 ‘선혜’를 높이는 주체 높임 선어말 어미인 ‘-샤-’가 사용되었음을 확인할 수 있다.\n[오답풀이] ① ㉠은 현대 국어에서 ‘이르되’로 쓰는 것으로 보아, 중세 국어에는 두음 법칙이 적용되지 않았음을 확인할 수 있다.\n② ㉡은 현대 국어에서 ‘좇음이’로 쓰는 것으로 보아, 중세 국어에는 이어 적기가 사용되었음을 확인할 수 있다.\n④ ㉣은 현대 국어에서 ‘석 달을’로 쓰는 것으로 보아, 중세 국어에는 체언에 조사가 결합할 때 모음조화를 지켰음을 확인할 수 있다.\n⑤ ㉤에서 ‘ㅿ’은 현대 국어에서 쓰이지 않는 자음임을 확인할 수 있다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n㉢에서는 ‘선혜’를 높이는 주체 높임 선어말 어미인 ‘-샤-’가 사용되었음을 확인할 수 있다.\n[오답풀이] ① ㉠은 현대 국어에서 ‘이르되’로 쓰는 것으로 보아, 중세 국어에는 두음 법칙이 적용되지 않았음을 확인할 수 있다.\n② ㉡은 현대 국어에서 ‘좇음이’로 쓰는 것으로 보아, 중세 국어에는 이어 적기가 사용되었음을 확인할 수 있다.\n④ ㉣은 현대 국어에서 ‘석 달을’로 쓰는 것으로 보아, 중세 국어에는 체언에 조사가 결합할 때 모음조화를 지켰음을 확인할 수 있다.\n⑤ ㉤에서 ‘ㅿ’은 현대 국어에서 쓰이지 않는 자음임을 확인할 수 있다."
     ],
-    "src": "2022 6월 전국연합 고2"
+    "src": "2022 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-021",
@@ -7922,7 +8272,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘니ᄅᆞ샤ᄃᆡ’는 현대어 ‘이르시되’에 해당하는 것으로, 선어말 어미 ‘-샤-’를 사용하여 주체를 높이고 있다. ① 음절의 첫머리에 ‘ㅴ’처럼 자음이 연속으로 둘 이상 오는 것을 어두자음군이라고 한다. ② ‘ㅅ’은 현대어 ‘의’에 해당하는 관형격 조사이다. ③ ‘사ᄅᆞ미라’는 체언 ‘사ᄅᆞᆷ’과 서술격 조사 ‘이라’가 결합한 형태로, 체언의 종성을 조사의 초성으로 이어 적었다. ⑤ ‘모ᄅᆞᄂᆞᆫ다’는 현대어 ‘모르느냐’에 해당하는 것으로, 의문형 어미 ‘-ㄴ다’가 사용되었다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘니ᄅᆞ샤ᄃᆡ’는 현대어 ‘이르시되’에 해당하는 것으로, 선어말 어미 ‘-샤-’를 사용하여 주체를 높이고 있다. ① 음절의 첫머리에 ‘ㅴ’처럼 자음이 연속으로 둘 이상 오는 것을 어두자음군이라고 한다. ② ‘ㅅ’은 현대어 ‘의’에 해당하는 관형격 조사이다. ③ ‘사ᄅᆞ미라’는 체언 ‘사ᄅᆞᆷ’과 서술격 조사 ‘이라’가 결합한 형태로, 체언의 종성을 조사의 초성으로 이어 적었다. ⑤ ‘모ᄅᆞᄂᆞᆫ다’는 현대어 ‘모르느냐’에 해당하는 것으로, 의문형 어미 ‘-ㄴ다’가 사용되었다."
     ],
-    "src": "2024 6월 전국연합 고2"
+    "src": "2024 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-022",
@@ -7942,7 +8293,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘니ᄅᆞ샤ᄃᆡ’는 현대어 ‘이르시되’에 해당하는 것으로, 선어말 어미 ‘-샤-’를 사용하여 주체를 높이고 있다. ① 음절의 첫머리에 ‘ㅴ’처럼 자음이 연속으로 둘 이상 오는 것을 어두자음군이라고 한다. ② ‘ㅅ’은 현대어 ‘의’에 해당하는 관형격 조사이다. ③ ‘사ᄅᆞ미라’는 체언 ‘사ᄅᆞᆷ’과 서술격 조사 ‘이라’가 결합한 형태로, 체언의 종성을 조사의 초성으로 이어 적었다. ⑤ ‘모ᄅᆞᄂᆞᆫ다’는 현대어 ‘모르느냐’에 해당하는 것으로, 의문형 어미 ‘-ㄴ다’가 사용되었다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘니ᄅᆞ샤ᄃᆡ’는 현대어 ‘이르시되’에 해당하는 것으로, 선어말 어미 ‘-샤-’를 사용하여 주체를 높이고 있다. ① 음절의 첫머리에 ‘ㅴ’처럼 자음이 연속으로 둘 이상 오는 것을 어두자음군이라고 한다. ② ‘ㅅ’은 현대어 ‘의’에 해당하는 관형격 조사이다. ③ ‘사ᄅᆞ미라’는 체언 ‘사ᄅᆞᆷ’과 서술격 조사 ‘이라’가 결합한 형태로, 체언의 종성을 조사의 초성으로 이어 적었다. ⑤ ‘모ᄅᆞᄂᆞᆫ다’는 현대어 ‘모르느냐’에 해당하는 것으로, 의문형 어미 ‘-ㄴ다’가 사용되었다."
     ],
-    "src": "2024 6월 전국연합 고2"
+    "src": "2024 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-023",
@@ -7962,7 +8314,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘니ᄅᆞ샤ᄃᆡ’는 현대어 ‘이르시되’에 해당하는 것으로, 선어말 어미 ‘-샤-’를 사용하여 주체를 높이고 있다. ① 음절의 첫머리에 ‘ㅴ’처럼 자음이 연속으로 둘 이상 오는 것을 어두자음군이라고 한다. ② ‘ㅅ’은 현대어 ‘의’에 해당하는 관형격 조사이다. ③ ‘사ᄅᆞ미라’는 체언 ‘사ᄅᆞᆷ’과 서술격 조사 ‘이라’가 결합한 형태로, 체언의 종성을 조사의 초성으로 이어 적었다. ⑤ ‘모ᄅᆞᄂᆞᆫ다’는 현대어 ‘모르느냐’에 해당하는 것으로, 의문형 어미 ‘-ㄴ다’가 사용되었다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘니ᄅᆞ샤ᄃᆡ’는 현대어 ‘이르시되’에 해당하는 것으로, 선어말 어미 ‘-샤-’를 사용하여 주체를 높이고 있다. ① 음절의 첫머리에 ‘ㅴ’처럼 자음이 연속으로 둘 이상 오는 것을 어두자음군이라고 한다. ② ‘ㅅ’은 현대어 ‘의’에 해당하는 관형격 조사이다. ③ ‘사ᄅᆞ미라’는 체언 ‘사ᄅᆞᆷ’과 서술격 조사 ‘이라’가 결합한 형태로, 체언의 종성을 조사의 초성으로 이어 적었다. ⑤ ‘모ᄅᆞᄂᆞᆫ다’는 현대어 ‘모르느냐’에 해당하는 것으로, 의문형 어미 ‘-ㄴ다’가 사용되었다."
     ],
-    "src": "2024 6월 전국연합 고2"
+    "src": "2024 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-024",
@@ -7982,7 +8335,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘니ᄅᆞ샤ᄃᆡ’는 현대어 ‘이르시되’에 해당하는 것으로, 선어말 어미 ‘-샤-’를 사용하여 주체를 높이고 있다. ① 음절의 첫머리에 ‘ㅴ’처럼 자음이 연속으로 둘 이상 오는 것을 어두자음군이라고 한다. ② ‘ㅅ’은 현대어 ‘의’에 해당하는 관형격 조사이다. ③ ‘사ᄅᆞ미라’는 체언 ‘사ᄅᆞᆷ’과 서술격 조사 ‘이라’가 결합한 형태로, 체언의 종성을 조사의 초성으로 이어 적었다. ⑤ ‘모ᄅᆞᄂᆞᆫ다’는 현대어 ‘모르느냐’에 해당하는 것으로, 의문형 어미 ‘-ㄴ다’가 사용되었다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘니ᄅᆞ샤ᄃᆡ’는 현대어 ‘이르시되’에 해당하는 것으로, 선어말 어미 ‘-샤-’를 사용하여 주체를 높이고 있다. ① 음절의 첫머리에 ‘ㅴ’처럼 자음이 연속으로 둘 이상 오는 것을 어두자음군이라고 한다. ② ‘ㅅ’은 현대어 ‘의’에 해당하는 관형격 조사이다. ③ ‘사ᄅᆞ미라’는 체언 ‘사ᄅᆞᆷ’과 서술격 조사 ‘이라’가 결합한 형태로, 체언의 종성을 조사의 초성으로 이어 적었다. ⑤ ‘모ᄅᆞᄂᆞᆫ다’는 현대어 ‘모르느냐’에 해당하는 것으로, 의문형 어미 ‘-ㄴ다’가 사용되었다."
     ],
-    "src": "2024 6월 전국연합 고2"
+    "src": "2024 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-025",
@@ -8002,7 +8356,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘니ᄅᆞ샤ᄃᆡ’는 현대어 ‘이르시되’에 해당하는 것으로, 선어말 어미 ‘-샤-’를 사용하여 주체를 높이고 있다. ① 음절의 첫머리에 ‘ㅴ’처럼 자음이 연속으로 둘 이상 오는 것을 어두자음군이라고 한다. ② ‘ㅅ’은 현대어 ‘의’에 해당하는 관형격 조사이다. ③ ‘사ᄅᆞ미라’는 체언 ‘사ᄅᆞᆷ’과 서술격 조사 ‘이라’가 결합한 형태로, 체언의 종성을 조사의 초성으로 이어 적었다. ⑤ ‘모ᄅᆞᄂᆞᆫ다’는 현대어 ‘모르느냐’에 해당하는 것으로, 의문형 어미 ‘-ㄴ다’가 사용되었다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘니ᄅᆞ샤ᄃᆡ’는 현대어 ‘이르시되’에 해당하는 것으로, 선어말 어미 ‘-샤-’를 사용하여 주체를 높이고 있다. ① 음절의 첫머리에 ‘ㅴ’처럼 자음이 연속으로 둘 이상 오는 것을 어두자음군이라고 한다. ② ‘ㅅ’은 현대어 ‘의’에 해당하는 관형격 조사이다. ③ ‘사ᄅᆞ미라’는 체언 ‘사ᄅᆞᆷ’과 서술격 조사 ‘이라’가 결합한 형태로, 체언의 종성을 조사의 초성으로 이어 적었다. ⑤ ‘모ᄅᆞᄂᆞᆫ다’는 현대어 ‘모르느냐’에 해당하는 것으로, 의문형 어미 ‘-ㄴ다’가 사용되었다."
     ],
-    "src": "2024 6월 전국연합 고2"
+    "src": "2024 6월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-026",
@@ -8022,7 +8377,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘아비’는 모음 ‘이’로 끝난 체언 뒤에서 주격 조사가 ‘∅(영형태)’로 실현되었으므로 적절하지 않다. ① ‘王薦(왕천)의’는 유정 체언인 ‘王薦(왕천)’ 뒤에서 관형격 조사 ‘의’가 실현되었으므로 적절하다. ③ ‘아ᄃᆞ리(아ᄃᆞᆯ+이)’는 자음 ‘ㄹ’로 끝난 체언 뒤에서 주격 조사 ‘이’가 실현되었으므로 적절하다. ④ ‘하ᄂᆞᆳ’은 무정 체언인 ‘하ᄂᆞᆯ’ 뒤에서 관형격 조사 ‘ㅅ’이 실현되었으므로 적절하다. ⑤ ‘너를’은 음성 모음 ‘ㅓ’ 뒤에서 목적격 조사 ‘를’이 실현되었으므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘아비’는 모음 ‘이’로 끝난 체언 뒤에서 주격 조사가 ‘∅(영형태)’로 실현되었으므로 적절하지 않다. ① ‘王薦(왕천)의’는 유정 체언인 ‘王薦(왕천)’ 뒤에서 관형격 조사 ‘의’가 실현되었으므로 적절하다. ③ ‘아ᄃᆞ리(아ᄃᆞᆯ+이)’는 자음 ‘ㄹ’로 끝난 체언 뒤에서 주격 조사 ‘이’가 실현되었으므로 적절하다. ④ ‘하ᄂᆞᆳ’은 무정 체언인 ‘하ᄂᆞᆯ’ 뒤에서 관형격 조사 ‘ㅅ’이 실현되었으므로 적절하다. ⑤ ‘너를’은 음성 모음 ‘ㅓ’ 뒤에서 목적격 조사 ‘를’이 실현되었으므로 적절하다."
     ],
-    "src": "2024 10월 전국연합 고2"
+    "src": "2024 10월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-027",
@@ -8042,7 +8398,8 @@
       "O 판단은 맞지 않습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘아비’는 모음 ‘이’로 끝난 체언 뒤에서 주격 조사가 ‘∅(영형태)’로 실현되었으므로 적절하지 않다. ① ‘王薦(왕천)의’는 유정 체언인 ‘王薦(왕천)’ 뒤에서 관형격 조사 ‘의’가 실현되었으므로 적절하다. ③ ‘아ᄃᆞ리(아ᄃᆞᆯ+이)’는 자음 ‘ㄹ’로 끝난 체언 뒤에서 주격 조사 ‘이’가 실현되었으므로 적절하다. ④ ‘하ᄂᆞᆳ’은 무정 체언인 ‘하ᄂᆞᆯ’ 뒤에서 관형격 조사 ‘ㅅ’이 실현되었으므로 적절하다. ⑤ ‘너를’은 음성 모음 ‘ㅓ’ 뒤에서 목적격 조사 ‘를’이 실현되었으므로 적절하다.",
       "X 판단이 맞습니다. 이 선지는 틀린 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘아비’는 모음 ‘이’로 끝난 체언 뒤에서 주격 조사가 ‘∅(영형태)’로 실현되었으므로 적절하지 않다. ① ‘王薦(왕천)의’는 유정 체언인 ‘王薦(왕천)’ 뒤에서 관형격 조사 ‘의’가 실현되었으므로 적절하다. ③ ‘아ᄃᆞ리(아ᄃᆞᆯ+이)’는 자음 ‘ㄹ’로 끝난 체언 뒤에서 주격 조사 ‘이’가 실현되었으므로 적절하다. ④ ‘하ᄂᆞᆳ’은 무정 체언인 ‘하ᄂᆞᆯ’ 뒤에서 관형격 조사 ‘ㅅ’이 실현되었으므로 적절하다. ⑤ ‘너를’은 음성 모음 ‘ㅓ’ 뒤에서 목적격 조사 ‘를’이 실현되었으므로 적절하다."
     ],
-    "src": "2024 10월 전국연합 고2"
+    "src": "2024 10월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-028",
@@ -8062,7 +8419,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘아비’는 모음 ‘이’로 끝난 체언 뒤에서 주격 조사가 ‘∅(영형태)’로 실현되었으므로 적절하지 않다. ① ‘王薦(왕천)의’는 유정 체언인 ‘王薦(왕천)’ 뒤에서 관형격 조사 ‘의’가 실현되었으므로 적절하다. ③ ‘아ᄃᆞ리(아ᄃᆞᆯ+이)’는 자음 ‘ㄹ’로 끝난 체언 뒤에서 주격 조사 ‘이’가 실현되었으므로 적절하다. ④ ‘하ᄂᆞᆳ’은 무정 체언인 ‘하ᄂᆞᆯ’ 뒤에서 관형격 조사 ‘ㅅ’이 실현되었으므로 적절하다. ⑤ ‘너를’은 음성 모음 ‘ㅓ’ 뒤에서 목적격 조사 ‘를’이 실현되었으므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘아비’는 모음 ‘이’로 끝난 체언 뒤에서 주격 조사가 ‘∅(영형태)’로 실현되었으므로 적절하지 않다. ① ‘王薦(왕천)의’는 유정 체언인 ‘王薦(왕천)’ 뒤에서 관형격 조사 ‘의’가 실현되었으므로 적절하다. ③ ‘아ᄃᆞ리(아ᄃᆞᆯ+이)’는 자음 ‘ㄹ’로 끝난 체언 뒤에서 주격 조사 ‘이’가 실현되었으므로 적절하다. ④ ‘하ᄂᆞᆳ’은 무정 체언인 ‘하ᄂᆞᆯ’ 뒤에서 관형격 조사 ‘ㅅ’이 실현되었으므로 적절하다. ⑤ ‘너를’은 음성 모음 ‘ㅓ’ 뒤에서 목적격 조사 ‘를’이 실현되었으므로 적절하다."
     ],
-    "src": "2024 10월 전국연합 고2"
+    "src": "2024 10월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-029",
@@ -8082,7 +8440,8 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘아비’는 모음 ‘이’로 끝난 체언 뒤에서 주격 조사가 ‘∅(영형태)’로 실현되었으므로 적절하지 않다. ① ‘王薦(왕천)의’는 유정 체언인 ‘王薦(왕천)’ 뒤에서 관형격 조사 ‘의’가 실현되었으므로 적절하다. ③ ‘아ᄃᆞ리(아ᄃᆞᆯ+이)’는 자음 ‘ㄹ’로 끝난 체언 뒤에서 주격 조사 ‘이’가 실현되었으므로 적절하다. ④ ‘하ᄂᆞᆳ’은 무정 체언인 ‘하ᄂᆞᆯ’ 뒤에서 관형격 조사 ‘ㅅ’이 실현되었으므로 적절하다. ⑤ ‘너를’은 음성 모음 ‘ㅓ’ 뒤에서 목적격 조사 ‘를’이 실현되었으므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘아비’는 모음 ‘이’로 끝난 체언 뒤에서 주격 조사가 ‘∅(영형태)’로 실현되었으므로 적절하지 않다. ① ‘王薦(왕천)의’는 유정 체언인 ‘王薦(왕천)’ 뒤에서 관형격 조사 ‘의’가 실현되었으므로 적절하다. ③ ‘아ᄃᆞ리(아ᄃᆞᆯ+이)’는 자음 ‘ㄹ’로 끝난 체언 뒤에서 주격 조사 ‘이’가 실현되었으므로 적절하다. ④ ‘하ᄂᆞᆳ’은 무정 체언인 ‘하ᄂᆞᆯ’ 뒤에서 관형격 조사 ‘ㅅ’이 실현되었으므로 적절하다. ⑤ ‘너를’은 음성 모음 ‘ㅓ’ 뒤에서 목적격 조사 ‘를’이 실현되었으므로 적절하다."
     ],
-    "src": "2024 10월 전국연합 고2"
+    "src": "2024 10월 전국연합 고2",
+    "level": 3
   },
   {
     "id": "challenge-medieval-030",
@@ -8102,6 +8461,7 @@
       "O 판단이 맞습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘아비’는 모음 ‘이’로 끝난 체언 뒤에서 주격 조사가 ‘∅(영형태)’로 실현되었으므로 적절하지 않다. ① ‘王薦(왕천)의’는 유정 체언인 ‘王薦(왕천)’ 뒤에서 관형격 조사 ‘의’가 실현되었으므로 적절하다. ③ ‘아ᄃᆞ리(아ᄃᆞᆯ+이)’는 자음 ‘ㄹ’로 끝난 체언 뒤에서 주격 조사 ‘이’가 실현되었으므로 적절하다. ④ ‘하ᄂᆞᆳ’은 무정 체언인 ‘하ᄂᆞᆯ’ 뒤에서 관형격 조사 ‘ㅅ’이 실현되었으므로 적절하다. ⑤ ‘너를’은 음성 모음 ‘ㅓ’ 뒤에서 목적격 조사 ‘를’이 실현되었으므로 적절하다.",
       "X 판단은 맞지 않습니다. 이 선지는 맞는 설명입니다.\n\n원문 해설 — 아래 번호는 원래 문제의 선지 번호입니다. 다른 선지의 설명도 함께 제시합니다.\n‘아비’는 모음 ‘이’로 끝난 체언 뒤에서 주격 조사가 ‘∅(영형태)’로 실현되었으므로 적절하지 않다. ① ‘王薦(왕천)의’는 유정 체언인 ‘王薦(왕천)’ 뒤에서 관형격 조사 ‘의’가 실현되었으므로 적절하다. ③ ‘아ᄃᆞ리(아ᄃᆞᆯ+이)’는 자음 ‘ㄹ’로 끝난 체언 뒤에서 주격 조사 ‘이’가 실현되었으므로 적절하다. ④ ‘하ᄂᆞᆳ’은 무정 체언인 ‘하ᄂᆞᆯ’ 뒤에서 관형격 조사 ‘ㅅ’이 실현되었으므로 적절하다. ⑤ ‘너를’은 음성 모음 ‘ㅓ’ 뒤에서 목적격 조사 ‘를’이 실현되었으므로 적절하다."
     ],
-    "src": "2024 10월 전국연합 고2"
+    "src": "2024 10월 전국연합 고2",
+    "level": 3
   }
 ];if(typeof module!=='undefined')module.exports=Q;else r.GRAMMAR_OX=Q;})(typeof window==='undefined'?globalThis:window);

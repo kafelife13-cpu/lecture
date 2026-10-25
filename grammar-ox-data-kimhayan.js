@@ -31,7 +31,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 형태소와 이형태",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_02.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-2",
@@ -65,7 +66,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 어말·선어말 및 종결·연결·전성 어미",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_07.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-3",
@@ -99,7 +101,8 @@
         "where": "인쇄 56쪽 / PDF 34쪽: 단어의 형성 표",
         "url": "https://s3.ap-northeast-2.amazonaws.com/tsol.jihak.co.kr/tsol/22tp/h/spe/JIHAKSA_%ED%99%94%EB%B2%95%EA%B3%BC%EC%96%B8%EC%96%B4_%EA%B3%A0_%EA%B5%90%EA%B3%BC%EC%84%9C.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-4",
@@ -133,7 +136,8 @@
         "where": "표제어 ‘풋-’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%ED%92%8B-&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-5",
@@ -162,7 +166,8 @@
         "where": "인쇄 56쪽 / PDF 34쪽: 단어의 형성 표",
         "url": "https://s3.ap-northeast-2.amazonaws.com/tsol.jihak.co.kr/tsol/22tp/h/spe/JIHAKSA_%ED%99%94%EB%B2%95%EA%B3%BC%EC%96%B8%EC%96%B4_%EA%B3%A0_%EA%B5%90%EA%B3%BC%EC%84%9C.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-1",
@@ -196,7 +201,8 @@
         "where": "선정 어휘 목록 인쇄 132쪽 / PDF 138쪽: ‘새03’ 품사 열",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=5e2f0471-a53f-46f0-a0ab-dde253ac0241_1.pdf&file_path=reportData&o_file_name=%ED%95%9C%EA%B5%AD%EC%96%B4%20%EA%B5%90%EC%9C%A1%20%EC%96%B4%ED%9C%98%20%EB%82%B4%EC%9A%A9%20%EA%B0%9C%EB%B0%9C%284%EB%8B%A8%EA%B3%84%29_%EB%B6%80%EB%A1%9D.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-2",
@@ -230,7 +236,8 @@
         "where": "선정 어휘 목록 인쇄 130쪽 / PDF 136쪽: ‘빨리’ 품사 열",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=5e2f0471-a53f-46f0-a0ab-dde253ac0241_1.pdf&file_path=reportData&o_file_name=%ED%95%9C%EA%B5%AD%EC%96%B4%20%EA%B5%90%EC%9C%A1%20%EC%96%B4%ED%9C%98%20%EB%82%B4%EC%9A%A9%20%EA%B0%9C%EB%B0%9C%284%EB%8B%A8%EA%B3%84%29_%EB%B6%80%EB%A1%9D.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-3",
@@ -259,7 +266,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 체언·용언·수식언",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-4",
@@ -293,7 +301,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 규칙 활용 및 ㄷ 불규칙",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_06.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-5",
@@ -327,7 +336,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 조사의 종류",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_05.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-1",
@@ -356,7 +366,8 @@
         "where": "PDF 35쪽, 2.2.2 주성분 ❸ 목적어",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-2",
@@ -390,7 +401,8 @@
         "where": "PDF 3~4쪽, 「품사와 문장 성분」",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-3",
@@ -419,7 +431,8 @@
         "where": "PDF 3~4쪽, 홑문장·겹문장",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-4",
@@ -453,7 +466,8 @@
         "where": "PDF 5~6쪽, 대등·종속적으로 이어진 문장",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-5",
@@ -487,7 +501,8 @@
         "where": "PDF 31~32쪽, ❷ 주어 개념·표시",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-1",
@@ -516,7 +531,8 @@
         "where": "인쇄 222~223쪽 / PDF 222~223쪽, 1. 주체 높임",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-2",
@@ -545,7 +561,8 @@
         "where": "인쇄 244~247쪽 / PDF 244~247쪽, 3. 객체 높임",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-3",
@@ -574,7 +591,8 @@
         "where": "인쇄 235~239쪽 / PDF 235~239쪽, 2. 상대 높임",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-4",
@@ -603,7 +621,8 @@
         "where": "인쇄 199~200쪽 / PDF 199~200쪽, 2. 과거 시제의 표시",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-5",
@@ -632,7 +651,8 @@
         "where": "인쇄 286~290쪽 / PDF 286~290쪽, 2. 피동문 만들기",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-1",
@@ -661,7 +681,8 @@
         "where": "제27항 붙임 2 및 해설(며칠)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-2",
@@ -690,7 +711,8 @@
         "where": "제42항 예시(할 수 있다)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-3",
@@ -719,7 +741,8 @@
         "where": "제41항 및 해설",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-4",
@@ -748,7 +771,8 @@
         "where": "제42항 해설 ②",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-5",
@@ -777,7 +801,8 @@
         "where": "제42항 예시 및 해설 ④",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-1",
@@ -806,7 +831,8 @@
         "where": "인쇄7쪽(PDF6쪽) 3절; 인쇄13~14쪽(PDF9~10쪽) 표2·표3",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-2",
@@ -835,7 +861,8 @@
         "where": "인쇄10~11쪽(PDF8쪽) 모음 기본 글자 3자",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-3",
@@ -864,7 +891,8 @@
         "where": "주석3~6: 사성·평성·상성·거성",
         "url": "https://encykorea.aks.ac.kr/Article/E0078818"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-4",
@@ -898,7 +926,8 @@
         "where": "인쇄23쪽 / PDF70쪽, 4) 성조와 방점",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=493a7a8e-dfeb-4b62-9036-9c0c7a668d54_0.pdf&file_path=reportData&o_file_name=2013%EB%85%84+%EA%B0%9C%EB%B0%A9%ED%98%95+%ED%95%9C%EA%B5%AD%EC%96%B4+%EC%A7%80%EC%8B%9D+%EB%8C%80%EC%82%AC%EC%A0%84+%EA%B5%90%EC%9C%A1%EC%9A%A9+%EA%B7%9C%EB%B2%94+%EC%A0%95%EB%B3%B4%28%EC%82%AC%EC%A0%84%29+%EA%B5%AC%EC%B6%95.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-5",
@@ -927,7 +956,8 @@
         "where": "2.2 중세국어 / 인쇄152~153쪽(PDF2~3쪽), 인쇄155쪽(PDF5쪽)",
         "url": "https://www.korean.go.kr/nkview/nklife/1999_4/1999_0412.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sound-6",
@@ -956,7 +986,8 @@
         "where": "인쇄 82쪽(PDF 96쪽), 2.2.1 음운과 변이음",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=5cf42b79-1c29-4e7c-aaf2-ce86b5486691_0.pdf&file_path=reportData&o_file_name=2014%EB%85%84%20%ED%91%9C%EC%A4%80%EA%B5%AD%EC%96%B4%EB%AC%B8%EB%B2%95%EA%B0%9C%EB%B0%9C.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sound-10",
@@ -985,7 +1016,8 @@
         "where": "인쇄 119쪽(PDF 133쪽), 음절의 정의·구조와 주석 2",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=5cf42b79-1c29-4e7c-aaf2-ce86b5486691_0.pdf&file_path=reportData&o_file_name=2014%EB%85%84%20%ED%91%9C%EC%A4%80%EA%B5%AD%EC%96%B4%EB%AC%B8%EB%B2%95%EA%B0%9C%EB%B0%9C.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sound-20",
@@ -1014,7 +1046,8 @@
         "where": "인쇄 119~120쪽(PDF 133~134쪽), 음절의 구조와 유형",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=5cf42b79-1c29-4e7c-aaf2-ce86b5486691_0.pdf&file_path=reportData&o_file_name=2014%EB%85%84%20%ED%91%9C%EC%A4%80%EA%B5%AD%EC%96%B4%EB%AC%B8%EB%B2%95%EA%B0%9C%EB%B0%9C.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-6",
@@ -1043,7 +1076,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 체언·용언·수식언",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-7",
@@ -1077,7 +1111,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 체언·용언·수식언",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-8",
@@ -1111,7 +1146,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 조사의 종류",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_05.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-10",
@@ -1145,7 +1181,8 @@
         "where": "표제어 ‘맨-’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EB%A7%A8-&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-11",
@@ -1179,7 +1216,8 @@
         "where": "2025-06-24 답변: 활용 어미는 단일어·복합어 판정에서 제외",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?qna_seq=316815"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-12",
@@ -1218,7 +1256,8 @@
         "where": "표제어 ‘-스럽다’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=-%EC%8A%A4%EB%9F%BD%EB%8B%A4&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-13",
@@ -1252,7 +1291,8 @@
         "where": "표제어 ‘-꾼’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=-%EA%BE%BC&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-14",
@@ -1286,7 +1326,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 단어·어근·접사",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_03.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-15",
@@ -1320,7 +1361,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 단어·어근·접사",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_03.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-16",
@@ -1354,7 +1396,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 단어·어근·접사",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_03.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-17",
@@ -1383,7 +1426,8 @@
         "where": "내용: 이형태 및 자립성·의미 기준의 두 분류",
         "url": "https://encykorea.aks.ac.kr/Article/E0063566"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-18",
@@ -1417,7 +1461,8 @@
         "where": "인쇄 55쪽 / PDF 33쪽: 단어와 형태소·형태소의 분류",
         "url": "https://s3.ap-northeast-2.amazonaws.com/tsol.jihak.co.kr/tsol/22tp/h/spe/JIHAKSA_%ED%99%94%EB%B2%95%EA%B3%BC%EC%96%B8%EC%96%B4_%EA%B3%A0_%EA%B5%90%EA%B3%BC%EC%84%9C.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-19",
@@ -1451,7 +1496,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 어말·선어말 및 종결·연결·전성 어미",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_07.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-20",
@@ -1485,7 +1531,8 @@
         "where": "표제어 ‘-님’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=-%EB%8B%98&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-6",
@@ -1514,7 +1561,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 체언·용언·수식언",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-7",
@@ -1543,7 +1591,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 체언·용언·수식언",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-8",
@@ -1572,7 +1621,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 체언·용언·수식언",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-9",
@@ -1606,7 +1656,8 @@
         "where": "표제어 ‘나’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EB%82%98&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-10",
@@ -1640,7 +1691,8 @@
         "where": "표제어 ‘세’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EC%84%B8&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-11",
@@ -1674,7 +1726,8 @@
         "where": "표제어 ‘셋’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EC%85%8B&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-12",
@@ -1708,7 +1761,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 체언·용언·수식언",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-13",
@@ -1742,7 +1796,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 어말·선어말 및 종결·연결·전성 어미",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_07.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-14",
@@ -1771,7 +1826,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 조사의 종류",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_05.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-15",
@@ -1805,7 +1861,8 @@
         "where": "선정 어휘 목록 인쇄89쪽 / PDF95쪽: 것(먹을 것) 품사 열",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=5e2f0471-a53f-46f0-a0ab-dde253ac0241_1.pdf&file_path=reportData&o_file_name=%ED%95%9C%EA%B5%AD%EC%96%B4%20%EA%B5%90%EC%9C%A1%20%EC%96%B4%ED%9C%98%20%EB%82%B4%EC%9A%A9%20%EA%B0%9C%EB%B0%9C%284%EB%8B%A8%EA%B3%84%29_%EB%B6%80%EB%A1%9D.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-16",
@@ -1834,7 +1891,8 @@
         "where": "2026-05-01 답변 1~3: 활용 여부 및 학교 문법의 이다",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?qna_seq=330519"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-17",
@@ -1863,7 +1921,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 품사와 문장 성분",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-18",
@@ -1897,7 +1956,8 @@
         "where": "선정 어휘 목록 인쇄 164쪽 / PDF 170쪽: ‘조용히’ 품사 열",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=5e2f0471-a53f-46f0-a0ab-dde253ac0241_1.pdf&file_path=reportData&o_file_name=%ED%95%9C%EA%B5%AD%EC%96%B4%20%EA%B5%90%EC%9C%A1%20%EC%96%B4%ED%9C%98%20%EB%82%B4%EC%9A%A9%20%EA%B0%9C%EB%B0%9C%284%EB%8B%A8%EA%B3%84%29_%EB%B6%80%EB%A1%9D.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-19",
@@ -1926,7 +1986,8 @@
         "where": "선정 어휘 목록 인쇄 96쪽 / PDF 102쪽: ‘그리고’ 품사 열",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=5e2f0471-a53f-46f0-a0ab-dde253ac0241_1.pdf&file_path=reportData&o_file_name=%ED%95%9C%EA%B5%AD%EC%96%B4%20%EA%B5%90%EC%9C%A1%20%EC%96%B4%ED%9C%98%20%EB%82%B4%EC%9A%A9%20%EA%B0%9C%EB%B0%9C%284%EB%8B%A8%EA%B3%84%29_%EB%B6%80%EB%A1%9D.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-20",
@@ -1955,7 +2016,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 조사의 종류",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_05.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-6",
@@ -1984,7 +2046,8 @@
         "where": "PDF 25~26쪽, ❶ 서술어 개념·성립",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-7",
@@ -2018,7 +2081,8 @@
         "where": "PDF 3~4쪽, 「품사와 문장 성분」",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-8",
@@ -2047,7 +2111,8 @@
         "where": "PDF 41쪽, ❷ 부사어",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-9",
@@ -2076,7 +2141,8 @@
         "where": "PDF 44쪽, 3) 독립성분",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-10",
@@ -2105,7 +2171,8 @@
         "where": "PDF 40쪽, 2.2.2 관형어",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-11",
@@ -2139,7 +2206,8 @@
         "where": "PDF 3쪽, 「문장의 구조 및 형식 관련 용어들(2)」",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_12.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-12",
@@ -2173,7 +2241,8 @@
         "where": "PDF 35쪽, 2.2.2 주성분 ❸ 목적어",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-13",
@@ -2202,7 +2271,8 @@
         "where": "PDF 11~15쪽, 2) 관형사절",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-14",
@@ -2231,7 +2301,8 @@
         "where": "PDF 5쪽, 「문장의 구조 및 형식 관련 용어들(3)」",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_12.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-15",
@@ -2260,7 +2331,8 @@
         "where": "PDF 3쪽, 이어진문장 설명",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_12.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-16",
@@ -2299,7 +2371,8 @@
         "where": "표제어 -고¹, 뜻풀이 1~3",
         "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=78583"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-17",
@@ -2328,7 +2401,8 @@
         "where": "인쇄 178~182쪽 / PDF 178~182쪽, 2.5 인용절 만들기",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-18",
@@ -2357,7 +2431,8 @@
         "where": "PDF 27~28쪽, ❶ 서술어의 자릿수",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-19",
@@ -2391,7 +2466,8 @@
         "where": "PDF 19쪽 및 28쪽, 기본문형·자릿수",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-20",
@@ -2420,7 +2496,8 @@
         "where": "PDF 38쪽, ❹ 보어의 성립 중 학교 문법",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-6",
@@ -2449,7 +2526,8 @@
         "where": "인쇄 247쪽 / PDF 247쪽, 높임 의미를 가진 명사",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-7",
@@ -2483,7 +2561,8 @@
         "where": "인쇄 235~239쪽 / PDF 235~239쪽, 2. 상대 높임",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-8",
@@ -2517,7 +2596,8 @@
         "where": "인쇄 244~247쪽 / PDF 244~247쪽, 3. 객체 높임",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-9",
@@ -2551,7 +2631,8 @@
         "where": "온라인가나다 306807, 2024-11-28 답변의 사전 문법 정보",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&qna_seq=306807"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-10",
@@ -2580,7 +2661,8 @@
         "where": "인쇄 286~290쪽 / PDF 286~290쪽, 2. 피동문 만들기",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-11",
@@ -2614,7 +2696,8 @@
         "where": "인쇄 292~293쪽 / PDF 292~293쪽, 능동사와 피동사 도움말",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-12",
@@ -2648,7 +2731,8 @@
         "where": "인쇄 274~276쪽 / PDF 274~276쪽, 1.2 통사적 사동법",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-13",
@@ -2677,7 +2761,8 @@
         "where": "인쇄 249~250쪽 및 255쪽 / PDF 같은 쪽, 안 부정문·도움말",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-14",
@@ -2706,7 +2791,8 @@
         "where": "인쇄 259~262쪽 / PDF 259~262쪽, 못 부정문",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-15",
@@ -2735,7 +2821,8 @@
         "where": "인쇄 92~94쪽 / PDF 92~94쪽, 3. 명령문 만들기",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-16",
@@ -2764,7 +2851,8 @@
         "where": "인쇄 102~103쪽 / PDF 102~103쪽, 4. 청유문 만들기",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-17",
@@ -2793,7 +2881,8 @@
         "where": "인쇄 108~109쪽 / PDF 108~109쪽, 5. 감탄문 만들기",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-18",
@@ -2822,7 +2911,8 @@
         "where": "인쇄 86쪽 / PDF 86쪽, 의문문의 종류",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-19",
@@ -2851,7 +2941,8 @@
         "where": "인쇄 178~182쪽 / PDF 178~182쪽, 2.5 인용절 만들기",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-20",
@@ -2880,7 +2971,8 @@
         "where": "인쇄 219쪽 / PDF 219쪽, 도움말 진행상·완료상",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-6",
@@ -2909,7 +3001,8 @@
         "where": "제35항 붙임 2(되어→돼, 되었다→됐다)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-7",
@@ -2938,7 +3031,8 @@
         "where": "제35항 붙임 2 및 해설",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-8",
@@ -2967,7 +3061,8 @@
         "where": "답변 본문: 부사 안과 어간 않-",
         "url": "https://www.korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=5649"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-9",
@@ -2996,7 +3091,8 @@
         "where": "답변 본문: 왠지의 준말 관계",
         "url": "https://www.korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=6103"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-10",
@@ -3030,7 +3126,8 @@
         "where": "상담 사례 모음 / 왠지, 웬지의 표기의 답변 본문",
         "url": "https://www.korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=6103"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-11",
@@ -3059,7 +3156,8 @@
         "where": "제53항 예시(-(으)ㄹ게)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-12",
@@ -3088,7 +3186,8 @@
         "where": "답변 본문: 어떻게의 부사형과 어떡해의 준말",
         "url": "https://www.korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=6080"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-13",
@@ -3117,7 +3216,8 @@
         "where": "제57항 예시 및 해설(반드시/반듯이)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-14",
@@ -3146,7 +3246,8 @@
         "where": "제43항 원칙; 제46항 해설(단음절어 붙임)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-15",
@@ -3175,7 +3276,8 @@
         "where": "제43항 다만 및 예시(10개)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-16",
@@ -3204,7 +3306,8 @@
         "where": "제48항 본문과 다만",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-17",
@@ -3233,7 +3336,8 @@
         "where": "제48항 예시(채영신 씨)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-18",
@@ -3262,7 +3366,8 @@
         "where": "제42항 해설 ⑥; 제53항(-(으)ㄹ지)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-19",
@@ -3291,7 +3396,8 @@
         "where": "제42항 해설 ⑥(시간 경과의 지)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-20",
@@ -3320,7 +3426,8 @@
         "where": "제57항 예시 및 해설(맞히다)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-6",
@@ -3349,7 +3456,8 @@
         "where": "인쇄7쪽(PDF6쪽) 3. 훈민정음을 해설한 책",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-7",
@@ -3378,7 +3486,8 @@
         "where": "인쇄7쪽(PDF6쪽) 3. 훈민정음을 해설한 책",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-8",
@@ -3407,7 +3516,8 @@
         "where": "인쇄13쪽(PDF9쪽) 표2와 주석5",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-9",
@@ -3436,7 +3546,8 @@
         "where": "인쇄15쪽(PDF10쪽) 연서와 순경음 비읍 설명",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-10",
@@ -3470,7 +3581,8 @@
         "where": "제4항 자모 수·목록",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-11",
@@ -3499,7 +3611,8 @@
         "where": "인쇄11쪽(PDF8쪽) 모음 기본 글자 3자",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-12",
@@ -3528,7 +3641,8 @@
         "where": "인쇄11쪽(PDF8쪽) 모음 기본 글자 3자",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-13",
@@ -3557,7 +3671,8 @@
         "where": "인쇄10쪽(PDF8쪽) 자음 기본 글자 5자",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-14",
@@ -3586,7 +3701,8 @@
         "where": "인쇄10쪽(PDF8쪽) 자음 기본자 설명과 그림1",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-15",
@@ -3615,7 +3731,8 @@
         "where": "인쇄10쪽(PDF8쪽) 자음 기본자 설명과 그림1",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-16",
@@ -3644,7 +3761,8 @@
         "where": "슬라이드12쪽(PDF12쪽) 표기법의 변화",
         "url": "http://contents2.kocw.or.kr/KOCW/document/2017/koreasejong/ahnbyoungseob081/13.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-17",
@@ -3673,7 +3791,8 @@
         "where": "슬라이드12쪽(PDF12쪽) 표기법의 변화",
         "url": "http://contents2.kocw.or.kr/KOCW/document/2017/koreasejong/ahnbyoungseob081/13.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-18",
@@ -3702,7 +3821,8 @@
         "where": "주석3: 사성의 표기",
         "url": "https://encykorea.aks.ac.kr/Article/E0078818"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-19",
@@ -3741,7 +3861,8 @@
         "where": "인쇄23쪽 / PDF70쪽, 4) 성조와 방점",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=493a7a8e-dfeb-4b62-9036-9c0c7a668d54_0.pdf&file_path=reportData&o_file_name=2013%EB%85%84+%EA%B0%9C%EB%B0%A9%ED%98%95+%ED%95%9C%EA%B5%AD%EC%96%B4+%EC%A7%80%EC%8B%9D+%EB%8C%80%EC%82%AC%EC%A0%84+%EA%B5%90%EC%9C%A1%EC%9A%A9+%EA%B7%9C%EB%B2%94+%EC%A0%95%EB%B3%B4%28%EC%82%AC%EC%A0%84%29+%EA%B5%AC%EC%B6%95.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sound-24",
@@ -3770,7 +3891,8 @@
         "where": "인쇄 119~120쪽(PDF 133~134쪽), 음절 유형",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=5cf42b79-1c29-4e7c-aaf2-ce86b5486691_0.pdf&file_path=reportData&o_file_name=2014%EB%85%84%20%ED%91%9C%EC%A4%80%EA%B5%AD%EC%96%B4%EB%AC%B8%EB%B2%95%EA%B0%9C%EB%B0%9C.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sound-25",
@@ -3799,7 +3921,8 @@
         "where": "인쇄 109~110쪽(PDF 123~124쪽), 음장·운소 설명",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=5cf42b79-1c29-4e7c-aaf2-ce86b5486691_0.pdf&file_path=reportData&o_file_name=2014%EB%85%84%20%ED%91%9C%EC%A4%80%EA%B5%AD%EC%96%B4%EB%AC%B8%EB%B2%95%EA%B0%9C%EB%B0%9C.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sound-26",
@@ -3828,7 +3951,8 @@
         "where": "인쇄 83~84쪽(PDF 97~98쪽), 2.2.2 음운의 종류",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=5cf42b79-1c29-4e7c-aaf2-ce86b5486691_0.pdf&file_path=reportData&o_file_name=2014%EB%85%84%20%ED%91%9C%EC%A4%80%EA%B5%AD%EC%96%B4%EB%AC%B8%EB%B2%95%EA%B0%9C%EB%B0%9C.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sound-33",
@@ -3857,7 +3981,8 @@
         "where": "인쇄 87쪽(PDF 101쪽), 파찰음 정의 및 주석 6~7",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=5cf42b79-1c29-4e7c-aaf2-ce86b5486691_0.pdf&file_path=reportData&o_file_name=2014%EB%85%84%20%ED%91%9C%EC%A4%80%EA%B5%AD%EC%96%B4%EB%AC%B8%EB%B2%95%EA%B0%9C%EB%B0%9C.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sound-36",
@@ -3886,7 +4011,8 @@
         "where": "인쇄 87쪽(PDF 101쪽), 비음과 유음 설명",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=5cf42b79-1c29-4e7c-aaf2-ce86b5486691_0.pdf&file_path=reportData&o_file_name=2014%EB%85%84%20%ED%91%9C%EC%A4%80%EA%B5%AD%EC%96%B4%EB%AC%B8%EB%B2%95%EA%B0%9C%EB%B0%9C.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sound-51",
@@ -3915,7 +4041,8 @@
         "where": "인쇄 3쪽(PDF 3쪽 우측), 용언의 활용(1) 예 (3)과 ㅡ 탈락 설명",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_06.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sound-52",
@@ -3944,7 +4071,8 @@
         "where": "인쇄 3쪽(PDF 3쪽 우측), 용언의 활용(1) 예 (4)",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_06.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sound-53",
@@ -3973,7 +4101,8 @@
         "where": "인쇄 3쪽(PDF 3쪽 우측), 모음 연속 회피·ㅡ 탈락 설명",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_06.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sound-54",
@@ -4002,7 +4131,8 @@
         "where": "인쇄 3쪽(PDF 3쪽 우측), 용언의 활용(1) 예 (2)",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_06.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sound-95",
@@ -4031,7 +4161,8 @@
         "where": "인쇄 3쪽(PDF 3쪽 우측), ㄹ 탈락 조건 설명",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_06.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-sound-96",
@@ -4060,7 +4191,8 @@
         "where": "인쇄 3쪽(PDF 3쪽 우측), 용언의 활용(1) 예 (1)·(3)",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_06.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-sound-100",
@@ -4089,7 +4221,8 @@
         "where": "인쇄 119~120쪽(PDF 133~134쪽), 음절의 구조와 유형",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=5cf42b79-1c29-4e7c-aaf2-ce86b5486691_0.pdf&file_path=reportData&o_file_name=2014%EB%85%84%20%ED%91%9C%EC%A4%80%EA%B5%AD%EC%96%B4%EB%AC%B8%EB%B2%95%EA%B0%9C%EB%B0%9C.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-word-21",
@@ -4123,7 +4256,8 @@
         "where": "인쇄 55쪽 / PDF 33쪽: 단어와 형태소·형태소의 분류",
         "url": "https://s3.ap-northeast-2.amazonaws.com/tsol.jihak.co.kr/tsol/22tp/h/spe/JIHAKSA_%ED%99%94%EB%B2%95%EA%B3%BC%EC%96%B8%EC%96%B4_%EA%B3%A0_%EA%B5%90%EA%B3%BC%EC%84%9C.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-22",
@@ -4152,7 +4286,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 형태소와 이형태",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_02.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-23",
@@ -4181,7 +4316,8 @@
         "where": "인쇄 55쪽 / PDF 33쪽: 단어와 형태소·형태소의 분류",
         "url": "https://s3.ap-northeast-2.amazonaws.com/tsol.jihak.co.kr/tsol/22tp/h/spe/JIHAKSA_%ED%99%94%EB%B2%95%EA%B3%BC%EC%96%B8%EC%96%B4_%EA%B3%A0_%EA%B5%90%EA%B3%BC%EC%84%9C.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-24",
@@ -4210,7 +4346,8 @@
         "where": "인쇄 55쪽 / PDF 33쪽: 단어와 형태소·형태소의 분류",
         "url": "https://s3.ap-northeast-2.amazonaws.com/tsol.jihak.co.kr/tsol/22tp/h/spe/JIHAKSA_%ED%99%94%EB%B2%95%EA%B3%BC%EC%96%B8%EC%96%B4_%EA%B3%A0_%EA%B5%90%EA%B3%BC%EC%84%9C.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-25",
@@ -4244,7 +4381,8 @@
         "where": "내용: 이형태 및 자립성·의미 기준의 두 분류",
         "url": "https://encykorea.aks.ac.kr/Article/E0063566"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-26",
@@ -4273,7 +4411,8 @@
         "where": "인쇄 55쪽 / PDF 33쪽: 단어와 형태소·형태소의 분류",
         "url": "https://s3.ap-northeast-2.amazonaws.com/tsol.jihak.co.kr/tsol/22tp/h/spe/JIHAKSA_%ED%99%94%EB%B2%95%EA%B3%BC%EC%96%B8%EC%96%B4_%EA%B3%A0_%EA%B5%90%EA%B3%BC%EC%84%9C.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-27",
@@ -4307,7 +4446,8 @@
         "where": "인쇄 55쪽 / PDF 33쪽: 단어와 형태소·형태소의 분류",
         "url": "https://s3.ap-northeast-2.amazonaws.com/tsol.jihak.co.kr/tsol/22tp/h/spe/JIHAKSA_%ED%99%94%EB%B2%95%EA%B3%BC%EC%96%B8%EC%96%B4_%EA%B3%A0_%EA%B5%90%EA%B3%BC%EC%84%9C.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-28",
@@ -4341,7 +4481,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 어말·선어말 및 종결·연결·전성 어미",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_07.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-29",
@@ -4370,7 +4511,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 단어·어근·접사",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_03.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-30",
@@ -4409,7 +4551,8 @@
         "where": "표제어 ‘덧-’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EB%8D%A7-&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-31",
@@ -4438,7 +4581,8 @@
         "where": "인쇄 55쪽 / PDF 33쪽: 어근과 어간",
         "url": "https://s3.ap-northeast-2.amazonaws.com/tsol.jihak.co.kr/tsol/22tp/h/spe/JIHAKSA_%ED%99%94%EB%B2%95%EA%B3%BC%EC%96%B8%EC%96%B4_%EA%B3%A0_%EA%B5%90%EA%B3%BC%EC%84%9C.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-32",
@@ -4467,7 +4611,8 @@
         "where": "인쇄 55쪽 / PDF 33쪽: 어근과 어간",
         "url": "https://s3.ap-northeast-2.amazonaws.com/tsol.jihak.co.kr/tsol/22tp/h/spe/JIHAKSA_%ED%99%94%EB%B2%95%EA%B3%BC%EC%96%B8%EC%96%B4_%EA%B3%A0_%EA%B5%90%EA%B3%BC%EC%84%9C.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-33",
@@ -4506,7 +4651,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 단어·어근·접사",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_03.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-34",
@@ -4540,7 +4686,8 @@
         "where": "표제어 ‘맨-’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EB%A7%A8-&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-35",
@@ -4574,7 +4721,8 @@
         "where": "표제어 ‘군-’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EA%B5%B0-&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-36",
@@ -4613,7 +4761,8 @@
         "where": "표제어 ‘-꾼’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=-%EA%BE%BC&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-37",
@@ -4652,7 +4801,8 @@
         "where": "개설·내용: 덮밥·접칼·늦잠·검붉다의 구성",
         "url": "https://encykorea.aks.ac.kr/Article/E0079636"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-38",
@@ -4681,7 +4831,8 @@
         "where": "인쇄 56쪽 / PDF 34쪽: 단어의 형성 표",
         "url": "https://s3.ap-northeast-2.amazonaws.com/tsol.jihak.co.kr/tsol/22tp/h/spe/JIHAKSA_%ED%99%94%EB%B2%95%EA%B3%BC%EC%96%B8%EC%96%B4_%EA%B3%A0_%EA%B5%90%EA%B3%BC%EC%84%9C.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-39",
@@ -4715,7 +4866,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 체언·용언·수식언",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-40",
@@ -4749,7 +4901,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 형태소와 이형태",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_02.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-41",
@@ -4788,7 +4941,8 @@
         "where": "인쇄 56쪽 / PDF 34쪽: 단어의 형성 표",
         "url": "https://s3.ap-northeast-2.amazonaws.com/tsol.jihak.co.kr/tsol/22tp/h/spe/JIHAKSA_%ED%99%94%EB%B2%95%EA%B3%BC%EC%96%B8%EC%96%B4_%EA%B3%A0_%EA%B5%90%EA%B3%BC%EC%84%9C.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-42",
@@ -4822,7 +4976,8 @@
         "where": "인쇄 56쪽 / PDF 34쪽: 단어의 형성 표",
         "url": "https://s3.ap-northeast-2.amazonaws.com/tsol.jihak.co.kr/tsol/22tp/h/spe/JIHAKSA_%ED%99%94%EB%B2%95%EA%B3%BC%EC%96%B8%EC%96%B4_%EA%B3%A0_%EA%B5%90%EA%B3%BC%EC%84%9C.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-43",
@@ -4856,7 +5011,8 @@
         "where": "인쇄 56쪽 / PDF 34쪽: 단어의 형성 표",
         "url": "https://s3.ap-northeast-2.amazonaws.com/tsol.jihak.co.kr/tsol/22tp/h/spe/JIHAKSA_%ED%99%94%EB%B2%95%EA%B3%BC%EC%96%B8%EC%96%B4_%EA%B3%A0_%EA%B5%90%EA%B3%BC%EC%84%9C.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-44",
@@ -4890,7 +5046,8 @@
         "where": "인쇄 56쪽 / PDF 34쪽: 단어의 형성 표",
         "url": "https://s3.ap-northeast-2.amazonaws.com/tsol.jihak.co.kr/tsol/22tp/h/spe/JIHAKSA_%ED%99%94%EB%B2%95%EA%B3%BC%EC%96%B8%EC%96%B4_%EA%B3%A0_%EA%B5%90%EA%B3%BC%EC%84%9C.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-45",
@@ -4924,7 +5081,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 형태소와 이형태",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_02.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-46",
@@ -4958,7 +5116,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 형태소와 이형태",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_02.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-47",
@@ -4992,7 +5151,8 @@
         "where": "표제어 ‘소나무’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EC%86%8C%EB%82%98%EB%AC%B4&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-48",
@@ -5026,7 +5186,8 @@
         "where": "표제어 ‘풋-’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%ED%92%8B-&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-49",
@@ -5065,7 +5226,8 @@
         "where": "표제어 ‘깨끗이’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EA%B9%A8%EB%81%97%EC%9D%B4&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-50",
@@ -5099,7 +5261,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 조사의 종류",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_05.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-word-51",
@@ -5133,7 +5296,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 형태소와 이형태",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_02.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-52",
@@ -5162,7 +5326,8 @@
         "where": "인쇄 55쪽 / PDF 33쪽: 단어와 형태소·형태소의 분류",
         "url": "https://s3.ap-northeast-2.amazonaws.com/tsol.jihak.co.kr/tsol/22tp/h/spe/JIHAKSA_%ED%99%94%EB%B2%95%EA%B3%BC%EC%96%B8%EC%96%B4_%EA%B3%A0_%EA%B5%90%EA%B3%BC%EC%84%9C.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-53",
@@ -5196,7 +5361,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 단어·어근·접사",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_03.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-54",
@@ -5225,7 +5391,8 @@
         "where": "인쇄 55쪽 / PDF 33쪽: 단어와 형태소·형태소의 분류",
         "url": "https://s3.ap-northeast-2.amazonaws.com/tsol.jihak.co.kr/tsol/22tp/h/spe/JIHAKSA_%ED%99%94%EB%B2%95%EA%B3%BC%EC%96%B8%EC%96%B4_%EA%B3%A0_%EA%B5%90%EA%B3%BC%EC%84%9C.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-55",
@@ -5259,7 +5426,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 단어·어근·접사",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_03.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-56",
@@ -5298,7 +5466,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 조사의 종류",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_05.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-57",
@@ -5332,7 +5501,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 조사의 종류",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_05.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-58",
@@ -5366,7 +5536,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 어말·선어말 및 종결·연결·전성 어미",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_07.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-59",
@@ -5400,7 +5571,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 어말·선어말 및 종결·연결·전성 어미",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_07.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-60",
@@ -5429,7 +5601,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 어말·선어말 및 종결·연결·전성 어미",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_07.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-61",
@@ -5458,7 +5631,8 @@
         "where": "내용: 이형태 및 자립성·의미 기준의 두 분류",
         "url": "https://encykorea.aks.ac.kr/Article/E0063566"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-62",
@@ -5492,7 +5666,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 형태소와 이형태",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_02.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-63",
@@ -5526,7 +5701,8 @@
         "where": "표제어 ‘햇-’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%ED%96%87-&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-64",
@@ -5560,7 +5736,8 @@
         "where": "표제어 ‘덧-’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EB%8D%A7-&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-65",
@@ -5594,7 +5771,8 @@
         "where": "표제어 ‘-개’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=-%EA%B0%9C&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-66",
@@ -5628,7 +5806,8 @@
         "where": "표제어 ‘맨-’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EB%A7%A8-&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-67",
@@ -5662,7 +5841,8 @@
         "where": "표제어 ‘-꾼’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=-%EA%BE%BC&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-68",
@@ -5691,7 +5871,8 @@
         "where": "인쇄 56쪽 / PDF 34쪽: 단어의 형성 표",
         "url": "https://s3.ap-northeast-2.amazonaws.com/tsol.jihak.co.kr/tsol/22tp/h/spe/JIHAKSA_%ED%99%94%EB%B2%95%EA%B3%BC%EC%96%B8%EC%96%B4_%EA%B3%A0_%EA%B5%90%EA%B3%BC%EC%84%9C.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-69",
@@ -5725,7 +5906,8 @@
         "where": "개설·내용: 정상적 통사 구성 / 관형어+체언 및 어간+어미+어간 예",
         "url": "https://encykorea.aks.ac.kr/Article/E0079631"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-70",
@@ -5759,7 +5941,8 @@
         "where": "개설·내용: 정상적 통사 구성 / 관형어+체언 및 어간+어미+어간 예",
         "url": "https://encykorea.aks.ac.kr/Article/E0079631"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-72",
@@ -5793,7 +5976,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 체언·용언·수식언",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-73",
@@ -5827,7 +6011,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 어말·선어말 및 종결·연결·전성 어미",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_07.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-74",
@@ -5861,7 +6046,8 @@
         "where": "인쇄 167~171쪽 / PDF 1~5쪽: 파생 명사·명사형의 구분",
         "url": "https://www.korean.go.kr/nkview/nklife/2004_2/2004_0210.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-75",
@@ -5900,7 +6086,8 @@
         "where": "표제어 ‘높이’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EB%86%92%EC%9D%B4&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-76",
@@ -5939,7 +6126,8 @@
         "where": "표제어 ‘깨끗이’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EA%B9%A8%EB%81%97%EC%9D%B4&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-77",
@@ -5973,7 +6161,8 @@
         "where": "인쇄 56쪽 / PDF 34쪽: 단어의 형성 표",
         "url": "https://s3.ap-northeast-2.amazonaws.com/tsol.jihak.co.kr/tsol/22tp/h/spe/JIHAKSA_%ED%99%94%EB%B2%95%EA%B3%BC%EC%96%B8%EC%96%B4_%EA%B3%A0_%EA%B5%90%EA%B3%BC%EC%84%9C.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-78",
@@ -6002,7 +6191,8 @@
         "where": "개설·내용: 덮밥·접칼·늦잠·검붉다의 구성",
         "url": "https://encykorea.aks.ac.kr/Article/E0079636"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-79",
@@ -6036,7 +6226,8 @@
         "where": "표제어 ‘치-’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EC%B9%98-&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-80",
@@ -6070,7 +6261,8 @@
         "where": "표제어 ‘-스럽다’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=-%EC%8A%A4%EB%9F%BD%EB%8B%A4&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-81",
@@ -6104,7 +6296,8 @@
         "where": "표제어 ‘풋-’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%ED%92%8B-&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-word-82",
@@ -6143,7 +6336,8 @@
         "where": "표제어 ‘산길’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EC%82%B0%EA%B8%B8&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-word-83",
@@ -6187,7 +6381,8 @@
         "where": "표제어 ‘믿음’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EB%AF%BF%EC%9D%8C&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-word-84",
@@ -6226,7 +6421,8 @@
         "where": "표제어 ‘날개’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EB%82%A0%EA%B0%9C&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-word-85",
@@ -6260,7 +6456,8 @@
         "where": "표제어 ‘새해’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EC%83%88%ED%95%B4&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-word-86",
@@ -6289,7 +6486,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 단어·어근·접사",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_03.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-word-87",
@@ -6323,7 +6521,8 @@
         "where": "인쇄 55쪽 / PDF 33쪽: 어근과 어간",
         "url": "https://s3.ap-northeast-2.amazonaws.com/tsol.jihak.co.kr/tsol/22tp/h/spe/JIHAKSA_%ED%99%94%EB%B2%95%EA%B3%BC%EC%96%B8%EC%96%B4_%EA%B3%A0_%EA%B5%90%EA%B3%BC%EC%84%9C.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-word-88",
@@ -6367,7 +6566,8 @@
         "where": "표제어 ‘슬픔’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EC%8A%AC%ED%94%94&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-word-89",
@@ -6411,7 +6611,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 어말·선어말 및 종결·연결·전성 어미",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_07.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-word-90",
@@ -6450,7 +6651,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 조사의 종류",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_05.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-word-91",
@@ -6489,7 +6691,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 조사의 종류",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_05.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-word-92",
@@ -6523,7 +6726,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 어말·선어말 및 종결·연결·전성 어미",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_07.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-word-93",
@@ -6557,7 +6761,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 형태소와 이형태",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_02.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-word-94",
@@ -6591,7 +6796,8 @@
         "where": "인쇄 55쪽 / PDF 33쪽: 단어와 형태소·형태소의 분류",
         "url": "https://s3.ap-northeast-2.amazonaws.com/tsol.jihak.co.kr/tsol/22tp/h/spe/JIHAKSA_%ED%99%94%EB%B2%95%EA%B3%BC%EC%96%B8%EC%96%B4_%EA%B3%A0_%EA%B5%90%EA%B3%BC%EC%84%9C.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-word-95",
@@ -6630,7 +6836,8 @@
         "where": "개설·내용: 덮밥·접칼·늦잠·검붉다의 구성",
         "url": "https://encykorea.aks.ac.kr/Article/E0079636"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-word-96",
@@ -6664,7 +6871,8 @@
         "where": "개설·내용: 덮밥·접칼·늦잠·검붉다의 구성",
         "url": "https://encykorea.aks.ac.kr/Article/E0079636"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-word-97",
@@ -6698,7 +6906,8 @@
         "where": "표제어 ‘풋-’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%ED%92%8B-&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-word-98",
@@ -6732,7 +6941,8 @@
         "where": "표제어 ‘소나무’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EC%86%8C%EB%82%98%EB%AC%B4&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-word-99",
@@ -6766,7 +6976,8 @@
         "where": "2026-05-01 답변 1~3: 활용 여부 및 학교 문법의 이다",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?qna_seq=330519"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-word-100",
@@ -6805,7 +7016,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 어말·선어말 및 종결·연결·전성 어미",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_07.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-pos-21",
@@ -6834,7 +7046,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 품사와 문장 성분",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-22",
@@ -6863,7 +7076,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 품사와 문장 성분",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-23",
@@ -6897,7 +7111,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 체언·용언·수식언",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-24",
@@ -6926,7 +7141,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 체언·용언·수식언",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-25",
@@ -6960,7 +7176,8 @@
         "where": "표제어 ‘서울’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EC%84%9C%EC%9A%B8&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-26",
@@ -6994,7 +7211,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 품사와 문장 성분",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-27",
@@ -7033,7 +7251,8 @@
         "where": "표제어 ‘첫째’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EC%B2%AB%EC%A7%B8&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-28",
@@ -7067,7 +7286,8 @@
         "where": "2026-05-01 답변 1~3: 활용 여부 및 학교 문법의 이다",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?qna_seq=330519"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-29",
@@ -7096,7 +7316,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 체언·용언·수식언",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-30",
@@ -7125,7 +7346,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 체언·용언·수식언",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-31",
@@ -7154,7 +7376,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 체언·용언·수식언",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-32",
@@ -7183,7 +7406,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 조사의 종류",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_05.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-33",
@@ -7212,7 +7436,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 조사의 종류",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_05.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-34",
@@ -7246,7 +7471,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 체언·용언·수식언",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-35",
@@ -7280,7 +7506,8 @@
         "where": "선정 어휘 목록 인쇄 148쪽 / PDF 154쪽: ‘예04’ 품사 열",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=5e2f0471-a53f-46f0-a0ab-dde253ac0241_1.pdf&file_path=reportData&o_file_name=%ED%95%9C%EA%B5%AD%EC%96%B4%20%EA%B5%90%EC%9C%A1%20%EC%96%B4%ED%9C%98%20%EB%82%B4%EC%9A%A9%20%EA%B0%9C%EB%B0%9C%284%EB%8B%A8%EA%B3%84%29_%EB%B6%80%EB%A1%9D.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-36",
@@ -7314,7 +7541,8 @@
         "where": "2026-05-01 답변 1~3: 활용 여부 및 학교 문법의 이다",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?qna_seq=330519"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-37",
@@ -7343,7 +7571,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 체언·용언·수식언",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-38",
@@ -7377,7 +7606,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 체언·용언·수식언",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-39",
@@ -7406,7 +7636,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 어말·선어말 및 종결·연결·전성 어미",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_07.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-40",
@@ -7435,7 +7666,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 어말·선어말 및 종결·연결·전성 어미",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_07.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-41",
@@ -7464,7 +7696,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 어말·선어말 및 종결·연결·전성 어미",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_07.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-42",
@@ -7498,7 +7731,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 어말·선어말 및 종결·연결·전성 어미",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_07.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-43",
@@ -7527,7 +7761,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 규칙 활용 및 ㄷ 불규칙",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_06.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-44",
@@ -7556,7 +7791,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 규칙 활용 및 ㄷ 불규칙",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_06.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-45",
@@ -7590,7 +7826,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: ㅂ·ㅅ·르·러·여·ㅎ 불규칙",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_06.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-46",
@@ -7624,7 +7861,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 규칙 활용 및 ㄷ 불규칙",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_06.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-47",
@@ -7663,7 +7901,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 체언·용언·수식언",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-48",
@@ -7707,7 +7946,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 어말·선어말 및 종결·연결·전성 어미",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_07.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-49",
@@ -7741,7 +7981,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 어말·선어말 및 종결·연결·전성 어미",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_07.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-50",
@@ -7775,7 +8016,8 @@
         "where": "선정 어휘 목록 인쇄 116쪽 / PDF 122쪽: ‘맑다’ 품사 열",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=5e2f0471-a53f-46f0-a0ab-dde253ac0241_1.pdf&file_path=reportData&o_file_name=%ED%95%9C%EA%B5%AD%EC%96%B4%20%EA%B5%90%EC%9C%A1%20%EC%96%B4%ED%9C%98%20%EB%82%B4%EC%9A%A9%20%EA%B0%9C%EB%B0%9C%284%EB%8B%A8%EA%B3%84%29_%EB%B6%80%EB%A1%9D.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-pos-51",
@@ -7804,7 +8046,8 @@
         "where": "표제어 ‘서울’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EC%84%9C%EC%9A%B8&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-52",
@@ -7833,7 +8076,8 @@
         "where": "표제어 ‘고양이’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EA%B3%A0%EC%96%91%EC%9D%B4&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-53",
@@ -7867,7 +8111,8 @@
         "where": "표제어 ‘너’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EB%84%88&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-54",
@@ -7896,7 +8141,8 @@
         "where": "표제어 ‘첫째’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EC%B2%AB%EC%A7%B8&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-55",
@@ -7930,7 +8176,8 @@
         "where": "2026-05-12 답변: 한·두·세 등의 수 관형사와 하나·둘·셋 수사",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?qna_seq=331063"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-56",
@@ -7959,7 +8206,8 @@
         "where": "표제어 ‘다섯’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EB%8B%A4%EC%84%AF&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-57",
@@ -7988,7 +8236,8 @@
         "where": "표제어 ‘그’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EA%B7%B8&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-58",
@@ -8022,7 +8271,8 @@
         "where": "표제어 ‘이것’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EC%9D%B4%EA%B2%83&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-59",
@@ -8051,7 +8301,8 @@
         "where": "표제어 ‘헌’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%ED%97%8C&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-60",
@@ -8085,7 +8336,8 @@
         "where": "선정 어휘 목록 인쇄 116쪽 / PDF 122쪽: ‘매우’ 품사 열",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=5e2f0471-a53f-46f0-a0ab-dde253ac0241_1.pdf&file_path=reportData&o_file_name=%ED%95%9C%EA%B5%AD%EC%96%B4%20%EA%B5%90%EC%9C%A1%20%EC%96%B4%ED%9C%98%20%EB%82%B4%EC%9A%A9%20%EA%B0%9C%EB%B0%9C%284%EB%8B%A8%EA%B3%84%29_%EB%B6%80%EB%A1%9D.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-61",
@@ -8124,7 +8376,8 @@
         "where": "선정 어휘 목록 인쇄 171쪽 / PDF 177쪽: ‘천천히’ 품사 열",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=5e2f0471-a53f-46f0-a0ab-dde253ac0241_1.pdf&file_path=reportData&o_file_name=%ED%95%9C%EA%B5%AD%EC%96%B4%20%EA%B5%90%EC%9C%A1%20%EC%96%B4%ED%9C%98%20%EB%82%B4%EC%9A%A9%20%EA%B0%9C%EB%B0%9C%284%EB%8B%A8%EA%B3%84%29_%EB%B6%80%EB%A1%9D.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-62",
@@ -8153,7 +8406,8 @@
         "where": "선정 어휘 목록 인쇄 148쪽 / PDF 154쪽: ‘예04’ 품사 열",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=5e2f0471-a53f-46f0-a0ab-dde253ac0241_1.pdf&file_path=reportData&o_file_name=%ED%95%9C%EA%B5%AD%EC%96%B4%20%EA%B5%90%EC%9C%A1%20%EC%96%B4%ED%9C%98%20%EB%82%B4%EC%9A%A9%20%EA%B0%9C%EB%B0%9C%284%EB%8B%A8%EA%B3%84%29_%EB%B6%80%EB%A1%9D.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-63",
@@ -8182,7 +8436,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 조사의 종류",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_05.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-64",
@@ -8216,7 +8471,8 @@
         "where": "2025-04-28 답변 및 표준국어대사전 와3(2) 뜻풀이",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?qna_seq=313888"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-65",
@@ -8250,7 +8506,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 조사의 종류",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_05.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-66",
@@ -8284,7 +8541,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 조사의 종류",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_05.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-67",
@@ -8313,7 +8571,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 어말·선어말 및 종결·연결·전성 어미",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_07.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-68",
@@ -8342,7 +8601,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 어말·선어말 및 종결·연결·전성 어미",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_07.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-69",
@@ -8371,7 +8631,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 어말·선어말 및 종결·연결·전성 어미",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_07.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-70",
@@ -8405,7 +8666,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: ㅂ·ㅅ·르·러·여·ㅎ 불규칙",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_06.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-71",
@@ -8439,7 +8701,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 규칙 활용 및 ㄷ 불규칙",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_06.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-72",
@@ -8473,7 +8736,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 규칙 활용 및 ㄷ 불규칙",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_06.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-73",
@@ -8507,7 +8771,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: ㅂ·ㅅ·르·러·여·ㅎ 불규칙",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_06.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-74",
@@ -8541,7 +8806,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: ㅂ·ㅅ·르·러·여·ㅎ 불규칙",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_06.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-75",
@@ -8575,7 +8841,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: ㅂ·ㅅ·르·러·여·ㅎ 불규칙",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_06.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-76",
@@ -8609,7 +8876,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: ㅂ·ㅅ·르·러·여·ㅎ 불규칙",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_06.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-77",
@@ -8643,7 +8911,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 규칙 활용 및 ㄷ 불규칙",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_06.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-78",
@@ -8677,7 +8946,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 규칙 활용 및 ㄷ 불규칙",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_06.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-79",
@@ -8716,7 +8986,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 체언·용언·수식언",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-80",
@@ -8755,7 +9026,8 @@
         "where": "선정 어휘 목록 인쇄 124쪽 / PDF 130쪽: ‘버리다01’ 품사 열",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=5e2f0471-a53f-46f0-a0ab-dde253ac0241_1.pdf&file_path=reportData&o_file_name=%ED%95%9C%EA%B5%AD%EC%96%B4%20%EA%B5%90%EC%9C%A1%20%EC%96%B4%ED%9C%98%20%EB%82%B4%EC%9A%A9%20%EA%B0%9C%EB%B0%9C%284%EB%8B%A8%EA%B3%84%29_%EB%B6%80%EB%A1%9D.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-81",
@@ -8789,7 +9061,8 @@
         "where": "선정 어휘 목록 인쇄 165쪽 / PDF 171쪽: ‘좋다·좋아하다’ 품사 열",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=5e2f0471-a53f-46f0-a0ab-dde253ac0241_1.pdf&file_path=reportData&o_file_name=%ED%95%9C%EA%B5%AD%EC%96%B4%20%EA%B5%90%EC%9C%A1%20%EC%96%B4%ED%9C%98%20%EB%82%B4%EC%9A%A9%20%EA%B0%9C%EB%B0%9C%284%EB%8B%A8%EA%B3%84%29_%EB%B6%80%EB%A1%9D.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-pos-82",
@@ -8823,7 +9096,8 @@
         "where": "선정 어휘 목록 인쇄 132쪽 / PDF 138쪽: ‘새03’ 품사 열",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=5e2f0471-a53f-46f0-a0ab-dde253ac0241_1.pdf&file_path=reportData&o_file_name=%ED%95%9C%EA%B5%AD%EC%96%B4%20%EA%B5%90%EC%9C%A1%20%EC%96%B4%ED%9C%98%20%EB%82%B4%EC%9A%A9%20%EA%B0%9C%EB%B0%9C%284%EB%8B%A8%EA%B3%84%29_%EB%B6%80%EB%A1%9D.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-pos-83",
@@ -8857,7 +9131,8 @@
         "where": "표제어 ‘높이’: 품사·뜻풀이",
         "url": "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?mainSearchWord=%EB%86%92%EC%9D%B4&nation=kor&searchType=W&totalSearchYn=Y"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-pos-84",
@@ -8891,7 +9166,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 품사와 문장 성분",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-pos-85",
@@ -8925,7 +9201,8 @@
         "where": "2026-02-10 답변 덧붙임: 명사·부사 통용과 문맥상 판단",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?qna_seq=326674"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-pos-86",
@@ -8959,7 +9236,8 @@
         "where": "선정 어휘 목록 인쇄 180쪽 / PDF 186쪽: ‘한01·하나01’ 품사 열",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=5e2f0471-a53f-46f0-a0ab-dde253ac0241_1.pdf&file_path=reportData&o_file_name=%ED%95%9C%EA%B5%AD%EC%96%B4%20%EA%B5%90%EC%9C%A1%20%EC%96%B4%ED%9C%98%20%EB%82%B4%EC%9A%A9%20%EA%B0%9C%EB%B0%9C%284%EB%8B%A8%EA%B3%84%29_%EB%B6%80%EB%A1%9D.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-pos-87",
@@ -8993,7 +9271,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 어말·선어말 및 종결·연결·전성 어미",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_07.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-pos-88",
@@ -9027,7 +9306,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 어말·선어말 및 종결·연결·전성 어미",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_07.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-pos-89",
@@ -9056,7 +9336,8 @@
         "where": "인쇄 2~5쪽 / PDF 3~4쪽: 조사의 종류",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_05.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-pos-90",
@@ -9085,7 +9366,8 @@
         "where": "2026-05-01 답변 1~3: 활용 여부 및 학교 문법의 이다",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?qna_seq=330519"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-pos-91",
@@ -9119,7 +9401,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: ㅂ·ㅅ·르·러·여·ㅎ 불규칙",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_06.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-pos-92",
@@ -9153,7 +9436,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: ㅂ·ㅅ·르·러·여·ㅎ 불규칙",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_06.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-pos-93",
@@ -9187,7 +9471,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: ㅂ·ㅅ·르·러·여·ㅎ 불규칙",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_06.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-pos-95",
@@ -9221,7 +9506,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: ㅂ·ㅅ·르·러·여·ㅎ 불규칙",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_06.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-pos-96",
@@ -9255,7 +9541,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: ㅂ·ㅅ·르·러·여·ㅎ 불규칙",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_06.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-pos-97",
@@ -9294,7 +9581,8 @@
         "where": "인쇄 6~9쪽 / PDF 5~6쪽: 체언·용언·수식언",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-pos-98",
@@ -9338,7 +9626,8 @@
         "where": "선정 어휘 목록 인쇄 158쪽 / PDF 164쪽: ‘있다01/있다02’ 품사 열",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=5e2f0471-a53f-46f0-a0ab-dde253ac0241_1.pdf&file_path=reportData&o_file_name=%ED%95%9C%EA%B5%AD%EC%96%B4%20%EA%B5%90%EC%9C%A1%20%EC%96%B4%ED%9C%98%20%EB%82%B4%EC%9A%A9%20%EA%B0%9C%EB%B0%9C%284%EB%8B%A8%EA%B3%84%29_%EB%B6%80%EB%A1%9D.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-pos-99",
@@ -9367,7 +9656,8 @@
         "where": "인쇄 167~171쪽 / PDF 1~5쪽: 파생 명사·명사형의 구분",
         "url": "https://www.korean.go.kr/nkview/nklife/2004_2/2004_0210.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-pos-100",
@@ -9406,7 +9696,8 @@
         "where": "인쇄 167~171쪽 / PDF 1~5쪽: 파생 명사·명사형의 구분",
         "url": "https://www.korean.go.kr/nkview/nklife/2004_2/2004_0210.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-expression-21",
@@ -9435,7 +9726,8 @@
         "where": "인쇄 244~247쪽 / PDF 244~247쪽, 3. 객체 높임",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-22",
@@ -9469,7 +9761,8 @@
         "where": "인쇄 222~223쪽 / PDF 222~223쪽, 1. 주체 높임",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-23",
@@ -9503,7 +9796,8 @@
         "where": "인쇄 226~227쪽 / PDF 226~227쪽, 1.4 주체 높임 동사",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-24",
@@ -9537,7 +9831,8 @@
         "where": "인쇄 235~239쪽 / PDF 235~239쪽, 2. 상대 높임",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-25",
@@ -9571,7 +9866,8 @@
         "where": "인쇄 235~239쪽 / PDF 235~239쪽, 2. 상대 높임",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-26",
@@ -9600,7 +9896,8 @@
         "where": "인쇄 235~239쪽 / PDF 235~239쪽, 2. 상대 높임",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-27",
@@ -9629,7 +9926,8 @@
         "where": "표제어 「시제」, 내용 중 기준시점·발화시·사건시 문단",
         "url": "https://encykorea.aks.ac.kr/Article/E0032458"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-28",
@@ -9658,7 +9956,8 @@
         "where": "표제어 「시제」, 내용 중 기준시점·발화시·사건시 문단",
         "url": "https://encykorea.aks.ac.kr/Article/E0032458"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-29",
@@ -9692,7 +9991,8 @@
         "where": "인쇄 199~200쪽 / PDF 199~200쪽, 2. 과거 시제의 표시",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-30",
@@ -9721,7 +10021,8 @@
         "where": "표제어 -겠-, 뜻풀이 1~2",
         "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=90137"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-31",
@@ -9755,7 +10056,8 @@
         "where": "표제어 「시제」, 내용 중 기준시점·발화시·사건시 문단",
         "url": "https://encykorea.aks.ac.kr/Article/E0032458"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-32",
@@ -9789,7 +10091,8 @@
         "where": "인쇄 199~200쪽 / PDF 199~200쪽, 2. 과거 시제의 표시",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-33",
@@ -9818,7 +10121,8 @@
         "where": "인쇄 286~290쪽 / PDF 286~290쪽, 2. 피동문 만들기",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-34",
@@ -9852,7 +10156,8 @@
         "where": "PDF 35쪽, 2.2.2 주성분 ❸ 목적어",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-35",
@@ -9881,7 +10186,8 @@
         "where": "인쇄 292~293쪽 / PDF 292~293쪽, 능동사와 피동사 도움말",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-36",
@@ -9910,7 +10216,8 @@
         "where": "인쇄 292~293쪽 / PDF 292~293쪽, 능동사와 피동사 도움말",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-37",
@@ -9939,7 +10246,8 @@
         "where": "인쇄 288쪽 및 293쪽 / PDF 288쪽 및 293쪽, 통사적 피동법·도움말 (5)",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-38",
@@ -9968,7 +10276,8 @@
         "where": "인쇄 286~290쪽 / PDF 286~290쪽, 2. 피동문 만들기",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-39",
@@ -9997,7 +10306,8 @@
         "where": "인쇄 270~279쪽 / PDF 270~279쪽, 1. 사동문 만들기",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-40",
@@ -10031,7 +10341,8 @@
         "where": "인쇄 286~290쪽 / PDF 286~290쪽, 2. 피동문 만들기",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-41",
@@ -10060,7 +10371,8 @@
         "where": "온라인가나다 306807, 2024-11-28 답변의 사전 문법 정보",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&qna_seq=306807"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-42",
@@ -10094,7 +10406,8 @@
         "where": "온라인가나다 306807, 2024-11-28 답변의 사전 문법 정보",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&qna_seq=306807"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-43",
@@ -10123,7 +10436,8 @@
         "where": "인쇄 274~276쪽 / PDF 274~276쪽, 1.2 통사적 사동법",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-44",
@@ -10152,7 +10466,8 @@
         "where": "인쇄 274~276쪽 / PDF 274~276쪽, 1.2 통사적 사동법",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-45",
@@ -10181,7 +10496,8 @@
         "where": "인쇄 249~250쪽 및 255쪽 / PDF 같은 쪽, 안 부정문·도움말",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-46",
@@ -10210,7 +10526,8 @@
         "where": "인쇄 259~262쪽 / PDF 259~262쪽, 못 부정문",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-47",
@@ -10239,7 +10556,8 @@
         "where": "인쇄 265~267쪽 / PDF 265~267쪽, 말다 부정문",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-48",
@@ -10268,7 +10586,8 @@
         "where": "인쇄 249~250쪽 및 255쪽 / PDF 같은 쪽, 안 부정문·도움말",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-49",
@@ -10297,7 +10616,8 @@
         "where": "인쇄 96쪽 / PDF 96쪽, 명령문 도움말 (3)",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-50",
@@ -10331,7 +10651,8 @@
         "where": "인쇄 187~188쪽 / PDF 187~188쪽, 도움말 (6)~(8) 및 목적어 변화",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-expression-51",
@@ -10365,7 +10686,8 @@
         "where": "인쇄 235~239쪽 / PDF 235~239쪽, 2. 상대 높임",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-52",
@@ -10394,7 +10716,8 @@
         "where": "인쇄 244~247쪽 / PDF 244~247쪽, 3. 객체 높임",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-53",
@@ -10423,7 +10746,8 @@
         "where": "인쇄 244~247쪽 / PDF 244~247쪽, 3. 객체 높임",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-54",
@@ -10457,7 +10781,8 @@
         "where": "인쇄 235~239쪽 / PDF 235~239쪽, 2. 상대 높임",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-55",
@@ -10486,7 +10811,8 @@
         "where": "온라인가나다 327384, 2026-02-13 답변",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=27&qna_seq=327384"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-56",
@@ -10515,7 +10841,8 @@
         "where": "인쇄 222~223쪽 / PDF 222~223쪽, 1. 주체 높임",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-57",
@@ -10544,7 +10871,8 @@
         "where": "인쇄 219쪽 / PDF 219쪽, 도움말 진행상·완료상",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-58",
@@ -10578,7 +10906,8 @@
         "where": "인쇄 199~200쪽 / PDF 199~200쪽, 2. 과거 시제의 표시",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-59",
@@ -10612,7 +10941,8 @@
         "where": "인쇄 199~200쪽 / PDF 199~200쪽, 2. 과거 시제의 표시",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-60",
@@ -10646,7 +10976,8 @@
         "where": "인쇄 199~200쪽 / PDF 199~200쪽, 2. 과거 시제의 표시",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-61",
@@ -10675,7 +11006,8 @@
         "where": "표제어 -겠-, 뜻풀이 1~2",
         "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=90137"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-62",
@@ -10704,7 +11036,8 @@
         "where": "인쇄 191~196쪽 / PDF 191~196쪽, 1. 현재 시제의 표시",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-63",
@@ -10738,7 +11071,8 @@
         "where": "표제어 「시제」, 내용 중 기준시점·발화시·사건시 문단",
         "url": "https://encykorea.aks.ac.kr/Article/E0032458"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-64",
@@ -10767,7 +11101,8 @@
         "where": "인쇄 218쪽 / PDF 218쪽, 3.2 관형사형의 미래 시제 표시",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-65",
@@ -10796,7 +11131,8 @@
         "where": "인쇄 286~290쪽 / PDF 286~290쪽, 2. 피동문 만들기",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-66",
@@ -10825,7 +11161,8 @@
         "where": "인쇄 286~290쪽 / PDF 286~290쪽, 2. 피동문 만들기",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-67",
@@ -10854,7 +11191,8 @@
         "where": "인쇄 288쪽 및 293쪽 / PDF 288쪽 및 293쪽, 통사적 피동법·도움말 (5)",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-68",
@@ -10883,7 +11221,8 @@
         "where": "인쇄 288쪽 및 293쪽 / PDF 288쪽 및 293쪽, 통사적 피동법·도움말 (5)",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-69",
@@ -10912,7 +11251,8 @@
         "where": "인쇄 270~279쪽 / PDF 270~279쪽, 1. 사동문 만들기",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-70",
@@ -10946,7 +11286,8 @@
         "where": "온라인가나다 306807, 2024-11-28 답변의 사전 문법 정보",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&qna_seq=306807"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-71",
@@ -10975,7 +11316,8 @@
         "where": "인쇄 274~276쪽 / PDF 274~276쪽, 1.2 통사적 사동법",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-72",
@@ -11009,7 +11351,8 @@
         "where": "인쇄 274~276쪽 / PDF 274~276쪽, 1.2 통사적 사동법",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-73",
@@ -11038,7 +11381,8 @@
         "where": "인쇄 249~250쪽 및 255쪽 / PDF 같은 쪽, 안 부정문·도움말",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-74",
@@ -11067,7 +11411,8 @@
         "where": "인쇄 259~262쪽 / PDF 259~262쪽, 못 부정문",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-75",
@@ -11101,7 +11446,8 @@
         "where": "인쇄 102~103쪽 / PDF 102~103쪽, 4. 청유문 만들기",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-76",
@@ -11130,7 +11476,8 @@
         "where": "인쇄 249~250쪽 및 255쪽 / PDF 같은 쪽, 안 부정문·도움말",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-77",
@@ -11159,7 +11506,8 @@
         "where": "인쇄 102~103쪽 / PDF 102~103쪽, 4. 청유문 만들기",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-78",
@@ -11188,7 +11536,8 @@
         "where": "인쇄 86쪽 / PDF 86쪽, 의문문의 종류",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-79",
@@ -11217,7 +11566,8 @@
         "where": "인쇄 96쪽 / PDF 96쪽, 명령문 도움말 (3)",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-80",
@@ -11251,7 +11601,8 @@
         "where": "인쇄 187~188쪽 / PDF 187~188쪽, 도움말 (6)~(8) 및 목적어 변화",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-81",
@@ -11285,7 +11636,8 @@
         "where": "인쇄 235~239쪽 / PDF 235~239쪽, 2. 상대 높임",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-expression-82",
@@ -11319,7 +11671,8 @@
         "where": "인쇄 235~239쪽 / PDF 235~239쪽, 2. 상대 높임",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-expression-83",
@@ -11353,7 +11706,8 @@
         "where": "인쇄 244~247쪽 / PDF 244~247쪽, 3. 객체 높임",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-expression-84",
@@ -11387,7 +11741,8 @@
         "where": "PDF 31~32쪽, ❷ 주어 개념·표시",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-expression-85",
@@ -11416,7 +11771,8 @@
         "where": "인쇄 235~239쪽 / PDF 235~239쪽, 2. 상대 높임",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-expression-86",
@@ -11450,7 +11806,8 @@
         "where": "인쇄 199~200쪽 / PDF 199~200쪽, 2. 과거 시제의 표시",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-expression-87",
@@ -11479,7 +11836,8 @@
         "where": "인쇄 191~196쪽 / PDF 191~196쪽, 1. 현재 시제의 표시",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-expression-88",
@@ -11513,7 +11871,8 @@
         "where": "PDF 13~14쪽, 관형사형 어미의 시제와 생각해 봅시다 (8)",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-expression-89",
@@ -11542,7 +11901,8 @@
         "where": "표제어 -겠-, 뜻풀이 1~2",
         "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=90137"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-expression-90",
@@ -11581,7 +11941,8 @@
         "where": "PDF 31~32쪽, ❷ 주어 개념·표시",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-expression-91",
@@ -11615,7 +11976,8 @@
         "where": "온라인가나다 306807, 2024-11-28 답변의 사전 문법 정보",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&qna_seq=306807"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-expression-92",
@@ -11649,7 +12011,8 @@
         "where": "인쇄 286~290쪽 / PDF 286~290쪽, 2. 피동문 만들기",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-expression-93",
@@ -11688,7 +12051,8 @@
         "where": "인쇄 270~279쪽 / PDF 270~279쪽, 1. 사동문 만들기",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-expression-94",
@@ -11722,7 +12086,8 @@
         "where": "온라인가나다 306807, 2024-11-28 답변의 사전 문법 정보",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&qna_seq=306807"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-expression-95",
@@ -11756,7 +12121,8 @@
         "where": "인쇄 270~279쪽 / PDF 270~279쪽, 1. 사동문 만들기",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-expression-96",
@@ -11790,7 +12156,8 @@
         "where": "인쇄 259~262쪽 / PDF 259~262쪽, 못 부정문",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-expression-97",
@@ -11834,7 +12201,8 @@
         "where": "인쇄 102~103쪽 / PDF 102~103쪽, 4. 청유문 만들기",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-expression-98",
@@ -11873,7 +12241,8 @@
         "where": "인쇄 102~103쪽 / PDF 102~103쪽, 4. 청유문 만들기",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-expression-99",
@@ -11902,7 +12271,8 @@
         "where": "인쇄 86쪽 / PDF 86쪽, 의문문의 종류",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-expression-100",
@@ -11936,7 +12306,8 @@
         "where": "인쇄 187~188쪽 / PDF 187~188쪽, 도움말 (6)~(8) 및 목적어 변화",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-sentence-21",
@@ -11965,7 +12336,8 @@
         "where": "인쇄 1쪽 / PDF 1쪽, 1. 문장과 문법 단위",
         "url": "https://contents.kocw.net/document/TIK9%28constituent%20parts%20of%20sentence%29.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-22",
@@ -11994,7 +12366,8 @@
         "where": "PDF 21~22쪽, 문장성분의 개념과 단위",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-23",
@@ -12023,7 +12396,8 @@
         "where": "PDF 21쪽, 문장성분의 단위 ② 어절",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-24",
@@ -12052,7 +12426,8 @@
         "where": "PDF 21쪽, 문장성분의 단위 ② 어절",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-25",
@@ -12081,7 +12456,8 @@
         "where": "인쇄 8쪽 / PDF 8쪽, 도움말 (1)",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-26",
@@ -12110,7 +12486,8 @@
         "where": "인쇄 8쪽 / PDF 8쪽, 도움말 (1)",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-27",
@@ -12144,7 +12521,8 @@
         "where": "PDF 19쪽 및 28쪽, 기본문형·자릿수",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-28",
@@ -12178,7 +12556,8 @@
         "where": "PDF 41쪽, ❷ 부사어",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-29",
@@ -12207,7 +12586,8 @@
         "where": "PDF 31~32쪽, ❷ 주어 개념·표시",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-30",
@@ -12236,7 +12616,8 @@
         "where": "PDF 31~32쪽, ❷ 주어 개념·표시",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-31",
@@ -12265,7 +12646,8 @@
         "where": "PDF 35쪽, 목적어 표시",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-32",
@@ -12294,7 +12676,8 @@
         "where": "PDF 38쪽, ❹ 보어의 성립 중 학교 문법",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-33",
@@ -12328,7 +12711,8 @@
         "where": "인쇄 33쪽 / PDF 44쪽, 1.2 보어·필수적 부사어 무형 대용어 복원",
         "url": "https://korean.go.kr/common/download.do?c_file_name=47230231-b645-4ff6-b6d1-822e9c8247b2.pdf&file_path=reportData&o_file_name=2024%EB%85%84+%EA%B5%AC%EB%AC%B8+%EB%B6%84%EC%84%9D+%EB%B0%8F+%EB%AC%B4%ED%98%95+%EB%8C%80%EC%9A%A9%EC%96%B4+%EB%B3%B5%EC%9B%90+%EB%A7%90%EB%AD%89%EC%B9%98+%EC%97%B0%EA%B5%AC.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-34",
@@ -12367,7 +12751,8 @@
         "where": "인쇄 33쪽 / PDF 44쪽, 1.2 보어·필수적 부사어 무형 대용어 복원",
         "url": "https://korean.go.kr/common/download.do?c_file_name=47230231-b645-4ff6-b6d1-822e9c8247b2.pdf&file_path=reportData&o_file_name=2024%EB%85%84+%EA%B5%AC%EB%AC%B8+%EB%B6%84%EC%84%9D+%EB%B0%8F+%EB%AC%B4%ED%98%95+%EB%8C%80%EC%9A%A9%EC%96%B4+%EB%B3%B5%EC%9B%90+%EB%A7%90%EB%AD%89%EC%B9%98+%EC%97%B0%EA%B5%AC.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-35",
@@ -12396,7 +12781,8 @@
         "where": "PDF 27~28쪽, ❶ 서술어의 자릿수",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-36",
@@ -12425,7 +12811,8 @@
         "where": "PDF 27~28쪽, ❶ 서술어의 자릿수",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-37",
@@ -12464,7 +12851,8 @@
         "where": "PDF 11~15쪽, 2) 관형사절",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-38",
@@ -12493,7 +12881,8 @@
         "where": "PDF 21~22쪽, 문장성분의 개념과 단위",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-39",
@@ -12532,7 +12921,8 @@
         "where": "PDF 11~15쪽, 2) 관형사절",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-40",
@@ -12566,7 +12956,8 @@
         "where": "PDF 8~10쪽, 1) 명사절",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-41",
@@ -12595,7 +12986,8 @@
         "where": "PDF 11~15쪽, 2) 관형사절",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-42",
@@ -12624,7 +13016,8 @@
         "where": "PDF 8~10쪽, 1) 명사절",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-43",
@@ -12653,7 +13046,8 @@
         "where": "PDF 8~10쪽, 1) 명사절",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-44",
@@ -12682,7 +13076,8 @@
         "where": "PDF 11~15쪽, 2) 관형사절",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-45",
@@ -12711,7 +13106,8 @@
         "where": "인쇄 178~182쪽 / PDF 178~182쪽, 2.5 인용절 만들기",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-46",
@@ -12740,7 +13136,8 @@
         "where": "인쇄 178~182쪽 / PDF 178~182쪽, 2.5 인용절 만들기",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-47",
@@ -12774,7 +13171,8 @@
         "where": "표제어 -고¹, 뜻풀이 1~3",
         "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=78583"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-48",
@@ -12803,7 +13201,8 @@
         "where": "PDF 3쪽, 이어진문장 설명",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_12.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-49",
@@ -12842,7 +13241,8 @@
         "where": "PDF 11~15쪽, 2) 관형사절",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-50",
@@ -12881,7 +13281,8 @@
         "where": "PDF 5~6쪽, 대등·종속적으로 이어진 문장",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-sentence-51",
@@ -12910,7 +13311,8 @@
         "where": "PDF 31~32쪽, ❷ 주어 개념·표시",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-52",
@@ -12944,7 +13346,8 @@
         "where": "PDF 35쪽, 목적어 표시",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-53",
@@ -12973,7 +13376,8 @@
         "where": "PDF 40쪽, 2.2.2 관형어",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-54",
@@ -13002,7 +13406,8 @@
         "where": "PDF 41쪽, ❷ 부사어",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-55",
@@ -13031,7 +13436,8 @@
         "where": "PDF 38쪽, ❹ 보어의 성립 중 학교 문법",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-56",
@@ -13060,7 +13466,8 @@
         "where": "PDF 44쪽, 3) 독립성분",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-57",
@@ -13094,7 +13501,8 @@
         "where": "PDF 19쪽 및 28쪽, 기본문형·자릿수",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-58",
@@ -13123,7 +13531,8 @@
         "where": "인쇄 3쪽 / PDF 3쪽, 서술어의 자릿수 표",
         "url": "https://contents.kocw.net/document/TIK9%28constituent%20parts%20of%20sentence%29.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-59",
@@ -13157,7 +13566,8 @@
         "where": "PDF 41쪽, ❷ 부사어",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-60",
@@ -13191,7 +13601,8 @@
         "where": "인쇄 33쪽 / PDF 44쪽, 1.2 보어·필수적 부사어 무형 대용어 복원",
         "url": "https://korean.go.kr/common/download.do?c_file_name=47230231-b645-4ff6-b6d1-822e9c8247b2.pdf&file_path=reportData&o_file_name=2024%EB%85%84+%EA%B5%AC%EB%AC%B8+%EB%B6%84%EC%84%9D+%EB%B0%8F+%EB%AC%B4%ED%98%95+%EB%8C%80%EC%9A%A9%EC%96%B4+%EB%B3%B5%EC%9B%90+%EB%A7%90%EB%AD%89%EC%B9%98+%EC%97%B0%EA%B5%AC.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-61",
@@ -13220,7 +13631,8 @@
         "where": "PDF 8~10쪽, 1) 명사절",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-62",
@@ -13254,7 +13666,8 @@
         "where": "PDF 35쪽, 2.2.2 주성분 ❸ 목적어",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-63",
@@ -13283,7 +13696,8 @@
         "where": "PDF 11~15쪽, 2) 관형사절",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-64",
@@ -13312,7 +13726,8 @@
         "where": "PDF 11~15쪽, 2) 관형사절",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-65",
@@ -13346,7 +13761,8 @@
         "where": "인쇄 162쪽 / PDF 162쪽, 도움말 (4)~(5)",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-66",
@@ -13380,7 +13796,8 @@
         "where": "PDF 3~4쪽, 홑문장·겹문장",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-67",
@@ -13414,7 +13831,8 @@
         "where": "인쇄 162쪽 / PDF 162쪽, 도움말 (4)~(5)",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-68",
@@ -13448,7 +13866,8 @@
         "where": "PDF 35쪽, 2.2.2 주성분 ❸ 목적어",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-69",
@@ -13477,7 +13896,8 @@
         "where": "인쇄 178~182쪽 / PDF 178~182쪽, 2.5 인용절 만들기",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-70",
@@ -13506,7 +13926,8 @@
         "where": "인쇄 178~182쪽 / PDF 178~182쪽, 2.5 인용절 만들기",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-71",
@@ -13545,7 +13966,8 @@
         "where": "PDF 11~15쪽, 2) 관형사절",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-72",
@@ -13574,7 +13996,8 @@
         "where": "PDF 11~15쪽, 2) 관형사절",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-73",
@@ -13603,7 +14026,8 @@
         "where": "PDF 5~6쪽, 대등·종속적으로 이어진 문장",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-74",
@@ -13632,7 +14056,8 @@
         "where": "PDF 3쪽, 이어진문장 설명",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_12.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-75",
@@ -13661,7 +14086,8 @@
         "where": "PDF 3쪽, 이어진문장 설명",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_12.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-76",
@@ -13690,7 +14116,8 @@
         "where": "PDF 5~6쪽, 대등·종속적으로 이어진 문장",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-77",
@@ -13719,7 +14146,8 @@
         "where": "PDF 5~6쪽, 대등·종속적으로 이어진 문장",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-78",
@@ -13748,7 +14176,8 @@
         "where": "PDF 5~6쪽, 대등·종속적으로 이어진 문장",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-79",
@@ -13777,7 +14206,8 @@
         "where": "PDF 3쪽, 이어진문장 설명",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_12.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-80",
@@ -13806,7 +14236,8 @@
         "where": "PDF 3쪽, 이어진문장 설명",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_12.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-81",
@@ -13845,7 +14276,8 @@
         "where": "PDF 25~26쪽, ❶ 서술어 개념·성립",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-sentence-82",
@@ -13884,7 +14316,8 @@
         "where": "PDF 35쪽, 2.2.2 주성분 ❸ 목적어",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-sentence-83",
@@ -13918,7 +14351,8 @@
         "where": "PDF 31~32쪽, ❷ 주어 개념·표시",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-sentence-84",
@@ -13952,7 +14386,8 @@
         "where": "PDF 31~32쪽, ❷ 주어 개념·표시",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-sentence-85",
@@ -13986,7 +14421,8 @@
         "where": "PDF 11~15쪽, 2) 관형사절",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-sentence-86",
@@ -14020,7 +14456,8 @@
         "where": "PDF 11~15쪽, 2) 관형사절",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-sentence-87",
@@ -14049,7 +14486,8 @@
         "where": "PDF 21쪽, 문장성분의 단위 ② 어절",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-sentence-88",
@@ -14083,7 +14521,8 @@
         "where": "PDF 21쪽, 문장성분의 단위 ② 어절",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-sentence-89",
@@ -14112,7 +14551,8 @@
         "where": "PDF 3~4쪽, 홑문장·겹문장",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-sentence-90",
@@ -14146,7 +14586,8 @@
         "where": "PDF 3쪽, 이어진문장 설명",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_12.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-sentence-91",
@@ -14180,7 +14621,8 @@
         "where": "PDF 35쪽, 2.2.2 주성분 ❸ 목적어",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-sentence-92",
@@ -14214,7 +14656,8 @@
         "where": "PDF 11~15쪽, 2) 관형사절",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-sentence-93",
@@ -14248,7 +14691,8 @@
         "where": "PDF 3쪽, 이어진문장 설명",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_12.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-sentence-94",
@@ -14287,7 +14731,8 @@
         "where": "인쇄 8쪽 / PDF 8쪽, 도움말 (1)",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-sentence-95",
@@ -14321,7 +14766,8 @@
         "where": "PDF 35쪽, 2.2.2 주성분 ❸ 목적어",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-sentence-96",
@@ -14360,7 +14806,8 @@
         "where": "PDF 35쪽, 2.2.2 주성분 ❸ 목적어",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-sentence-97",
@@ -14394,7 +14841,8 @@
         "where": "PDF 11~15쪽, 2) 관형사절",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/16.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-sentence-98",
@@ -14428,7 +14876,8 @@
         "where": "표제어 -고¹, 뜻풀이 1~3",
         "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=78583"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-sentence-99",
@@ -14462,7 +14911,8 @@
         "where": "PDF 31~32쪽, ❷ 주어 개념·표시",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-sentence-100",
@@ -14501,7 +14951,8 @@
         "where": "표제어 -고¹, 뜻풀이 1~3",
         "url": "https://krdict.korean.go.kr/kor/dicSearch/SearchView?ParaWordNo=78583"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-spelling-21",
@@ -14530,7 +14981,8 @@
         "where": "제1항 본문과 해설",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-22",
@@ -14559,7 +15011,8 @@
         "where": "제1항 해설(꽃/늙-의 형태 고정)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-23",
@@ -14588,7 +15041,8 @@
         "where": "제2항 본문; 제41항 해설",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-24",
@@ -14617,7 +15071,8 @@
         "where": "제41항 해설(조사의 연속)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-25",
@@ -14646,7 +15101,8 @@
         "where": "제41항 예시(꽃마저/거기도)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-26",
@@ -14675,7 +15131,8 @@
         "where": "제42항 본문과 해설",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-27",
@@ -14704,7 +15161,8 @@
         "where": "제14항 본문과 해설",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-28",
@@ -14733,7 +15191,8 @@
         "where": "제15항 본문과 해설",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-29",
@@ -14762,7 +15221,8 @@
         "where": "제1항 해설; 제53항 해설",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-30",
@@ -14791,7 +15251,8 @@
         "where": "제10항~제12항 본문 및 붙임",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-31",
@@ -14820,7 +15281,8 @@
         "where": "제10항 본문과 예시(여자)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-32",
@@ -14849,7 +15311,8 @@
         "where": "제10항 붙임 1(남녀)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-33",
@@ -14878,7 +15341,8 @@
         "where": "제11항 본문과 예시(역사)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-34",
@@ -14907,7 +15371,8 @@
         "where": "제10항 다만(몇 년)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-35",
@@ -14936,7 +15401,8 @@
         "where": "제43항 본문",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-36",
@@ -14965,7 +15431,8 @@
         "where": "제44항 본문",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-37",
@@ -14994,7 +15461,8 @@
         "where": "제47항 본문과 해설(붙임 허용 두 구성)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-38",
@@ -15023,7 +15491,8 @@
         "where": "제47항 다만 및 해설",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-39",
@@ -15052,7 +15521,8 @@
         "where": "제53항 예시(-(으)ㄹ게)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-40",
@@ -15081,7 +15551,8 @@
         "where": "제53항 다만(-(으)ㄹ까)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-41",
@@ -15110,7 +15581,8 @@
         "where": "제51항 본문",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-42",
@@ -15139,7 +15611,8 @@
         "where": "제56항 2 및 해설",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-43",
@@ -15168,7 +15641,8 @@
         "where": "제56항 1 및 해설",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-44",
@@ -15197,7 +15671,8 @@
         "where": "제56항 본문과 해설",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-45",
@@ -15226,7 +15701,8 @@
         "where": "제30항 1·2 본문 및 해설",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-46",
@@ -15255,7 +15731,8 @@
         "where": "제30항 해설(세 가지 조건)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-47",
@@ -15284,7 +15761,8 @@
         "where": "제41항 해설(어미 뒤 조사: 먹을게요)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-48",
@@ -15313,7 +15791,8 @@
         "where": "제30항 해설 셋째(오렌지빛/피자집)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-49",
@@ -15342,7 +15821,8 @@
         "where": "제35항 본문과 예시(보아→봐)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-50",
@@ -15371,7 +15851,8 @@
         "where": "제48항 본문",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-spelling-51",
@@ -15400,7 +15881,8 @@
         "where": "제47항 본문 및 해설 (1)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-52",
@@ -15429,7 +15911,8 @@
         "where": "제47항 다만; 해설(읽어는 보았다)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-53",
@@ -15458,7 +15941,8 @@
         "where": "제41항 해설(조사의 연속)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-54",
@@ -15487,7 +15971,8 @@
         "where": "제42항 예시(아는 것이 힘이다)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-55",
@@ -15516,7 +16001,8 @@
         "where": "답변 본문(일을 뜻하는 데)",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=44&pageIndex=1&qna_seq=336819"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-56",
@@ -15545,7 +16031,8 @@
         "where": "답변 본문(뒤 절과 상관되는 상황의 어미)",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=44&pageIndex=1&qna_seq=336819"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-57",
@@ -15574,7 +16061,8 @@
         "where": "제42항 해설 ③",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-58",
@@ -15603,7 +16091,8 @@
         "where": "제42항 해설 ③",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-59",
@@ -15632,7 +16121,8 @@
         "where": "답변 본문(보조사 밖에)",
         "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=335984"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-60",
@@ -15661,7 +16151,8 @@
         "where": "답변 본문(집 밖에: 명사 밖+조사 에)",
         "url": "https://m.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=335984"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-61",
@@ -15690,7 +16181,8 @@
         "where": "제12항 본문과 예시(노인)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-62",
@@ -15719,7 +16211,8 @@
         "where": "단원13 문법1 -(으)려면 / 인쇄196쪽·PDF205쪽",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=dbd5ddc6-e808-40e5-95f0-e1a7664664ff_0.pdf&file_path=reportData&o_file_name=%EC%A4%91%EA%B8%89+%ED%95%9C%EA%B5%AD%EC%96%B4+1+%EA%B5%90%EC%9B%90%EC%9A%A9+%EC%A7%80%EC%B9%A8%EC%84%9C.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-63",
@@ -15748,7 +16241,8 @@
         "where": "제35항 본문과 예시(주어→줘)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-64",
@@ -15777,7 +16271,8 @@
         "where": "제14항 본문과 해설",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-65",
@@ -15806,7 +16301,8 @@
         "where": "제30항 1 (1) 예시(냇가)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-66",
@@ -15835,7 +16331,8 @@
         "where": "제30항 해설 셋째(초점)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-67",
@@ -15864,7 +16361,8 @@
         "where": "한글 맞춤법 제11항 붙임 1 본문: 단어 첫머리 이외 본음 유지(수력·협력 등), 능력은 규칙 적용 자작 예",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-68",
@@ -15893,7 +16391,8 @@
         "where": "제12항 붙임 1(허락)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-69",
@@ -15922,7 +16421,8 @@
         "where": "제53항 다만(-(으)ㄹ까)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-70",
@@ -15951,7 +16451,8 @@
         "where": "제53항 예시(-(으)ㄹ수록)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-71",
@@ -15980,7 +16481,8 @@
         "where": "제51항 1 예시(깨끗이)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-72",
@@ -16009,7 +16511,8 @@
         "where": "제51항 3 예시(조용히)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-73",
@@ -16038,7 +16541,8 @@
         "where": "제19항 2(얼음); 제57항 해설(얼음)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-74",
@@ -16067,7 +16571,8 @@
         "where": "제19항 1 예시(먹이)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-75",
@@ -16096,7 +16601,8 @@
         "where": "제43항 본문(단위를 나타내는 명사)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-76",
@@ -16125,7 +16631,8 @@
         "where": "제44항 본문",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-77",
@@ -16154,7 +16661,8 @@
         "where": "제48항 본문 및 예시(최치원 선생)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-78",
@@ -16183,7 +16691,8 @@
         "where": "제39항 본문과 예시(그렇지 않은→그렇잖은)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-79",
@@ -16212,7 +16721,8 @@
         "where": "한글 맞춤법 제39항 본문 및 예시(적지 않은→적잖은), 적잖게는 규칙 적용 자작 예",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-80",
@@ -16241,7 +16751,8 @@
         "where": "제39항 본문과 예시(만만하지 않다→만만찮다)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-81",
@@ -16270,7 +16781,8 @@
         "where": "첨부 사전 정보: 같이 [Ⅰ]부사 [Ⅱ]조사",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=324269"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-spelling-82",
@@ -16299,7 +16811,8 @@
         "where": "제42항 해설 ⑥",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-spelling-83",
@@ -16328,7 +16841,8 @@
         "where": "제56항 1·2 및 해설",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-spelling-84",
@@ -16357,7 +16871,8 @@
         "where": "제47항 해설(붙임 허용 구성)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-spelling-85",
@@ -16386,7 +16901,8 @@
         "where": "답변 본문: 의존 명사 데와 어미 -ㄴ데/-는데",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=44&pageIndex=1&qna_seq=336819"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-spelling-86",
@@ -16415,7 +16931,8 @@
         "where": "제42항 해설 ③",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-spelling-87",
@@ -16444,7 +16961,8 @@
         "where": "제42항 해설 ④",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-spelling-88",
@@ -16473,7 +16991,8 @@
         "where": "제42항 해설 ②",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-spelling-89",
@@ -16502,7 +17021,8 @@
         "where": "답변 본문: 부사 안과 어간 않-",
         "url": "https://www.korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=5649"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-spelling-90",
@@ -16531,7 +17051,8 @@
         "where": "제35항 붙임 2 및 해설",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-spelling-91",
@@ -16560,7 +17081,8 @@
         "where": "제18항 9 및 해설(르의 ㅡ 탈락과 -라/-러)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-spelling-92",
@@ -16589,7 +17111,8 @@
         "where": "제18항 2 및 해설(짓다/벗다)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-spelling-93",
@@ -16618,7 +17141,8 @@
         "where": "제18항 5 및 해설(듣다/받다)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-spelling-94",
@@ -16647,7 +17171,8 @@
         "where": "제30항 1·2 및 해설",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-spelling-95",
@@ -16676,7 +17201,8 @@
         "where": "답변 본문: 어떻게는 부사형, 어떡해는 서술어 자리",
         "url": "https://www.korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=6080"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-spelling-96",
@@ -16705,7 +17231,8 @@
         "where": "2024-11-07 답변: 금세/금새의 뜻",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&qna_seq=305617"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-spelling-97",
@@ -16734,7 +17261,8 @@
         "where": "제57항 예시 및 해설(이따가/있다가)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-spelling-98",
@@ -16763,7 +17291,8 @@
         "where": "제11항 본문 및 붙임 1(개량)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-spelling-99",
@@ -16792,7 +17321,8 @@
         "where": "제57항 예시 및 해설(늘이다/늘리다)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-spelling-100",
@@ -16821,7 +17351,8 @@
         "where": "제15항 본문 및 해설(어간·어미 구별)",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-medieval-21",
@@ -16850,7 +17381,8 @@
         "where": "주석3~6: 사성·평성·상성·거성",
         "url": "https://encykorea.aks.ac.kr/Article/E0078818"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-22",
@@ -16879,7 +17411,8 @@
         "where": "인쇄6~7쪽(PDF6쪽) 문자 창제와 해설한 책",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-23",
@@ -16908,7 +17441,8 @@
         "where": "인쇄13쪽(PDF9쪽) 표2 자음 글자 17자",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-24",
@@ -16942,7 +17476,8 @@
         "where": "제4항 본문",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-25",
@@ -16971,7 +17506,8 @@
         "where": "인쇄11쪽(PDF8쪽) 2. 자음 기본 글자에 획을 더한다",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-26",
@@ -17000,7 +17536,8 @@
         "where": "인쇄11쪽(PDF8쪽) 이체자 설명과 그림3",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-27",
@@ -17029,7 +17566,8 @@
         "where": "내용: 제자해·예의의 종성부용초성",
         "url": "https://encykorea.aks.ac.kr/Article/E0078818"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-28",
@@ -17058,7 +17596,8 @@
         "where": "정의·내용: 종성해 여덟 글자 목록",
         "url": "https://encykorea.aks.ac.kr/Article/E0078818"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-29",
@@ -17087,7 +17626,8 @@
         "where": "슬라이드12쪽(PDF12쪽) 표기법의 변화",
         "url": "http://contents2.kocw.or.kr/KOCW/document/2017/koreasejong/ahnbyoungseob081/13.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-30",
@@ -17116,7 +17656,8 @@
         "where": "슬라이드12쪽(PDF12쪽) 음소 문자·음절 중심 운용",
         "url": "http://contents2.kocw.or.kr/KOCW/document/2017/koreasejong/ahnbyoungseob081/13.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-31",
@@ -17145,7 +17686,8 @@
         "where": "인쇄15쪽(PDF10쪽) 4절 및 주석9",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-32",
@@ -17174,7 +17716,8 @@
         "where": "인쇄15쪽(PDF10쪽) 4절 및 주석8",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-33",
@@ -17203,7 +17746,8 @@
         "where": "인쇄15쪽(PDF10쪽) 4절 연서 설명 및 주석11",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-34",
@@ -17232,7 +17776,8 @@
         "where": "2.2 중세국어 / 인쇄152~153쪽(PDF2~3쪽)",
         "url": "https://www.korean.go.kr/nkview/nklife/1999_4/1999_0412.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-35",
@@ -17261,7 +17806,8 @@
         "where": "2.2 중세국어 / 인쇄152~153쪽(PDF2~3쪽)",
         "url": "https://www.korean.go.kr/nkview/nklife/1999_4/1999_0412.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-36",
@@ -17290,7 +17836,8 @@
         "where": "2.2 중세국어 / 인쇄152~153쪽(PDF2~3쪽)",
         "url": "https://www.korean.go.kr/nkview/nklife/1999_4/1999_0412.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-37",
@@ -17319,7 +17866,8 @@
         "where": "인쇄153쪽(PDF3쪽) -아/-어계 어미 교체 설명",
         "url": "https://www.korean.go.kr/nkview/nklife/1999_4/1999_0412.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-38",
@@ -17348,7 +17896,8 @@
         "where": "인쇄153쪽(PDF3쪽) 자음 시작 조사·어미 설명",
         "url": "https://www.korean.go.kr/nkview/nklife/1999_4/1999_0412.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-39",
@@ -17377,7 +17926,8 @@
         "where": "슬라이드10쪽(PDF10쪽) 문법의 변화(1)",
         "url": "http://contents2.kocw.or.kr/KOCW/document/2017/koreasejong/ahnbyoungseob081/13.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-40",
@@ -17406,7 +17956,8 @@
         "where": "슬라이드10~11쪽(PDF10~11쪽) 주격 조사 변화",
         "url": "http://contents2.kocw.or.kr/KOCW/document/2017/koreasejong/ahnbyoungseob081/13.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-41",
@@ -17435,7 +17986,8 @@
         "where": "인쇄45~46쪽(PDF57~58쪽) 1.3.2.3 높임법",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=6b18f19d-b577-4d13-82c8-5ddabfa80f9a_0.pdf&file_path=etcData&o_file_name=%EC%99%B8%EA%B5%AD%EC%96%B4%EB%A1%9C%EC%84%9C%EC%9D%98+%ED%95%9C%EA%B5%AD%EC%96%B4+%EA%B5%90%EC%9C%A1+-+%EC%A0%9C+14%ED%9A%8C+%EC%97%B0%EC%88%98%ED%9A%8C+%EA%B5%90%EC%9E%AC.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-42",
@@ -17464,7 +18016,8 @@
         "where": "인쇄45쪽(PDF57쪽) 1.3.2.3 (1) 객체 높임법",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=6b18f19d-b577-4d13-82c8-5ddabfa80f9a_0.pdf&file_path=etcData&o_file_name=%EC%99%B8%EA%B5%AD%EC%96%B4%EB%A1%9C%EC%84%9C%EC%9D%98+%ED%95%9C%EA%B5%AD%EC%96%B4+%EA%B5%90%EC%9C%A1+-+%EC%A0%9C+14%ED%9A%8C+%EC%97%B0%EC%88%98%ED%9A%8C+%EA%B5%90%EC%9E%AC.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-43",
@@ -17493,7 +18046,8 @@
         "where": "온용어 표제어 ‘ㅎ 종성 체언’ 뜻풀이",
         "url": "https://kli.korean.go.kr/term/trgtWord/indexTrgtWord.do?trgtWordNo=2000070"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-44",
@@ -17522,7 +18076,8 @@
         "where": "온용어 표제어 ‘ㅎ 종성 체언’ 뜻풀이",
         "url": "https://kli.korean.go.kr/term/trgtWord/indexTrgtWord.do?trgtWordNo=2000070"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-45",
@@ -17551,7 +18106,8 @@
         "where": "슬라이드12쪽(PDF12쪽) 시대별 표기법 표",
         "url": "http://contents2.kocw.or.kr/KOCW/document/2017/koreasejong/ahnbyoungseob081/13.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-46",
@@ -17580,7 +18136,8 @@
         "where": "슬라이드12쪽(PDF12쪽) 중세 붙여쓰기·현대 띄어쓰기",
         "url": "http://contents2.kocw.or.kr/KOCW/document/2017/koreasejong/ahnbyoungseob081/13.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-47",
@@ -17609,7 +18166,8 @@
         "where": "슬라이드6쪽(PDF6쪽) 시대별 개략적 특징",
         "url": "http://contents2.kocw.or.kr/KOCW/document/2017/koreasejong/ahnbyoungseob081/13.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-48",
@@ -17638,7 +18196,8 @@
         "where": "인쇄6쪽(PDF6쪽) 2. 훈민정음을 만든 목적과 배경",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-49",
@@ -17667,7 +18226,8 @@
         "where": "인쇄48쪽(PDF60쪽) 명사형 어미 -옴/-움의 변화",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=6b18f19d-b577-4d13-82c8-5ddabfa80f9a_0.pdf&file_path=etcData&o_file_name=%EC%99%B8%EA%B5%AD%EC%96%B4%EB%A1%9C%EC%84%9C%EC%9D%98+%ED%95%9C%EA%B5%AD%EC%96%B4+%EA%B5%90%EC%9C%A1+-+%EC%A0%9C+14%ED%9A%8C+%EC%97%B0%EC%88%98%ED%9A%8C+%EA%B5%90%EC%9E%AC.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-50",
@@ -17696,7 +18256,8 @@
         "where": "인쇄48쪽(PDF60쪽) 명사형 어미 -옴/-움의 변화",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=6b18f19d-b577-4d13-82c8-5ddabfa80f9a_0.pdf&file_path=etcData&o_file_name=%EC%99%B8%EA%B5%AD%EC%96%B4%EB%A1%9C%EC%84%9C%EC%9D%98+%ED%95%9C%EA%B5%AD%EC%96%B4+%EA%B5%90%EC%9C%A1+-+%EC%A0%9C+14%ED%9A%8C+%EC%97%B0%EC%88%98%ED%9A%8C+%EA%B5%90%EC%9E%AC.pdf"
       }
-    ]
+    ],
+    "level": 1
   },
   {
     "id": "kh-medieval-51",
@@ -17725,7 +18286,8 @@
         "where": "인쇄11쪽(PDF8쪽) 가획 관계 그림3",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-52",
@@ -17754,7 +18316,8 @@
         "where": "인쇄11쪽(PDF8쪽) 가획 관계 그림3",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-53",
@@ -17783,7 +18346,8 @@
         "where": "인쇄13쪽(PDF9쪽) 3. 모음 기본 글자를 결합한다",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-54",
@@ -17812,7 +18376,8 @@
         "where": "인쇄13쪽(PDF9쪽) 모음 초출자 결합 설명",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-55",
@@ -17841,7 +18406,8 @@
         "where": "인쇄43쪽(PDF55쪽) 1.3.2.2 회상법",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=6b18f19d-b577-4d13-82c8-5ddabfa80f9a_0.pdf&file_path=etcData&o_file_name=%EC%99%B8%EA%B5%AD%EC%96%B4%EB%A1%9C%EC%84%9C%EC%9D%98+%ED%95%9C%EA%B5%AD%EC%96%B4+%EA%B5%90%EC%9C%A1+-+%EC%A0%9C+14%ED%9A%8C+%EC%97%B0%EC%88%98%ED%9A%8C+%EA%B5%90%EC%9E%AC.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-56",
@@ -17870,7 +18436,8 @@
         "where": "인쇄15쪽(PDF10쪽) 주석8 각자병서",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-57",
@@ -17899,7 +18466,8 @@
         "where": "인쇄15쪽(PDF10쪽) 주석9 합용병서",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-58",
@@ -17928,7 +18496,8 @@
         "where": "인쇄15쪽(PDF10쪽) 연서와 순경음 비읍",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-59",
@@ -17962,7 +18531,8 @@
         "where": "인쇄23쪽 / PDF70쪽, 4) 성조와 방점",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=493a7a8e-dfeb-4b62-9036-9c0c7a668d54_0.pdf&file_path=reportData&o_file_name=2013%EB%85%84+%EA%B0%9C%EB%B0%A9%ED%98%95+%ED%95%9C%EA%B5%AD%EC%96%B4+%EC%A7%80%EC%8B%9D+%EB%8C%80%EC%82%AC%EC%A0%84+%EA%B5%90%EC%9C%A1%EC%9A%A9+%EA%B7%9C%EB%B2%94+%EC%A0%95%EB%B3%B4%28%EC%82%AC%EC%A0%84%29+%EA%B5%AC%EC%B6%95.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-60",
@@ -17996,7 +18566,8 @@
         "where": "인쇄23쪽 / PDF70쪽, 4) 성조와 방점",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=493a7a8e-dfeb-4b62-9036-9c0c7a668d54_0.pdf&file_path=reportData&o_file_name=2013%EB%85%84+%EA%B0%9C%EB%B0%A9%ED%98%95+%ED%95%9C%EA%B5%AD%EC%96%B4+%EC%A7%80%EC%8B%9D+%EB%8C%80%EC%82%AC%EC%A0%84+%EA%B5%90%EC%9C%A1%EC%9A%A9+%EA%B7%9C%EB%B2%94+%EC%A0%95%EB%B3%B4%28%EC%82%AC%EC%A0%84%29+%EA%B5%AC%EC%B6%95.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-61",
@@ -18025,7 +18596,8 @@
         "where": "인쇄40쪽(PDF52쪽) ㅎ 말음 체언 예시(갈콰)",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=6b18f19d-b577-4d13-82c8-5ddabfa80f9a_0.pdf&file_path=etcData&o_file_name=%EC%99%B8%EA%B5%AD%EC%96%B4%EB%A1%9C%EC%84%9C%EC%9D%98+%ED%95%9C%EA%B5%AD%EC%96%B4+%EA%B5%90%EC%9C%A1+-+%EC%A0%9C+14%ED%9A%8C+%EC%97%B0%EC%88%98%ED%9A%8C+%EA%B5%90%EC%9E%AC.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-62",
@@ -18059,7 +18631,8 @@
         "where": "인쇄23쪽 / PDF70쪽, 4) 성조와 방점",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=493a7a8e-dfeb-4b62-9036-9c0c7a668d54_0.pdf&file_path=reportData&o_file_name=2013%EB%85%84+%EA%B0%9C%EB%B0%A9%ED%98%95+%ED%95%9C%EA%B5%AD%EC%96%B4+%EC%A7%80%EC%8B%9D+%EB%8C%80%EC%82%AC%EC%A0%84+%EA%B5%90%EC%9C%A1%EC%9A%A9+%EA%B7%9C%EB%B2%94+%EC%A0%95%EB%B3%B4%28%EC%82%AC%EC%A0%84%29+%EA%B5%AC%EC%B6%95.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-63",
@@ -18088,7 +18661,8 @@
         "where": "인쇄40쪽(PDF52쪽) 나모의 교체 예(나못 일훔)",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=6b18f19d-b577-4d13-82c8-5ddabfa80f9a_0.pdf&file_path=etcData&o_file_name=%EC%99%B8%EA%B5%AD%EC%96%B4%EB%A1%9C%EC%84%9C%EC%9D%98+%ED%95%9C%EA%B5%AD%EC%96%B4+%EA%B5%90%EC%9C%A1+-+%EC%A0%9C+14%ED%9A%8C+%EC%97%B0%EC%88%98%ED%9A%8C+%EA%B5%90%EC%9E%AC.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-64",
@@ -18117,7 +18691,8 @@
         "where": "Ⅱ 예문(10나): 宿王ㅅ; Ⅵ 예문(49가): 大王ㅅ",
         "url": "https://www.korean.go.kr/nkview/nklife/1991_3/1_2.html"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-65",
@@ -18146,7 +18721,8 @@
         "where": "인쇄153쪽(PDF3쪽) 예문(1) 나모",
         "url": "https://www.korean.go.kr/nkview/nklife/1999_4/1999_0412.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-66",
@@ -18175,7 +18751,8 @@
         "where": "인쇄153쪽(PDF3쪽) 예문(2) 구룸",
         "url": "https://www.korean.go.kr/nkview/nklife/1999_4/1999_0412.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-67",
@@ -18204,7 +18781,8 @@
         "where": "인쇄156~157쪽(PDF6~7쪽) 나모>나무 변화",
         "url": "https://www.korean.go.kr/nkview/nklife/1999_4/1999_0412.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-68",
@@ -18233,7 +18811,8 @@
         "where": "인쇄40쪽(PDF52쪽) ㅎ 말음 체언 예시(내히)",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=6b18f19d-b577-4d13-82c8-5ddabfa80f9a_0.pdf&file_path=etcData&o_file_name=%EC%99%B8%EA%B5%AD%EC%96%B4%EB%A1%9C%EC%84%9C%EC%9D%98+%ED%95%9C%EA%B5%AD%EC%96%B4+%EA%B5%90%EC%9C%A1+-+%EC%A0%9C+14%ED%9A%8C+%EC%97%B0%EC%88%98%ED%9A%8C+%EA%B5%90%EC%9E%AC.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-69",
@@ -18262,7 +18841,8 @@
         "where": "인쇄184쪽(PDF192쪽) 훈민정음 언해문과 현대어 풀이",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=c616c21e-eef3-401b-a4ff-e741802964f9_0.pdf&file_path=reportData&o_file_name=%EB%8F%85%EC%84%9C%28%EC%9D%BD%EA%B8%B0%29+%EB%8A%A5%EB%A0%A5+%ED%96%A5%EC%83%81%EC%9D%84+%EC%9C%84%ED%95%9C+%EB%AC%B8%EB%B2%95+%EA%B5%90%EC%9C%A1+%EC%9E%90%EB%A3%8C+%EA%B0%9C%EB%B0%9C.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-70",
@@ -18291,7 +18871,8 @@
         "where": "인쇄184쪽(PDF192쪽) 훈민정음 언해문과 현대어 풀이",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=c616c21e-eef3-401b-a4ff-e741802964f9_0.pdf&file_path=reportData&o_file_name=%EB%8F%85%EC%84%9C%28%EC%9D%BD%EA%B8%B0%29+%EB%8A%A5%EB%A0%A5+%ED%96%A5%EC%83%81%EC%9D%84+%EC%9C%84%ED%95%9C+%EB%AC%B8%EB%B2%95+%EA%B5%90%EC%9C%A1+%EC%9E%90%EB%A3%8C+%EA%B0%9C%EB%B0%9C.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-71",
@@ -18320,7 +18901,8 @@
         "where": "인쇄184쪽(PDF192쪽) 훈민정음 언해문과 현대어 풀이",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=c616c21e-eef3-401b-a4ff-e741802964f9_0.pdf&file_path=reportData&o_file_name=%EB%8F%85%EC%84%9C%28%EC%9D%BD%EA%B8%B0%29+%EB%8A%A5%EB%A0%A5+%ED%96%A5%EC%83%81%EC%9D%84+%EC%9C%84%ED%95%9C+%EB%AC%B8%EB%B2%95+%EA%B5%90%EC%9C%A1+%EC%9E%90%EB%A3%8C+%EA%B0%9C%EB%B0%9C.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-72",
@@ -18349,7 +18931,8 @@
         "where": "인쇄184쪽(PDF192쪽) 훈민정음 언해문과 현대어 풀이",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=c616c21e-eef3-401b-a4ff-e741802964f9_0.pdf&file_path=reportData&o_file_name=%EB%8F%85%EC%84%9C%28%EC%9D%BD%EA%B8%B0%29+%EB%8A%A5%EB%A0%A5+%ED%96%A5%EC%83%81%EC%9D%84+%EC%9C%84%ED%95%9C+%EB%AC%B8%EB%B2%95+%EA%B5%90%EC%9C%A1+%EC%9E%90%EB%A3%8C+%EA%B0%9C%EB%B0%9C.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-73",
@@ -18378,7 +18961,8 @@
         "where": "슬라이드12쪽(PDF12쪽) 이어적기와 끊어적기",
         "url": "http://contents2.kocw.or.kr/KOCW/document/2017/koreasejong/ahnbyoungseob081/13.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-74",
@@ -18407,7 +18991,8 @@
         "where": "슬라이드12쪽(PDF12쪽) 이어적기와 끊어적기",
         "url": "http://contents2.kocw.or.kr/KOCW/document/2017/koreasejong/ahnbyoungseob081/13.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-75",
@@ -18436,7 +19021,8 @@
         "where": "정의 및 종성해 여덟 글자 목록",
         "url": "https://encykorea.aks.ac.kr/Article/E0078818"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-76",
@@ -18465,7 +19051,8 @@
         "where": "정의 및 종성해 여덟 글자 목록",
         "url": "https://encykorea.aks.ac.kr/Article/E0078818"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-77",
@@ -18494,7 +19081,8 @@
         "where": "Ⅱ 예문(2): 摩耶ㅣ 如來",
         "url": "https://www.korean.go.kr/nkview/nklife/1991_3/1_2.html"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-78",
@@ -18523,7 +19111,8 @@
         "where": "슬라이드10쪽(PDF10쪽) 주격 조사 이·ㅣ·Ø",
         "url": "http://contents2.kocw.or.kr/KOCW/document/2017/koreasejong/ahnbyoungseob081/13.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-79",
@@ -18552,7 +19141,8 @@
         "where": "Ⅱ 예문(2)와 해설: 목적어 如來와 주어 摩耶",
         "url": "https://www.korean.go.kr/nkview/nklife/1991_3/1_2.html"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-80",
@@ -18581,7 +19171,8 @@
         "where": "인쇄46쪽(PDF58쪽) (2)주체 높임 (3)상대 높임",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=6b18f19d-b577-4d13-82c8-5ddabfa80f9a_0.pdf&file_path=etcData&o_file_name=%EC%99%B8%EA%B5%AD%EC%96%B4%EB%A1%9C%EC%84%9C%EC%9D%98+%ED%95%9C%EA%B5%AD%EC%96%B4+%EA%B5%90%EC%9C%A1+-+%EC%A0%9C+14%ED%9A%8C+%EC%97%B0%EC%88%98%ED%9A%8C+%EA%B5%90%EC%9E%AC.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-81",
@@ -18610,7 +19201,8 @@
         "where": "내용(종성 표기); 주석3(성조의 방점)",
         "url": "https://encykorea.aks.ac.kr/Article/E0078818"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-medieval-82",
@@ -18639,7 +19231,8 @@
         "where": "주석5(상성), 주석6(거성)",
         "url": "https://encykorea.aks.ac.kr/Article/E0078818"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-medieval-83",
@@ -18673,7 +19266,8 @@
         "where": "주석6: 거성",
         "url": "https://encykorea.aks.ac.kr/Article/E0078818"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-medieval-84",
@@ -18702,7 +19296,8 @@
         "where": "인쇄11쪽(PDF8쪽) 그림3; 인쇄15쪽(PDF10쪽) 주석8",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-medieval-85",
@@ -18731,7 +19326,8 @@
         "where": "인쇄10~11쪽(PDF8쪽) 상형 대상 설명",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-medieval-86",
@@ -18760,7 +19356,8 @@
         "where": "인쇄13~14쪽(PDF9~10쪽) 표2·표3",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-medieval-87",
@@ -18789,7 +19386,8 @@
         "where": "인쇄15쪽(PDF10쪽) 4절 및 주석8~11",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-medieval-88",
@@ -18818,7 +19416,8 @@
         "where": "슬라이드12쪽(PDF12쪽) 음절 중심 운용·띄어쓰기",
         "url": "http://contents2.kocw.or.kr/KOCW/document/2017/koreasejong/ahnbyoungseob081/13.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-medieval-90",
@@ -18847,7 +19446,8 @@
         "where": "내용: 종성부용초성과 종성해 여덟 글자",
         "url": "https://encykorea.aks.ac.kr/Article/E0078818"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-medieval-91",
@@ -18876,7 +19476,8 @@
         "where": "인쇄152~153쪽(PDF2~3쪽) 중성 모음 ㅣ",
         "url": "https://www.korean.go.kr/nkview/nklife/1999_4/1999_0412.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-medieval-92",
@@ -18910,7 +19511,8 @@
         "where": "인쇄184쪽(PDF192쪽) 언해문 현대어 풀이",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=c616c21e-eef3-401b-a4ff-e741802964f9_0.pdf&file_path=reportData&o_file_name=%EB%8F%85%EC%84%9C%28%EC%9D%BD%EA%B8%B0%29+%EB%8A%A5%EB%A0%A5+%ED%96%A5%EC%83%81%EC%9D%84+%EC%9C%84%ED%95%9C+%EB%AC%B8%EB%B2%95+%EA%B5%90%EC%9C%A1+%EC%9E%90%EB%A3%8C+%EA%B0%9C%EB%B0%9C.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-medieval-93",
@@ -18939,7 +19541,8 @@
         "where": "Ⅱ 현대어의 객체 높임 어휘(모시다·드리다·뵙다·여쭙다)",
         "url": "https://www.korean.go.kr/nkview/nklife/1991_3/1_2.html"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-medieval-94",
@@ -18968,7 +19571,8 @@
         "where": "Ⅱ 예문(4)과 해설: 대왕이 주어·청자인 경우",
         "url": "https://www.korean.go.kr/nkview/nklife/1991_3/1_2.html"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-medieval-95",
@@ -18997,7 +19601,8 @@
         "where": "슬라이드10쪽(PDF10쪽) 주격 조사 이·ㅣ·Ø",
         "url": "http://contents2.kocw.or.kr/KOCW/document/2017/koreasejong/ahnbyoungseob081/13.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-medieval-96",
@@ -19026,7 +19631,8 @@
         "where": "슬라이드12쪽(PDF12쪽) 이어적기·끊어적기",
         "url": "http://contents2.kocw.or.kr/KOCW/document/2017/koreasejong/ahnbyoungseob081/13.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-medieval-97",
@@ -19055,7 +19661,8 @@
         "where": "인쇄153~154쪽(PDF3~4쪽) 중세 모음체계 재구 근거",
         "url": "https://www.korean.go.kr/nkview/nklife/1999_4/1999_0412.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-medieval-98",
@@ -19084,7 +19691,8 @@
         "where": "슬라이드4쪽(PDF4쪽) 통시·공시 언어학",
         "url": "http://contents2.kocw.or.kr/KOCW/document/2017/koreasejong/ahnbyoungseob081/13.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-medieval-99",
@@ -19113,7 +19721,8 @@
         "where": "인쇄184쪽(PDF192쪽) 언해문 현대어 풀이",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=c616c21e-eef3-401b-a4ff-e741802964f9_0.pdf&file_path=reportData&o_file_name=%EB%8F%85%EC%84%9C%28%EC%9D%BD%EA%B8%B0%29+%EB%8A%A5%EB%A0%A5+%ED%96%A5%EC%83%81%EC%9D%84+%EC%9C%84%ED%95%9C+%EB%AC%B8%EB%B2%95+%EA%B5%90%EC%9C%A1+%EC%9E%90%EB%A3%8C+%EA%B0%9C%EB%B0%9C.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-medieval-100",
@@ -19147,7 +19756,8 @@
         "where": "슬라이드10쪽(PDF10쪽) 문법의 변화",
         "url": "http://contents2.kocw.or.kr/KOCW/document/2017/koreasejong/ahnbyoungseob081/13.pdf"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-expression-v7-variant-001",
@@ -19180,7 +19790,8 @@
         "where": "PDF/인쇄 222~223쪽 주체 높임; 235~239쪽 상대 높임",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-v7-variant-002",
@@ -19213,7 +19824,8 @@
         "where": "PDF/인쇄 274~277쪽 통사적 사동; 286~290쪽 피동; 292쪽 도움말 (2)3) 닫다-닫히다",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-expression-v7-variant-003",
@@ -19246,7 +19858,8 @@
         "where": "PDF/인쇄 69쪽 평서문; 102~103쪽 청유문; 255쪽 부정 유형; 265~266쪽 말다 부정",
         "url": "https://www.korean.go.kr/common/download.do?c_file_name=11b0ee80-a9ae-41bf-9a91-f3854f73c24b.pdf&file_path=etcData&o_file_name=100331-%ED%95%9C%EA%B5%AD%EC%96%B4.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-v7-variant-001",
@@ -19279,7 +19892,8 @@
         "where": "인쇄 15쪽/PDF 10쪽, 4절 연서 설명·표 4·주석 11",
         "url": "https://www.hangeul.go.kr/published-data/academicArchives/598?curr_menu_cd=0104020000&page=1"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-v7-variant-002",
@@ -19312,7 +19926,8 @@
         "where": "슬라이드/PDF 12쪽 표기법의 변화",
         "url": "http://contents2.kocw.or.kr/KOCW/document/2017/koreasejong/ahnbyoungseob081/13.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-medieval-v7-variant-003",
@@ -19345,7 +19960,8 @@
         "where": "인쇄 152~153쪽/PDF 2~3쪽, 2.2 중세국어 및 예문 (1) 소곰·(2) 버들",
         "url": "https://www.korean.go.kr/nkview/nklife/1999_4/1999_0412.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-v7-variant-001",
@@ -19377,7 +19993,8 @@
         "where": "PDF 3~4쪽 / 인쇄 2~5쪽: 품사의 형태·기능·의미 기준, 활용해도 품사 유지, 옛/오래된과 관형어",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_04.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-pos-v7-variant-002",
@@ -19409,7 +20026,8 @@
         "where": "PDF 3~4쪽 / 인쇄 2~5쪽: 격 조사·보조사·접속 조사, 은/는의 목적어 결합, 빨리+도",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_05.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-v7-variant-001",
@@ -19441,7 +20059,8 @@
         "where": "PDF 31~32쪽 주어; PDF 38쪽 학교 문법 보어",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-v7-variant-002",
@@ -19478,7 +20097,8 @@
         "where": "2025-08-29 [답변]문장, 괄호 구조",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=320015"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-sentence-v7-variant-003",
@@ -19511,7 +20131,8 @@
         "where": "PDF 19쪽 기본문형; PDF 27~28쪽 자릿수",
         "url": "https://contents.kocw.net/KOCW/document/2015/bufs/heoyong/15.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-v7-var-aux-chain-01",
@@ -19545,7 +20166,8 @@
         "where": "한글 맞춤법 제47항 본문·해설",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-v7-var-de-roles-01",
@@ -19578,7 +20200,8 @@
         "where": "온라인가나다 / 데의 띄어쓰기 질문드립니다.의 답변 본문",
         "url": "https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=44&pageIndex=1&qna_seq=336819"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-spelling-v7-var-reu-contrast-01",
@@ -19614,7 +20237,8 @@
         "where": "한글 맞춤법 제18항 본문·해설",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-spelling-v7-var-saisiot-origin-01",
@@ -19648,7 +20272,8 @@
         "where": "한글 맞춤법 제30항 본문·해설",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 3
   },
   {
     "id": "kh-word-v7-variant-001",
@@ -19685,7 +20310,8 @@
         "where": "PDF 3~4쪽 / 인쇄 2~5쪽: 먹었다의 한 단어, 조사의 학교 문법상 단어 지위, 어근·접사의 의미",
         "url": "https://www.korean.go.kr/nkview/news_pdf/2020_03.pdf"
       }
-    ]
+    ],
+    "level": 2
   },
   {
     "id": "kh-word-v7-variant-002",
@@ -19731,6 +20357,7 @@
         "where": "보관 원문 한글 맞춤법 제27항 본문: 둘 이상 단어 또는 접두사로 형성된 말, 헛웃음 예",
         "url": "https://www.korean.go.kr/kornorms/m/m_regltn.do?regltn_code=0001"
       }
-    ]
+    ],
+    "level": 2
   }
 ];if(typeof module!=='undefined')module.exports=Q;else r.GRAMMAR_OX_KIMHAYAN=Q;})(typeof window==='undefined'?globalThis:window);

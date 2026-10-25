@@ -42,6 +42,9 @@ async function main() {
   }
   webpush.setVapidDetails('mailto:kafelife13@gmail.com', VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
 
+  // Teacher opt-in only; server enforces KST 20:00 and one reminder per student/day.
+  const grammarReminders=await fetch(`${SB_URL}/rest/v1/rpc/grammar_ox_queue_reminders`,{method:'POST',headers:{apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`,'Content-Type':'application/json'},body:'{}'});
+  if(!grammarReminders.ok)console.error('문법 OX 알림 대상 확인 실패:',grammarReminders.status);
   const pending = await sbQuery('push_queue', { select: '*', sent_at: 'is.null', order: 'created_at.asc' });
   if (!pending.length) {
     console.log('보낼 알림이 없습니다.');
