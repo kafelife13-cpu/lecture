@@ -11,7 +11,7 @@
 | １주차　문법요소　미리보기　한백고　.pdf | 1ElG_JJbqRI4bizd4aXIHXpNAs03psHev | 본문 확인 대기 | 본문 확인 대기 | 1–4 | 보호 (출처 검토 전) |
 | 1주차 진도교재 문법요소 미리보기 한백고.pdf | 1p__PPcX9Py5Hgv1zzj70kI6lbbMvIkMu | 본문 확인 대기 | 본문 확인 대기 | 1–4 | 보호 (출처 검토 전) |
 | [치동고1] 4(1)단원(중세문법), 4(2)단원(한글맞춤법) 학교 프린트물.pdf | 1UOXS6iD97bXClP9GYjBrU70frQUAZMrV | 본문 확인 대기 | 본문 확인 대기 | 1–4 | 보호 (출처 검토 전) |
-| gym_teacher.pdf | 1S_dBtMAI6eR7XW6KbBzncq0o9sm3tJFw | 본문 확인 대기 | 본문 확인 대기 | 1–4 | 보호 (출처 검토 전) |
+| gym_teacher.pdf | 1S_dBtMAI6eR7XW6KbBzncq0o9sm3tJFw | 280 | 단원별 검수 후 확정 | 1–4 | 보호 (출처 검토 전) |
 | mother2027.pdf | 1LZ11RPy5MK3kz24MOoGBmsoNWG68mgxO | 본문 확인 대기 | 본문 확인 대기 | 1–4 | 보호 (출처 검토 전) |
 | 문법고난도_23-64_등록본.pdf | 1nBOnXIfCNlZun9S65_Z_NzKbLuwtNvan | 본문 확인 대기 | 본문 확인 대기 | 1–4 | 보호 (출처 검토 전) |
 | 한백고1 5주차 클리닉 시험지(후남 경제 문법).pdf | 1ztYNMrekOzKNtq88tRFiDSEXnBxnZ1kn | 본문 확인 대기 | 본문 확인 대기 | 1–4 | 보호 (출처 검토 전) |
@@ -82,7 +82,7 @@
 | 2025_마더텅_수능기출문제집_국어_독서_문제.pdf | 1JpsF_8osxp1qH2ts3OyHDapRZi_fxcGE | 본문 확인 대기 | 본문 확인 대기 | 3–4 | 보호 (출처 검토 전) |
 | 왓칭　중세국어　.pdf | 16JnviKp-GeaSsdn3l5sGRZisrXP8kMbK | 본문 확인 대기 | 본문 확인 대기 | 1–4 | 보호 (출처 검토 전) |
 | 2025 왓칭문법-교사용 (1).pdf | 10sQAProsANGaqfyRZEYjHy_xxjG9G1Zz | 본문 확인 대기 | 본문 확인 대기 | 1–4 | 보호 (출처 검토 전) |
-| 2025 왓칭문법-교사용.pdf | 160Th0aS4uS3tSRJz2q8rWIupKFpDn5Lk | 본문 확인 대기 | 본문 확인 대기 | 1–4 | 보호 (출처 검토 전) |
+| 2025 왓칭문법-교사용.pdf | 160Th0aS4uS3tSRJz2q8rWIupKFpDn5Lk | 400 | 단원별 검수 후 확정 | 1–4 | 보호 (출처 검토 전) |
 | 치동고 문법 훈민정음.pdf | 1zKhQjO2dQmrEO99PKsGI1RpitwKk7f1i | 본문 확인 대기 | 본문 확인 대기 | 1–4 | 보호 (출처 검토 전) |
 | 언매 워크북_22. 문장 종류의 모든 것 (40문항) (1).pdf | 1-oW4FaZ83DVaCmPkBb440GIFSsUlaLED | 본문 확인 대기 | 본문 확인 대기 | 1–4 | 보호 (출처 검토 전) |
 | 치동고１　클리닉워크북，진도　맞춤법.pdf | 18BD-bpX_zPlM9iaqpUgT2RtFzQGmkQIg | 본문 확인 대기 | 본문 확인 대기 | 1–4 | 보호 (출처 검토 전) |
@@ -177,7 +177,7 @@
 | 언매 워크북_27. 종결 표현의 의미 (40문항).pdf | 14fQGieK13Zx4U8duN5_2NKTqkHTnamwz | 본문 확인 대기 | 본문 확인 대기 | 1–4 | 보호 (출처 검토 전) |
 | 언매 워크북_26. 상, 겠의 용법 (40문항).pdf | 1CST7vncEomO1DjHvvQEX5UrWgQEZKkjD | 본문 확인 대기 | 본문 확인 대기 | 1–4 | 보호 (출처 검토 전) |
 | 언매 워크북_25. 시간을 나타내기 위한 언어 표현 (40문항).pdf | 12hxcELLrlcVu4Bs3vOfrkMU9jpI_jQQV | 본문 확인 대기 | 본문 확인 대기 | 1–4 | 보호 (출처 검토 전) |
-| 언매 워크북_24. 높임 (40문항).pdf | 1TzK-3gTGlbujYoFhr5EOrf59SjH0X0wU | 본문 확인 대기 | 본문 확인 대기 | 1–4 | 보호 (출처 검토 전) |
+| 언매 워크북_24. 높임 (40문항).pdf | 1TzK-3gTGlbujYoFhr5EOrf59SjH0X0wU | 5 | 40개 원문 문제; OX 수는 검수 후 확정 | 1–4 | 보호 (출처 검토 전) |
 | 언매 워크북_23. 관형절의 모든 것 (40문항).pdf | 1cyBxEntFfB28fhnX3HNBa9f274H1Yvsw | 본문 확인 대기 | 본문 확인 대기 | 1–4 | 보호 (출처 검토 전) |
 | 언매 워크북_22. 문장 종류의 모든 것 (40문항).pdf | 1Rx8K84tc6GD52H29z9WN6n3TqRar_qkh | 본문 확인 대기 | 본문 확인 대기 | 1–4 | 보호 (출처 검토 전) |
 | 언매 워크북_21. 부속성분의 모든 것 (40문항).pdf | 1troEYrdMPEMsLLEgI_IB70dNixRNJ5Hu | 본문 확인 대기 | 본문 확인 대기 | 1–4 | 보호 (출처 검토 전) |
@@ -187,7 +187,7 @@
 | 언매 워크북_전체 병합본.pdf | 1kZNEfwXVPvwlLN7ECFW8SYK5xk7p45_u | 본문 확인 대기 | 본문 확인 대기 | 1–4 | 보호 (출처 검토 전) |
 | 상상_수능내신_문법_3000제_01_해설.pdf | 1VY6OJ9OTG1puOPQuxx3gIZd43AqaaIVc | 본문 확인 대기 | 본문 확인 대기 | 3–4 | 보호 (출처 검토 전) |
 | 상상_수능내신_문법_3000제_01.pdf | 1Z-jLuuKFeBrCSLqd3EViEGn4z6veEXSg | 본문 확인 대기 | 본문 확인 대기 | 3–4 | 보호 (출처 검토 전) |
-| 2027_마더텅_수능기출문제집_수능·내신_국어_문법_개념_완성_2400제_문제편(정답표시O).pdf | 1vmGFdXLYVveQYRehOJ9ZnWpiV_1NUS9i | 본문 확인 대기 | 본문 확인 대기 | 3–4 | 보호 (출처 검토 전) |
+| 2027_마더텅_수능기출문제집_수능·내신_국어_문법_개념_완성_2400제_문제편(정답표시O).pdf | 1vmGFdXLYVveQYRehOJ9ZnWpiV_1NUS9i | 200 | 단원별 검수 후 확정 | 3–4 | 보호 (출처 검토 전) |
 | 페이지 원본 문법워크북 1주차 형태소 품사 용언 - Copy.pdf | 1JxWvJ51fsge-gcV24Svk7l_T4NtGe5dR | 본문 확인 대기 | 본문 확인 대기 | 1–4 | 보호 (출처 검토 전) |
 | 2027_마더텅_수능기출문제집_수능·내신_국어_문법_개념_완성_2400제_문제편(정답표시X).pdf | 17I6PSxF065CFvqB40MloElB09NI6fj9i | 본문 확인 대기 | 본문 확인 대기 | 3–4 | 보호 (출처 검토 전) |
 | 2026_마더텅_수능기출_20분_미니모의고사_24회_고3_국어_영역_문제편(정답표시X).pdf | 1YDROB-v-cymBhZ0IrHmKsp8SBDV92KzY | 본문 확인 대기 | 본문 확인 대기 | 3–4 | 보호 (출처 검토 전) |
@@ -581,3 +581,13 @@
 | [수업자료]고1 문법_1주차_음운과 음운변동_마더텅.pdf | 1gLxFBPTaEBuvMHGWegBoR8uI70y_yn6n | 본문 확인 대기 | 본문 확인 대기 | 1–4 | 보호 (출처 검토 전) |
 | 문법_특강_2018.pdf | 1D-vfGWmNy6UhIpndS_QcTwgiJIc9eVT0 | 본문 확인 대기 | 본문 확인 대기 | 1–4 | 보호 (출처 검토 전) |
 
+
+## 우선 처리 파일 실물 확인
+
+- 언매 워크북24: `1TzK-3gTGlbujYoFhr5EOrf59SjH0X0wU`는 5쪽이며 뒤쪽에 40문항의 정답·해설이 있다. 동명 `1H06i5sQMJalN6Pc4Urv7OClMDx6-IdiV`는 4쪽이고 마지막은 마인드맵이다. 첫 번째 파일을 본문·정답 합본으로 선정한다. 파일명만으로 두 판을 합치면 정답편을 놓칠 수 있다.
+- 마더텅 2027 문법2400 정답표시O: 지정 ID의 실제 PDF 200쪽 확인. 정답표시X 판은 중복 후보로 제외하고 O 판을 우선 사용한다. 상세 해설이 필요한 문항은 대응 해설을 확보한 뒤 변환한다.
+- 왓칭2025 교사용: `160Th0aS4uS3tSRJz2q8rWIupKFpDn5Lk`, 실제 400쪽. 같은 파일 크기의 복사본은 우선 제외 후보이며, 다른 크기의 동명 파일은 본문 확인 없이 동일판으로 단정하지 않는다.
+- GYM 교사용: `1S_dBtMAI6eR7XW6KbBzncq0o9sm3tJFw`, 실제 280쪽. 배포용 본책과 파일 크기는 같으나 내용 해시 확인 전까지 동일판 확정은 보류한다.
+- 한백고 지정본: 37쪽의 본문 번호는 49번까지이며 학교 예시14와 유사A/B가 별도로 있다. 확정 가능한 OX 초안128개(공개65/보호63)를 별도 검수 제출했다. 운영 등록은 아직 하지 않았다.
+
+원문이나 정답 문장은 이 목록에 기록하지 않았다. 책별 본문 변환은 목록·선행 교재 검수 후 진행한다.
