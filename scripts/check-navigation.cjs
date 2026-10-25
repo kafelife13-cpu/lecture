@@ -1,59 +1,26 @@
-const fs = require('node:fs'), vm = require('node:vm'), assert = require('node:assert/strict');
-const path = require('node:path');
-const code = fs.readFileSync(path.join(__dirname, '../app-navigation.js'), 'utf8');
-const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
-for (const match of html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)) new vm.Script(match[1]);
-assert.equal((html.match(/<script src="app-navigation.js\?v=1"><\/script>/g) || []).length, 1);
-let activePage = 'page-student', activePanel = 'home', modals = [], shown = new Set(), accepted = false;
-const panels = new Map(), timers = new Map(), calls = [];
-let timerId = 0, listener, entries = [{}], index = 0, exited = false;
-function currentPanel() {
-  const key = activePage + activePanel;
-  if (!panels.has(key)) panels.set(key, {id: 'panel-' + activePanel});
-  return panels.get(key);
-}
-const menu = {open: false};
-const c = {
-  location: {href: 'https://example.test/lecture/'}, padMode: false, studentExamScope: null,
-  history: {
-    get state() { return entries[index]; },
-    replaceState(s) { entries[index] = s; },
-    pushState(s) { entries = entries.slice(0, index + 1); entries.push(s); index++; }
-  },
-  document: {
-    querySelector() { return {id: activePage, querySelector: currentPanel}; },
-    querySelectorAll() { return modals; },
-    getElementById(id) { return id === 'student-menu' ? menu : {getClientRects: () => shown.has(id) ? [1] : []}; }
-  },
-  getComputedStyle: el => ({zIndex: el.z}),
-  setTimeout(fn) { timers.set(++timerId, fn); return timerId; }, clearTimeout(id) { timers.delete(id); },
-  addEventListener(type, fn) { if (type === 'popstate') listener = fn; },
-  confirm: () => accepted, notify: msg => calls.push(msg),
-  sNav(next, scope) { activePanel = next; if (next === 'exam') c.studentExamScope = scope || null; },
-  tNav(next) { activePanel = next; }, showPage(id) { activePage = id; },
-  sExamBack() { calls.push('exam cleanup'); shown.clear(); },
-  vocabBackToEntry() { calls.push('vocab cleanup'); shown.clear(); },
-  closeTExamCreate() { shown.clear(); }, closeTExamEdit() { shown.clear(); }, closeTExamResults() { shown.clear(); }
-};
-c.window = c; vm.createContext(c); vm.runInContext(code, c);
-function back() { if (index === 0) { exited = true; return; } index--; listener({state: entries[index]}); }
-c.sNav('weekly'); c.sNav('vocab'); c.sNav('vocab');
-back(); assert.equal(activePanel, 'weekly'); assert.equal(exited, false);
-back(); assert.equal(activePanel, 'home');
-c.sNav('exam', 'homework'); c.sNav('exam', 'clinic');
-back(); assert.equal(c.studentExamScope, 'homework');
-shown.add('s-exam-check'); back(); assert.equal(shown.has('s-exam-check'), true, 'cancel preserves answers');
-accepted = true; back(); assert.ok(calls.includes('exam cleanup'));
-const modal = {z: 100, getClientRects: () => [1], querySelector: () => ({click() { calls.push('video cleanup'); modals = []; }})};
-modals = [modal]; back(); assert.equal(calls.at(-1), 'video cleanup'); assert.equal(activePanel, 'exam');
-menu.open = true; back(); assert.equal(menu.open, false); assert.equal(activePanel, 'exam');
-back(); assert.equal(activePanel, 'home');
-back(); assert.equal(exited, false); assert.equal(index, 0);
-for (const fn of [...timers.values()]) fn();
-assert.equal(index, 1, 'root exit window expires');
-back(); c.sNav('weekly'); assert.equal(index, 1, 'navigation cancels pending exit');
-back(); assert.equal(activePanel, 'home'); back(); back(); assert.equal(exited, true, 'second native back can exit without an earlier document');
-exited = false;
-c.showPage('page-login'); c.showPage('page-teacher'); c.tNav('dashboard'); c.tNav('students');
-back(); assert.equal(activePanel, 'dashboard'); back(); assert.equal(activePage, 'page-teacher', 'old session history cannot restore student screen');
-console.log('PASS: menu history, exam scopes, draft cancellation, modal cleanup, root exit, session reset, inline script syntax');
+// Local browser fixture: real navigation controller, native history, no production requests.
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const {chromium}=require(process.env.PLAYWRIGHT_PATH||'playwright');
+const html=fs.readFileSync('index.html','utf8');for(const m of html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g))new vm.Script(m[1]);
+assert.equal((html.match(/app-navigation.js\?v=2/g)||[]).length,1);
+(async()=>{const browser=await chromium.launch({channel:'msedge',headless:true});try{
+ const page=await browser.newPage();page.setDefaultTimeout(5000);const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.route('**/*',r=>r.fulfill({contentType:'text/html; charset=utf-8',body:`<style>.page,.panel{display:none}.page.active,.panel.active{display:block}[hidden]{display:none!important}</style>
+ <div class="page active" id="page-student"><button onclick="sNav('home')">홈</button><button onclick="sNav('grammar-ox')">문법 복습OX</button><button onclick="sNav('exam','homework')">과제시험</button><button onclick="sNav('exam','clinic')">클리닉시험</button><button onclick="openVideo()">영상 열기</button><button onclick="showPage('page-teacher');tNav('dashboard')">강사로 전환</button><details id="student-menu"><summary>전체 메뉴</summary><button onclick="sNav('grammar-ox')">메뉴 문법</button></details>
+ <div class="panel active" id="panel-home">학생 홈</div><div class="panel" id="panel-grammar-ox"><button onclick="document.getElementById('gox-extra').innerHTML='기록 내용'">내 풀이 기록</button><div id="gox-extra"></div></div><div class="panel" id="panel-exam"><button onclick="document.getElementById('s-exam-check').hidden=false">답안 입력</button><div id="s-exam-check" hidden>입력 중</div></div></div>
+ <div class="page" id="page-teacher"><button onclick="tNav('students')">학생 목록</button><div class="panel active" id="panel-dashboard">대시보드</div><div class="panel" id="panel-students">학생들</div></div>
+ <div id="video" class="modal-bg" hidden><button class="modal-close" onclick="cleanup++;this.parentNode.classList.remove('show');this.parentNode.hidden=true">영상 닫기</button></div><div id="notice"></div>
+ <script>window.padMode=false;window.studentExamScope=null;window.cleanup=0;function notify(s){document.getElementById('notice').textContent=s}function sNav(n,s){const p=document.querySelector('.page.active');p.querySelectorAll('.panel').forEach(e=>e.classList.toggle('active',e.id==='panel-'+n));document.getElementById('student-menu').open=false;if(n==='exam')studentExamScope=s||null}const rawStudentNav=sNav;function tNav(n){rawStudentNav(n)}function showPage(id){document.querySelectorAll('.page').forEach(e=>e.classList.toggle('active',e.id===id))}function sExamBack(){document.getElementById('s-exam-check').hidden=true}function openVideo(){const v=document.getElementById('video');v.hidden=false;v.classList.add('show')}</script>`}));
+ await page.goto('http://navigation.test/');const before=await page.evaluate(()=>history.length);await page.addScriptTag({path:'app-navigation.js'});assert.equal(await page.evaluate(()=>history.length),before,'no guard pushed on load');
+ const panel=()=>page.evaluate(()=>document.querySelector('.page.active .panel.active').id);
+ const back=async()=>{await page.goBack();await page.waitForTimeout(50);};
+ await page.getByRole('button',{name:'문법 복습OX',exact:true}).click();assert.equal(await page.evaluate(()=>history.state.kukeoBack),'nav');
+ await page.getByRole('button',{name:'내 풀이 기록'}).click();await page.waitForFunction(()=>history.state.kukeoBack==='modal');await back();assert.equal(await page.locator('#gox-extra').innerText(),'');assert.equal(await panel(),'panel-grammar-ox');await back();assert.equal(await panel(),'panel-home');await back();assert.match(await page.locator('#notice').innerText(),/한 번 더/);assert.equal(await page.evaluate(()=>history.state.kukeoBack),'base');await page.waitForTimeout(2100);assert.equal(await page.evaluate(()=>history.state.kukeoBack),'base','no timer rearm');
+ await page.getByRole('button',{name:'영상 열기'}).click();await page.waitForFunction(()=>history.state.kukeoBack==='modal');await back();assert.equal(await page.evaluate(()=>cleanup),1);assert.equal(await panel(),'panel-home');
+ await page.getByRole('button',{name:'영상 열기'}).click();await page.waitForFunction(()=>history.state.kukeoBack==='modal');await page.getByRole('button',{name:'영상 닫기'}).click();await page.waitForFunction(()=>history.state.kukeoBack==='guard');assert.equal(await page.evaluate(()=>cleanup),2,'X uses original cleanup exactly once');
+ await page.getByText('전체 메뉴',{exact:true}).click();await page.waitForFunction(()=>history.state.kukeoBack==='modal');await back();assert.equal(await page.locator('#student-menu').evaluate(e=>e.open),false);
+ await page.getByRole('button',{name:'과제시험',exact:true}).click();await page.getByRole('button',{name:'클리닉시험',exact:true}).click();await back();assert.equal(await page.evaluate(()=>studentExamScope),'homework');
+ await page.getByRole('button',{name:'답안 입력',exact:true}).click();await page.waitForFunction(()=>history.state.kukeoBack==='modal');page.once('dialog',d=>d.dismiss());await back();await page.waitForFunction(()=>history.state.kukeoBack==='modal');assert.equal(await page.locator('#s-exam-check').isVisible(),true);page.once('dialog',d=>d.accept());await back();assert.equal(await page.locator('#s-exam-check').isVisible(),false);assert.equal(await panel(),'panel-exam');await back();assert.equal(await panel(),'panel-home');
+ await page.getByRole('button',{name:'강사로 전환'}).click();await page.getByRole('button',{name:'학생 목록'}).click();await back();assert.equal(await panel(),'panel-dashboard');await back();assert.equal(await page.evaluate(()=>document.querySelector('.page.active').id),'page-teacher');assert.deepEqual(errors,[]);
+ console.log('PASS: native page.goBack, click navigation, scopes, history dismissal, modal/X cleanup, cancel/confirm, root guard without timer rearm, session reset');
+}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1});

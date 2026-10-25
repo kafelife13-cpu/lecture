@@ -6,11 +6,44 @@
  const bank=q=>q.id.startsWith('kh-')?'kimhayan':'seoro';
  function normalize(text){return String(text).normalize('NFKC').replace(/[\s'"‘’“”「」『』]/g,'');}
  function mergeBanks(seoro,kh){const seen=new Set(seoro.map(q=>normalize(q.prompt)));return seoro.concat(kh.filter(q=>!seen.has(normalize(q.prompt))));}
+ const seoroElementTags={
+  'challenge-expression-001':['피동·사동'],
+  'challenge-expression-002':['피동·사동'],
+  'challenge-expression-003':['피동·사동'],
+  'challenge-expression-004':['피동·사동'],
+  'challenge-expression-005':['피동·사동'],
+  'challenge-expression-006':['높임 표현'],
+  'challenge-expression-007':['높임 표현'],
+  'challenge-expression-008':['높임 표현'],
+  'challenge-expression-009':['높임 표현'],
+  'challenge-expression-010':['높임 표현'],
+  'challenge-expression-011':['피동·사동'],
+  'challenge-expression-012':['피동·사동'],
+  'challenge-expression-013':['피동·사동'],
+  'challenge-expression-014':['피동·사동'],
+  'challenge-expression-015':['피동·사동'],
+  'challenge-expression-016':['높임 표현'],
+  'challenge-expression-017':['높임 표현'],
+  'challenge-expression-018':['높임 표현'],
+  'challenge-expression-019':['높임 표현'],
+  'challenge-expression-020':['높임 표현'],
+  'challenge-expression-021':['인용 표현'],
+  'challenge-expression-022':['인용 표현'],
+  'challenge-expression-023':['인용 표현'],
+  'challenge-expression-024':['인용 표현'],
+  'challenge-expression-025':['인용 표현'],
+  'challenge-expression-026':['피동·사동'],
+  'challenge-expression-027':['피동·사동'],
+  'challenge-expression-028':['피동·사동'],
+  'challenge-expression-029':['피동·사동'],
+  'challenge-expression-030':['피동·사동']
+ };
  function grammarElementTags(q){
   if(q.topic!=='expression')return [];
-  const text=bank(q)==='kimhayan'?q.skill||'':[q.prompt,q.passage,q.explanation].join(' ');
-  const patterns=bank(q)==='kimhayan'?[/높임/,/시제|동작상|겠/,/피동|사동/,/부정/,/종결/,/인용/]:[/높임|높이|-시-|께서|께|여쭙|드리|모시|하십시오|해요체|해체/,/시제|과거|현재|미래|-었-|-겠-|-더-|동작상|진행|완료/,/피동|사동|-이-|-히-|-리-|-기-|-우-|-구-|-추-|-게 하다|-어지다|당하다/,/부정|안 |못 |-지 않|-지 못|-지 말/,/종결|평서|의문|명령|청유|감탄/,/인용|-고 했|-라고/];
-  const tags=elementNames.filter((_,i)=>patterns[i]?.test(text));return tags.length?tags:['기타'];
+  if(seoroElementTags[q.id])return seoroElementTags[q.id].slice();
+  if(bank(q)!=='kimhayan')return q.tags?.length?q.tags.slice():['기타'];
+  const patterns=[/높임/,/시제|동작상|겠/,/피동|사동/,/부정/,/종결/,/인용/];
+  const tags=elementNames.filter((_,i)=>patterns[i]?.test(q.skill||''));return tags.length?tags:['기타'];
  }
  function reviewCards(attempts,now=Date.now()){
   const cards={};
@@ -40,6 +73,6 @@
   for(const s of students){const r=rows.filter(a=>a.student_id===s.id).sort((a,b)=>Date.parse(a.submitted_at)-Date.parse(b.submitted_at)),latest=new Map();r.forEach(a=>latest.set(a.question_id,a));const correct=r.filter(a=>a.is_correct).length;data.push([s.name,classes.find(c=>c.id===s.group_id)?.label||'반 미배정',latest.size,r.length,correct,r.length?Math.round(correct/r.length*100):0,[...latest.values()].filter(a=>!a.is_correct).length,dueQuestions(Q,r,now).length,r.at(-1)?.submitted_at||'']);}
   return '\ufeff'+data.map(r=>r.map(escape).join(',')).join('\r\n');
  }
- const api={DAY,elementNames,tips,bank,mergeBanks,grammarElementTags,reviewCards,dueQuestions,reviewSuccess,replacementQuestion,reviewSet,validateQuestion,csv};
+ const api={seoroElementTags,DAY,elementNames,tips,bank,mergeBanks,grammarElementTags,reviewCards,dueQuestions,reviewSuccess,replacementQuestion,reviewSet,validateQuestion,csv};
  if(typeof module!=='undefined')module.exports=api;root.GrammarReview=api;
 })(typeof window==='undefined'?globalThis:window);

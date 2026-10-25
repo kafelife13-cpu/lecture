@@ -34,3 +34,7 @@ assert.equal(R.replacementQuestion(original,[original,conceptQ,objective,variant
 assert.equal(R.validateQuestion('가'.repeat(300),[],'s','q').length,300);assert.throws(()=>R.validateQuestion('가'.repeat(301),[],'s','q'));assert.throws(()=>R.validateQuestion(' ',[],'s','q'));assert.throws(()=>R.validateQuestion('질문',[{student_id:'s',question_id:'q',seen_at:null}],'s','q'));
 const output=R.csv([{id:'s',name:'=위험',group_id:'a'}],[at(0,false,{student_id:'s'})],[original],[{id:'a',label:'반'}],t+2*D);assert.ok(output.startsWith('\ufeff'));assert.ok(output.includes("'=위험"));assert.equal(output.split('\r\n').length,2);assert.ok(output.includes('"1","1","0","0","1","1"'));
 console.log('PASS: 987 questions, evidence, tags, due stages 0–5, early/exact due, alternatives, question validation, CSV');
+
+assert.equal(Object.keys(R.seoroElementTags).length,30);
+for(const q of Q.filter(q=>q.topic==='expression')){const n=Number(q.id.slice(-3)),expected=(n>=6&&n<=10)||(n>=16&&n<=20)?'높임 표현':n>=21&&n<=25?'인용 표현':'피동·사동';assert.deepEqual(R.grammarElementTags(q),[expected]);assert.deepEqual(R.grammarElementTags({...q,passage:'높임 시간 종결',explanation:'높임 시간 종결'}),[expected]);console.log(q.id+' | '+q.prompt.slice(0,30).replace(/\n/g,' ')+' | '+expected);}
+assert.equal(Q.filter(q=>R.grammarElementTags(q).includes('높임 표현')).length,10);
