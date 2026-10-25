@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  // Native history is the source of truth. Never re-arm from popstate or a timer.
+  // Keep a native home entry underneath the current route, including auto-login.
   var restoring=false, startingPage=false, internalBack=false, cancelForward=false;
   var epoch=Date.now()+':'+Math.random(), current;
   function page(){return document.querySelector('.page.active');}
@@ -10,16 +10,24 @@
   function write(state,push){current=state;history[push?'pushState':'replaceState'](state,'',location.href);}
   function root(){return (page()?.id==='page-student'&&!window.padMode&&panel()?.id==='panel-home')||(page()?.id==='page-teacher'&&panel()?.id==='panel-dashboard');}
   function activated(){return navigator.userActivation?.isActive===true;}
+  function startRoute(){
+    var here=route('guard');
+    if(!['page-student','page-teacher'].includes(here.page)){write(route('base'),false);return;}
+    var home=Object.assign({},here,{kukeoBack:'base',panel:here.page==='page-teacher'?'dashboard':window.padMode?'exam':'home'});
+    write(home,false);write(Object.assign({},home,{kukeoBack:'guard'}),true);
+    if(here.panel!==home.panel)write(Object.assign({},here,{kukeoBack:'nav'}),true);
+  }
   write(route('base'),false);
+  if(root())startRoute();
   ['sNav','tNav'].forEach(function(name){
     var original=window[name];
     window[name]=function(next,scope){
       var before=route('nav'),result=original.apply(this,arguments),after=route('nav');
       if(restoring)return result;
-      if(startingPage){startingPage=false;write(route('base'),false);return result;}
+      if(startingPage){startingPage=false;startRoute();return result;}
       if(before.panel!==after.panel||before.page!==after.page||(next==='exam'&&before.scope!==after.scope)){
         // Replacing an open menu's entry avoids a phantom menu on Back.
-        write(after,activated()&&current?.kukeoBack!=='modal');
+        write(after,current?.kukeoBack!=='modal');
       }
       return result;
     };
@@ -76,7 +84,10 @@
       if(!state||state.epoch!==epoch){write(route('base'),false);return;}
       var target=state.kukeoBack==='modal'?state.parent:state;
       if(target?.page===page()?.id&&target.panel&&(panel()?.id!=='panel-'+target.panel||(target.panel==='exam'&&target.scope!==(typeof studentExamScope==='undefined'?null:studentExamScope))))window[target.nav](target.panel,target.scope);
-      if(previous?.kukeoBack==='guard'&&state.kukeoBack==='base')notify('뒤로가기를 한 번 더 누르면 국어왕을 나가요.','info');
+      if(state.kukeoBack==='base'&&root()){
+        // Reuse the existing forward entry; never grow history on Back.
+        cancelForward=true;history.forward();notify('첫 화면입니다.','info');
+      }
     }finally{restoring=false;}
   });
 })();
