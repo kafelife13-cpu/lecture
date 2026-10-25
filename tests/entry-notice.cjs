@@ -8,18 +8,16 @@ vm.createContext(c);vm.runInContext(source.slice(source.indexOf(' window.isExamC
 for(const school of ['sc_chidong','sc_hanbaek'])assert.equal(c.window.isExamConsultationNoticeStudent({role:'student',school_id:school}),true);
 assert.equal(c.window.isExamConsultationNoticeStudent({role:'teacher',school_id:'sc_chidong'}),false);
 assert.equal(c.window.isExamConsultationNoticeStudent({role:'student',school_id:'other'}),false);
-nodes.set('sentence-study-popup',{remove:()=>nodes.delete('sentence-study-popup')});
-c.showEntryNotice();const p=nodes.get('exam-consultation-notice');assert.ok(p.open);assert.ok(!nodes.has('sentence-study-popup'));
-c.showEntryNotice();assert.equal(nodes.size,1);
-p.click({target:{closest:s=>s==='[data-entry-score]'}});assert.deepEqual(events,['exam:naeshin']);assert.equal(nodes.size,0);
-c.showEntryNotice();nodes.get('exam-consultation-notice').click({target:{closest:s=>s==='[data-entry-consultation]'}});assert.deepEqual(events,['exam:naeshin','consultation']);
-c.padMode=true;c.showEntryNotice();assert.equal(nodes.size,0);c.padMode=false;
-document.querySelector=()=>({open:true});c.showEntryNotice();assert.equal(nodes.size,0);
-console.log('PASS: schools, automatic notice, routes, pad and teacher exclusions');
-assert.ok(p.innerHTML.indexOf('data-entry-score') < p.innerHTML.indexOf('중간고사 준비'));
+
+for(const school of ['sc_hanbaek','sc_chidong','other']){
+ c.session={id:'test',role:'student',school_id:school};
+ c.showEntryNotice();assert.equal(nodes.size,0);
+ nodes.set('exam-consultation-notice',{remove(){nodes.delete('exam-consultation-notice');}});
+ c.showEntryNotice();assert.equal(nodes.size,0);
+}
+assert.ok(source.includes("score.onclick=()=>sNav('exam','naeshin')"));
+assert.ok(source.includes("card.querySelector('button').onclick=openConsultation"));
+console.log('PASS: no automatic score popup; existing popup dismissed; manual score and consultation entry retained');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 assert.ok(html.includes("studentExamScope==='naeshin'?e.category==='naeshin':true"));
 assert.ok(html.includes("studentExamScope==='naeshin'?i!==4:i!==1"));
-
-document.querySelector=()=>null;c.showEntryNotice();const mockPopup=nodes.get('exam-consultation-notice');assert.ok(mockPopup.innerHTML.includes('중간고사 성적 입력'));assert.ok(mockPopup.innerHTML.includes('10월 모의고사 성적 입력'));mockPopup.click({target:{closest:s=>s==='[data-entry-mock]'}});assert.equal(events.at(-1),'exam:mock');assert.equal(nodes.size,0);
-console.log('PASS: popup shows both score buttons and mock button routes to mock exams');
