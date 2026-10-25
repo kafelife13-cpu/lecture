@@ -4691,7 +4691,11 @@ function renderTAnnounceList(){
 function myAnnounceItems(){
   if(!session)return announceDb.items;
   var mySchool=session.school_id||null;
-  return announceDb.items.filter(function(a){return a.id!=='an_mock_score_202609'&&(!a.school_id||a.school_id===mySchool);});
+  return announceDb.items.filter(function(a){
+    // This weekend-class notice does not apply to the Wednesday lesson group.
+    if(a.id==='an_1792925427850'&&session.group_id==='hanbaek_wed_1800')return false;
+    return a.id!=='an_mock_score_202609'&&(!a.school_id||a.school_id===mySchool);
+  });
 }
 function renderSAnnounceList(kind){
   kind=kind||'general';
