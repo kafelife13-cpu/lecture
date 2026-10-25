@@ -43,6 +43,8 @@
   document.getElementById('gox-tip').textContent=R.tips[f.topic]||'';
   const n=filterQuestions(Q,f).length;document.getElementById('gox-pool').textContent='선택 조건: '+n+'문항 · 최대 '+Math.min(n,Number(document.getElementById('gox-count').value))+'문항 출제';document.getElementById('gox-start').disabled=!n;
  }
+ function lessonPool(){return filterQuestions(Q,{topic:'expression',tags:['높임 표현','피동·사동','시간 표현']});}
+ function lessonCard(){return session?.school_id==='sc_hanbaek'||String(session?.group_id||'').startsWith('hanbaek_')?'<section class="gox-review-card"><h2>이번 주 수업 OX</h2><p>높임 · 사동 · 피동 · 시간 표현 · 10문항</p><p>처음 푸는 학생도 바로 시작할 수 있어요.</p><button class="btn blue" data-gox="lesson">수업 OX 시작</button></section>':'';}
  function startRun(items,targets={}){if(!items.length)return;serial++;run={sid:session.id,preview:preview(),id:crypto.randomUUID(),items,targets,index:0,answers:[],busy:false,done:false,notified:false};renderQuestion();}
  function displayText(value,q){return esc(student()?studentText(value,q):value);}
  function sourceHtml(q){return student()?'':'<small>출처: '+esc(q.src)+(q.page?' · '+esc(q.page)+'쪽':'')+'</small>';}
@@ -99,8 +101,8 @@
  async function readQuestions(sid){const all=[];for(let from=0;;from+=1000){let q=sb.from('grammar_ox_questions').select('*').order('created_at',{ascending:false}).order('id',{ascending:false});if(sid)q=q.eq('student_id',sid);const r=await q.range(from,from+999);if(r.error)throw r.error;all.push(...r.data);if(r.data.length<1000)return all;}}
  async function loadReviewCard(home=false){
   if(!student())return;const sid=session.id,isPreview=preview(),el=home?document.getElementById('gox-home-due'):document.getElementById('gox-due');if(!el)return;
-  el.innerHTML='<p role="status">복습 일정을 확인하는 중…</p>';
-  try{const rows=isPreview?[]:await readRows(sid);if(session?.id!==sid||preview()!==isPreview||!el.isConnected)return;if(!run)studentRows=rows;const due=R.dueQuestions(Q,rows),n=due.length;el.innerHTML='<section class="gox-review-card"><h2>오늘의 문법 복습OX · 복습 대기 '+n+'문항</h2><p>'+(n?'잊기 전에 한 번 더! 오래된 문항부터 최대 10개를 복습해요.':'오늘 복습 끝! 새 문항을 풀어 보세요.')+'</p><button class="btn blue" data-gox="review"'+(!n?' disabled':'')+'>복습 시작</button>'+(elementMode&&!home?'<button class="btn" data-gox="review-elements"'+(!due.some(q=>q.topic==='expression')?' disabled':'')+'>문법 요소 복습 ('+due.filter(q=>q.topic==='expression').length+')</button>':'')+'</section>';}catch(e){if(session?.id===sid&&el.isConnected)el.innerHTML=err(e);}
+  el.innerHTML=lessonCard()+'<p role="status">복습 일정을 확인하는 중…</p>';
+  try{const rows=isPreview?[]:await readRows(sid);if(session?.id!==sid||preview()!==isPreview||!el.isConnected)return;if(!run)studentRows=rows;const due=R.dueQuestions(Q,rows),n=due.length;el.innerHTML=lessonCard()+'<section class="gox-review-card"><h2>간격 복습 · 복습 대기 '+n+'문항</h2><p>'+(n?'잊기 전에 한 번 더! 오래된 문항부터 최대 10개를 복습해요.':'지금 복습할 이전 문항은 없습니다. 수업 OX나 새 문항을 시작하세요.')+'</p><button class="btn blue" data-gox="review"'+(!n?' disabled':'')+'>복습 시작</button>'+(elementMode&&!home?'<button class="btn" data-gox="review-elements"'+(!due.some(q=>q.topic==='expression')?' disabled':'')+'>문법 요소 복습 ('+due.filter(q=>q.topic==='expression').length+')</button>':'')+'</section>';}catch(e){if(session?.id===sid&&el.isConnected)el.innerHTML=lessonCard()+err(e);}
  }
  root.renderGrammarReviewHome=function(){if(!student()||padMode)return;let el=document.getElementById('gox-home-due');if(!el){const home=document.querySelector('#page-student #panel-home');if(!home)return;el=document.createElement('div');el.id='gox-home-due';el.className='card gox';home.prepend(el);}loadReviewCard(true);};
  async function beginReview(topic){if(!student())return;const sid=session.id,mode=preview(),token=++serial;try{const rows=mode?[]:await readRows(sid);if(session?.id!==sid||preview()!==mode||token!==serial)return;studentRows=rows;const set=R.reviewSet(Q,rows,Date.now(),topic);if(!set.items.length){notify('지금 복습할 문항이 없습니다.','info');return;}run=null;sNav('grammar-ox');startRun(set.items,set.targets);}catch(e){notify(e.message,'error');}}
@@ -133,6 +135,7 @@
   if(action==='csv'){downloadCsv();return;}
   if(action==='student'){if(session?.role!=='teacher'||preview()||session.id!==teacherOwner)return;const s=teacherStudents.find(s=>s.id===b.dataset.sid);if(!s)return;showStudentDetail(s);return;}
   if(!student())return;
+  if(action==='lesson'){run=null;sNav('grammar-ox');studentRows=[];startRun(makeSet(lessonPool(),{},10));return;}
   if(action==='ask'){askQuestion(b);return;}
   if(action==='elements'||action==='all-topics'){elementMode=action==='elements';root.renderGrammarOx();return;}
   if(action==='review'||action==='review-elements'){beginReview(action==='review-elements'?'expression':undefined);return;}

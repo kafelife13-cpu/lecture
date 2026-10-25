@@ -1,12 +1,12 @@
 // CACHE_NAME을 배포할 때마다 바꿔주면(v1→v2→...) 예전 캐시가 자동 폐기되고
 // 브라우저가 새 index.html을 다시 받아옵니다. 코드 수정 후에도 화면이 안
 // 바뀌어 보이면 이 버전을 한 칸 올려서 다시 배포하세요.
-const CACHE_NAME = 'kukeo-wang-v173-login-persistence';
+const CACHE_NAME = 'kukeo-wang-v174-lesson-ox-start';
 const URLS_TO_CACHE = [
   '/lecture/grammar-ox-data-kimhayan.js?v=2',
   '/lecture/grammar-review.js?v=3',
   '/lecture/grammar-ox-data.js?v=2',
-  '/lecture/grammar-ox.js?v=4',
+  '/lecture/grammar-ox.js?v=5',
   '/lecture/grammar-ox.css?v=2',
   '/lecture/consultation.js?v=20261025-final-week1',
   '/lecture/literature.js?v=4',
