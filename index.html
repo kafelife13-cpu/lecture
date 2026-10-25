@@ -2121,7 +2121,7 @@ function selectRole(r){
   currentRole=r;
   document.querySelectorAll('.role-tab').forEach((b,i)=>b.classList.toggle('active',(i===0&&r==='teacher')||(i===1&&r==='student')));
   var rememberWrap=document.getElementById('student-remember-wrap');
-  if(rememberWrap)rememberWrap.style.display=r==='student'?'flex':'none';
+  if(rememberWrap)rememberWrap.style.display='flex';
   var remember=document.getElementById('login-remember');
   if(r==='student'&&remember&&!localStorage.getItem(STUDENT_REMEMBER_KEY))remember.checked=true;
 }
@@ -2135,11 +2135,11 @@ function studentVaultOpen(){
     request.onsuccess=function(){resolve(request.result);};request.onerror=function(){reject(request.error);};
   });
 }
-async function studentVaultPut(id,pw){
-  if(!window.crypto||!crypto.subtle||!window.indexedDB)return;
+async function studentVaultPut(id,pw,role){
+  if(!window.crypto||!crypto.subtle||!window.indexedDB)throw new Error('이 브라우저에서 로그인 저장을 사용할 수 없습니다.');
   var db=await studentVaultOpen(),key=await crypto.subtle.generateKey({name:'AES-GCM',length:256},false,['encrypt','decrypt']);
   var iv=crypto.getRandomValues(new Uint8Array(12));
-  var cipher=await crypto.subtle.encrypt({name:'AES-GCM',iv:iv},key,new TextEncoder().encode(JSON.stringify({id:id,pw:pw})));
+  var cipher=await crypto.subtle.encrypt({name:'AES-GCM',iv:iv},key,new TextEncoder().encode(JSON.stringify({id:id,pw:pw,role:role||'student'})));
   await new Promise(function(resolve,reject){var tx=db.transaction('vault','readwrite');var os=tx.objectStore('vault');os.put(key,'key');os.put(Array.from(iv),'iv');os.put(Array.from(new Uint8Array(cipher)),'data');tx.oncomplete=resolve;tx.onerror=function(){reject(tx.error);};});
   db.close();
 }
@@ -2158,12 +2158,13 @@ async function studentVaultClear(){
   if(!window.indexedDB)return;
   try{var db=await studentVaultOpen();await new Promise(function(resolve,reject){var tx=db.transaction('vault','readwrite');tx.objectStore('vault').clear();tx.oncomplete=resolve;tx.onerror=function(){reject(tx.error);};});db.close();}catch(e){}
 }
-async function saveRememberedStudentLogin(id,pw){
+async function saveRememberedStudentLogin(id,pw,role){
+  role=role||'student';
   var checked=document.getElementById('login-remember')&&document.getElementById('login-remember').checked;
   if(!checked){localStorage.removeItem(STUDENT_REMEMBER_KEY);localStorage.removeItem('lms_sess');await studentVaultClear();return;}
-  localStorage.setItem(STUDENT_REMEMBER_KEY,id);
-  localStorage.setItem('lms_sess',JSON.stringify({id:id,role:'student',saved_at:new Date().toISOString()}));
-  try{await studentVaultPut(id,pw);}catch(e){}
+  if(role==='student')localStorage.setItem(STUDENT_REMEMBER_KEY,id);else localStorage.removeItem(STUDENT_REMEMBER_KEY);
+  localStorage.setItem('lms_sess',JSON.stringify({id:id,role:role,saved_at:new Date().toISOString()}));
+  await studentVaultPut(id,pw,role);
   if('credentials' in navigator&&window.PasswordCredential){
     try{navigator.credentials.store(new PasswordCredential({id:id,password:pw,name:id})).catch(function(){});}catch(e){}
   }
@@ -2177,21 +2178,20 @@ async function restoreRememberedStudentLogin(){
   if(studentRestoreRunning||session||padMode||studentPreviewMode||document.getElementById('login-btn').disabled)return;
   studentRestoreRunning=true;
   try{
-  var id=localStorage.getItem(STUDENT_REMEMBER_KEY);
-  if(!id){
-    try{var hint=JSON.parse(localStorage.getItem('lms_sess')||'null');if(hint&&hint.role==='student')id=hint.id||'';}catch(e){}
-  }
+  var id='',role='student';
+  try{var hint=JSON.parse(localStorage.getItem('lms_sess')||'null');if(hint&&['student','teacher'].includes(hint.role)){id=hint.id||'';role=hint.role;}}catch(e){}
+  if(!id)id=localStorage.getItem(STUDENT_REMEMBER_KEY)||'';
   if(!id)return;
-  selectRole('student');
+  selectRole(role);
   var idEl=document.getElementById('login-id'),check=document.getElementById('login-remember');
   if(idEl)idEl.value=id;
   if(check)check.checked=true;
   var saved=null;
-  try{saved=await loginWait(studentVaultGet(),3000);}catch(e){}
-  if((!saved||saved.id!==id)&&'credentials' in navigator){
-    try{var cred=await loginWait(navigator.credentials.get({password:true,mediation:'optional'}),3000);if(cred&&cred.id===id&&cred.password)saved={id:cred.id,pw:cred.password};}catch(e){}
+  try{saved=await loginWait(studentVaultGet(),10000);}catch(e){}
+  if((!saved||(saved.id!==id||(saved.role||'student')!==role))&&'credentials' in navigator){
+    try{var cred=await loginWait(navigator.credentials.get({password:true,mediation:'optional'}),3000);if(cred&&cred.id===id&&cred.password)saved={id:cred.id,pw:cred.password,role:role};}catch(e){}
   }
-  if(saved&&saved.id===id&&saved.pw){document.getElementById('login-pw').value=saved.pw;await doLogin(true);}
+  if(saved&&saved.id===id&&(saved.role||'student')===role&&saved.pw){document.getElementById('login-pw').value=saved.pw;await doLogin(true);}
   }finally{studentRestoreRunning=false;}
 }
 window.addEventListener('online',function(){if(studentRestoreRetry)restoreRememberedStudentLogin();});
@@ -2231,8 +2231,8 @@ async function doLogin(automatic){
     sessionStorage.removeItem('login_failures');sessionStorage.removeItem('login_lock_until');
     session=user;
     weeklyLogin={id:id,pw:pw,role:user.role};
-    if(user.role==='student'){
-      try{await loginWait(saveRememberedStudentLogin(id,pw),3000);}catch(e){notify('이 기기에 로그인을 저장하지 못했어요. 다시 열면 로그인이 필요할 수 있어요.','info');}
+    if(['student','teacher'].includes(user.role)){
+      try{await loginWait(saveRememberedStudentLogin(id,pw,user.role),10000);}catch(e){notify('이 기기에 로그인을 저장하지 못했어요. 다시 열면 로그인이 필요할 수 있어요.','info');}
     }
     await loadAll();
     await Promise.all([loadQaData(),loadCertData(),loadClinicData(),loadStudyData(),loadAnnounceData()]);
