@@ -30,8 +30,8 @@
 <script src="student-sections.js?v=20261015-entry"></script>
 <script src="weekly-homework.js?v=20261015-activity"></script>
 <script src="personal-review.js?v=1"></script>
-<link rel="stylesheet" href="clinic-check.css?v=2">
-<script src="clinic-check.js?v=2"></script>
+<link rel="stylesheet" href="clinic-check.css?v=3">
+<script src="clinic-home.js?v=1"></script>
 <script src="grammar-ox-data.js?v=2"></script>
 <script src="grammar-ox-data-kimhayan.js?v=2"></script>
 <script src="grammar-review.js?v=3"></script>
@@ -342,7 +342,7 @@ input,button{font-family:var(--font)}
         <div class="sidebar-user-info"><p id="t-name">강사</p><span class="badge teacher-role" style="font-size:10px">강사</span></div>
       </div>
       <nav class="sidebar-nav"><div class="nav-item" onclick="tNav('weekly')" data-p="weekly">이번 주 필수 과제</div>
-        <button class="nav-item clinic-check-nav" onclick="openClinicCheckout()" data-p="clinic">✓ 귀가 전 수행 체크</button>
+        <button class="nav-item clinic-check-nav" onclick="openClinicCheckout()" data-p="clinic">✓ 클리닉 귀가 신청</button>
         <div class="nav-item active" onclick="tNav('dashboard')" data-p="dashboard"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>대시보드</div>
         <div class="nav-item" onclick="tNav('announce')" data-p="announce" id="nav-announce"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>과제 안내</div>
         <div class="nav-item" onclick="tNav('videos')" data-p="videos"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의 관리</div>
@@ -376,7 +376,7 @@ input,button{font-family:var(--font)}
 <div class="panel" id="panel-grammar-ox"><div class="page-header"><h1>문법 복습OX 현황</h1></div><div id="t-grammar-ox-body"></div></div>
       <div class="panel active" id="panel-dashboard">
         <div class="page-header"><h1>대시보드</h1><p>오늘과 이번 주에 확인해야 할 학생을 한눈에 보세요 <span id="dash-date" style="display:none"></span></p></div>
-        <button class="clinic-check-launch" onclick="openClinicCheckout()"><span class="clinic-check-launch-icon" aria-hidden="true">✓</span><span><strong>귀가 전 수행 체크</strong><small>요일별 학생 확인 · 현장 완료 · 가정 수행</small></span><span aria-hidden="true">→</span></button>
+        <button class="clinic-check-launch" onclick="openClinicCheckout()"><span class="clinic-check-launch-icon" aria-hidden="true">✓</span><span><strong>클리닉 귀가 신청</strong><small>학생 신청 확인 · 수락 · 거절</small></span><span aria-hidden="true">→</span></button>
         <div class="stats-row" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))" id="t-stats"></div>
         <!-- Q&A 미답변 알림 -->
         <div id="dash-qa-alert" style="display:none;margin-bottom:1rem">
@@ -662,20 +662,18 @@ input,button{font-family:var(--font)}
       <!-- 클리닉 관리 -->
       <div class="panel" id="panel-clinic">
         <div class="page-header"><h1>클리닉 관리</h1><p>학교별 클리닉 시간대와 정원을 설정하고 신청 현황을 확인하세요</p></div>
-        <div class="card" id="clinic-check-card">
-          <h2>귀가 전 수행 체크</h2>
-          <p style="color:var(--text2);margin-top:8px">클리닉을 마치고 귀가하기 전에 학생별 수행 방식을 선택해주세요. 선택하면 주차별로 저장됩니다.</p>
+        <section class="card" id="clinic-home-teacher" style="padding:20px;margin-bottom:20px">
+          <h2>클리닉 귀가 신청</h2>
+          <p>학생의 시험지 수령·가정 채점 또는 클리닉 미완·당일 마무리 신청을 확인하고 수락하거나 거절하세요.</p>
           <div class="clinic-check-controls">
-            <label>주차 (월요일 기준)<input id="clinic-check-week" type="date" class="form-input"></label>
-            <label>클리닉 요일<select id="clinic-check-slot" class="form-select"><option value="all">모든 요일</option></select></label>
-            <label>수행 상태<select id="clinic-check-filter" class="form-select"><option value="all">전체</option><option value="unchecked">미확인</option><option value="home">가정 수행 중</option><option value="done">수행 완료</option></select></label>
-            <label>학생 찾기<input id="clinic-check-search" class="form-input" type="search" placeholder="학생 이름"></label>
+            <label>신청 날짜<input id="clinic-home-date" type="date" class="form-input"></label>
+            <label>처리 상태<select id="clinic-home-filter" class="form-select"><option value="pending">승인 대기</option><option value="all">전체</option><option value="approved">수락됨</option><option value="rejected">거절됨</option></select></label>
           </div>
-          <button class="btn" onclick="renderClinicCheckout()">수행 기록 새로고침</button>
-          <p id="clinic-check-summary"></p>
-          <p id="clinic-check-message" role="status" aria-live="polite"></p>
-          <div id="clinic-check-body"></div>
-        </div>
+          <button type="button" class="btn" onclick="renderClinicCheckout()">신청 새로고침</button>
+          <p id="clinic-home-summary"></p>
+          <p id="clinic-home-message" role="status" aria-live="polite"></p>
+          <div id="clinic-home-rows"></div>
+        </section>
         <div class="card" style="margin-bottom:1rem">
           <div class="card-head"><h3>📋 신청 현황 한눈에 보기</h3><span style="font-size:11px;color:var(--text2)">수·목·금 / 한백·치동</span></div>
           <div id="t-clinic-summary-table" style="overflow-x:auto"></div>
@@ -1090,7 +1088,7 @@ input,button{font-family:var(--font)}
 
     </div></div>
   </div>
-  <div class="mobile-tabbar" id="t-tabbar" style="overflow-x:auto"><button class="mobile-tab clinic-check-nav" onclick="openClinicCheckout()" data-mt="clinic" style="min-width:110px"><span aria-hidden="true">✓</span>귀가 전 체크</button><button class="mobile-tab" onclick="tNav('weekly')" data-mt="weekly" style="min-width:80px">필수 과제 현황</button>
+  <div class="mobile-tabbar" id="t-tabbar" style="overflow-x:auto"><button class="mobile-tab clinic-check-nav" onclick="openClinicCheckout()" data-mt="clinic" style="min-width:110px"><span aria-hidden="true">✓</span>귀가 신청</button><button class="mobile-tab" onclick="tNav('weekly')" data-mt="weekly" style="min-width:80px">필수 과제 현황</button>
     <button class="mobile-tab active" onclick="tNav('dashboard')" data-mt="dashboard" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>대시보드</button>
     <button class="mobile-tab" onclick="tNav('announce')" data-mt="announce" id="mt-announce-t" style="position:relative;min-width:50px"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>과제</button>
     <button class="mobile-tab" onclick="tNav('videos')" data-mt="videos" style="min-width:50px"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-02-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>강의</button>
@@ -1273,6 +1271,15 @@ input,button{font-family:var(--font)}
       </div>
       <div class="panel" id="panel-clinic">
         <div class="page-header"><h1>클리닉 변동 신청</h1><p>변경하고 싶은 클리닉 시간대를 선택하세요. 정원이 차면 자동으로 마감돼요.</p></div>
+        <section class="card" id="clinic-home-student" hidden style="padding:20px;margin-bottom:20px">
+          <h2>클리닉 귀가 신청</h2>
+          <div class="clinic-home-actions">
+            <button type="button" class="btn blue" data-clinic-home-kind="take_home" onclick="requestClinicHome('take_home')" disabled>시험지 수령 후 집에서 채점</button>
+            <button type="button" class="btn blue" data-clinic-home-kind="finish_home" onclick="requestClinicHome('finish_home')" disabled>클리닉 미완 · 귀가 후 당일 마무리</button>
+          </div>
+          <p id="clinic-home-student-status" role="status" aria-live="polite"></p>
+          <button type="button" class="btn btn-sm" onclick="renderStudentClinicHome()">상태 새로고침</button>
+        </section>
         <div id="s-clinic-list"></div>
       </div>
 
@@ -2965,7 +2972,7 @@ function dashStatusCell(status){
 
 function openClinicCheckout(){
   tNav('clinic');
-  document.getElementById('clinic-check-card').scrollIntoView({block:'start'});
+  document.getElementById('clinic-home-teacher').scrollIntoView({block:'start'});
 }
 function dashAttendanceCell(row){
   var html=dashStatusCell(row&&row.attendance);
@@ -5451,6 +5458,7 @@ async function cancelClinicReq(id){
 }
 
 async function renderSClinicList(){
+  if(window.renderStudentClinicHome)renderStudentClinicHome();
   var el=document.getElementById('s-clinic-list');
   if(!el||!session)return;
   var thisMonday=weekMonday(new Date());
