@@ -22,4 +22,6 @@ node tools/weekly-feedback/demo-server.cjs '..\build\synthetic-web'
 
 부족분 없는 plan은 review, 부족하면 blocked. 교사 검수 후 approve를 호출한다. studentView는 정답/해설/출처/학생 id를 제거한다. grade/submit은 서버 전용이며 개인 packet.json은 학생에게 보내지 않는다. 운영 서버는 인증된 student_id로만 호출하고 `(student_id, week_start)`의 원자적 유일성을 보장해야 한다. 현재 demo-server는 가상 학생 1명만 검증한다.
 
-AI 변형·OX 자동 생성, 비공개 Drive 업로드, 운영 인증/제출 DB 연결, 주간 예약은 아직 미구현이다. 검수된 문항만 조합하며 빈 수량을 임의 생성하여 채우지 않는다. 다음 구현은 docs/weekly-feedback-plan.md의 운영 연결 단계에 따른다.
+`drafts.cjs`는 승인된 학교 프린트의 정확한 단어를 빈칸으로 바꾸고, 교사가 사실로 승인한 문장을 OX 초안으로 만든다. 모두 pending 상태다. 클리닉 변형용 AI 요청은 원문과 승인 근거만 포함하고 학생 메타데이터를 제외한다. 실제 AI 호출 및 반환 문항의 내용 검수는 연결 전이다.
+
+AI API 호출, 비공개 Drive 업로드, 운영 인증/제출 DB 연결, 주간 예약은 아직 미구현이다. 검수된 문항만 조합하며 빈 수량을 임의 생성하여 채우지 않는다. 다음 구현은 docs/weekly-feedback-plan.md의 운영 연결 단계에 따른다.
