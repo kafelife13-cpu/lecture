@@ -1,10 +1,10 @@
 name: Weekly feedback CodeQL
 on:
   pull_request:
-    paths: ['tools/weekly-feedback/**', '.github/workflows/weekly-feedback-codeql.yml']
+    paths: ['tools/weekly-feedback/**', 'odap/weekly-*.js', 'odap/drive-core.js', 'odap/drive.js', 'odap/cloud.js', '.github/codeql/weekly-feedback.yml', '.github/workflows/weekly-feedback-codeql.yml']
   push:
     branches: [main]
-    paths: ['tools/weekly-feedback/**', '.github/workflows/weekly-feedback-codeql.yml']
+    paths: ['tools/weekly-feedback/**', 'odap/weekly-*.js', 'odap/drive-core.js', 'odap/drive.js', 'odap/cloud.js', '.github/codeql/weekly-feedback.yml', '.github/workflows/weekly-feedback-codeql.yml']
   workflow_dispatch:
 permissions:
   contents: read

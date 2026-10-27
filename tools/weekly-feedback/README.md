@@ -24,4 +24,18 @@ node tools/weekly-feedback/demo-server.cjs '..\build\synthetic-web'
 
 `drafts.cjs`는 승인된 학교 프린트의 정확한 단어를 빈칸으로 바꾸고, 교사가 사실로 승인한 문장을 OX 초안으로 만든다. 모두 pending 상태다. 클리닉 변형용 AI 요청은 원문과 승인 근거만 포함하고 학생 메타데이터를 제외한다. 실제 AI 호출 및 반환 문항의 내용 검수는 연결 전이다.
 
-AI API 호출, 비공개 Drive 업로드, 운영 인증/제출 DB 연결, 주간 예약은 아직 미구현이다. 검수된 문항만 조합하며 빈 수량을 임의 생성하여 채우지 않는다. 다음 구현은 docs/weekly-feedback-plan.md의 운영 연결 단계에 따른다.
+교사 화면용 AI API 연결 코드는 `odap/weekly-ai.js`, `odap/weekly-feedback.js`, `odap/cloud.js`에 추가했다. 기존 교사 로그인과 배포된 claude-ai를 사용하며 새 키를 브라우저에 저장하지 않는다. 실제 인증 상태의 호출과 배포 검증은 아직 필요하다. 자세한 경로와 제한은 `docs/weekly-feedback-api.md`에 기록한다.
+
+비공개 Drive 결과 업로드, 운영 학생 인증/제출 DB 연결, 주간 예약은 아직 미구현이다. 검수된 문항만 조합하며 빈 수량을 임의 생성하여 채우지 않는다.
+
+## Drive 원문 검사
+
+`index-drive.py`는 로컬에 연결된 Drive의 파일을 읽기만 하고 저장소 외부에 재개 가능한 SQLite 목록과 SHA256별 추출 텍스트를 저장한다. Python, PyMuPDF, olefile이 필요하다. 원문/추출물/경로 목록을 GitHub에 올리지 않는다.
+
+```powershell
+python tools/weekly-feedback/index-drive.py --paths PRIVATE_PATHS.txt --output PRIVATE_INDEX_DIRECTORY --workers 4 --timeout 45
+```
+
+PDF, HWP5, HWPX, DOCX, PPTX, XLSX를 시도한다. `progress.json`의 pending은 미처리, text_extracted는 기계적 추출 성공이며 내용 검수 완료가 아니다. partial_text/ocr_required는 OCR·원문 대조 필요, encrypted는 암호 필요, timeout/read_error/extract_error는 재시도 대상이다. 같은 명령으로 재개하면 안정적인 결과는 재사용한다. `--retry-all`은 전체를 다시 읽는다. 모든 파일을 시도한 scan_complete와 본문 추출 완료 및 교사 검수는 서로 다르다. 현재 OCR·옛한글 판독 검수·문항 자동 승인 기능은 없다.
+
+교사 화면의 Drive 목록 가져오기는 확인한 JSON의 메타데이터만 기존 인증 RPC에 등록한다. 클라우드 필터 조회 범위와 로컬 파일 목록 범위는 다르며 두 건수를 합쳐 고유 파일 수로 간주하지 않는다. 파일명이 같은 원본을 자동으로 동일 파일이나 승인 근거로 연결하지 않는다.
