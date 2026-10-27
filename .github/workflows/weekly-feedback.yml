@@ -1,0 +1,27 @@
+name: Weekly feedback checks
+on:
+  pull_request:
+    paths: ['tools/weekly-feedback/**', 'tests/weekly-feedback.cjs', '.github/workflows/weekly-feedback.yml']
+  push:
+    branches: [main]
+    paths: ['tools/weekly-feedback/**', 'tests/weekly-feedback.cjs', '.github/workflows/weekly-feedback.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: weekly-feedback-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  synthetic-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - run: node --test tests/weekly-feedback.cjs
+      - run: node tools/weekly-feedback/batch.cjs --demo "$RUNNER_TEMP/weekly-synthetic"
