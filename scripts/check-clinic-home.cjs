@@ -3,13 +3,15 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
 (async()=>{const db=new PGlite();try{
  await db.exec(`create role anon;create role authenticated;create schema extensions;
  create table users(id text primary key,name text,role text,status text,school_id text);
- create table exams(id text,name text,category text,clinic_school text,clinic_week text);
+ create table exams(id text,name text,category text,clinic_school text,clinic_week text,created_at timestamptz default now());
  create table qa_schools(id text primary key,name text);
  create function authenticate_user(p_id text,p_password text,p_role text) returns jsonb language sql as $$select to_jsonb(u) from users u where id=p_id and role=p_role and p_password='test-only'$$;
  insert into users values('t','가상교사','teacher','active','school'),('s','가상학생','student','active','school'),('u','다른학생','student','active','school'),('off','퇴원','student','inactive','school');
- insert into qa_schools values('school','가상학교');insert into exams values('e1','시험1','school','school','1주차'),('e2','시험2','school','school','2주차'),('other','타학교','school','else','3주차');`);
+ insert into qa_schools values('school','가상학교');insert into exams(id,name,category,clinic_school,clinic_week) values('e1','시험1','school','school','1주차'),('e2','시험2','school','school','2주차'),('other','타학교','school','else','3주차');`);
  await db.exec(fs.readFileSync(path.join(process.argv[2]||path.join(__dirname,'..'),'supabase/migrations/20261027030000_clinic_home_approval.sql'),'utf8'));
  await db.exec(fs.readFileSync(path.join(__dirname,'../supabase/migrations/20261028010000_clinic_home_weeks.sql'),'utf8'));
+ await db.exec(fs.readFileSync(path.join(__dirname,'../supabase/migrations/20261028020000_clinic_rollout.sql'),'utf8'));
+ await db.exec("insert into exams values('past','지난시험','school','school','0주차','2026-10-25T23:59:59+09:00')");
  const rpc=(id,action,payload={},pw='test-only')=>db.query('select clinic_home_rpc($1,$2,$3,$4::jsonb) data',[id,pw,action,JSON.stringify(payload)]).then(r=>r.rows[0].data);
  assert.equal((await rpc('s','get')).request,null);assert.deepEqual((await rpc('s','get')).weeks.map(w=>w.week),['1주차 클리닉','2주차 클리닉']);await assert.rejects(rpc('s','request',{kind:'take_home',clinic_week:'3주차 클리닉'}));
  await assert.rejects(rpc('s','request',{kind:'other'}));await assert.rejects(rpc('off','request',{clinic_week:'1주차 클리닉',kind:'take_home'}));await assert.rejects(rpc('s','get',{},'wrong'));

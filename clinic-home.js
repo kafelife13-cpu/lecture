@@ -15,12 +15,12 @@
   if(r.error)throw Error(r.error.code==='PGRST202'?'클리닉 신청 기능을 준비 중입니다. 선생님께 알려주세요.':r.error.message||'저장하지 못했습니다. 다시 확인해주세요.');
   return r.data;
  }
- function showPapers(){const w=weeks.find(w=>w.week===el('clinic-home-week').value);el('clinic-home-papers').textContent=w?w.exams.map(e=>e.name).join(' · '):'등록된 클리닉 주차가 없습니다. 선생님께 알려주세요.';}
+ function showPapers(){const w=weeks.find(w=>w.week===el('clinic-home-week').value);el('clinic-home-papers').textContent=w?w.exams.map(e=>e.name).join(' · '):'이번 주 클리닉 등록 준비 중입니다. 시험지가 등록되면 신청할 수 있어요.';}
  function studentShow(data){
   const r=data.request;
   if(data.weeks)weeks=data.weeks;
   const select=el('clinic-home-week'),previous=select.value;
-  select.innerHTML=weeks.map(w=>`<option value="${esc(w.week)}">${esc(w.week)}</option>`).join('');
+  select.innerHTML=weeks.map(w=>`<option value="${esc(w.week)}">${esc(w.week)}</option>`).join('')||'<option value="">이번 주 클리닉 등록 준비 중</option>';
   if(r?.clinic_week&&!weeks.some(w=>w.week===r.clinic_week)){weeks.push({week:r.clinic_week,exams:r.exams||[]});select.add(new Option(r.clinic_week,r.clinic_week));}
   if(r?.clinic_week)select.value=r.clinic_week;else if(weeks.some(w=>w.week===previous))select.value=previous;
   select.disabled=studentBusy||!!r;showPapers();
