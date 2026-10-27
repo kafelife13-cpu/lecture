@@ -1,0 +1,8 @@
+@font-face{font-family:WeeklyOldHangul;src:url('../assets/fonts/NotoSansOldHangul-Regular.woff2') format('woff2');font-display:swap}
+#student-weekly,#pw-preview-body{font-family:WeeklyOldHangul,LocalKorean,'Malgun Gothic',sans-serif}
+#student-weekly fieldset{min-width:0;margin-inline:0}
+#student-weekly legend{font-weight:700;max-width:100%;padding:0 8px}
+#student-weekly input[type=radio]{width:auto;display:inline;margin-right:8px}
+#student-weekly [data-content]{margin-top:24px}
+#student-weekly [data-list] button{margin:4px}
+#student-weekly .passage{white-space:pre-wrap;overflow-wrap:anywhere}

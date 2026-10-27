@@ -13,6 +13,20 @@ vm.createContext(context);vm.runInContext(html.slice(start,end),context);
  assert.equal((html.match(/await odapSaveResponse\(/g)||[]).length,6);
  assert.ok(!/from\('exam_responses'\)\.upsert/.test(html));
  for(const name of ['app.js','cloud.js','student.js'])new vm.Script(fs.readFileSync(path.join(root,'odap',name),'utf8'));
+ // Replacing main.innerHTML recreates the select and discards its handler.
+ const app=fs.readFileSync(path.join(root,'odap/app.js'),'utf8');
+ let picker,markup='',chosen;
+ const main={get innerHTML(){return markup;},set innerHTML(value){markup=value;picker={value:'',onchange:null};}};
+ const ui={sid:'',selected:['old'],page:'students',currentAnalysis:null,URLSearchParams,window:{},
+  $:id=>id==='main'?main:picker,getStudents:async()=>{},heading:()=>'',studentPicker:()=>'<select></select>',empty:()=>'<p>Choose</p>',
+  action:fn=>fn(),navigate:async()=>{chosen=ui.sid;}};
+ vm.createContext(ui);
+ vm.runInContext(app.slice(app.indexOf('function wireStudent()'),app.indexOf('function questionImagesMarkup')),ui);
+ vm.runInContext(app.slice(app.indexOf('async function studentPage()'),app.indexOf('function reviewLinks(')),ui);
+ await ui.studentPage();
+ assert.equal(typeof picker.onchange,'function','initial student picker must survive empty-state rendering');
+ picker.value='synthetic-student';await picker.onchange();
+ assert.equal(chosen,'synthetic-student');assert.equal(ui.selected.length,0);
  new vm.Script(fs.readFileSync(path.join(root,'odap-entry.js'),'utf8'));
  console.log('PASS: all six submission paths, current identity, payload immutability, preview/pad protection, cloud JS syntax');
 })().catch(error=>{console.error(error);process.exitCode=1;});
