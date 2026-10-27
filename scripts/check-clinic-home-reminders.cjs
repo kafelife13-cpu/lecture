@@ -1,0 +1,33 @@
+const {PGlite}=require(process.env.PGLITE_PATH||'@electric-sql/pglite');
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+(async()=>{const db=new PGlite();try{
+ await db.exec(`create role anon;create role authenticated;create role service_role;create schema extensions;
+ create table users(id text primary key,name text,role text,status text,school_id text,student_phone text,parent_phone text);
+ create table qa_schools(id text primary key,name text);
+ create table exams(id text,name text,category text,clinic_school text,clinic_week text,created_at timestamptz default now());
+ create table exam_responses(id text,student_id text,exam_id text,score numeric,submitted_at timestamptz);
+ create function authenticate_user(text,text,text) returns jsonb language sql as $$select to_jsonb(u) from users u where id=$1 and $2='test-only' and role=$3$$;
+ insert into users values('s','가상학생','student','active','sc_hanbaek','010-1234-5678','01012345678');`);
+ for(const f of ['20261027030000_clinic_home_approval.sql','20261028010000_clinic_home_weeks.sql','20261028020000_clinic_rollout.sql','20261028030000_clinic_home_reminders.sql'])await db.exec(fs.readFileSync(path.join(__dirname,'../supabase/migrations',f),'utf8'));
+ const count=async t=>(await db.query('select clinic_home_prepare_reminders($1) n',[t])).rows[0].n;
+ await db.exec(`insert into clinic_home_requests(request_date,student_id,student_name,kind,status,requested_at,reviewed_at,clinic_week,exams)
+ values('2026-11-01','s','가상학생','take_home','approved','2026-11-01 14:00+09','2026-11-01 15:00+09','1주차 클리닉','[{"id":"e1","name":"시험1"},{"id":"e2","name":"시험2"}]');`);
+ assert.equal(await count('2026-11-02 08:00+09'),0,'disabled by default');
+ await db.exec("update clinic_home_reminder_settings set enabled=true,start_at='2026-10-28 00:00+09'");
+ assert.equal(await count('2026-11-02 07:59:59+09'),0);
+ await db.exec("insert into clinic_home_grading values(1,'e1','2026-11-02 00:59:59+09'),(1,'e2','2026-11-02 01:00:01+09')");
+ assert.equal(await count('2026-11-02 08:00+09'),1,'one ungraded paper; shared parent/student phone deduplicated');
+ assert.equal(await count('2026-11-02 08:10+09'),0,'no duplicate');
+ await db.exec("delete from clinic_home_messages;update clinic_home_grading set completed_at='2026-11-02 01:00+09'");
+ assert.equal(await count('2026-11-02 08:00+09'),0,'exact deadline complete');
+ await db.exec('delete from clinic_home_grading');
+ assert.equal(await count('2026-11-03 08:00+09'),0,'no historical catchup');
+ assert.equal(await count('2026-11-02 10:00+09'),0,'no late daytime sends');
+ await db.exec("update clinic_home_requests set status='pending'");assert.equal(await count('2026-11-02 08:00+09'),0);
+ await db.exec("update clinic_home_requests set status='approved',kind='finish_home'");assert.equal(await count('2026-11-02 08:00+09'),0);
+ await db.exec("update clinic_home_requests set kind='take_home';update clinic_home_reminder_settings set start_at='2026-11-02 00:00+09'");assert.equal(await count('2026-11-02 08:00+09'),0,'pre-activation requests excluded');
+ await db.exec("insert into exam_responses values('response','s','e1',0,'2000-01-01')");
+ const saved=(await db.query("select completed_at from clinic_home_grading where exam_id='e1'")).rows[0];assert.ok(saved);assert.notEqual(new Date(saved.completed_at).getUTCFullYear(),2000,'server timestamp, zero score is completed');
+ await db.exec('set role anon');await assert.rejects(db.query('select clinic_home_prepare_reminders()'));await assert.rejects(db.query('select * from clinic_home_messages'));
+ console.log('PASS reminders: disabled, cutoff, exact boundary, partial completion, duplicate phones, idempotency, approval, rollout, no historical catchup, server timestamp, RLS');
+ }finally{await db.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

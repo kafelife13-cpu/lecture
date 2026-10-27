@@ -1,0 +1,23 @@
+name: 클리닉 시험지 수령 후 미채점 안내
+# Enable only after the owner approves the final template and recipient scope.
+# Intended schedule: 08:00 KST (23:00 UTC), with delayed-run recovery until 10:00 KST.
+on:
+  workflow_dispatch: {}
+concurrency:
+  group: clinic-home-reminders
+  cancel-in-progress: false
+permissions:
+  contents: read
+jobs:
+  remind:
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: node scripts/clinic-home-reminder.mjs
+        env:
+          SOLAPI_SEND_PIN: ${{ secrets.SOLAPI_SEND_PIN }}
