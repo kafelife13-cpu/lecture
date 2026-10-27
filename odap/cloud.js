@@ -20,6 +20,25 @@
  }
  async function upload(bytes,filename,kind='source',packetId=null){const signed=await gateway('prepare_upload',{filename,kind,packet_id:packetId,bytes:bytes.byteLength});const res=await fetch(signed.url,{method:'PUT',headers:{'Content-Type':'application/octet-stream'},body:bytes});if(!res.ok)throw Error('비공개 파일 저장소 업로드 실패');return signed.path;}
  window.researchAPI=async(path,data)=>{const url=new URL(path,location.href),params=Object.fromEntries(url.searchParams),payload=data??params,method=data===undefined?'GET':'POST';
+  if(url.pathname==='/api/weekly-feedback/variant'){
+   if(!auth||auth.role!=='teacher')throw Error('기존 국어왕 교사 계정으로 로그인하세요.');
+   const context=await rpc('variant_context',{question_id:payload.question_id,evidence_id:payload.evidence_id,student_id:payload.student_id});
+   return {item:await window.WeeklyFeedbackAI.variant(context,aiPayload=>request('/functions/v1/claude-ai',{credentials:auth,payload:aiPayload})),status:'pending'};
+  }
+  if(['/api/weekly-feedback/context','/api/weekly-feedback/ox'].includes(url.pathname)){
+   if(!auth||auth.role!=='teacher')throw Error('기존 국어왕 교사 계정으로 로그인하세요.');
+   if(!payload.id||!payload.student_id)throw Error('저장된 학생 과제를 먼저 선택하세요.');
+   const [saved,current,summary]=await Promise.all([
+    request('/rest/v1/rpc/odap_homework',{p_id:auth.id,p_password:auth.pw,p_action:'get',p_payload:{id:payload.id,student_id:payload.student_id}}),
+    rpc('GET /api/evidence'),rpc('GET /api/summary')
+   ]);
+   const school=saved.clinic?.student?.school;
+   if(!school)throw Error('과제의 학교 정보를 먼저 확인하세요.');
+   const evidence=window.WeeklyFeedbackAI.checkedEvidence(saved.body?.evidence,current,summary.sources.filter(s=>s.school===school));
+   const coverage=window.WeeklyFeedbackAI.coverage(evidence,payload.week_start);
+   if(url.pathname==='/api/weekly-feedback/context')return {evidence,blanks:window.WeeklyFeedbackAI.blanks(evidence),coverage,status:'pending',notice:'초안은 이 탭에서만 유지됩니다. 학교·범위·정답 검수 후 사용하세요.'};
+   return {items:await window.WeeklyFeedbackAI.generate({evidence,count:payload.count,exclude:Array.isArray(payload.exclude)?payload.exclude:[],callAI:aiPayload=>request('/functions/v1/claude-ai',{credentials:auth,payload:aiPayload})}),coverage,status:'pending'};
+  }
   if(url.pathname==='/api/drive')return request('/rest/v1/rpc/odap_drive',{p_id:auth.id,p_password:auth.pw,p_action:payload.action||'list',p_payload:payload});
   if(url.pathname==='/api/input-status')return request('/rest/v1/rpc/odap_input_status',{p_id:auth.id,p_password:auth.pw});
   if(url.pathname==='/api/homework')return request('/rest/v1/rpc/odap_homework',{p_id:auth.id,p_password:auth.pw,p_action:payload.action||'list',p_payload:payload});

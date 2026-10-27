@@ -1,0 +1,7 @@
+'use strict';
+const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function render(packet,teacher=false){
+ const question=(q,i)=>`<article><h3>${i+1}. ${esc(q.text)}${q.origin_type==='generated'?' [자작]':''}</h3>${q.passage?`<p class="passage">${esc(q.passage)}</p>`:''}${q.choices?`<ol>${q.choices.map(c=>`<li>${esc(c)}</li>`).join('')}</ol>`:''}<p>답: ____________________</p>${teacher?`<p><b>정답 ${esc(q.answer)}</b> ${esc(q.explanation)}</p>`:''}</article>`;
+ return `<!doctype html><html lang="ko"><meta charset="utf-8"><title>주간 개인 피드백</title><style>body{font:11pt/1.65 sans-serif;max-width:210mm;margin:auto;padding:15mm}article{break-inside:avoid;border-bottom:1px solid #aaa;padding:8mm 0}h3{font-size:11pt}.passage{white-space:pre-wrap}section{columns:2;column-gap:9mm}h2{column-span:all}@page{size:A4;margin:15mm}@media print{body{padding:0}}</style><h1>${esc(packet.week_start)} 주간 피드백 · ${teacher?'교사용':'학생용'}</h1><p>${esc(packet.student_id)} · ${esc(packet.scope)} · ${packet.status==='approved'?'검수 완료':'미배부 초안'}</p><section><h2>객관식 20문항</h2>${packet.items.filter(q=>q.kind==='mcq').map(question).join('')}<h2>핵심 개념 OX 20문항</h2>${packet.items.filter(q=>q.kind==='ox').map(question).join('')}</section>${teacher?`<h2>개별 피드백</h2><p>현재 오답 ${packet.current_wrong_count}개 / 이번 선정 ${packet.selected_origins.length}개 / 이월 ${packet.deferred.length}개</p><p>개념을 설명한 뒤 연결된 원래 오답을 다시 풀어 보세요. 답 번호만으로 오답 원인은 단정하지 않습니다.</p>`:''}</html>`;
+}
+module.exports={render};

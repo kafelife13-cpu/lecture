@@ -37,17 +37,37 @@ async function driveSync(){
 async function drivePage(){
  const [d,c]=await Promise.all([driveRPC('list',{q:driveQuery,kind:driveKind,offset:driveOffset}),driveRPC('config')]);driveClient=c.client_id;driveRows=d.items;
  const date=v=>v?new Date(v).toLocaleString('ko-KR'):'아직 없음';
+ const lastCatalog=OdapDrive.catalogRunLabel(d.last_complete);
  $('main').innerHTML=heading('구글드라이브 자료','내 드라이브·공유받은 자료·공유 드라이브에서 원본을 찾아 연결합니다.',`<button id="drive-connect" class="primary" ${driveBusy?'disabled':''}>${driveToken?'Google 계정 다시 연결':'Google Drive 연결'}</button>`)+
  stats([['연결된 원본',d.total,'개','HWP·HWPX·PDF·문서·ZIP'],['문제은행 원본 연결',d.linked,'개','내용 해시로 확인한 동일 원본'],['추출 요청',d.requested,'개','문항 추출 완료와 별도'],['원본 변경 확인',d.changed,'개','기존 문항에 자동 덮어쓰지 않음']])+
- `<section class="card"><div class="row"><button id="drive-sync" ${driveBusy?'disabled':''}>전체 목록 새로고침</button><button id="drive-stop" ${driveBusy?'':'disabled'}>조회 중단</button><button id="drive-disconnect" ${driveBusy?'disabled':''}>이 화면의 Google 연결 해제</button></div><p id="drive-progress" role="status">${driveBusy?'전체 자료 조회 중…':`마지막 전체 조회 완료: ${E(date(d.last_complete?.finished_at))} · ${N(d.last_complete?.files||0)}개`}</p><p class="muted">${d.last_run&&d.last_run.status!=='complete'?`최근 조회: ${d.last_run.status==='running'?'진행 중 또는 중단됨':'완료하지 못함'} · ${E(d.last_run.error||'아직 전체 완료로 확인되지 않았습니다.')}<br>`:''}원본 목록과 링크를 교사 전용 DB에 보관합니다. 새로고침하면 추가·변경된 자료를 반영합니다. Google 연결은 이 탭에서만 유지되며, 닫힌 동안 자동 조회하지 않습니다.</p><details><summary>Google 연결 설정</summary><label>웹 클라이언트 ID<input id="drive-client" value="${E(driveClient)}" placeholder="…apps.googleusercontent.com"></label><button id="drive-config">설정 저장</button></details></section>`+
+ `<section class="card"><div class="row"><button id="drive-sync" ${driveBusy?'disabled':''}>전체 목록 새로고침</button><button id="drive-stop" ${driveBusy?'':'disabled'}>조회 중단</button><button id="drive-disconnect" ${driveBusy?'disabled':''}>이 화면의 Google 연결 해제</button></div><p id="drive-progress" role="status">${driveBusy?'원본 목록 처리 중…':`마지막 ${E(lastCatalog.label)}: ${E(date(d.last_complete?.finished_at))} · ${N(d.last_complete?.files||0)}개${d.last_complete?' · 범위: '+E(lastCatalog.scope):''}${lastCatalog.is_connector?' · 전체 드라이브 조회 완료가 아닙니다.':''}`}</p><p class="muted">${d.last_run&&d.last_run.status!=='complete'?`최근 조회: ${d.last_run.status==='running'?'진행 중 또는 중단됨':'완료하지 못함'} · ${E(d.last_run.error||'아직 전체 완료로 확인되지 않았습니다.')}<br>`:''}원본 목록과 링크를 교사 전용 DB에 보관합니다. 새로고침하면 추가·변경된 자료를 반영합니다. Google 연결은 이 탭에서만 유지되며, 닫힌 동안 자동 조회하지 않습니다.</p><details><summary>Google 연결 설정</summary><label>웹 클라이언트 ID<input id="drive-client" value="${E(driveClient)}" placeholder="…apps.googleusercontent.com"></label><button id="drive-config">설정 저장</button></details></section>`+
+ `<section class="card"><h2>확인한 드라이브 목록 가져오기</h2><p>기록된 검색 범위의 조회를 마친 자료 목록을 연결합니다. PDF·지원 문서만 조회한 목록은 전체 드라이브 조회와 구분하며, 빠진 HWP·HWPX 등은 별도 확인합니다. Google에 다시 로그인할 필요는 없습니다. 파일명·링크 등 목록 정보만 저장하며 원본 내용과 문항은 별도 확인합니다.</p><label>확인한 목록 파일<input id="drive-manifest-file" type="file" accept=".json,application/json" ${driveBusy?'disabled':''}></label><p id="drive-manifest-scope" role="status">목록 파일을 선택하면 조회 범위와 파일 수를 확인할 수 있습니다.</p><button id="drive-manifest-import" ${driveBusy?'disabled':''}>확인한 드라이브 목록 가져오기</button><p class="muted">중간에 멈추면 같은 파일로 다시 시작할 수 있습니다. 기존 원본을 삭제하지 않고 같은 파일 ID의 목록을 갱신합니다.</p></section>`+
  `<section class="card"><form id="drive-search-form" class="filters"><label>자료명 검색<input id="drive-query" value="${E(driveQuery)}" placeholder="예: 한백고, 문법, 문장, 중세국어"></label><label>자료 형식<select id="drive-kind">${[['','전체'],['hwp','한글'],['pdf','PDF'],['zip','압축파일'],['requested','추출 요청']].map(([v,l])=>`<option value="${v}" ${driveKind===v?'selected':''}>${l}</option>`).join('')}</select></label><button class="primary">검색</button></form><p>${N(d.matched)}개 검색 결과 · 원본 연결만으로 문제 검수가 완료되지는 않습니다.</p><div class="table-wrap"><table><thead><tr><th>자료</th><th>연결 상태</th><th>작업</th></tr></thead><tbody>${d.items.map(f=>`<tr><td><a href="https://drive.google.com/file/d/${encodeURIComponent(f.id)}/view" target="_blank" rel="noopener noreferrer">${E(f.name)} ↗</a><br><small>${(f.bytes/1048576).toFixed(1)} MB · ${E(date(f.modified_time))}</small></td><td>${f.source_id?`원본 보관 · 후보 ${N(f.questions)} / 검수 ${N(f.approved)}${f.modified_time!==f.source_modified_time?'<br>원본 변경 · 재대조 필요':''}`:'목록 연결 · 문항 미추출'}${f.requested_at?'<br>추출 요청됨':''}</td><td><button data-drive-request="${E(f.id)}">문항 추출 요청</button>${f.can_download&&/\.(hwp|hwpx|pdf)$/i.test(f.name)&&f.bytes<=40*1048576?`<button data-drive-store="${E(f.id)}" ${driveBusy?'disabled':''}>원본 보관·연결</button>`:''}</td></tr>`).join('')}</tbody></table></div><div class="pagination"><button id="drive-prev" ${driveOffset===0?'disabled':''}>← 이전</button><span>${N(Math.min(driveOffset+50,d.matched))} / ${N(d.matched)}</span><button id="drive-next" ${driveOffset+50>=d.matched?'disabled':''}>다음 →</button></div><p class="notice">문항 추출 요청은 대기 목록에 저장됩니다. ZIP 내부 파일·스캔 PDF·옛한글은 별도의 추출과 원문 검수가 필요합니다. 검수한 문항부터 학생별 오답·유형·개념 자료에 사용할 수 있습니다.</p></section>`;
  on('drive-connect',driveConnect);on('drive-sync',driveSync);on('drive-stop',()=>{driveStop=true;});
+ on('drive-manifest-import',driveImportManifest);
+ $('drive-manifest-file').onchange=()=>action(async()=>{const f=$('drive-manifest-file').files[0];if(!f)return;if(f.size>64*1048576)throw Error('목록 파일이 64MB를 초과합니다.');let value;try{value=JSON.parse(await f.text());}catch{throw Error('올바른 JSON 목록 파일을 선택하세요.');}const m=OdapDrive.connectorManifest(value);$('drive-manifest-scope').textContent=`조회 범위: ${m.scan_scope} · ${N(m.files.length)}개 · 해당 범위의 목록이며 전체 드라이브 조회 완료가 아닙니다.`;});
  on('drive-disconnect',()=>{driveToken='';driveExpires=0;toast('이 탭의 Google 연결을 해제했습니다. 보관한 목록은 유지됩니다.');});
  on('drive-config',async()=>{await driveRPC('configure',{client_id:$('drive-client').value.trim()});driveClient=$('drive-client').value.trim();toast('Google 연결 설정을 저장했습니다.');});
  $('drive-search-form').onsubmit=e=>{e.preventDefault();driveQuery=$('drive-query').value;driveKind=$('drive-kind').value;driveOffset=0;action(drivePage);};
  on('drive-prev',()=>{driveOffset-=50;return drivePage();});on('drive-next',()=>{driveOffset+=50;return drivePage();});
  document.querySelectorAll('[data-drive-request]').forEach(b=>b.onclick=()=>action(async()=>{await driveRPC('request',{id:b.dataset.driveRequest});toast('추출 요청을 저장했습니다.');await drivePage();},b));
  document.querySelectorAll('[data-drive-store]').forEach(b=>b.onclick=()=>action(()=>driveStore(b.dataset.driveStore),b));
+}
+async function driveImportManifest(){
+ if(driveBusy)return;
+ const file=$('drive-manifest-file')?.files?.[0];
+ if(!file)throw Error('검색 범위가 기록된 조회 완료 목록 파일을 선택하세요.');
+ if(file.size>64*1048576)throw Error('목록 파일이 64MB를 초과합니다. 목록 생성 결과를 확인하세요.');
+ driveBusy=true;driveStop=false;let result,error;
+ document.querySelectorAll('#drive-manifest-import,#drive-manifest-file,#drive-connect,#drive-sync,#drive-disconnect').forEach(e=>e.disabled=true);
+ if($('drive-stop'))$('drive-stop').disabled=false;
+ try{
+  let value;try{value=JSON.parse(await file.text());}catch{throw Error('목록 파일을 읽지 못했습니다. 올바른 JSON 파일을 선택하세요.');}
+  result=await OdapDrive.importConnector(value,driveRPC,p=>{if($('drive-progress'))$('drive-progress').textContent=`확인한 드라이브 목록 저장 중 · ${N(p.saved)} / ${N(p.total)}개`;},()=>driveStop);
+ }catch(e){error=e;}
+ finally{driveBusy=false;if(page==='drive')await drivePage();}
+ if(error)throw error;
+ toast(`${N(result.unique_files)}개 범위 목록을 연결했습니다. 전체 드라이브 조회·본문 검수 완료가 아닙니다.`);
 }
 async function driveStore(id){
  const f=driveRows.find(f=>f.id===id);if(!f)throw Error('자료 목록을 새로 불러오세요.');

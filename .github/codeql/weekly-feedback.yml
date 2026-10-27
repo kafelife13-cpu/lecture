@@ -1,0 +1,8 @@
+name: Weekly feedback scope
+paths:
+  - tools/weekly-feedback
+  - odap/weekly-ai.js
+  - odap/weekly-feedback.js
+  - odap/cloud.js
+  - odap/drive-core.js
+  - odap/drive.js

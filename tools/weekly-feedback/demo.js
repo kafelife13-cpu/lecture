@@ -1,0 +1,12 @@
+'use strict';
+const $=id=>document.getElementById(id),el=(tag,text)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;return e;};
+async function api(route,data){const r=await fetch(route,data?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}:{});const value=await r.json();if(!r.ok)throw Error(value.error);return value;}
+function resultView(result){$('results').replaceChildren(el('h2',`주간 테스트 ${result.score} / ${result.total}`));for(const r of result.results){const item=el('article');item.append(el('h3',`${r.question_id} · ${r.correct?'정답':'다시 확인'}`),el('p',`내 답 ${r.student_answer} / 정답 ${r.answer}`),el('p',r.explanation));$('results').append(item);}for(const input of $('test').elements)input.disabled=true;$('status').textContent='이번 주 제출 완료 · 다시 접속해도 결과가 보존됩니다.';}
+async function start(){const {packet,result}=await api('/api/packet');$('summary').textContent=`${packet.week_start} 주차 · 객관식 20문항 + OX 20문항`;const form=$('test');
+ for(const [i,q] of packet.items.entries()){const article=el('article');article.append(el('h2',`${i+1}. ${q.text}${q.origin_type==='generated'?' [자작]':''}`));if(q.passage)article.append(el('pre',q.passage));for(const [j,choice] of (q.kind==='ox'?['O','X']:q.choices).entries()){const label=el('label'),radio=el('input');radio.type='radio';radio.name=q.id;radio.value=q.kind==='ox'?choice:String(j+1);radio.required=true;label.append(radio,document.createTextNode(` ${choice}`));article.append(label);}form.append(article);}
+ const button=el('button','40문항 제출하기');button.type='submit';form.append(button);const update=()=>{$('status').textContent=`${[...new FormData(form).keys()].length} / 40문항 응답`;};form.onchange=update;update();
+ form.onsubmit=async e=>{e.preventDefault();button.disabled=true;try{resultView(await api('/api/submit',{answers:Object.fromEntries(new FormData(form))}));}catch(err){$('status').textContent=err.message;button.disabled=false;}};
+ for(const q of packet.blanks){const box=el('div'),input=el('input'),check=el('button','확인'),feedback=el('p');input.type='text';input.setAttribute('aria-label',q.text);check.type='button';check.onclick=async()=>{try{const r=await api('/api/blank',{id:q.id,answer:input.value});feedback.textContent=`${r.correct?'정답':'다시 생각해 보세요'} · ${r.explanation}`;}catch(e){feedback.textContent=e.message;}};box.append(el('p',q.text),input,check,feedback);$('blanks').append(box);}
+ if(result)resultView(result);
+}
+start().catch(e=>$('status').textContent=e.message);
