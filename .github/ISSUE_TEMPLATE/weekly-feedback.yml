@@ -1,0 +1,26 @@
+name: 주간 피드백 기능 오류
+description: 실제 학생 정보 없이 가상 데이터로 기능 오류를 기록합니다.
+title: '[주간 피드백] '
+body:
+  - type: markdown
+    attributes:
+      value: 공개 저장소입니다. 학생 이름, 연락처, 성적, 문제 원문, 학교 프린트, 실제 데이터 파일을 첨부하지 마세요. 문항 내용 검수는 비공개 작업함에서 진행합니다.
+  - type: textarea
+    id: expected
+    attributes:
+      label: 기대한 동작
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 가상 데이터 재현 절차와 실제 동작
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: 공개 내용 확인
+      options:
+        - label: 학생 개인정보와 실제 학습 자료를 포함하지 않았습니다.
+          required: true
