@@ -31,7 +31,7 @@
 <script src="weekly-homework.js?v=20261015-activity"></script>
 <script src="personal-review.js?v=1"></script>
 <link rel="stylesheet" href="clinic-check.css?v=3">
-<script src="clinic-home.js?v=1"></script>
+<script src="clinic-home.js?v=2"></script>
 <script src="grammar-ox-data.js?v=2"></script>
 <script src="grammar-ox-data-kimhayan.js?v=2"></script>
 <script src="grammar-review.js?v=3"></script>
@@ -1273,6 +1273,9 @@ input,button{font-family:var(--font)}
         <div class="page-header"><h1>클리닉 변동 신청</h1><p>변경하고 싶은 클리닉 시간대를 선택하세요. 정원이 차면 자동으로 마감돼요.</p></div>
         <section class="card" id="clinic-home-student" hidden style="padding:20px;margin-bottom:20px">
           <h2>클리닉 귀가 신청</h2>
+          <label for="clinic-home-week">수령할 클리닉</label>
+          <select id="clinic-home-week" disabled><option value="">주차를 확인하고 있어요…</option></select>
+          <p id="clinic-home-papers"></p>
           <div class="clinic-home-actions">
             <button type="button" class="btn blue" data-clinic-home-kind="take_home" onclick="requestClinicHome('take_home')" disabled>시험지 수령 후 집에서 채점</button>
             <button type="button" class="btn blue" data-clinic-home-kind="finish_home" onclick="requestClinicHome('finish_home')" disabled>클리닉 미완 · 귀가 후 당일 마무리</button>

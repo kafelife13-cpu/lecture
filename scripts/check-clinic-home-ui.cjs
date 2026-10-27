@@ -10,16 +10,16 @@ const {chromium}=require(process.env.PLAYWRIGHT_PATH||'playwright'),fs=require('
   document.getElementById('page-student').classList.add('active');document.querySelector('#page-student #panel-clinic').classList.add('active');
   window.session={id:'s',role:'student'};window.weeklyLogin={id:'s',pw:'test-only',role:'student'};window.padMode=false;window.studentPreviewMode=false;window.fixture=[];
   window.sb={rpc:async(name,args)=>{const a=args.p_action,p=args.p_payload;
-   if(a==='get')return {data:{date:'2026-10-27',request:fixture.find(r=>r.student_id===session.id)||null}};
-   if(a==='request'){if(window.failSave)return{error:{message:'연결 실패'}};let r={id:1,student_id:session.id,student_name:'가상학생',school_name:'가상학교',kind:p.kind,status:'pending',requested_at:new Date().toISOString()};fixture.push(r);return {data:{request:r}};}
+   if(a==='get')return {data:{date:'2026-10-27',weeks:[{week:'1주차 클리닉',exams:[{id:'e1',name:'1주차 시험'}]},{week:'2주차 클리닉',exams:[{id:'e2',name:'2주차 시험'}]}],request:fixture.find(r=>r.student_id===session.id)||null}};
+   if(a==='request'){if(window.failSave)return{error:{message:'연결 실패'}};let r={id:1,student_id:session.id,student_name:'가상학생',school_name:'가상학교',clinic_week:p.clinic_week,exams:[{id:'e2',name:'2주차 시험'}],kind:p.kind,status:'pending',requested_at:new Date().toISOString()};fixture.push(r);return {data:{request:r}};}
    if(a==='list')return{data:{date:p.date,rows:fixture.map(r=>({...r}))}};
    const r=fixture.find(x=>String(x.id)===String(p.request_id));Object.assign(r,{status:a==='approve'?'approved':'rejected',reviewed_at:new Date().toISOString()});return{data:{...r}};
   }};
  });
  await page.addScriptTag({content:fs.readFileSync(path.join(root,'clinic-home.js'),'utf8')});await page.evaluate(()=>renderStudentClinicHome());
- assert.equal(await page.locator('[data-clinic-home-kind]').count(),2);
+ assert.equal(await page.locator('[data-clinic-home-kind]').count(),2);await page.locator('#clinic-home-week').selectOption('2주차 클리닉');assert.match(await page.locator('#clinic-home-papers').textContent(),/2주차 시험/);
  await page.getByRole('button',{name:'클리닉 미완 · 귀가 후 당일 마무리',exact:true}).click();
- await page.waitForFunction(()=>document.getElementById('clinic-home-student-status').textContent.includes('승인 대기'));assert.equal(await page.evaluate(()=>fixture[0].status),'pending');
+ await page.waitForFunction(()=>document.getElementById('clinic-home-student-status').textContent.includes('승인 대기'));assert.equal(await page.evaluate(()=>fixture[0].status),'pending');assert.equal(await page.evaluate(()=>fixture[0].clinic_week),'2주차 클리닉');
  assert.equal(await page.getByRole('button',{name:'시험지 수령 후 집에서 채점',exact:true}).isDisabled(),true);
  for(const width of [320,390,768,1280]){await page.setViewportSize({width,height:900});assert.equal(await page.locator('#clinic-home-student').evaluate(x=>x.scrollWidth<=x.clientWidth),true,'student overflow '+width);}
  await page.setViewportSize({width:390,height:844});await page.locator('#clinic-home-student').screenshot({path:path.join(out,'클리닉_학생_신청대기.png')});

@@ -7,7 +7,7 @@
  const when=s=>new Date(s).toLocaleString('ko-KR',{timeZone:'Asia/Seoul'});
  if(typeof module!=='undefined')module.exports={labels,statuses};
  if(typeof document==='undefined')return;
- const el=id=>document.getElementById(id);let studentRun=0,teacherRun=0,studentBusy=false,teacherBusy=false,rows=[];
+ const el=id=>document.getElementById(id);let studentRun=0,teacherRun=0,studentBusy=false,teacherBusy=false,rows=[],weeks=[];
  function allowed(role){return session?.role===role&&weeklyLogin?.role===role&&weeklyLogin.id===session.id&&!padMode&&!studentPreviewMode;}
  async function rpc(action,payload,role){
   if(!allowed(role))throw Error('본인 계정으로 다시 로그인해주세요.');
@@ -15,10 +15,17 @@
   if(r.error)throw Error(r.error.code==='PGRST202'?'클리닉 신청 기능을 준비 중입니다. 선생님께 알려주세요.':r.error.message||'저장하지 못했습니다. 다시 확인해주세요.');
   return r.data;
  }
+ function showPapers(){const w=weeks.find(w=>w.week===el('clinic-home-week').value);el('clinic-home-papers').textContent=w?w.exams.map(e=>e.name).join(' · '):'등록된 클리닉 주차가 없습니다. 선생님께 알려주세요.';}
  function studentShow(data){
   const r=data.request;
-  document.querySelectorAll('[data-clinic-home-kind]').forEach(b=>b.disabled=studentBusy||!!r);
-  el('clinic-home-student-status').textContent=r?`${labels[r.kind]} · ${statuses[r.status]} · 신청 ${when(r.requested_at)}${r.reviewed_at?' · 처리 '+when(r.reviewed_at):''}`:'선생님이 수락해야 확정됩니다. 신청 버튼만 눌러서는 승인되지 않아요.';
+  if(data.weeks)weeks=data.weeks;
+  const select=el('clinic-home-week'),previous=select.value;
+  select.innerHTML=weeks.map(w=>`<option value="${esc(w.week)}">${esc(w.week)}</option>`).join('');
+  if(r?.clinic_week&&!weeks.some(w=>w.week===r.clinic_week)){weeks.push({week:r.clinic_week,exams:r.exams||[]});select.add(new Option(r.clinic_week,r.clinic_week));}
+  if(r?.clinic_week)select.value=r.clinic_week;else if(weeks.some(w=>w.week===previous))select.value=previous;
+  select.disabled=studentBusy||!!r;showPapers();
+  document.querySelectorAll('[data-clinic-home-kind]').forEach(b=>b.disabled=studentBusy||!!r||!weeks.length);
+  el('clinic-home-student-status').textContent=r?`${r.clinic_week||""} · ${labels[r.kind]} · ${statuses[r.status]} · 신청 ${when(r.requested_at)}${r.reviewed_at?' · 처리 '+when(r.reviewed_at):''}`:'선생님이 수락해야 확정됩니다. 신청 버튼만 눌러서는 승인되지 않아요.';
  }
  root.renderStudentClinicHome=async function(){
   const card=el('clinic-home-student');if(!card)return;card.hidden=!allowed('student');if(card.hidden)return;
@@ -29,16 +36,17 @@
  };
  root.requestClinicHome=async function(kind){
   if(studentBusy||!allowed('student')||!labels[kind])return;
-  if(!confirm(labels[kind]+' 신청을 보낼까요? 선생님이 수락해야 확정됩니다.'))return;
+  const clinic_week=el('clinic-home-week').value;if(!clinic_week){el('clinic-home-student-status').textContent='수령할 클리닉 주차를 선택해주세요.';return;}
+  if(!confirm(clinic_week+' · '+labels[kind]+' 신청을 보낼까요? 선생님이 수락해야 확정됩니다.'))return;
   const who=session.id,run=++studentRun;studentBusy=true;document.querySelectorAll('[data-clinic-home-kind]').forEach(b=>b.disabled=true);
   el('clinic-home-student-status').textContent='신청을 저장하고 있어요…';
-  try{const data=await rpc('request',{kind},'student');studentBusy=false;if(run===studentRun&&session?.id===who)studentShow(data);}
+  try{const data=await rpc('request',{kind,clinic_week},'student');studentBusy=false;if(run===studentRun&&session?.id===who)studentShow(data);}
   catch(e){studentBusy=false;if(run===studentRun&&session?.id===who){el('clinic-home-student-status').textContent=e.message+' 상태 새로고침으로 저장 여부를 확인해주세요.';}}
  };
  function teacherShow(){
   const filter=el('clinic-home-filter').value,selected=rows.filter(r=>filter==='all'||r.status===filter);
   el('clinic-home-summary').textContent=`전체 ${rows.length}명 · 승인 대기 ${rows.filter(r=>r.status==='pending').length}명 · 수락 ${rows.filter(r=>r.status==='approved').length}명 · 거절 ${rows.filter(r=>r.status==='rejected').length}명`;
-  el('clinic-home-rows').innerHTML=selected.map(r=>`<article class="clinic-home-row"><div><strong>${esc(r.student_name)}</strong> <span>${esc(r.school_name)}</span><p>${esc(labels[r.kind])}</p><p>${esc(statuses[r.status])} · 신청 ${esc(when(r.requested_at))}</p>${r.reviewed_at?`<p>처리 ${esc(when(r.reviewed_at))}</p>`:''}</div>${r.status==='pending'?`<div class="clinic-home-actions"><button type="button" class="btn green btn-sm" data-clinic-review="approve" data-request-id="${esc(r.id)}" ${teacherBusy?'disabled':''}>수락</button><button type="button" class="btn red btn-sm" data-clinic-review="reject" data-request-id="${esc(r.id)}" ${teacherBusy?'disabled':''}>거절</button></div>`:''}</article>`).join('')||'<p>해당하는 신청이 없습니다.</p>';
+  el('clinic-home-rows').innerHTML=selected.map(r=>`<article class="clinic-home-row"><div><strong>${esc(r.student_name)}</strong> <span>${esc(r.school_name)}</span><p><strong>${esc(r.clinic_week||"주차 확인 필요")}</strong> · ${esc(labels[r.kind])}</p><p>${esc((r.exams||[]).map(e=>e.name).join(" · "))}</p><p>${esc(statuses[r.status])} · 신청 ${esc(when(r.requested_at))}</p>${r.reviewed_at?`<p>처리 ${esc(when(r.reviewed_at))}</p>`:''}</div>${r.status==='pending'?`<div class="clinic-home-actions"><button type="button" class="btn green btn-sm" data-clinic-review="approve" data-request-id="${esc(r.id)}" ${teacherBusy?'disabled':''}>수락</button><button type="button" class="btn red btn-sm" data-clinic-review="reject" data-request-id="${esc(r.id)}" ${teacherBusy?'disabled':''}>거절</button></div>`:''}</article>`).join('')||'<p>해당하는 신청이 없습니다.</p>';
  }
  root.renderClinicCheckout=async function(){
   if(!allowed('teacher')||!el('clinic-home-teacher')||teacherBusy)return;
@@ -47,7 +55,7 @@
   try{const data=await rpc('list',{date:input.value},'teacher');if(run===teacherRun&&session?.id===who){rows=data.rows;teacherShow();}}
   catch(e){if(run===teacherRun&&session?.id===who)el('clinic-home-rows').textContent=e.message;}
  };
- document.addEventListener('change',e=>{if(e.target.id==='clinic-home-date')root.renderClinicCheckout();if(e.target.id==='clinic-home-filter')teacherShow();});
+ document.addEventListener('change',e=>{if(e.target.id==='clinic-home-week')showPapers();if(e.target.id==='clinic-home-date')root.renderClinicCheckout();if(e.target.id==='clinic-home-filter')teacherShow();});
  document.addEventListener('click',async e=>{
   const b=e.target.closest('[data-clinic-review]');if(!b||teacherBusy||!allowed('teacher'))return;
   const who=session.id,run=++teacherRun;teacherBusy=true;teacherShow();
