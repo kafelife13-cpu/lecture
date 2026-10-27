@@ -23,3 +23,5 @@ button.clinic-check-nav.nav-item{width:100%;font-family:inherit;text-align:left;
 .clinic-check-complete input{width:22px;height:22px}
 .clinic-check-student small{color:var(--text2);line-height:1.5}
 @media(max-width:600px){#clinic-check-card{padding:14px}.clinic-check-student{grid-template-columns:minmax(0,1fr)}.clinic-check-controls{gap:10px}}
+
+.clinic-home-actions{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}.clinic-home-actions button{white-space:normal;min-height:44px;max-width:100%}.clinic-home-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;border-top:1px solid var(--border);padding:14px 0}.clinic-home-row p,#clinic-home-student-status,#clinic-home-message{font-size:13px;line-height:1.7;margin-top:8px}#clinic-home-summary{margin-top:12px;font-weight:700}
