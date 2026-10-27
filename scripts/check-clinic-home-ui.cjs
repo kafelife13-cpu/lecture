@@ -34,4 +34,3 @@ const {chromium}=require(process.env.PLAYWRIGHT_PATH||'playwright'),fs=require('
  await page.evaluate(()=>{window.studentPreviewMode=true;});await page.evaluate(()=>renderStudentClinicHome());assert.equal(await page.locator('#clinic-home-student').isHidden(),true);
  assert.deepEqual(errors,[]);console.log('PASS UI: two requests, pending-only, teacher acceptance, filters, refresh, failed save, preview blocked, mobile widths');
 }finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});
-
