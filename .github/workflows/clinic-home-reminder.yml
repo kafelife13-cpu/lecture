@@ -1,8 +1,11 @@
 name: 클리닉 시험지 수령 후 미채점 안내
-# Enable only after the owner approves the final template and recipient scope.
+# Owner approved recurring sends without per-message confirmation on 2026-10-28 KST.
 # Intended schedule: 08:00 KST (23:00 UTC), with delayed-run recovery until 10:00 KST.
 on:
   workflow_dispatch: {}
+  schedule:
+    - cron: "0,15,30,45 23 * * *"
+    - cron: "0,15,30,45 0 * * *"
 concurrency:
   group: clinic-home-reminders
   cancel-in-progress: false
@@ -10,7 +13,6 @@ permissions:
   contents: read
 jobs:
   remind:
-    if: ${{ false }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
