@@ -14,7 +14,7 @@ Deno.serve(async req => {
   try {
     const b = await boundedJSON(req.body), c = b.credentials, p = b.payload || {};
     if (!c || !['teacher','student'].includes(c.role) || typeof c.id!=='string' || typeof c.pw!=='string') return reply({error:'로그인이 필요합니다.'},401);
-    if (!['list','open','submit','create','revise','approve','publish','generate_ox','review_publish'].includes(b.action)) throw Error('지원하지 않는 작업입니다.');
+    if (!['list','open','submit','create','revise','approve','publish','generate_ox','review_publish','auto_status'].includes(b.action)) throw Error('지원하지 않는 작업입니다.');
     const db = createClient(Deno.env.get('SUPABASE_URL')!,Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,{auth:{persistSession:false}});
     const rpc = async (action:string,payload:unknown={}) => {
       const {data,error} = await db.rpc('odap_private_weekly_rpc',{p_id:c.id,p_password:c.pw,p_role:c.role,p_action:action,p_payload:payload});
@@ -22,6 +22,13 @@ Deno.serve(async req => {
       return data;
     };
     await rpc('profile');
+    if(b.action==='auto_status'){
+      if(c.role!=='teacher')return reply({error:'교사 전용입니다.'},403);
+      if(typeof p.student_id!=='string'||!p.student_id)throw Error('학생을 선택하세요.');
+      const {data,error}=await db.from('odap_private_weekly_auto_jobs').select('week_start,status,phase,error,updated_at').eq('student_id',p.student_id).order('week_start',{ascending:false}).limit(12);
+      if(error)throw Error('자동 생성 상태를 불러오지 못했습니다.');
+      return reply(data);
+    }
     // No client checkbox or asserted reviewed flag can bypass the independent server review.
     if(['approve','publish'].includes(b.action))return reply({error:'Claude 자동 검수와 게시를 사용하세요.'},403);
     if (b.action==='list') return reply(await rpc('list',c.role==='teacher'?{student_id:p.student_id}:{}));

@@ -75,6 +75,20 @@ async function privateWeeklyTeacherPage(){
   popup.onload=async()=>{await popup.document.fonts?.ready;await Promise.all([...popup.document.images].map(i=>i.complete?Promise.resolve():new Promise(resolve=>{i.onload=resolve;i.onerror=resolve;})));popup.print();};
  };
  on('pw-print',()=>print(false));on('pw-print-answers',()=>print(true));
+ const autoSection=document.createElement('section');autoSection.className='card';autoSection.innerHTML='<h2>클리닉 입력 자동 처리</h2><p>입력된 클리닉 오답의 생성·검수 상태입니다. 보류된 자료는 학생에게 게시되지 않습니다. 근거를 보완하기 전에는 자동 재시도를 하지 않습니다.</p><button id="pw-auto-refresh">자동 처리 상태 새로고침</button><div id="pw-auto-status" role="status">학생을 선택하세요.</div>';$('main').append(autoSection);
+ const statusStudentId=sid?String(sid):'';
+ const refreshAuto=async()=>{
+  if(!statusStudentId)return;
+  try{
+   const rows=await call('auto_status',{student_id:statusStudentId});
+   if(!autoSection.isConnected||String(sid)!==statusStudentId)return;
+   if(!Array.isArray(rows))throw Error('자동 처리 상태 응답이 올바르지 않습니다.');
+   const labels={pending:'대기',processing:'처리 중',blocked:'보류',published:'OX 게시 완료'},phases={generate:'문항 생성',review:'Claude 검수'};
+   $('pw-auto-status').innerHTML=rows.map(r=>`<div><strong>${E(r.week_start)} · ${E(labels[r.status]||r.status)}</strong><p>${E(phases[r.phase]||r.phase||'')} · ${E(r.updated_at||'')}</p>${r.error?`<p>보류 사유: ${E(r.error)}</p>`:''}</div>`).join('')||'이 학생의 자동 처리 기록이 없습니다.';
+  }catch(error){if(autoSection.isConnected&&String(sid)===statusStudentId)$('pw-auto-status').textContent='자동 처리 상태를 불러오지 못했습니다. 서버 설치·연결을 확인하세요. '+error.message;}
+ };
+ on('pw-auto-refresh',()=>guarded(refreshAuto));
+ await refreshAuto();
  const saved=document.createElement('section');saved.className='card';saved.innerHTML='<h2>저장된 주간 자료</h2><div id="pw-existing">학생을 선택하세요.</div>';$('main').append(saved);
  const listStudentId=String(sid);if(sid)try{
   const rows=await call('list',{student_id:listStudentId});if(!saved.isConnected||String(sid)!==listStudentId)return;

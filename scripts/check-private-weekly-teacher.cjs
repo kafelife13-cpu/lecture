@@ -15,6 +15,7 @@ function harness(){
 (async()=>{
  const h=harness();let pause=false,release,fail=false,state='draft',reviewed=false;
  h.responder=async r=>{
+  if(r.action==='auto_status')return[{week_start:'2026-10-26',status:'blocked',phase:'review',error:'Missing <script>source</script>',updated_at:'2026-10-28'}];
   if(r.action==='list')return pause?new Promise(resolve=>{release=()=>resolve([]);}):[];
   if(r.action==='create')return{id:'assignment-a',status:'draft'};
   if(r.action==='generate_ox')return{id:'assignment-a',status:'draft'};
@@ -23,6 +24,8 @@ function harness(){
   throw Error('Unexpected '+r.action);
  };
  await h.sandbox.privateWeeklyTeacherPage();
+ assert.match(h.element('pw-auto-status').innerHTML,/보류/);assert.ok(!h.element('pw-auto-status').innerHTML.includes('<script>'));assert.ok(h.element('pw-auto-status').innerHTML.includes('&lt;script&gt;'));
+ assert.equal(h.calls.find(c=>c.action==='auto_status').payload.student_id,'student-a');
  h.element('pw-file').files=[{text:async()=>JSON.stringify({packet:{...packet,review:{provider:'anthropic',state:'passed'}}})}];
  await h.handlers['pw-preview']();assert.equal(h.element('pw-print').disabled,true,'untrusted file cannot assert review');
  assert.equal(h.element('pw-create').disabled,false);assert.ok(!h.element('pw-preview-body').innerHTML.includes('<script>'));
@@ -44,10 +47,8 @@ function harness(){
  assert.throws(()=>h.sandbox.privateWeeklyPrintDocument({...packet,review:{provider:'teacher',state:'passed'}},'student','week'),/Claude/);
  assert.throws(()=>h.sandbox.privateWeeklyPrintDocument({...packet,review:{provider:'anthropic',state:'pending'}},'student','week'),/Claude/);
  // A fresh run that fails review stays unprintable and retryable, with no success claim.
- const failed=harness();failed.responder=async r=>r.action==='list'?[]:r.action==='create'?{id:'failed',status:'draft'}:r.action==='generate_ox'?{}:r.action==='review_publish'?Promise.reject(Error('rejected')):{id:'failed',status:'draft',week_start:'2026-10-26',packet};
- await failed.sandbox.privateWeeklyTeacherPage();failed.element('pw-file').files=[{text:async()=>JSON.stringify({packet})}];await failed.handlers['pw-preview']();failed.element('pw-week').value='2026-10-26';await assert.rejects(()=>failed.handlers['pw-create'](),/rejected/);
+ const failed=harness();failed.responder=async r=>r.action==='auto_status'?Promise.reject(Error('function missing')):r.action==='list'?[]:r.action==='create'?{id:'failed',status:'draft'}:r.action==='generate_ox'?{}:r.action==='review_publish'?Promise.reject(Error('rejected')):{id:'failed',status:'draft',week_start:'2026-10-26',packet};
+ await failed.sandbox.privateWeeklyTeacherPage();assert.match(failed.element('pw-auto-status').textContent,/서버 설치·연결/);failed.element('pw-file').files=[{text:async()=>JSON.stringify({packet})}];await failed.handlers['pw-preview']();failed.element('pw-week').value='2026-10-26';await assert.rejects(()=>failed.handlers['pw-create'](),/rejected/);
  assert.equal(failed.element('pw-print').disabled,true);assert.equal(failed.element('pw-publish').disabled,false);assert.match(failed.element('pw-status').textContent,/미완료/);
  console.log('PASS teacher: generated OX → Claude review → OX publish, snapshot locks, untrusted review rejected, fail-closed retry, MCQ-only worksheet and separate answer key');
 })().catch(e=>{console.error(e);process.exitCode=1;});
-
-
