@@ -17,7 +17,8 @@ const {stripTypeScriptTypes}=require('node:module');
  let handler,aiCalls=0,failReview=false,failTransport=false,truncate=false,studentRole=false;const files=new Map();let row=null;
  const edge={...core,...review,crypto,TextEncoder,TextDecoder,Uint8Array,URL,AbortSignal,Request,Response,ReadableStream,atob,btoa,
   Deno:{env:{get:k=>({ODAP_PRIVATE_DRIVE_URL:'https://script.google.com/macros/s/test/exec',ODAP_PRIVATE_DRIVE_SECRET:'synthetic-secret-test-123456789012345',ODAP_CLAUDE_MODEL:'test-model'}[k]||'synthetic')},serve:f=>handler=f},
-  createClient:()=>({rpc:async(_name,{p_action:a,p_payload:p,p_role:role})=>{try{
+  createClient:()=>({rpc:async(name,{p_action:a,p_payload:p,p_role:role})=>{try{
+   if(name==='odap_rpc'){assert.equal(a,'GET /api/students');assert.equal(role,'teacher');return {data:{students:[{id:'private-student',school_id:'school-1'}],schools:[{id:'school-1',name:context.school}]}};}
    if(a==='profile')return {data:{role}};
    if(a==='create'){row={...p,id:'assignment',status:'draft'};return {data:row};}
    if(a==='get')return {data:structuredClone(row)};
@@ -48,7 +49,9 @@ const {stripTypeScriptTypes}=require('node:module');
   }};
  vm.createContext(edge);vm.runInContext(stripTypeScriptTypes((fs.readFileSync('supabase/functions/odap-private-weekly/services.ts','utf8')+'\n'+fs.readFileSync('supabase/functions/odap-private-weekly/index.ts','utf8')).replace(/^import .*;\r?\n/gm,'').replace(/^export /gm,'')),edge);
  const call=async(action,payload={})=>{const r=await handler(new Request('https://edge.example',{method:'POST',body:JSON.stringify({credentials:{id:'t',pw:'private',role:studentRole?'student':'teacher'},action,payload})}));return {status:r.status,data:await r.json()};};
- assert.equal((await call('create',{student_id:'private-student',...context,packet})).status,200);
+ assert.equal((await call('create',{student_id:'unknown-student',...context,packet})).status,400);assert.equal(files.size,0);
+ assert.equal((await call('create',{student_id:'private-student',week_start:context.week_start,packet})).status,200);assert.equal(row.school,context.school);
+ assert.equal((await call('create',{student_id:'private-student',...context,school:'Forged school',packet})).status,200);assert.equal(row.school,context.school);
  assert.equal(files.get(row.drive_file_id).review,undefined);assert.equal(files.get(row.drive_file_id).items[0].reviewed,false);
  assert.equal((await call('approve',{id:row.id,confirmed:true})).status,403);
  studentRole=true;assert.equal((await call('review_publish',{id:row.id})).status,403);assert.equal(aiCalls,0);studentRole=false;
