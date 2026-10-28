@@ -4129,7 +4129,7 @@ function renderReviewPerformance(){
     const granted=new Date(a.granted_at),video=db.videos.find(v=>v.id===a.video_id);
     return video&&a.access_kind==='replacement'&&!isNaN(granted)&&granted>=start&&granted<end;
   });
-  const byStudent={};assignments.forEach(a=>{(byStudent[a.student_id]||(byStudent[a.student_id]=[])).push(a);});
+  const byStudent={};assignments.forEach(a=>{const items=byStudent[a.student_id]||(byStudent[a.student_id]=[]);if(!items.some(x=>x.video_id===a.video_id))items.push(a);});
   const rows=activeStudents().filter(s=>byStudent[s.id]&&(!reviewPerformanceClass||s.group_id===reviewPerformanceClass)).map(s=>{
     const items=byStudent[s.id].map(a=>{const v=db.videos.find(x=>x.id===a.video_id),p=getPct(s.id,a.video_id);return{title:v?v.title:'삭제된 영상',pct:p,done:p>=100};});
     return{student:s,items:items,done:items.every(x=>x.done),avg:Math.round(items.reduce((n,x)=>n+x.pct,0)/items.length)};
