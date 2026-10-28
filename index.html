@@ -2090,14 +2090,23 @@ function ensurePdfJs(){return loadExternalScript('https://cdnjs.cloudflare.com/a
 function ensureXlsx(){return loadExternalScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',function(){return typeof XLSX!=='undefined';});}
 
 /* ===== DB ===== */
+async function loadVideoRows(table){
+  const data=[],size=500;
+  for(let start=0;;start+=size){
+    const page=await sb.from(table).select('*').order('student_id').order('video_id').range(start,start+size-1);
+    if(page.error)throw new Error(page.error.message);
+    data.push(...(page.data||[]));
+    if(!page.data||page.data.length<size)return {data,error:null};
+  }
+}
 async function loadAll(attempt=0){
   try{
     const userColumns=session&&session.role==='teacher'?'id,name,role,status,school_id,group_id,student_phone,parent_phone':'id,name,role,status,school_id,group_id';
     const [u,v,p,a,r,st,al]=await Promise.all([
       sb.from('users').select(userColumns),
       sb.from('videos').select('*').order('created_at'),
-      sb.from('progress').select('*'),
-      sb.from('video_access').select('*'),
+      loadVideoRows('progress'),
+      loadVideoRows('video_access'),
       sb.from('access_requests').select('*'),
       sb.from('app_settings').select('id,ai_provider,vocab_start_date,updated_at').eq('id','default').maybeSingle(),
       sb.from('video_access_log').select('*').order('granted_at',{ascending:false})
