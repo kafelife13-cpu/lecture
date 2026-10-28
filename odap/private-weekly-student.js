@@ -17,15 +17,16 @@
  }
  async function open(id){
   message('문항을 불러오는 중이에요.');active=await request('open',{id});
+  if(!active.packet || active.packet.items?.length!==20 || active.packet.items.some(q=>q.type!=='ox'))throw Error('학생용 OX 테스트를 준비 중이에요. 잠시 후 다시 열어 주세요.');
   if(active.attempt){result(active.attempt);message('이미 제출한 테스트입니다.');return;}
-  root.querySelector('[data-content]').innerHTML=`<h3>${esc(active.packet.title)}</h3><p>객관식 20문항 · OX 20문항. 제출은 주차별 한 번이며, 제출 후 정답과 해설을 볼 수 있어요.</p><form data-attempt>`+active.packet.items.map((q,i)=>`<fieldset class="card"><legend>${i+1}. ${esc(q.text)}</legend>${q.passage?`<p class="passage">${esc(q.passage)}</p>`:''}${(q.images||[]).filter(x=>/^data:image\/(?:png|jpeg);base64,[A-Za-z0-9+/=]+$/.test(x.data||'')).map(x=>`<img style="max-width:100%;height:auto" src="${x.data}" alt="${esc(x.alt||'문제 원문')}">`).join('')}${(q.type==='mcq'?q.choices:['O','X']).map((choice,j)=>`<label style="display:block;margin:12px 0"><input type="radio" name="${esc(q.id)}" value="${q.type==='mcq'?j+1:choice}" required> ${q.type==='mcq'?`${j+1}. `:''}${esc(choice)}</label>`).join('')}</fieldset>`).join('')+'<label class="check"><input type="checkbox" required>40문항의 답을 확인했어요. 제출 후에는 답을 바꿀 수 없어요.</label><button class="primary" type="submit">답안 제출 · 채점하기</button></form>';
+  root.querySelector('[data-content]').innerHTML=`<h3>${esc(active.packet.title)}</h3><p>OX 20문항. 제출은 주차별 한 번이며, 제출 후 정답과 해설을 볼 수 있어요.</p><form data-attempt>`+active.packet.items.map((q,i)=>`<fieldset class="card"><legend>${i+1}. ${esc(q.text)}</legend>${q.passage?`<p class="passage">${esc(q.passage)}</p>`:''}${(q.images||[]).filter(x=>/^data:image\/(?:png|jpeg);base64,[A-Za-z0-9+/=]+$/.test(x.data||'')).map(x=>`<img style="max-width:100%;height:auto" src="${x.data}" alt="${esc(x.alt||'문제 원문')}">`).join('')}${['O','X'].map((choice,j)=>`<label style="display:block;margin:12px 0"><input type="radio" name="${esc(q.id)}" value="${choice}" required> ${esc(choice)}</label>`).join('')}</fieldset>`).join('')+'<label class="check"><input type="checkbox" required>20문항의 답을 확인했어요. 제출 후에는 답을 바꿀 수 없어요.</label><button class="primary" type="submit">답안 제출 · 채점하기</button></form>';
   root.querySelector('form').onsubmit=async event=>{
    event.preventDefault();if(busy)return;const button=event.submitter,assignment=active;button.disabled=true;lock(true);
    const values=new FormData(event.target),answers=Object.fromEntries(assignment.packet.items.map(q=>[q.id,values.get(q.id)]));
    try{message('답안을 제출하고 있어요.');const attempt=await request('submit',{id:assignment.id,answers});result(attempt);message('답안 제출을 완료했어요.');}
    catch(error){try{const saved=await request('open',{id:assignment.id});if(saved.attempt){active=saved;result(saved.attempt);message('저장된 제출 결과를 복구했어요.');}else{message(error.message);button.disabled=false;}}catch{message(error.message);button.disabled=false;}}
    finally{lock(false);}
-  };message('40문항을 모두 풀어 주세요.');
+  };message('20문항을 모두 풀어 주세요.');
  }
  window.mountPrivateWeekly=async(auth,container)=>{
   credentials={id:auth.id,pw:auth.pw,role:'student'};root=container;

@@ -12,13 +12,13 @@ function createDemo(directory){
   try{
    if(req.method==='GET'&&req.url==='/'){res.writeHead(200,{'Content-Type':'text/html; charset=utf-8','Content-Security-Policy':"default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; frame-ancestors 'none'",'Cache-Control':'no-store'});return res.end(fs.readFileSync(path.join(__dirname,'demo.html')));}
    if(req.method==='GET'&&req.url==='/demo.js'){res.writeHead(200,{'Content-Type':'text/javascript; charset=utf-8'});return res.end(fs.readFileSync(path.join(__dirname,'demo.js')));}
-   if(req.method==='GET'&&req.url==='/api/packet')return send(200,{packet:E.studentView(packet),result:fs.existsSync(ledger)?JSON.parse(fs.readFileSync(ledger,'utf8')):null});
+   if(req.method==='GET'&&req.url==='/api/packet')return send(200,{packet:E.studentView(packet),result:fs.existsSync(ledger)?E.studentResult(packet,JSON.parse(fs.readFileSync(ledger,'utf8'))):null});
    if(req.method==='POST'&&req.url==='/api/submit'){
     if(req.headers['content-type']!=='application/json')return send(415,{error:'JSON required'});
     let body='';for await(const chunk of req){body+=chunk;if(Buffer.byteLength(body)>16384)return send(413,{error:'Too large'});}
-    const input=JSON.parse(body),previous=fs.existsSync(ledger)?JSON.parse(fs.readFileSync(ledger,'utf8')):null;
+    const input=JSON.parse(body),previous=fs.existsSync(ledger)?E.studentResult(packet,JSON.parse(fs.readFileSync(ledger,'utf8'))):null;
     const result=E.submit(packet,packet.student_id,input.answers,previous);
-    if(!previous){try{fs.writeFileSync(ledger,JSON.stringify(result),{flag:'wx'});}catch(e){if(e.code!=='EEXIST')throw e;return send(200,JSON.parse(fs.readFileSync(ledger,'utf8')));}}
+    if(!previous){try{fs.writeFileSync(ledger,JSON.stringify(result),{flag:'wx'});}catch(e){if(e.code!=='EEXIST')throw e;return send(200,E.studentResult(packet,JSON.parse(fs.readFileSync(ledger,'utf8'))));}}
     return send(200,result);
    }
    if(req.method==='POST'&&req.url==='/api/blank'){
@@ -27,7 +27,7 @@ function createDemo(directory){
     return send(200,{correct:E.blankGrade(q,input.answer),explanation:q.explanation});
    }
    send(404,{error:'Not found'});
-  }catch{send(400,{error:'요청 형식이나 답안 40개를 확인하세요.'});}
+  }catch{send(400,{error:'요청 형식이나 OX 답안 20개를 확인하세요.'});}
  });
 }
 if(require.main===module){const directory=process.argv[2];if(!directory)throw Error('Specify private demo output directory');const port=Number(process.env.PORT||8787);createDemo(directory).listen(port,'127.0.0.1',()=>console.log(`Synthetic preview: http://127.0.0.1:${port}`));}

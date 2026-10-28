@@ -1,10 +1,10 @@
 name: Weekly feedback checks
 on:
   pull_request:
-    paths: ['tools/weekly-feedback/**', 'tests/weekly-feedback*.cjs', 'tests/drive-connector-import.cjs', 'tests/test_drive_index.py', 'scripts/check-odap-drive.cjs', 'odap/private-weekly*', 'odap/student*', 'supabase/odap/private-weekly.sql', 'supabase/functions/odap-private-weekly/**', 'scripts/check-odap-private-weekly*.cjs', 'odap/weekly-*.js', 'odap/drive-core.js', 'odap/drive.js', 'odap/cloud.js', 'odap/index.html', '.github/workflows/weekly-feedback.yml']
+    paths: ['tools/weekly-feedback/**', 'tests/weekly-feedback*.cjs', 'tests/drive-connector-import.cjs', 'tests/test_drive_index.py', 'scripts/check-odap-drive.cjs', 'odap/private-weekly*', 'odap/student*', 'supabase/odap/private-weekly*.sql', 'supabase/functions/odap-private-weekly/**', 'supabase/functions/odap-weekly-worker/**', 'scripts/check-odap-private-weekly*.cjs', 'scripts/check-private-weekly*.cjs', 'odap/weekly-*.js', 'odap/drive-core.js', 'odap/drive.js', 'odap/cloud.js', 'odap/index.html', '.github/workflows/weekly-feedback.yml']
   push:
     branches: [main]
-    paths: ['tools/weekly-feedback/**', 'tests/weekly-feedback*.cjs', 'tests/drive-connector-import.cjs', 'tests/test_drive_index.py', 'scripts/check-odap-drive.cjs', 'odap/private-weekly*', 'odap/student*', 'supabase/odap/private-weekly.sql', 'supabase/functions/odap-private-weekly/**', 'scripts/check-odap-private-weekly*.cjs', 'odap/weekly-*.js', 'odap/drive-core.js', 'odap/drive.js', 'odap/cloud.js', 'odap/index.html', '.github/workflows/weekly-feedback.yml']
+    paths: ['tools/weekly-feedback/**', 'tests/weekly-feedback*.cjs', 'tests/drive-connector-import.cjs', 'tests/test_drive_index.py', 'scripts/check-odap-drive.cjs', 'odap/private-weekly*', 'odap/student*', 'supabase/odap/private-weekly*.sql', 'supabase/functions/odap-private-weekly/**', 'supabase/functions/odap-weekly-worker/**', 'scripts/check-odap-private-weekly*.cjs', 'scripts/check-private-weekly*.cjs', 'odap/weekly-*.js', 'odap/drive-core.js', 'odap/drive.js', 'odap/cloud.js', 'odap/index.html', '.github/workflows/weekly-feedback.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -29,6 +29,10 @@ jobs:
       - run: node scripts/check-odap-drive.cjs
       - run: node scripts/check-odap-private-weekly.cjs
       - run: node scripts/check-odap-private-weekly-ui.cjs
+      - run: node scripts/check-private-weekly-claude.cjs
+      - run: node scripts/check-private-weekly-teacher.cjs
+      - run: node scripts/check-private-weekly-auto.cjs
+      - run: node scripts/check-odap-private-weekly-auto.cjs
       - run: node tools/weekly-feedback/batch.cjs --demo "$RUNNER_TEMP/weekly-synthetic"
       - run: python -m pip install PyMuPDF==1.26.7 olefile==0.47
       - run: python tests/test_drive_index.py

@@ -70,17 +70,22 @@ function plan({student,week_start,cutoff,records,bank,reviewed_links=[],history=
  return {...draft,id:hash(draft).slice(0,32),status:missing.length?'blocked':'review',counts:{mcq:items.filter(q=>q.kind==='mcq').length,ox}};
 }
 function approve(p,reviewer){assert(p.status==='review'&&p.missing.length===0&&p.counts.mcq===20&&p.counts.ox===20,'Incomplete packet cannot be approved');assert(typeof reviewer==='string'&&reviewer.trim(),'reviewer required');return {...p,status:'approved',reviewer};}
-function studentView(p){assert(p.status==='approved','Not published');return {id:p.id,week_start:p.week_start,scope:p.scope,items:p.items.map(({id,kind,text,passage,choices,origin_type})=>({id,kind,text,passage,choices,origin_type})),blanks:p.blanks.map(({id,kind,text,passage})=>({id,kind,text,passage}))};}
+function studentView(p){assert(p.status==='approved','Not published');return {id:p.id,week_start:p.week_start,scope:p.scope,items:p.items.filter(q=>q.kind==='ox').map(({id,kind,text,passage,origin_type})=>({id,kind,text,passage,origin_type})),blanks:p.blanks.map(({id,kind,text,passage})=>({id,kind,text,passage}))};}
 function grade(p,studentId,answers){
  assert(p.status==='approved'&&p.student_id===studentId,'Access denied');assert(answers&&typeof answers==='object'&&!Array.isArray(answers),'answers required');
- const ids=new Set(p.items.map(q=>q.id));assert(Object.keys(answers).length===40&&Object.keys(answers).every(id=>ids.has(id)),'Submit exactly 40 answers');
- const results=p.items.map(q=>{const a=String(answers[q.id]);assert(q.kind==='mcq'?/^[1-5]$/.test(a):['O','X'].includes(a),'Invalid answer');return {question_id:q.id,correct:a===String(q.answer),answer:q.answer,student_answer:a,explanation:q.explanation,concepts:q.concepts};});
- return {packet_id:p.id,student_id:studentId,week_start:p.week_start,submitted:true,score:results.filter(r=>r.correct).length,total:40,wrong_concepts:[...new Set(results.filter(r=>!r.correct).flatMap(r=>r.concepts))],results};
+ const items=p.items.filter(q=>q.kind==='ox');assert(items.length===20,'20 OX required');
+ const ids=new Set(items.map(q=>q.id));assert(Object.keys(answers).length===20&&Object.keys(answers).every(id=>ids.has(id)),'Submit exactly 20 OX answers');
+ const results=items.map(q=>{const a=String(answers[q.id]);assert(typeof answers[q.id]==='string'&&['O','X'].includes(a),'Invalid answer');return {question_id:q.id,correct:a===String(q.answer),answer:q.answer,student_answer:a,explanation:q.explanation,concepts:q.concepts};});
+ return {packet_id:p.id,student_id:studentId,week_start:p.week_start,submitted:true,score:results.filter(r=>r.correct).length,total:20,wrong_concepts:[...new Set(results.filter(r=>!r.correct).flatMap(r=>r.concepts))],results};
 }
 function submit(p,studentId,answers,previous){
  assert(p.student_id===studentId,'Access denied');
- if(previous){assert(previous.student_id===studentId&&previous.week_start===p.week_start,'Submission ledger mismatch');return previous;}
+ if(previous){assert(previous.student_id===studentId&&previous.week_start===p.week_start,'Submission ledger mismatch');return studentResult(p,previous);}
  return grade(p,studentId,answers);
 }
+function studentResult(p,previous){
+ const answers=Object.fromEntries((previous.results||[]).filter(r=>p.items.some(q=>q.kind==='ox'&&q.id===r.question_id)).map(r=>[r.question_id,r.student_answer]));
+ return grade(p,p.student_id,answers);
+}
 function blankGrade(q,answer){assert(q.kind==='blank','blank required');return q.accepted.some(a=>normalize(a)===normalize(answer));}
-module.exports={plan,approve,studentView,grade,submit,blankGrade,currentWrongs,validateBank,hash};
+module.exports={plan,approve,studentView,grade,submit,studentResult,blankGrade,currentWrongs,validateBank,hash};

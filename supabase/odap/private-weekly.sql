@@ -16,6 +16,10 @@ create table if not exists public.odap_private_weekly_attempts (
  correct integer not null check(correct between 0 and 40),
  submitted_at timestamptz not null default now()
 );
+-- Preserve historical 40-question attempts; new submissions have 20 OX.
+alter table public.odap_private_weekly_attempts add column if not exists total integer not null default 40;
+alter table public.odap_private_weekly_attempts drop constraint if exists odap_private_weekly_attempts_total_check;
+alter table public.odap_private_weekly_attempts add constraint odap_private_weekly_attempts_total_check check(total in (20,40) and correct between 0 and total);
 alter table public.odap_private_weekly enable row level security;
 alter table public.odap_private_weekly_attempts enable row level security;
 revoke all on public.odap_private_weekly,public.odap_private_weekly_attempts from public,anon,authenticated;
@@ -38,7 +42,7 @@ begin
   return to_jsonb(item);
  end if;
  if p_action='list' then
-  select coalesce(jsonb_agg(jsonb_build_object('id',w.id,'week_start',w.week_start,'title',w.title,'status',w.status,'submitted_at',a.submitted_at,'correct',a.correct,'total',40) order by w.week_start desc),'[]') into result
+  select coalesce(jsonb_agg(jsonb_build_object('id',w.id,'week_start',w.week_start,'title',case when p_role='student' then '주간 OX 테스트' else w.title end,'status',w.status,'submitted_at',a.submitted_at,'correct',case when p_role='student' and a.total=40 then null else a.correct end,'total',case when p_role='student' then 20 else coalesce(a.total,20) end) order by w.week_start desc),'[]') into result
   from public.odap_private_weekly w left join public.odap_private_weekly_attempts a on a.assignment_id=w.id
   where (p_role='teacher' or (w.student_id=p_id and w.status='published'))
    and (nullif(p_payload->>'student_id','') is null or w.student_id=p_payload->>'student_id');
@@ -68,12 +72,13 @@ begin
  end if;
  if p_action='submit' then
   if p_role<>'student' then raise exception '본인 학생 계정으로 응시하세요.'; end if;
-  if jsonb_typeof(p_payload->'answers') is distinct from 'object' or (select count(*) from jsonb_object_keys(p_payload->'answers'))<>40 then raise exception '40문항 답안이 필요합니다.'; end if;
+  if jsonb_typeof(p_payload->'answers') is distinct from 'object' or (select count(*) from jsonb_object_keys(p_payload->'answers'))<>20 then raise exception 'OX 20문항 답안이 필요합니다.'; end if;
+  if (p_payload->>'correct')::integer not between 0 and 20 or exists(select 1 from jsonb_each(p_payload->'answers') where value not in ('"O"'::jsonb,'"X"'::jsonb)) then raise exception 'OX 채점 결과를 확인하세요.'; end if;
   -- Row lock + PK makes parallel/replayed requests a single durable submission.
   if exists(select 1 from public.odap_private_weekly_attempts where assignment_id=item.id) then raise exception '이번 주 시험은 이미 제출했습니다.'; end if;
-  insert into public.odap_private_weekly_attempts(assignment_id,student_id,answers,correct)
-   values(item.id,p_id,p_payload->'answers',(p_payload->>'correct')::integer) returning * into attempt;
-  return jsonb_build_object('submitted_at',attempt.submitted_at,'correct',attempt.correct,'total',40,'score',attempt.correct*2.5);
+  insert into public.odap_private_weekly_attempts(assignment_id,student_id,answers,correct,total)
+   values(item.id,p_id,p_payload->'answers',(p_payload->>'correct')::integer,20) returning * into attempt;
+  return jsonb_build_object('submitted_at',attempt.submitted_at,'correct',attempt.correct,'total',20,'score',attempt.correct*5);
  end if;
  raise exception '지원하지 않는 작업입니다.';
 end;

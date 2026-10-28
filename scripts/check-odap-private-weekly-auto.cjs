@@ -1,0 +1,54 @@
+const assert=require('node:assert/strict'),fs=require('node:fs');
+const {PGlite}=require('@electric-sql/pglite');
+(async()=>{const db=new PGlite();try{
+ await db.exec(`create role anon;create role authenticated;create role service_role;
+ create table users(id text,role text,status text,school_id text);create table qa_schools(id text,name text);
+ insert into users values('t','teacher','active',null),('s','student','active','school');insert into qa_schools values('school','Synthetic school');
+ create function authenticate_user(text,text,text) returns jsonb language sql as $$select to_jsonb(u) from users u where id=$1 and role=$3 and $2='test-only'$$;
+ create table exams(id text primary key,name text,category text,questions jsonb);
+ create table exam_responses(id text primary key,exam_id text,student_id text,submitted_at timestamptz,answers jsonb);
+ create table odap_sources(id uuid primary key,title text,school text,kind text);
+ create table odap_questions(id uuid primary key,source_id uuid,status text,body jsonb,fingerprint text);
+ create table odap_mappings(exam_id text,question_index integer,question_id uuid,concepts jsonb,verified boolean);
+ create table odap_evidence(id uuid primary key,source_id uuid,page integer,quote text,statement text,concept text,approved boolean);
+ create table odap_question_evidence(question_id uuid,evidence_id uuid);
+ create function odap_grade(a text,k text) returns boolean language sql immutable as $$select case when a ~ '^[1-5]$' and k ~ '^[1-5]$' then a=k else null end$$;
+ insert into exams values('clinic','Synthetic 클리닉','clinic','[{"text":"원문","answer":"1"}]');
+ insert into exam_responses values('preinstall','clinic','s',now(),'["2"]');`);
+ await db.exec(fs.readFileSync('supabase/odap/private-weekly.sql','utf8'));
+ await db.exec(fs.readFileSync('supabase/odap/private-weekly-auto.sql','utf8'));
+ const count=async()=>Number((await db.query('select count(*) n from odap_private_weekly_auto_jobs')).rows[0].n);
+ assert.equal(await count(),0,'no historical backfill');
+ await db.exec("insert into exam_responses values('historical','clinic','s',now()-interval '8 days','[\"2\"]')");assert.equal(await count(),0);
+ await db.exec("insert into exam_responses values('new','clinic','s',now(),'[\"2\"]')");assert.equal(await count(),1);
+ const rpc=async(name,args=[],placeholders='')=>(await db.query(`select ${name}(${placeholders}) d`,args)).rows[0].d;
+ const claim=()=>rpc('odap_private_weekly_auto_claim');
+ assert.equal(await claim(),null,'debounced');
+ await db.exec("update odap_private_weekly_auto_jobs set available_at=now()-interval '1 second'");let job=await claim();assert.equal(job.phase,'generate');assert.equal(await claim(),null,'lease blocks duplicate');
+ await assert.rejects(()=>rpc('odap_private_weekly_auto_context',[job.id,job.lease],'$1,$2'),/검증이 부족/);
+ await db.exec("update exam_responses set answers='[\"3\"]',submitted_at=now() where id='new'");
+ await assert.rejects(()=>rpc('odap_private_weekly_auto_finish',[job.id,job.lease,{phase:'blocked'}],'$1,$2,$3'),/임대/);
+ await db.exec("update odap_private_weekly_auto_jobs set available_at=now()-interval '1 second'");job=await claim();assert.equal(job.revision,2);
+ const print='10000000-0000-4000-8000-000000000001',past='10000000-0000-4000-8000-000000000002',original='20000000-0000-4000-8000-000000000001';
+ await db.query("insert into odap_sources(id,title,school,kind,exam_year) values($1,'print','Synthetic school','학교 프린트',null),($2,'exam','Synthetic school','학교 기출',extract(year from now() at time zone 'Asia/Seoul')::integer-1)",[print,past]);
+ await db.query("insert into odap_questions values($1,$2,'approved',$3,'original')",[original,print,{answer:'1',question_types:['개념'],concepts:['주체 높임']}]);
+ await db.query("insert into odap_mappings values('clinic',0,$1,'[\"주체 높임\"]',true)",[original]);
+ for(let i=0;i<20;i++){
+  const ev=`30000000-0000-4000-8000-${String(i+1).padStart(12,'0')}`,qid=`40000000-0000-4000-8000-${String(i+1).padStart(12,'0')}`;
+  await db.query("insert into odap_evidence values($1,$2,1,$3,$3,'주체 높임',true)",[ev,i===19?past:print,'Grounding '+i]);
+  await db.query("insert into odap_questions values($1,$2,'approved',$3,$4)",[qid,print,{text:'MCQ '+i,choices:['a','b','c','d','e'],answer:'1',explanation:'reason',concepts:['주체 높임'],question_types:['개념']},'fp'+i]);
+  await db.query('insert into odap_question_evidence values($1,$2)',[qid,ev]);
+ }
+ let ctx=await rpc('odap_private_weekly_auto_context',[job.id,job.lease],'$1,$2');assert.equal(ctx.candidates.length,20);assert.equal(ctx.evidence.length,20);assert.equal(ctx.wrongs.length,1);assert.ok(!JSON.stringify(ctx).includes('student_answer'));
+ await db.query('update odap_sources set exam_year=null where id=$1',[past]);await assert.rejects(()=>rpc('odap_private_weekly_auto_context',[job.id,job.lease],'$1,$2'),/작년 기출/);
+ await db.query("update odap_sources set exam_year=extract(year from now() at time zone 'Asia/Seoul')::integer-1 where id=$1",[past]);
+ const finish=payload=>rpc('odap_private_weekly_auto_finish',[job.id,job.lease,payload],'$1,$2,$3');
+ await finish({phase:'review',drive_file_id:'private-draft',content_hash:'a'.repeat(64)});job=await claim();assert.equal(job.phase,'review');assert.equal(job.attempts,1);assert.equal(job.draft_drive_file_id,'private-draft');
+ await assert.rejects(()=>finish({phase:'published',title:'Synthetic',drive_file_id:'private-final',content_hash:'b'.repeat(64),review_provider:'anthropic'}),/검수/);
+ const done=await finish({phase:'published',title:'Synthetic',drive_file_id:'private-final',content_hash:'b'.repeat(64),review_provider:'anthropic',review_passed:true});assert.equal(done.status,'published');
+ await db.exec("update exam_responses set answers='[\"4\"]',submitted_at=now() where id='new'");assert.equal(await claim(),null,'published cannot enqueue again');
+ assert.equal((await db.query('select status from odap_private_weekly')).rows[0].status,'published');
+ for(const role of ['anon','authenticated']){await db.exec('set role '+role);await assert.rejects(claim);await assert.rejects(()=>db.query('select * from odap_private_weekly_auto_jobs'));await db.exec('reset role');}
+ await db.exec('set role service_role');assert.equal(await claim(),null);await db.exec('reset role');
+ console.log('PASS: automatic queue migration, no backfill, KST week, debounce, lease invalidation, verified source context, explicit exam year, 2-phase publishing, duplicate protection, role isolation');
+ }finally{await db.close();}})().catch(e=>{console.error(e);process.exitCode=1;});
