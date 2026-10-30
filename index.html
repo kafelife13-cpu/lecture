@@ -1926,7 +1926,12 @@ async function boundedSupabaseFetch(input,options){
   var abort=function(){controller.abort();};
   if(original){if(original.aborted)abort();else original.addEventListener('abort',abort,{once:true});}
   var timer=setTimeout(abort,20000);
-  try{return await fetch(input,Object.assign({},options,{signal:controller.signal}));}
+  try{
+    const response=await fetch(input,Object.assign({},options,{signal:controller.signal}));
+    // Keep the deadline active until the response body is received, not just headers.
+    const body=await response.arrayBuffer();
+    return new Response(response.status===204||response.status===205||response.status===304?null:body,{status:response.status,statusText:response.statusText,headers:response.headers});
+  }
   finally{clearTimeout(timer);if(original)original.removeEventListener('abort',abort);}
 }
 const sb=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:false,autoRefreshToken:false},global:{fetch:boundedSupabaseFetch}});
@@ -2099,7 +2104,7 @@ async function loadVideoRows(table){
     if(!page.data||page.data.length<size)return {data,error:null};
   }
 }
-async function loadAll(attempt=0){
+async function loadAll(attempt=0,maxRetries=3){
   try{
     const userColumns=session&&session.role==='teacher'?'id,name,role,status,school_id,group_id,student_phone,parent_phone':'id,name,role,status,school_id,group_id';
     const [u,v,p,a,r,st,al]=await Promise.all([
@@ -2117,10 +2122,10 @@ async function loadAll(attempt=0){
     db.accessLog=al.data||[]; // video_access_log 테이블이 아직 없으면(마이그레이션 전) 조용히 빈 배열
     if(st&&st.data)sharedAISettings=st.data;
   }catch(e){
-    if(attempt<3){
+    if(attempt<maxRetries){
       document.querySelector('.loading-text').textContent=`재연결 중... (${attempt+1}/3)`;
       await new Promise(r=>setTimeout(r,1500));
-      return loadAll(attempt+1);
+      return loadAll(attempt+1,maxRetries);
     }
     throw e;
   }
@@ -2253,7 +2258,7 @@ async function doLogin(automatic){
     if(['student','teacher'].includes(user.role)){
       try{await loginWait(saveRememberedStudentLogin(id,pw,user.role),10000);}catch(e){notify('이 기기에 로그인을 저장하지 못했어요. 다시 열면 로그인이 필요할 수 있어요.','info');}
     }
-    await loadAll();
+    await loadAll(0,0);
     await Promise.all([loadQaData(),loadCertData(),loadClinicData(),loadStudyData(),loadAnnounceData()]);
     if(user.role==='teacher')launchTeacher();else{launchStudent();sendStudentActivity('로그인','학생 앱 접속');}
   }catch(e){session=null;weeklyLogin=null;studentRestoreRetry=automatic===true;err.textContent='연결 오류: 잠시 후 다시 시도해 주세요. 저장된 로그인 정보는 유지됩니다.';}
@@ -7619,24 +7624,7 @@ async function tSaveVocabStart(){
     setTimeout(function(){hideLoading();showPage('page-login');},2000);
     return;
   }
-  var attempt=0,maxAttempts=10,connected=false;
-  var msgs=['서버에 연결 중...','서버를 깨우는 중... (잠시만요)','거의 다 됐어요...','조금만 더...'];
-  while(attempt<maxAttempts){
-    document.querySelector('.loading-text').textContent=msgs[Math.min(attempt,msgs.length-1)];
-    try{
-      await sb.from('users').select('id').limit(1);
-      connected=true;break;
-    }catch(e){
-      attempt++;
-      if(attempt<maxAttempts)await new Promise(function(r){setTimeout(r,3000);});
-    }
-  }
-  if(!connected){
-    studentRestoreRetry=true;
-    document.querySelector('.loading-text').textContent='서버 연결 실패. 새로고침해주세요.';
-    setTimeout(function(){hideLoading();showPage('page-login');},2500);
-    return;
-  }
+  // Show login immediately; authenticate_user is the authoritative connection check.
   try{
     document.querySelector('.loading-text').textContent='로그인 화면 준비 중...';
     // 앱 업데이트나 새로고침만으로 기기 로그인 힌트를 지우지 않는다.
