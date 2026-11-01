@@ -23,6 +23,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="class-attendance.js"></script>
+<script src="homework-split.js?v=20261101"></script>
 <script src="class-attendance-ui.js?v=20260923-telegram"></script>
 <script src="classical-vocab.js?v=2"></script>
 <script src="classical-course.js"></script>
@@ -7662,10 +7663,15 @@ async function renderTExam(){
   const school=data.filter(e=>(e.category||'school')==='school');
   const mock=data.filter(e=>e.category==='mock');
   const naeshin=data.filter(e=>e.category==='naeshin');
-  const homework=data.filter(e=>e.category==='homework');
+  const splitSources=homeworkSplitSourceIds(data);
+  const homework=data.filter(e=>e.category==='homework'&&!splitSources.has(e.id));
   const miniMock=data.filter(e=>e.category==='mini_mock');
   renderTExamList('t-exam-list',school,'등록된 클리닉이 없습니다');
   renderTExamList('t-exam-list-homework',homework,'등록된 과제가 없습니다');
+  if(splitSources.size){
+    document.getElementById('t-exam-list-homework').insertAdjacentHTML('beforeend','<details style="margin-top:12px"><summary>분할 전 과제 · 기존 기록</summary><div id="t-exam-list-homework-originals"></div></details>');
+    renderTExamList('t-exam-list-homework-originals',data.filter(e=>splitSources.has(e.id)),'');
+  }
   renderTExamList('t-exam-list-mini-mock',miniMock,'등록된 미니모의고사가 없습니다');
   renderTExamList('t-exam-list-mock',mock,'등록된 모의고사가 없습니다');
   renderTExamList('t-exam-list-naeshin',naeshin,'등록된 내신시험지가 없습니다');
@@ -7760,6 +7766,7 @@ function renderTExamList(elId,list,emptyMsg){
         <button class="btn btn-sm" style="color:var(--accent)" onclick="openManualAnswerEntryForExam('${e.id}')">⌨️ 답안 입력</button>
         <button class="btn btn-sm blue" onclick="viewTExamResults('${e.id}','${e.name}')">결과 보기</button>
         <button class="btn btn-sm" onclick="openTExamEdit('${e.id}')">✏️ 수정</button>
+        ${e.category==='homework'&&e.total_q>50&&!e.questions?.[0]?.homework_split&&elId!=='t-exam-list-homework-originals'?`<button class="btn btn-sm" onclick="splitHomeworkExam('${e.id}')">50문항씩 분할</button>`:''}
         <button class="btn btn-sm" style="color:var(--red)" onclick="deleteTExam('${e.id}')">삭제</button>
       </div>
     </div>`).join('');
@@ -10383,7 +10390,8 @@ async function renderSExam(scope){
   ]);
   sExamRespCache={};
   (myResponses||[]).forEach(function(r){sExamRespCache[r.exam_id]=r;});
-  const list=(exams||[]).filter(sExamVisibleForStudent).filter(e=>studentExamScope==='clinic'?(e.category||'school')==='school':studentExamScope==='homework'?e.category==='homework':studentExamScope==='mock'?e.category==='mock':studentExamScope==='naeshin'?e.category==='naeshin':true);
+  const splitSources=homeworkSplitSourceIds(exams||[]);
+  const list=(exams||[]).filter(e=>!splitSources.has(e.id)).filter(sExamVisibleForStudent).filter(e=>studentExamScope==='clinic'?(e.category||'school')==='school':studentExamScope==='homework'?e.category==='homework':studentExamScope==='mock'?e.category==='mock':studentExamScope==='naeshin'?e.category==='naeshin':true);
   [clinicEl,homeworkEl,miniMockEl,mockEl,naeshinEl].forEach((el,i)=>{if(el)el.closest('.card').hidden=!!studentExamScope&&(studentExamScope==='clinic'?i!==0:studentExamScope==='mock'?i!==3:studentExamScope==='naeshin'?i!==4:i!==1);});
   sExamClinicCache=list.filter(function(e){return (e.category||'school')==='school';});
   const mock=list.filter(function(e){return e.category==='mock';});
@@ -10394,6 +10402,8 @@ async function renderSExam(scope){
   if(mockEl)mockEl.innerHTML=renderSExamListCards(mock,sExamRespCache,'등록된 모의고사가 없어요');
   if(miniMockEl)miniMockEl.innerHTML=renderSExamListCards(miniMock,sExamRespCache,'등록된 미니모의고사가 없어요');
   if(homeworkEl)homeworkEl.innerHTML=renderHomeworkEntry(homework,sExamRespCache);
+  const previousHomework=(exams||[]).filter(e=>splitSources.has(e.id)&&sExamVisibleForStudent(e)&&sExamRespCache[e.id]);
+  if(homeworkEl&&previousHomework.length)homeworkEl.insertAdjacentHTML('beforeend','<details class="card" style="padding:12px"><summary>분할 전 제출 기록</summary>'+renderSExamListCards(previousHomework,sExamRespCache,'')+'</details>');
 }
 
 // ponytail: 제목의 필수 표시와 기존 40문항 규칙을 사용한다. 개별 필수 설정이 필요해지면 전용 필드를 추가한다.
