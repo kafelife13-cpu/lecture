@@ -1,0 +1,15 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
+const storage=new Map(),badges={},elements={'dash-qa-alert':{style:{}},'dash-qa-count-text':{}};
+const old={id:'old',status:'pending',created_at:'2026-10-01T00:00:00Z'};
+const fresh={id:'new',status:'pending',created_at:'2026-11-01T13:00:00Z'};
+const c={session:{id:'teacher'},qaAlertResetAt:Date.parse('2026-11-01T12:50:52Z'),qaDb:{questions:[old,fresh]},localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)},document:{getElementById:id=>elements[id]},setBadge:(id,n)=>badges[id]=n};
+vm.createContext(c);vm.runInContext(html.slice(html.indexOf('function unseenTeacherQuestions()'),html.indexOf('// 교사: 학생 신청 뱃지')),c);
+c.updateTQaBadge();assert.equal(badges['nav-qa'],1);
+c.clearTQaBadge();c.updateTQaBadge();assert.equal(badges['nav-qa'],0);assert.equal(elements['dash-qa-alert'].style.display,'none');
+assert.equal(old.status,'pending');assert.equal(fresh.status,'pending');assert.equal(c.qaDb.questions.length,2);
+c.qaDb.questions.push({...fresh,id:'new-at-same-time'});c.updateTQaBadge();assert.equal(badges['nav-qa'],1);
+c.session.id='other-teacher';c.updateTQaBadge();assert.equal(badges['nav-qa'],2);
+storage.set('qaSeenQuestions:other-teacher','invalid');c.updateTQaBadge();assert.equal(badges['nav-qa'],2);
+assert.ok(html.includes('renderQaMaterialsList();clearTQaBadge();'));
+console.log('PASS: old notifications cleared, questions preserved, reads persist, new IDs still alert');

@@ -2779,7 +2779,7 @@ function tNav(panel){
   if(panel==='access')renderAccessPanel();
   if(panel==='review-performance')renderReviewPerformance();
   if(panel==='progress')renderProgress();
-  if(panel==='qa'){renderTQaSchoolTabs();renderTQaWeekList();renderQaWeekFilter();renderQaReview();renderQaMaterialsList();}
+  if(panel==='qa'){renderTQaSchoolTabs();renderTQaWeekList();renderQaWeekFilter();renderQaReview();renderQaMaterialsList();clearTQaBadge();}
   if(panel==='cert'){renderTCertSchoolTabs();renderTCertWeekList();}
   if(panel==='clinic'){renderTClinicSchoolTabs();renderClinicCheckout();}
   if(panel==='study')renderTStudy();
@@ -6132,7 +6132,8 @@ document.getElementById('modal-cert-item').addEventListener('click',function(e){
 var qaDb={schools:[],weeks:[],questions:[],materials:[]};
 
 // ── 알림 뱃지 시스템 ──
-var _lastSeenQaCount=parseInt(localStorage.getItem('lastSeenQaCount')||'0');
+// Existing questions stay available; only notifications before this reset are retired.
+var qaAlertResetAt=Date.parse('2026-11-01T12:50:52Z');
 var _lastSeenRequestCount=parseInt(localStorage.getItem('lastSeenRequestCount')||'0');
 var _lastSeenReplyCount=parseInt(localStorage.getItem('lastSeenReplyCount')||'0');
 
@@ -6146,23 +6147,27 @@ function updateAllBadges(){
   }
 }
 
-// 교사: Q&A 미답변 뱃지
+function unseenTeacherQuestions(){
+  var seen=[];
+  try{seen=JSON.parse(localStorage.getItem('qaSeenQuestions:'+(session&&session.id||'teacher'))||'[]');}catch(e){}
+  if(!Array.isArray(seen))seen=[];
+  return qaDb.questions.filter(function(q){return q.status==='pending'&&Date.parse(q.created_at)>qaAlertResetAt&&!seen.includes(q.id);});
+}
+
+// 교사: 새 Q&A 알림 (답변 상태와 별도로 관리)
 function updateTQaBadge(){
-  var pending=qaDb.questions.filter(function(q){return q.status==='pending';}).length;
+  var pending=unseenTeacherQuestions().length;
   setBadge('nav-qa',pending,'t');
   setBadge('mt-qa-t',pending,'t');
   // 대시보드 알림 카드 업데이트
   var alertEl=document.getElementById('dash-qa-alert');
   var countEl=document.getElementById('dash-qa-count-text');
   if(alertEl){alertEl.style.display=pending>0?'block':'none';}
-  if(countEl){countEl.textContent='미답변 질문 '+pending+'개';}
+  if(countEl){countEl.textContent='새 질문 '+pending+'개';}
 }
 function clearTQaBadge(){
-  var pending=qaDb.questions.filter(function(q){return q.status==='pending';}).length;
-  _lastSeenQaCount=pending;
-  localStorage.setItem('lastSeenQaCount',pending);
-  setBadge('nav-qa',0,'t');
-  setBadge('mt-qa-t',0,'t');
+  localStorage.setItem('qaSeenQuestions:'+(session&&session.id||'teacher'),JSON.stringify(qaDb.questions.filter(function(q){return Date.parse(q.created_at)>qaAlertResetAt;}).map(function(q){return q.id;})));
+  updateTQaBadge();
 }
 
 // 교사: 학생 신청 뱃지
