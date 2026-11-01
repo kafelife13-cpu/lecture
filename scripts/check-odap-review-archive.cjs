@@ -5,6 +5,10 @@ const {PGlite}=require('@electric-sql/pglite');
  const core=await import('../odap/review-archive-core.mjs'),{contentHash}=await import('../odap/private-weekly-core.mjs');
  const packet={schema:1,student_id:'a',school:'School',title:'Week review',week_start:'2026-10-26',week_label:'Week 1',originals:[{exam_id:'exam',exam_name:'Exam',num:1,text:'<img src=x onerror=alert(1)>',answer:'2',my_answer:'1',explanation:'Reason',file_id:'pdf',page:3}],practice:{count:15,file_id:'pdf'},files:[{id:'pdf',name:'test.pdf',data:Buffer.from('%PDF-1.4\n%%EOF').toString('base64')}]};
  assert.deepEqual(core.validateArchive(packet),packet);assert.equal(core.studentArchive(packet).student_id,undefined);
+ const quizQuestion={text:'Choose <img src=x onerror=alert(1)>',passage:'A shared passage',choices:['one','two','three','four','five'],answer:'2',explanation:'Because two is correct',underline:['one'],table:[['A','B'],['C','D']]};
+ const quizPacket=core.validateArchive({...packet,practice:{count:2,items:[quizQuestion,{...quizQuestion,text:'Select both',answer:'all:3,4'}]},originals:[{...packet.originals[0],quiz:quizQuestion}]});
+ assert.equal(quizPacket.practice.items.length,2);assert.equal(core.studentArchive(quizPacket).originals[0].quiz.choices.length,5);
+ for(const mutate of [p=>p.practice.items[0].answer='all:2,2',p=>p.practice.items[0].choices.pop(),p=>p.practice.count=1,p=>p.originals[0].quiz.answer='5',p=>p.practice.items[0].table=[['a',{}]]]){const bad=structuredClone(quizPacket);mutate(bad);assert.throws(()=>core.validateArchive(bad));}
  for(const mutate of [p=>p.week_start='2026-11-01',p=>p.files[0].data='javascript:bad',p=>p.originals[0].page=0,p=>p.originals.push(p.originals[0]),p=>p.practice.file_id='missing']){const bad=structuredClone(packet);mutate(bad);assert.throws(()=>core.validateArchive(bad));}
  const db=new PGlite();
  try{
@@ -56,6 +60,23 @@ const {PGlite}=require('@electric-sql/pglite');
  await host.querySelector('[data-pdf-next]').onclick();assert.equal(rendered.at(-1),4);
  await host.querySelector('[data-review-practice]').onclick();assert.equal(rendered.at(-1),1);assert.equal(host.querySelector('[data-pdf-prev]').disabled,true);
  reader.clear();assert.deepEqual(revoked,made);assert.equal(host.children.length,0);assert.equal(destroyed,2);reader.dispose();
+ // Repeatable mobile practice: answers hidden until check, multi-answer grading,
+ // reload/continue, wrong-only retry, separate user/week keys and blocked storage.
+ const stored=new Map();ui.localStorage={getItem:k=>stored.get(k),setItem:(k,v)=>stored.set(k,v)};
+ const qr=ui.window.reviewArchiveReader(host),key='review-quiz:v1:a:week1';
+ const launch=()=>host.querySelector('[data-quiz-practice]').onclick();
+ const choose=(...values)=>{host.querySelectorAll('input').forEach(el=>{el.checked=values.includes(el.value);if(el.checked)el.setAttribute('checked','');else el.removeAttribute('checked');});host.querySelector('input').onchange();};
+ const submit=()=>host.querySelector('form').onsubmit({preventDefault(){}});
+ qr.show(quizPacket,key);launch();assert.equal(host.querySelector('img'),null);assert.equal(host.querySelector('[data-quiz-check]').disabled,true);assert.equal(host.querySelector('.quiz-feedback').textContent,'');assert.equal(host.querySelectorAll('td').length,4);
+ choose('1');submit();assert.ok(host.querySelector('.quiz-feedback').textContent.includes('다시 확인'));
+ host.querySelector('[data-quiz-next]').onclick();choose('4','3');
+ qr.clear();qr.show(quizPacket,key);launch();assert.ok(host.querySelector('h3[tabindex]').textContent.includes('Select both'));assert.equal(host.querySelectorAll('input:checked').length,2);
+ submit();assert.ok(host.querySelector('.quiz-feedback').textContent.includes('정답이에요'));host.querySelector('[data-quiz-next]').onclick();assert.ok(host.querySelector('.quiz-score').textContent.includes('1 / 2'));
+ host.querySelector('[data-quiz-retry]').onclick();assert.ok(host.querySelector('h3[tabindex]').textContent.includes('Choose'));assert.equal(host.querySelectorAll('input:checked').length,0);choose('2');submit();host.querySelector('[data-quiz-next]').onclick();assert.equal(host.querySelector('[data-quiz-retry]'),null);assert.ok(host.querySelector('.quiz-score').textContent.includes('1 / 1'));
+ assert.ok(!stored.get(key+':practice').includes('passage'));assert.ok(!stored.get(key+':practice').includes('explanation'));
+ qr.show(quizPacket,'review-quiz:v1:b:week1');launch();assert.equal(host.querySelectorAll('input:checked').length,0);
+ qr.show(quizPacket,'review-quiz:v1:a:week2');launch();assert.equal(host.querySelectorAll('input:checked').length,0);
+ ui.localStorage.setItem=()=>{throw Error('blocked');};choose('1');assert.ok(host.querySelector('[data-quiz-storage]').textContent.includes('저장할 수 없어요'));qr.dispose();
  // A response arriving after pagehide must not re-render private contents.
  let resolveList;ui.fetch=()=>new Promise(resolve=>resolveList=resolve);
  const container=ui.document.getElementById('student'),mount=ui.window.mountReviewArchive({id:'a',pw:'synthetic'},container);

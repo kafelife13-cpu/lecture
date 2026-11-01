@@ -2,7 +2,7 @@ let reviewArchiveBusy=false,reviewArchiveDispose=null;
 async function reviewArchiveTeacherPage(){
  await getStudents();
  const root=$('main');
- root.innerHTML=heading('주차별 오답 다시보기','학생이 자기 앱에서 원래 오답과 개별 보완 PDF를 주차별로 다시 봅니다.')+`<section class="card">${studentPicker()}<label>학생별 주차 자료<input id="ra-file" type="file" accept=".json,application/json"></label><button id="ra-preview">불러오기 · 미리보기</button><button id="ra-save" disabled>비공개 저장</button><button id="ra-publish" disabled>이 학생 앱에 공개</button><p id="ra-status" role="status"></p></section><section class="card"><h2>저장된 주차</h2><div data-review-saved></div></section><div data-review-preview></div>`;
+ root.innerHTML=heading('주차별 오답 다시보기','학생이 자기 앱에서 원래 오답과 개별 보완 문제를 한 문항씩 풀고 복습합니다.')+`<section class="card">${studentPicker()}<label>학생별 주차 자료<input id="ra-file" type="file" accept=".json,application/json"></label><button id="ra-preview">불러오기 · 미리보기</button><button id="ra-save" disabled>비공개 저장</button><button id="ra-publish" disabled>이 학생 앱에 공개</button><p id="ra-status" role="status"></p></section><section class="card"><h2>저장된 주차</h2><div data-review-saved></div></section><div data-review-preview></div>`;
  wireStudent();const studentId=String(sid),student=students.find(s=>String(s.id)===studentId),reader=window.reviewArchiveReader(root.querySelector('[data-review-preview]'));
  reviewArchiveDispose=reader.dispose;let packet=null,row=null;
  const call=(action,payload={})=>api('/api/review-archive',{action,payload});
@@ -16,7 +16,7 @@ async function reviewArchiveTeacherPage(){
   const {validateArchive}=await import('./review-archive-core.mjs');const candidate=validateArchive(JSON.parse(await file.text()));
   const school=schools.find(s=>String(s.id)===String(student.school_id))?.name;
   if(candidate.student_id!==studentId||candidate.school!==school)throw Error('파일의 학생·학교와 선택한 학생이 다릅니다.');
-  packet=candidate;reader.show(packet);$('ra-status').textContent=student.name+' · '+packet.week_label+' · 원래 오답과 PDF를 확인한 뒤 저장하세요.';
+  packet=candidate;reader.show(packet);$('ra-status').textContent=student.name+' · '+packet.week_label+' · 원래 오답과 퀴즈·자료를 확인한 뒤 저장하세요.';
  });
  $('ra-save').onclick=run(async()=>{if(!packet||packet.student_id!==studentId)throw Error('학생 자료를 먼저 불러오세요.');$('ra-status').textContent='비공개로 저장 중입니다.';row=await call('create',{packet});if(valid()){$('ra-status').textContent='저장 완료. 확인한 자료를 학생 앱에 공개할 수 있습니다.';await list();}});
  $('ra-publish').onclick=run(async()=>{if(!row||!packet||packet.student_id!==studentId)throw Error('학생 자료를 먼저 확인하세요.');$('ra-status').textContent='학생 앱에 연결 중입니다.';row=await call('publish',{id:row.id,confirmed:true});if(valid()){$('ra-status').textContent=student.name+' 학생 앱에 '+packet.week_label+' 자료를 공개했습니다.';await list();}});
