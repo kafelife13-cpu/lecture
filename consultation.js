@@ -105,15 +105,15 @@ https://kafelife13-cpu.github.io/lecture/index.html?consultation=1
  const dismissedHomeworkNotices=new Set();
  function showEntryNotice(){
   if(!window.isExamConsultationNoticeStudent(session)||padMode){closeEntryNotice();return;}
-  // ponytail: only the two approved final-prep week-one notices auto-open.
-  // Replace this allowlist when the teacher requests the next popup campaign.
+  // ponytail: reuse the two school notices when the teacher updates the weekly guidance.
   const item=myAnnounceItems().find(a=>homeworkNoticeIds.includes(a.id));
   if(!item)return;
-  const key=session.id+':'+item.id;
+  const key=session.id+':'+item.id+':'+item.title;
   if(dismissedHomeworkNotices.has(key)||document.getElementById('exam-consultation-notice'))return;
   const el=document.createElement('dialog');el.id='exam-consultation-notice';el.className='consultation-dialog';
   el.setAttribute('aria-labelledby','homework-entry-title');
-  el.innerHTML='<h2 id="homework-entry-title">'+esc(item.title)+'</h2><div style="white-space:pre-wrap;line-height:1.8">'+esc(item.content||'')+'</div><button class="btn blue" style="margin-top:16px;min-height:44px" data-entry-close data-homework-close>확인 · 닫기</button>';
+  const images=announceImageUrls(item).filter(url=>/^https?:\/\//i.test(url));
+  el.innerHTML='<h2 id="homework-entry-title">'+esc(item.title)+'</h2><div style="white-space:pre-wrap;line-height:1.8">'+esc(item.content||'')+'</div>'+images.map(url=>'<img src="'+esc(url)+'" alt="과제 안내 첨부 자료" style="display:block;width:100%;height:auto;margin-top:16px">').join('')+'<button class="btn blue" style="margin-top:16px;min-height:44px" data-entry-close data-homework-close>확인 · 닫기</button>';
   const dismiss=()=>{dismissedHomeworkNotices.add(key);closeEntryNotice();};
   el.querySelector('[data-homework-close]').onclick=dismiss;
   el.addEventListener('cancel',e=>{e.preventDefault();dismiss();});
@@ -125,12 +125,6 @@ https://kafelife13-cpu.github.io/lecture/index.html?consultation=1
   if(!session||padMode)return;
   if(window.isExamConsultationNoticeStudent(session))showEntryNotice();
   if(studentPreviewMode||session.role!=='teacher')return;
-  const host=document.querySelector(session.role==='teacher'?'#panel-dashboard':'#panel-home');if(!host)return;
-  const card=document.createElement('section');card.dataset.consultationEntry='';card.className='card';card.style.cssText='padding:18px;margin-bottom:16px;border-left:4px solid var(--accent,#4757d5)';
-  card.innerHTML='<h3>시험 분석 · 개별 상담 주간</h3><p>10/22·23·25 · 1인 15분 · 선착순 76명 · 밤 22~23시 전화 상담<br>성적 입력 완료 학생 대상 · 시험지 필수 지참</p><button class="btn blue">'+(session.role==='teacher'?'상담 신청 현황 · 안내문':'개별 상담 신청')+'</button>';
-  card.querySelector('button').onclick=openConsultation;
-  if(session.role==='student'){const score=document.createElement('button');score.className='btn blue exam-score-primary';score.textContent='중간고사 성적 입력하기 →';score.onclick=()=>sNav('exam','naeshin');card.prepend(score);}
-  host.prepend(card);
   if(new URLSearchParams(location.search).get('consultation')==='1'&&!window.isExamConsultationNoticeStudent(session))openConsultation();
  }
  const style=document.createElement('style');style.textContent='.consultation-fallback{position:fixed;inset:0;z-index:2147483647;background:#0008;display:flex;align-items:center;justify-content:center;overflow:auto}.consultation-fallback>.consultation-dialog[open]{display:block;position:relative;inset:auto;margin:auto}.exam-score-primary{display:flex;width:100%;justify-content:center;min-height:60px;font-size:19px!important;font-weight:800;margin:12px 0 20px;background:#4338ca!important;color:#fff!important;border:2px solid #a5b4fc!important;border-radius:12px} .consultation-dialog{margin:auto;overflow:auto;width:calc(100% - 24px);max-width:850px;max-height:90vh;box-sizing:border-box;border:0;border-radius:16px;padding:24px;background:var(--bg2,#fff);color:var(--text,#171b2c);line-height:1.7}.consultation-dialog [hidden]{display:none!important}.consultation-dialog p{margin:12px 0}.consultation-dialog::backdrop{background:#0008}.consultation-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px}.consultation-slot{display:flex;flex-direction:column;gap:6px;border:1px solid var(--border,#ddd);border-radius:10px;padding:12px}.consultation-slot .btn{min-height:44px;justify-content:center}.consultation-dialog button:focus-visible{outline:3px solid #5275ee;outline-offset:3px}';document.head.append(style);
@@ -142,4 +136,4 @@ https://kafelife13-cpu.github.io/lecture/index.html?consultation=1
 })();
 
 // Dedicated photo submissions reuse the existing certification storage.
-(function(){if(typeof document==='undefined')return;const s=document.createElement('script');s.src='wrong-photo-section.js?v=20261025-homework-only';document.head.append(s);})();
+(function(){if(typeof document==='undefined')return;const s=document.createElement('script');s.src='wrong-photo-section.js?v=20261101-retired-cards';document.head.append(s);})();
