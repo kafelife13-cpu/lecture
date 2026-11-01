@@ -1,0 +1,27 @@
+// Printed, teacher-prepared review files. Independent of the one-attempt OX test.
+const fail=message=>{throw Error(message);};
+const text=(value,max)=>typeof value==='string'&&value.trim().length>0&&value.length<=max;
+export function validateArchive(value){
+ if(!value||value.schema!==1||!text(value.student_id,100)||!text(value.title,100)||!text(value.week_label,100)||!text(value.school,100))fail('학생·학교·자료 제목을 확인하세요.');
+ const date=new Date(value.week_start+'T00:00:00Z');
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(value.week_start)||!Number.isFinite(+date)||date.toISOString().slice(0,10)!==value.week_start||date.getUTCDay()!==1)fail('주차 시작일은 월요일이어야 합니다.');
+ if(!Array.isArray(value.files)||value.files.length<1||value.files.length>3)fail('학생별 PDF를 확인하세요.');
+ const ids=new Set();
+ const files=value.files.map(f=>{
+  if(!f||!text(f.id,80)||!/^[a-zA-Z0-9_-]+$/.test(f.id)||ids.has(f.id)||!text(f.name,150)||!f.name.toLowerCase().endsWith('.pdf')||!text(f.data,4000000)||!/^JVBERi0[A-Za-z0-9+/]*={0,2}$/.test(f.data))fail('PDF 파일 형식이 올바르지 않습니다.');
+  ids.add(f.id);return {id:f.id,name:f.name,data:f.data};
+ });
+ if(!value.practice||!Number.isInteger(value.practice.count)||value.practice.count<1||value.practice.count>100||!ids.has(value.practice.file_id))fail('개별 보완 자료와 문항 수를 확인하세요.');
+ if(!Array.isArray(value.originals)||!value.originals.length||value.originals.length>200)fail('연결할 원래 오답이 필요합니다.');
+ const seen=new Set();
+ const originals=value.originals.map(q=>{
+  if(!q||!text(q.exam_id,100)||!text(q.exam_name,150)||!text(String(q.num??''),30)||!text(q.text,25000)||!text(q.answer,100)||!text(q.my_answer,100)||typeof q.explanation!=='string'||q.explanation.length>15000)fail('원래 문제·당시 답·정답을 확인하세요.');
+  const key=q.exam_id+':'+q.num;if(seen.has(key))fail('같은 원래 문제가 중복되었습니다.');seen.add(key);
+  if(q.file_id&&(!ids.has(q.file_id)||!Number.isInteger(q.page)||q.page<1||q.page>500))fail('원본 PDF와 쪽수를 확인하세요.');
+  return {exam_id:q.exam_id,exam_name:q.exam_name,num:q.num,text:q.text,answer:q.answer,my_answer:q.my_answer,explanation:q.explanation,...(q.file_id?{file_id:q.file_id,page:q.page}:{})};
+ });
+ const packet={schema:1,student_id:value.student_id,school:value.school,title:value.title,week_start:value.week_start,week_label:value.week_label,originals,practice:{count:value.practice.count,file_id:value.practice.file_id},files};
+ if(new TextEncoder().encode(JSON.stringify(packet)).length>8*1024*1024)fail('학생별 자료는 8MB 이하로 줄여 주세요.');
+ return packet;
+}
+export function studentArchive(packet){const {student_id,...body}=validateArchive(packet);return body;}

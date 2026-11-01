@@ -22,7 +22,8 @@ jobs:
       - run: node scripts/check-odap.cjs
       - run: node scripts/check-odap-sync.cjs
       - run: node scripts/check-odap-clinic-ui.cjs
-      - run: npm install --no-save --ignore-scripts @electric-sql/pglite@0.5.8
+      - run: npm install --no-save --ignore-scripts @electric-sql/pglite@0.5.8 linkedom@0.18.15
+      - run: node scripts/check-odap-review-archive.cjs
       - run: node scripts/check-odap-db.cjs
       - run: node scripts/check-odap-drive.cjs
       - run: node scripts/check-odap-clinic.cjs
