@@ -6249,18 +6249,18 @@ async function submitFreeQa(){
     id:'q_'+Date.now(),
     school_id:schoolId,
     week_id:'free',
-    prob_num:'자유',
+    prob_num:null,
     student_id:session.id,
     student_name:session.name||session.id,
     question:'['+title+'] '+content,
     teacher_reply:'',
     status:'pending',
     badge:'pending',
-    category:'free',
     created_at:new Date().toISOString()
   };
+  var saved=await sb.from('qa_questions').upsert(newQ,{onConflict:'id'});
+  if(saved.error){notify('질문을 저장하지 못했어요. 다시 시도해 주세요.','error');return;}
   qaDb.questions.unshift(newQ);
-  await sb.from('qa_questions').upsert(newQ,{onConflict:'id'});
   sendStudentActivity('과제 Q&A 질문',title);
   document.getElementById('free-qa-title').value='';
   document.getElementById('free-qa-content').value='';
@@ -6920,9 +6920,10 @@ async function submitQaQuestion(){
     student_id:session.id,student_name:session.name||session.id,
     question:text,teacher_reply:'',status:'pending',badge:'pending',
     created_at:new Date().toISOString()};
+  var saved=await sb.from('qa_questions').upsert(newQ,{onConflict:'week_id,prob_num,student_id'});
+  if(saved.error){notify('질문을 저장하지 못했어요. 다시 시도해 주세요.','error');return;}
   qaDb.questions=qaDb.questions.filter(function(q){return !(q.week_id===qaState.week&&q.prob_num===qaState.prob&&q.student_id===session.id);});
   qaDb.questions.unshift(newQ);
-  await sb.from('qa_questions').upsert(newQ,{onConflict:'week_id,prob_num,student_id'});
   var qaWeek=qaDb.weeks.find(function(w){return w.id===qaState.week;});
   sendStudentActivity('문항 질문',(qaWeek?qaWeek.name+' ':'')+qaState.prob+'번');
   addChatBubble('user',text);
