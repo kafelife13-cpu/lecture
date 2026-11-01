@@ -8186,7 +8186,7 @@ async function viewTExamResults(examId,examName){
   var commonNoteEl=document.getElementById('tres-common-note');
   if(commonNoteEl)commonNoteEl.value=tResGetCommonNote(exam);
   const rankWrap=document.getElementById('tres-show-rank-wrap');
-  if(rankWrap)rankWrap.style.display=exam&&exam.category==='homework'?'none':'flex';
+  if(rankWrap)rankWrap.style.display=exam&&['homework','clinic'].includes(exam.category)?'none':'flex';
   tResTab('overview');
   renderTResOverview();
   renderTResStudentSelect();
@@ -8438,8 +8438,8 @@ function tResBuildParentMessage(name,r,exam){
   var grade=repGrade(sc.pct,exam.grade_cuts||[]);
   var link=tResBuildReportLink(r);
   var common=tResGetCommonNote(exam);
-  var lines=[name+' 학생 "'+exam.name+'" 결과 안내'];
-  if(common)lines.push('',common,'');
+  var lines=common?[common,'']:[];
+  lines.push(name+' 학생 "'+exam.name+'" 결과 안내');
   lines.push(
     '점수: '+score+'점'+(grade?' ('+grade+'등급)':''),
     '오답 문항: '+(wrongNums.length?wrongNums.join(', ')+'번':'없음 🎉'),
@@ -8468,8 +8468,8 @@ function tResNormalizePhone(value){
 
 function tResBuildMissingMessage(studentName,exam){
   var common=tResGetCommonNote(exam);
-  var lines=[studentName+' 학생 "'+exam.name+'" 미응시 및 성적 누락 안내'];
-  if(common)lines.push('',common,'');
+  var lines=common?[common,'']:[];
+  lines.push(studentName+' 학생 "'+exam.name+'" 미응시 및 성적 누락 안내');
   lines.push(
     '현재 시험 성적표가 확인되지 않습니다.',
     '시험에 응시하지 않았거나, 응시 후 답안 제출·채점 기록이 누락된 경우일 수 있습니다.',
@@ -8736,7 +8736,7 @@ async function tResDeleteStudentResponse(){
 async function tResToggleShowRank(checked){
   const name=document.getElementById('tres-student-select').value;
   if(!name||!tResCurrentExam)return;
-  if(tResCurrentExam.category==='homework'){document.getElementById('tres-show-rank').checked=false;return;}
+  if(['homework','clinic'].includes(tResCurrentExam.category)){document.getElementById('tres-show-rank').checked=false;return;}
   const r=tResCurrentResponses.find(function(r){return r.student_name===name;});
   if(!r)return;
   const {error}=await sb.from('exam_responses').update({show_rank:checked}).eq('id',r.id);
@@ -10226,8 +10226,8 @@ function buildReportCardHTML(studentName,exam,response,allResponses,academyName,
   var domainLabels=Object.keys(domainStats);
   var myPct=domainLabels.map(function(d){var s=domainStats[d];return s.maxPoints?Math.round(s.earnedPoints/s.maxPoints*1000)/10:0;});
   var avgPct=domainLabels.map(function(d){return stats.domainClassAvgPct[d]||0;});
-  // 과제 채점은 학생·학부모 성적표에 석차를 절대 노출하지 않는다.
-  var showRank=exam.category!=='homework'&&!!response.show_rank;
+  // 과제·클리닉은 학생·학부모 성적표에 석차를 노출하지 않는다.
+  var showRank=!['homework','clinic'].includes(exam.category)&&!!response.show_rank;
   var myRank=0;
   if(showRank&&allResponses&&allResponses.length){
     var higherCount=allResponses.filter(function(r){return repScore(exam,r).pct>my.pct;}).length;
