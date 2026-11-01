@@ -45,14 +45,17 @@ const {PGlite}=require('@electric-sql/pglite');
  }finally{await db.close();}
  // Exercise the actual reader, including HTML escaping, page links and URL cleanup.
  const {parseHTML}=require('linkedom'),{window}=parseHTML('<html><body><div id="host"></div><div id="student"></div></body></html>');
- const made=[],revoked=[],listeners=new Map();let serial=0;
- const ui={window:{addEventListener:(n,f)=>{if(!listeners.has(n))listeners.set(n,new Set());listeners.get(n).add(f);},removeEventListener:(n,f)=>listeners.get(n)?.delete(f)},document:window.document,atob,Uint8Array,Blob,AbortSignal,URL:{createObjectURL:()=>{const u='blob:test'+(++serial);made.push(u);return u;},revokeObjectURL:u=>revoked.push(u)}};
+ const made=[],revoked=[],listeners=new Map(),rendered=[];let serial=0,destroyed=0;
+ Object.getPrototypeOf(window.document.createElement('canvas')).getContext=()=>({});
+ const pdfLib={GlobalWorkerOptions:{},getDocument:options=>{assert.equal(options.isEvalSupported,false);return {destroy:async()=>{destroyed++;},promise:Promise.resolve({numPages:5,getPage:async n=>{rendered.push(n);return {getViewport:({scale})=>({width:600*scale,height:800*scale}),render:()=>({promise:Promise.resolve()})};}})};}};
+ const ui={window:{'pdfjs-dist/build/pdf':pdfLib,addEventListener:(n,f)=>{if(!listeners.has(n))listeners.set(n,new Set());listeners.get(n).add(f);},removeEventListener:(n,f)=>listeners.get(n)?.delete(f)},document:window.document,atob,Uint8Array,Blob,AbortSignal,URL:{createObjectURL:()=>{const u='blob:test'+(++serial);made.push(u);return u;},revokeObjectURL:u=>revoked.push(u)}};
  vm.createContext(ui);vm.runInContext(fs.readFileSync('odap/review-archive.js','utf8'),ui);
  const host=ui.document.getElementById('host'),reader=ui.window.reviewArchiveReader(host);reader.show(packet);
  assert.equal(host.querySelector('img'),null);assert.ok(host.textContent.includes('<img src=x'));
- host.querySelector('[data-review-original]').onclick();assert.ok(host.querySelector('iframe').src.endsWith('#page=3'));
- host.querySelector('[data-review-practice]').onclick();assert.ok(host.querySelector('iframe').src.endsWith('#page=1'));
- reader.clear();assert.deepEqual(revoked,made);assert.equal(host.children.length,0);reader.dispose();
+ await host.querySelector('[data-review-original]').onclick();assert.equal(rendered.at(-1),3);assert.equal(host.querySelector('canvas').getAttribute('aria-label'),'test.pdf 3쪽');
+ await host.querySelector('[data-pdf-next]').onclick();assert.equal(rendered.at(-1),4);
+ await host.querySelector('[data-review-practice]').onclick();assert.equal(rendered.at(-1),1);assert.equal(host.querySelector('[data-pdf-prev]').disabled,true);
+ reader.clear();assert.deepEqual(revoked,made);assert.equal(host.children.length,0);assert.equal(destroyed,2);reader.dispose();
  // A response arriving after pagehide must not re-render private contents.
  let resolveList;ui.fetch=()=>new Promise(resolve=>resolveList=resolve);
  const container=ui.document.getElementById('student'),mount=ui.window.mountReviewArchive({id:'a',pw:'synthetic'},container);

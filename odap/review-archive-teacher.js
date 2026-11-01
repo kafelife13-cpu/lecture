@@ -30,5 +30,5 @@ navigate=async function(name){
  if(privateWeeklyBusy||weeklyFeedbackBusy||homeworkBusy){toast('현재 처리가 끝난 뒤 이동하세요.');return;}
  reviewArchiveDispose?.();reviewArchiveDispose=null;page=name;charts.forEach(c=>c.destroy());charts=[];$('breadcrumb').textContent=titles[name];document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===name));await reviewArchiveTeacherPage();
 };
-const reviewArchiveNav=document.createElement('button');reviewArchiveNav.dataset.page='review-archive';reviewArchiveNav.textContent='▣ 주차별 오답 다시보기';reviewArchiveNav.onclick=()=>action(()=>navigate('review-archive'),reviewArchiveNav);document.querySelector('nav').append(reviewArchiveNav);
+const reviewArchiveNav=document.createElement('button');reviewArchiveNav.dataset.page='review-archive';reviewArchiveNav.textContent='▣ 주차별 오답 다시보기';reviewArchiveNav.onclick=()=>action(()=>navigate('review-archive'),reviewArchiveNav);document.querySelector('nav').insertBefore(reviewArchiveNav,document.querySelector('[data-page="bank"]'));
 const reviewArchiveSyncBlocked=syncBlocked;syncBlocked=()=>reviewArchiveBusy||page==='review-archive'||reviewArchiveSyncBlocked();
