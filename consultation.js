@@ -39,9 +39,9 @@ https://kafelife13-cpu.github.io/lecture/index.html?consultation=1
   if(typeof el.showModal==='function'){try{el.showModal();return;}catch(_){}}
   const previous=document.activeElement,overlay=document.createElement('div');overlay.className='consultation-fallback';
   el.parentNode.insertBefore(overlay,el);overlay.append(el);el.setAttribute('open','');el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.tabIndex=-1;
-  const keys=e=>{if(e.key==='Escape'){e.preventDefault();el.querySelector('[data-close],[data-entry-close]')?.click();}
-   if(e.key==='Tab'){const items=Array.from(el.querySelectorAll('button:not([disabled]),input:not([disabled]),a[href],[tabindex="0"]')).filter(x=>!x.hidden&&x.getClientRects().length);const first=items[0],last=items[items.length-1];if(!first){e.preventDefault();el.focus();}else if(e.shiftKey&&(document.activeElement===first||document.activeElement===el)){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}};
-  el.addEventListener('keydown',keys);el._dispose=()=>{el.removeEventListener('keydown',keys);overlay.remove();previous?.focus?.();};el.querySelector('button')?.focus();
+  const keys=e=>{if(e.defaultPrevented)return;if(e.key==='Escape'){e.preventDefault();el.querySelector('[data-close],[data-entry-close]')?.click();}
+   if(e.key==='Tab'){const items=Array.from(el.querySelectorAll('button:not([disabled]),input:not([disabled]),a[href],[tabindex="0"]')).filter(x=>!x.hidden&&x.getClientRects().length);const first=items[0],last=items[items.length-1];if(!first){e.preventDefault();el.focus();}else if(e.shiftKey&&(document.activeElement===first||!items.includes(document.activeElement))){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}};
+  el.addEventListener('keydown',keys);el._dispose=()=>{el.removeEventListener('keydown',keys);overlay.remove();previous?.focus?.();};el.querySelector('[autofocus],button')?.focus();
  }
  function close(){revision++;clearInterval(timer);timer=null;const old=dialog;dialog=null;owner=null;busy=false;loading=false;dismissModal(old);}
  function message(text){if(dialog)dialog.querySelector('[data-message]').textContent=text;}
@@ -96,34 +96,52 @@ https://kafelife13-cpu.github.io/lecture/index.html?consultation=1
   showModal(opened);await refresh();if(dialog===opened)timer=setInterval(refresh,20000);
  };
 
- // ponytail: this temporary entry notice replaces older automatic study notices for these two schools.
+ // These schools still suppress the older automatic push/study prompts.
  window.isExamConsultationNoticeStudent=function(student){
   return !!student&&student.role==='student'&&(['sc_hanbaek','sc_chidong'].includes(student.school_id)||/^(hanbaek|chidong)_/.test(student.group_id||''));
  };
  function closeEntryNotice(){dismissModal(document.getElementById('exam-consultation-notice'));}
- const homeworkNoticeIds=['an_1792925427850','an_1792925445084'];
  const dismissedHomeworkNotices=new Set();
  function showEntryNotice(){
-  if(!window.isExamConsultationNoticeStudent(session)||padMode){closeEntryNotice();return;}
-  // ponytail: reuse the two school notices when the teacher updates the weekly guidance.
-  const item=myAnnounceItems().find(a=>homeworkNoticeIds.includes(a.id));
+  if(!session||session.role!=='student'||padMode){closeEntryNotice();return;}
+  const item=currentHomeworkNotice();
   if(!item)return;
-  const key=session.id+':'+item.id+':'+item.title;
-  if(dismissedHomeworkNotices.has(key)||document.getElementById('exam-consultation-notice'))return;
+  const key='homeworkPopupSeen:'+session.id+':'+item.id;
+  if(isAnnounceRead(item.id)||dismissedHomeworkNotices.has(key))return;
+  try{if(localStorage.getItem(key))return;}catch(_){}
+  if(dialog||document.querySelector('.modal-bg.show,dialog[open]')||document.getElementById('exam-consultation-notice'))return;
   const el=document.createElement('dialog');el.id='exam-consultation-notice';el.className='consultation-dialog';
   el.setAttribute('aria-labelledby','homework-entry-title');
+  el.setAttribute('aria-describedby','homework-entry-content');
   const images=announceImageUrls(item).filter(url=>/^https?:\/\//i.test(url));
-  el.innerHTML='<h2 id="homework-entry-title">'+esc(item.title)+'</h2><div style="white-space:pre-wrap;line-height:1.8">'+esc(item.content||'')+'</div>'+images.map(url=>'<img src="'+esc(url)+'" alt="과제 안내 첨부 자료" style="display:block;width:100%;height:auto;margin-top:16px">').join('')+'<button class="btn blue" style="margin-top:16px;min-height:44px" data-entry-close data-homework-close>확인 · 닫기</button>';
-  const dismiss=()=>{dismissedHomeworkNotices.add(key);closeEntryNotice();};
+  const pdfLinks=String(item.content||'').match(/https:\/\/[^\s<>"']+\.pdf(?:\?[^\s<>"']*)?/gi)||[];
+  el.innerHTML='<h2 id="homework-entry-title" tabindex="-1" autofocus>'+esc(item.title)+'</h2><div id="homework-entry-content" style="white-space:pre-wrap;line-height:1.8">'+esc(item.content||'')+'</div>'+images.map(url=>'<img src="'+esc(url)+'" alt="과제 안내 첨부 자료" style="display:block;width:100%;height:auto;margin-top:16px">').join('')+pdfLinks.map((url,i)=>'<a class="btn blue" style="margin-top:16px" href="'+esc(url)+'" target="_blank" rel="noopener">📄 PDF 열기 · 다운로드'+(pdfLinks.length>1?' '+(i+1):'')+'</a>').join('')+'<button class="btn blue" style="margin-top:16px;min-height:44px" data-entry-close data-homework-close>확인 · 닫기</button>';
+  const dismiss=()=>{
+   if(dismissedHomeworkNotices.has(key))return;
+   dismissedHomeworkNotices.add(key);
+   closeEntryNotice();
+   if(!studentPreviewMode){
+    try{localStorage.setItem(key,'1');}catch(_){}
+    recordAnnounceRead(item,{activity:false});
+   }
+  };
   el.querySelector('[data-homework-close]').onclick=dismiss;
   el.addEventListener('cancel',e=>{e.preventDefault();dismiss();});
+  el.addEventListener('keydown',e=>{
+   if(e.key!=='Tab')return;
+   e.preventDefault();
+   const items=Array.from(el.querySelectorAll('button,input,select,textarea,a[href],[tabindex]')).filter(x=>x.tabIndex>=0&&!x.disabled&&!x.hidden&&x.getClientRects().length);
+   const index=items.indexOf(document.activeElement);
+   const next=e.shiftKey?(index<=0?items.length-1:index-1):(index+1)%items.length;
+   (items[next]||el.querySelector('#homework-entry-title')).focus();
+  });
   document.body.append(el);showModal(el);
  }
 
  function entry(){
   document.querySelectorAll('[data-consultation-entry]').forEach(x=>x.remove());
+  showEntryNotice();
   if(!session||padMode)return;
-  if(window.isExamConsultationNoticeStudent(session))showEntryNotice();
   if(studentPreviewMode||session.role!=='teacher')return;
   if(new URLSearchParams(location.search).get('consultation')==='1'&&!window.isExamConsultationNoticeStudent(session))openConsultation();
  }

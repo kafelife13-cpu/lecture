@@ -28,7 +28,7 @@
 <script src="classical-vocab.js?v=2"></script>
 <script src="classical-course.js"></script>
 <script src="classical-translations.js"></script>
-<script src="student-sections.js?v=20261015-entry"></script>
+<script src="student-sections.js?v=20261105-homework-popup"></script>
 <script src="weekly-homework.js?v=20261015-activity"></script>
 <script src="personal-review.js?v=1"></script>
 <link rel="stylesheet" href="clinic-check.css?v=3">
@@ -2611,7 +2611,7 @@ async function updatePushBtnState(){
     banner.innerHTML='<div style="padding:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><div style="flex:1;min-width:160px"><strong>🔔 '+info.title+'</strong><div style="font-size:12px;color:var(--text2);margin-top:5px">'+info.text+'</div></div><button class="btn green">'+info.button+'</button></div>';
     banner.querySelector('button').onclick=function(){state==='needed'?subscribeToPush():showStudentPushPrompt(state);};
   }
-  if(state!=='enabled'&&!studentPushPromptShown&&!window.isExamConsultationNoticeStudent?.(session)){studentPushPromptShown=true;showStudentPushPrompt(state);}
+  if(state!=='enabled'&&!studentPushPromptShown&&!document.getElementById('exam-consultation-notice')&&!window.isExamConsultationNoticeStudent?.(session)){studentPushPromptShown=true;showStudentPushPrompt(state);}
 }
 window.addEventListener('focus',function(){if(session&&session.role==='student')updatePushBtnState();});
 
@@ -2647,10 +2647,8 @@ async function renderWeeklyStudentDashboard(){
   var needed=assignedLessons.filter(function(v){return getPct(session.id,v.id)<100;});
   var clinicAssigned=clinicLessons.filter(function(v){return hasAccess(session.id,v.id);});
   var clinicNeeded=clinicAssigned.filter(function(v){return getPct(session.id,v.id)<100;});
-  // 주간 과제는 실제 수행 주간보다 앞선 금·토에 미리 게시될 수 있다.
-  // 게시 날짜로 이번 주를 잘라내면 월요일이 지난 뒤 과제가 사라지므로,
-  // 학생 학교에 맞는 가장 최근 과제 안내를 현재 과제로 보여준다.
-  var myAssignments=myAnnounceItems().filter(a=>(a.notice_kind||'general')==='general'&&new Date(a.created_at)>=weekStart&&/과제|숙제/.test(a.title||''));
+  // 이번 주 월요일 전날부터 게시된 일반 공지 중 학생에게 맞는 최신 1건을 보여준다.
+  var myAssignments=myAnnounceItems().filter(function(a){return isHomeworkNotice(a);});
   var assignments=myAssignments.length?[myAssignments[0]]:[];
   function dashboardSafeText(value){
     return String(value||'').replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});
@@ -4594,7 +4592,9 @@ function announceImageUrls(a){
 async function loadAnnounceData(){
   try{
     var a=await sb.from('announcements').select('*').order('created_at',{ascending:false});
-    var r=await sb.from('announcement_reads').select('*');
+    var reads=sb.from('announcement_reads').select('*');
+    if(session&&session.role==='student')reads=reads.eq('student_id',session.id);
+    var r=await reads;
     announceDb.items=a.data||[];
     announceDb.reads=r.data||[];
   }catch(e){console.error('announce load error',e);}
@@ -4603,11 +4603,14 @@ function isAnnounceRead(id){
   if(!session)return true;
   return announceDb.reads.some(function(r){return r.announcement_id===id&&r.student_id===session.id;});
 }
-// Teacher-requested reset: suppress existing alerts for every student; future notices remain enabled.
-// Dismissing an alert must not fabricate student read receipts.
+// Older notices remain in the list without a current-week alert.
 function isAnnounceAlert(item){
-  return !!item&&/과제|숙제/.test(item.title||'')&&Date.parse(item.created_at)>=weekMonday(new Date()).getTime()&&!isAnnounceRead(item.id);
+  return !!item&&/과제|숙제/.test(item.title||'')&&Date.parse(item.created_at)>=announceWeekStart().getTime()&&!isAnnounceRead(item.id);
 }
+// ponytail: week boundaries use the device clock; use server time if cross-device clock consistency is required.
+function announceWeekStart(now){var d=new Date(weekMonday(now||new Date()));d.setDate(d.getDate()-1);return d;}
+function isHomeworkNotice(item,now){return !!item&&(item.notice_kind||'general')==='general'&&Date.parse(item.created_at)>=announceWeekStart(now).getTime();}
+function currentHomeworkNotice(){return myAnnounceItems().find(function(a){return isHomeworkNotice(a);})||null;}
 function announceReadCount(id){
   return announceDb.reads.filter(function(r){return r.announcement_id===id;}).length;
 }
@@ -4776,18 +4779,27 @@ async function openAnnounceView(id){
     document.getElementById('an-view-content').after(files);
   }
   document.getElementById('modal-announce-view').classList.add('show');
-  if(session&&session.role==='student'&&!isAnnounceRead(id)){
-    var row={id:'anr_'+Date.now(),announcement_id:id,student_id:session.id,read_at:new Date().toISOString()};
-    try{
-      await sb.from('announcement_reads').upsert(row,{onConflict:'announcement_id,student_id'});
-      announceDb.reads.push(row);
-      sendStudentActivity('공지 확인',a.title);
-      updateAnnounceBadge();
-      renderSAnnounceList();
-      renderSAnnounceList('clinic');
-      renderHomeAnnounceBanner();
-    }catch(e){console.error('announce read save error',e);}
-  }
+  await recordAnnounceRead(a,{activity:true});
+}
+var announceReadPending=new Set();
+async function recordAnnounceRead(item,{activity}){
+  if(!session||session.role!=='student'||padMode||studentPreviewMode||isAnnounceRead(item.id))return;
+  var key=session.id+':'+item.id;
+  if(announceReadPending.has(key))return;
+  announceReadPending.add(key);
+  var row={id:'anr_'+Date.now(),announcement_id:item.id,student_id:session.id,read_at:new Date().toISOString()};
+  try{
+    var result=await sb.from('announcement_reads').upsert(row,{onConflict:'announcement_id,student_id'});
+    if(result.error)throw result.error;
+    if(!session||session.id!==row.student_id||padMode||studentPreviewMode)return;
+    announceDb.reads.push(row);
+    if(activity)sendStudentActivity('공지 확인',item.title);
+    updateAnnounceBadge();
+    renderSAnnounceList();
+    renderSAnnounceList('clinic');
+    renderHomeAnnounceBanner();
+  }catch(e){console.error('announce read save error',e);}
+  finally{announceReadPending.delete(key);}
 }
 function updateAnnounceBadge(){
   if(!session||session.role!=='student')return;
@@ -11597,6 +11609,6 @@ function installPWA(){
 <script src="app-navigation.js?v=3"></script>
 <script src="video-chapters.js?v=20261001"></script>
 <script src="odap-entry.js?v=1"></script>
-<script src="consultation.js?v=20261101-week2"></script>
+<script src="consultation.js?v=20261105-homework-popup"></script>
 </body>
 </html>

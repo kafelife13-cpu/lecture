@@ -1,8 +1,10 @@
+process.env.TZ='Asia/Seoul';
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 const c={weekMonday:()=>new Date('2026-10-19T00:00:00+09:00'),session:{id:'student'},announceDb:{reads:[]}};vm.createContext(c);
 vm.runInContext(html.slice(html.indexOf('function isAnnounceRead(id)'),html.indexOf('function announceReadCount')),c);
-const old={id:'old',title:'과제 안내',created_at:'2026-10-18T23:59:59+09:00'};
+const old={id:'old',title:'과제 안내',created_at:'2026-10-17T23:59:59+09:00'};
+assert.equal(c.isAnnounceAlert({id:'sunday',title:'과제 안내',created_at:'2026-10-18T00:00:00+09:00'}),true);
 const latest={id:'latest',title:'이번 주 숙제 안내',created_at:'2026-10-25T19:41:06+09:00'};
 const next={id:'next',title:'과제 안내',created_at:'2026-10-26T00:00:00+09:00'};
 assert.equal(c.isAnnounceAlert(old),false);assert.equal(c.isAnnounceRead(old.id),false);
@@ -22,7 +24,7 @@ assert.equal(c.isAnnounceAlert({...next,title:'오답 사진 제출'}),false);
 
 for(const file of ['consultation.js','wrong-photo-section.js']){
  const source=fs.readFileSync(file,'utf8'),start=source.indexOf(' function entry(){'),end=source.indexOf('\n }',start)+3;
- const ctx={session:{role:'student',id:'s'},studentPreviewMode:false,padMode:false,window:{isExamConsultationNoticeStudent:()=>false},document:{querySelectorAll:()=>[],querySelector:()=>{throw Error('retired student campaign rendered');}}};
+ const ctx={session:{role:'student',id:'s'},studentPreviewMode:false,padMode:false,showEntryNotice(){},window:{isExamConsultationNoticeStudent:()=>false},document:{querySelectorAll:()=>[],querySelector:()=>{throw Error('retired student campaign rendered');}}};
  vm.createContext(ctx);vm.runInContext(source.slice(start,end),ctx);ctx.entry();
  ctx.studentPreviewMode=true;ctx.entry();
 }

@@ -1,11 +1,22 @@
+process.env.TZ='Asia/Seoul';
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const host={innerHTML:''},events={};
 const context={window:{},document:{getElementById:()=>host,addEventListener:(n,f)=>events[n]=f},navigator:{},session:{id:'a'},certDb:{items:[{id:'now',created_at:'2026-09-09',title:'청산별곡',week_id:'w'},{id:'other',created_at:'2026-09-09',title:'다른 학생'},{id:'old',created_at:'2026-08-01',title:'완료된 과거 과제'},{id:'future',created_at:'2026-09-20',title:'미래 과제'}],targets:{now:['a'],other:['b'],old:['a'],future:['a']},submissions:[{item_id:'old',student_id:'a',status:'approved'}],weeks:[{id:'w',name:'이번 주'}]},myAnnounceItems:()=>[{title:'이번 주 안내',content:'<img> 과제',created_at:'2026-09-06'}],certDisplayTitle:i=>i.title};
 vm.createContext(context);vm.runInContext(fs.readFileSync('student-sections.js','utf8'),context);
 context.window.renderWeeklyExtras('2026-09-07');
-assert.doesNotMatch(host.innerHTML,/청산별곡|data-cert-open="now"/);assert.doesNotMatch(host.innerHTML,/이번 주 안내/);
+assert.doesNotMatch(host.innerHTML,/청산별곡|data-cert-open="now"/);assert.match(host.innerHTML,/이번 주 안내/);assert.match(host.innerHTML,/&lt;img&gt; 과제/);
 assert.doesNotMatch(host.innerHTML,/다른 학생|완료된 과거 과제|미래 과제/);
 const html=fs.readFileSync('index.html','utf8');
+for(const [created_at,notice_kind,visible] of [
+ ['2026-09-05T23:59:59+09:00','general',false],['2026-09-06T00:00:00+09:00','general',true],
+ ['2026-09-12T23:59:59+09:00',undefined,true],['2026-09-13T00:00:00+09:00','general',false],
+ ['2026-09-08T00:00:00+09:00','clinic',false],['invalid','general',false]
+]){
+ context.myAnnounceItems=()=>[{title:'합성 안내',content:'<b>합성 본문</b>',created_at,notice_kind}];context.window.renderWeeklyExtras('2026-09-07');
+ assert.equal(host.innerHTML.includes('합성 안내'),visible,`${created_at} / ${notice_kind}`);
+}
+const weekly=fs.readFileSync('weekly-homework.js','utf8');
+assert.match(weekly,/if\(!week\)week=dateKey\(new Date\(\)\)/);assert.match(weekly,/week=dateKey\(e.target.value\+'T12:00:00'\)/);
 for(const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g))new vm.Script(match[1]);
 console.log('weekly assignment targeting, dates, escaping and inline syntax passed');
 
