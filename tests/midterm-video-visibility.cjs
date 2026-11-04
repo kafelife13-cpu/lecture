@@ -1,0 +1,15 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const html=fs.readFileSync('index.html','utf8');
+for(const m of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g))if(m[1].trim())new vm.Script(m[1]);
+const ids=JSON.parse(fs.readFileSync('archived-midterm-video-ids.json'));
+const oldReview={id:'v1791932604597',category:'review'},oldClinic={id:'v1790800446265',category:'clinic'};
+const finalReview={id:'v_20261101_w2_hb_1',category:'review'},finalClinic={id:'v1793831773336',category:'clinic'};
+const ctx={session:{role:'student'},db:{videos:[oldReview,oldClinic,finalReview,finalClinic]}};vm.createContext(ctx);
+vm.runInContext(html.slice(html.indexOf('const archivedMidtermVideoIds='),html.indexOf('function reviewVideoVisible')),ctx);
+assert.deepEqual(Array.from(ctx.reviewVideos(),x=>x.id),[finalReview.id]);
+assert.deepEqual(Array.from(ctx.clinicVideos(),x=>x.id),[finalClinic.id]);
+for(const id of ids)assert.equal(ctx.studentVideoInScope({id}),false);
+ctx.session.role='teacher';assert.equal(ctx.reviewVideos().length,2);assert.equal(ctx.clinicVideos().length,2);
+assert.match(html,/if\(!v\|\|!studentVideoInScope\(v\)/);
+assert.match(html,/session.role==='student'&&!studentVideoInScope\(v\)/);
+console.log('PASS: archived catalog hidden for students, retained for teachers; final videos and inline JS valid.');
