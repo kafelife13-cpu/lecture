@@ -4,6 +4,14 @@
   'use strict';
   // Seconds refer to the uploaded videos; cue just before each explanation.
   const catalogue={
+    // Hanbaek grade 1, final-exam clinic week 2: reviewed merged lecture.
+    '3pq_DTn7wS0':[
+      ['1번',0],['2번',532],['3번',776],['4번',904],['5번',1135],
+      ['6번',1225],['7번',1435],['8번',1604],['9번',1690],['10번',1852],
+      ['11번',1974],['12번',2153],['13번',2280],['14번',2367],['15번',2707],
+      ['16번',2897],['17번',3077],['18번',3275],['19번',3407],['20번',3468],
+      ['21번',3582],['22번',3806],['23번',3982],['24번',4081],['25번',4233]
+    ],
     // Week 5: transcript cues; question 12 includes the teacher's exclusion notice.
     yIWb_j_49oM:[
       ['1번',0],['2번',527],['3번',752],['4번',980],['5번',1732],
@@ -91,6 +99,6 @@
       return status+': '+(selected.length?selected.map(function(row){return row.label+(status==='일부 시청'?' ('+row.percent+'%)':'');}).join(', '):'없음');
     }).join(' / ');
   }
-  function duration(videoId){return videoId==='yIWb_j_49oM'?5131:videoId==='Mml3RyA1TwU'?5635:videoId==='sJsIw7F6r_w'?2928:videoId==='8TwCCPBPyrA'?2839:0;}
+  function duration(videoId){return videoId==='3pq_DTn7wS0'?4418:videoId==='yIWb_j_49oM'?5131:videoId==='Mml3RyA1TwU'?5635:videoId==='sJsIw7F6r_w'?2928:videoId==='8TwCCPBPyrA'?2839:0;}
   root.KkakkaVideoChapters={get:get,render:render,restore:restore,observe:observe,stats:stats,summary:summary,duration:duration};
 })(typeof window==='undefined'?globalThis:window);

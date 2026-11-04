@@ -140,6 +140,6 @@ function fixture({items=[notice('new'),notice('old',{created_at:'2026-10-31T23:5
 
  f=fixture({reads:[{announcement_id:'new',student_id:'synthetic-student'},{announcement_id:'new',student_id:'synthetic-other'}]});await f.c.loadAnnounceData();assert.equal(f.c.announceDb.reads.length,1);assert.deepEqual(f.queries.find(q=>q.table==='announcement_reads').filters,[['student_id','synthetic-student']]);
  f.c.session={id:'synthetic-teacher',role:'teacher'};await f.c.loadAnnounceData();assert.equal(f.c.announceDb.reads.length,2);assert.deepEqual(f.queries.at(-1).filters,[]);
- const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');for(const script of ['consultation.js','student-sections.js']){assert(html.includes(script+'?v=20261105-homework-popup'));assert(sw.includes(script+'?v=20261105-homework-popup'));}assert(sw.includes("const CACHE_NAME = 'kukeo-wang-v182-homework-popup'"));
- console.log('PASS data/cache: student-scoped receipts, unchanged teacher scope, matching script versions and v182');
+ const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');for(const script of ['consultation.js','student-sections.js']){assert(html.includes(script+'?v=20261105-homework-popup'));assert(sw.includes(script+'?v=20261105-homework-popup'));}assert(sw.includes("const CACHE_NAME = 'kukeo-wang-v183-homework-popup'"));
+ console.log('PASS data/cache: student-scoped receipts, unchanged teacher scope, matching script versions and v183');
 })().catch(e=>{console.error(e);process.exitCode=1;});

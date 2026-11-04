@@ -7901,7 +7901,7 @@ async function saveTExamEdit(){
     q.explanation=document.getElementById('eqexp-'+i)?.value||q.explanation||'';
     q.type=document.getElementById('eqt-'+i)?.value||q.type||'기타';
   });
-  if(editingQuestions.some(q=>/^all:/.test(q.answer)&&!isObjectiveAnswer(q.answer))){alert('복수정답 형식을 확인해주세요.');return;}
+  if(editingQuestions.some(q=>/^(all|any):/.test(q.answer)&&!isObjectiveAnswer(q.answer))){alert('복수정답 형식을 확인해주세요.');return;}
   const {error}=await sb.from('exams').update({
     name,
     questions:editingQuestions,
@@ -8169,7 +8169,7 @@ async function saveTExam(){
     text:document.getElementById('rqtext-'+i)?.value||q.text||'',
     explanation:document.getElementById('rqexp-'+i)?.value||q.explanation||''
   }));
-  if(questions.some(q=>/^all:/.test(q.answer)&&!isObjectiveAnswer(q.answer))){alert('복수정답 형식을 확인해주세요. 예: all:1,4');return;}
+  if(questions.some(q=>/^(all|any):/.test(q.answer)&&!isObjectiveAnswer(q.answer))){alert('복수정답 형식을 확인해주세요. 예: all:1,4');return;}
   if(!questions.some(q=>q.answer)){alert('정답이 설정된 문항이 없어요. 정답을 확인해 주세요.');return;}
   const category=document.getElementById('tex-category')?.value||'school';
   const {error}=await sb.from('exams').insert({
@@ -8777,7 +8777,7 @@ async function tResGenerateAiComment(){
   notify('AI 코멘트 생성 중...','info');
   const wrongBlock=wrongs.map(function(o,idx){
     var q=o.q;
-    return (idx+1)+'. ['+(q.domain||q.type||'기타')+'] 학생 답: '+(r.answers[o.i]||'미선택')+' / 정답: '+q.answer+
+    return (idx+1)+'. ['+(q.domain||q.type||'기타')+'] 학생 답: '+(r.answers[o.i]||'미선택')+' / 정답: '+examAnswerLabel(q.answer)+
       (q.explanation?' / 해설: '+q.explanation:'');
   }).join('\n');
   const prompt='당신은 국어 과목 선생님입니다. 아래는 "'+name+'" 학생이 "'+exam.name+'" 시험에서 틀린 문제 목록입니다.\n\n'+
@@ -8845,7 +8845,7 @@ function tResLoadStudent(name){
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
           <span style="background:rgba(79,124,255,0.15);color:var(--accent);font-size:11px;padding:2px 8px;border-radius:8px;font-weight:600">${idx+1}번</span>
           <span style="font-size:12px;color:var(--text2)">${q.type}</span>
-          <span style="background:var(--red-bg);color:var(--red);font-size:11px;padding:2px 8px;border-radius:8px">내 답 ${my}번 → 정답 ${q.answer}번</span>
+          <span style="background:var(--red-bg);color:var(--red);font-size:11px;padding:2px 8px;border-radius:8px">내 답 ${my}번 → 정답 ${examAnswerLabel(q.answer)}번</span>
         </div>
         ${q.text?`<div style="background:var(--bg2);border-radius:6px;padding:10px;font-size:12px;line-height:1.7;margin-bottom:10px;color:var(--text)">${q.text}</div>`:''}
         ${thought?`<div style="background:rgba(79,124,255,0.06);border:1px solid rgba(79,124,255,0.2);border-radius:6px;padding:10px;margin-bottom:10px">
@@ -8884,7 +8884,7 @@ function tResBuildPrintHTML(name,r,exam){
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap">
           <span style="background:#e8eeff;color:#2d5fa6;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:600">${examQuestionNumber(exam,idx)}번</span>
           <span style="font-size:12px;color:#666">${q.type}</span>
-          <span style="background:#fee;color:#c0392b;padding:2px 8px;border-radius:6px;font-size:12px">내 답 ${my}번 → 정답 ${q.answer}번</span>
+          <span style="background:#fee;color:#c0392b;padding:2px 8px;border-radius:6px;font-size:12px">내 답 ${my}번 → 정답 ${examAnswerLabel(q.answer)}번</span>
         </div>
         ${q.text?`<div style="background:#f8f8f8;border-radius:6px;padding:10px;font-size:12px;line-height:1.7;margin-bottom:8px">${q.text}</div>`:''}
         ${thought?`<div style="background:#f0f4ff;border:1px solid #c5d8f0;border-radius:6px;padding:10px;margin-bottom:8px">
@@ -9276,7 +9276,7 @@ async function omrManualEntry(){
   omrExistingResponse=data||null;
   if(omrExistingResponse){
     exam.questions.forEach(function(q,i){
-      if(isObjectiveAnswer(q.answer))omrReadAnswers[i]=String(q.answer).replace(/^all:/,'');
+      if(isObjectiveAnswer(q.answer))omrReadAnswers[i]=examDefaultAnswer(q.answer);
     });
     Object.keys(omrExistingResponse.answers||{}).forEach(function(i){
       omrReadAnswers[i]=String(omrExistingResponse.answers[i]||'');
@@ -9905,10 +9905,13 @@ async function tResPrintOxForStudent(){
 // ════════════════════════════════════════════
 
 // 단일정답 또는 명시적으로 등록한 복수정답만 자동채점한다.
-function isObjectiveAnswer(ans){return /^[1-5]$/.test(String(ans))||/^all:[1-5](,[1-5])+$/.test(String(ans));}
+function isObjectiveAnswer(ans){return /^[1-5]$/.test(String(ans))||/^(all|any):[1-5](,[1-5])+$/.test(String(ans));}
+function examDefaultAnswer(key){return /^any:/.test(String(key))?String(key).slice(4).split(',')[0]:String(key).replace(/^all:/,'');}
+function examAnswerLabel(key){return /^any:/.test(String(key))?String(key).slice(4).split(',').join(' 또는 '):String(key);}
 // Explicit prefixes preserve existing written/homework answers such as '1,4'.
 function examAnswerMatches(value,key){
   var expected=String(key),actual=String(value||'').trim();
+  if(/^any:/.test(expected))return isObjectiveAnswer(expected)&&/^[1-5]$/.test(actual)&&expected.slice(4).split(',').indexOf(actual)>=0;
   if(!/^all:/.test(expected))return actual===expected;
   if(!isObjectiveAnswer(expected)||! /^[1-5](\s*,\s*[1-5])*$/.test(actual))return false;
   var wanted=Array.from(new Set(expected.slice(4).split(','))).sort();
@@ -10658,7 +10661,7 @@ async function sMockSubmitWrongOnly(){
   var lost=wrong.reduce(function(sum,i){return sum+(sExamData.questions[i].points||1);},0);
   if(!confirm((wrong.length?'틀린 번호: '+wrong.map(function(i){return examQuestionNumber(sExamData,i);}).join(', '):'틀린 문항 없음')+'\n'+Math.round((total-lost)/total*100)+'점으로 저장할까요?'))return;
   sExamFullAnswers={};
-  sExamData.questions.forEach(function(q,i){sExamFullAnswers[i]=wrong.indexOf(i)>=0?'':q.answer;});
+  sExamData.questions.forEach(function(q,i){sExamFullAnswers[i]=wrong.indexOf(i)>=0?'':examDefaultAnswer(q.answer);});
   await sExamSubmitFull(true);
 }
 function sExamOpenScoreOnly(){
@@ -11401,7 +11404,7 @@ async function sExamAnalyze(){
 
   const wrongCount=wrongs.length;
   const accuracy=Math.round(((sExamData.total_q-wrongCount)/sExamData.total_q)*100);
-  const wrongText=wrongs.map(({idx,q,my})=>`- ${examQuestionNumber(sExamData,idx)}번 (${q.type}): 내 답 ${my}번 → 정답 ${q.answer}번 | 해설: ${q.explanation||'없음'}${sExamThoughts[idx]?' | 학생 사고과정: '+sExamThoughts[idx]:''}`).join('\n');
+  const wrongText=wrongs.map(({idx,q,my})=>`- ${examQuestionNumber(sExamData,idx)}번 (${q.type}): 내 답 ${my}번 → 정답 ${examAnswerLabel(q.answer)}번 | 해설: ${q.explanation||'없음'}${sExamThoughts[idx]?' | 학생 사고과정: '+sExamThoughts[idx]:''}`).join('\n');
 
   const contentBlocks=[];
   // 사진 첨부
