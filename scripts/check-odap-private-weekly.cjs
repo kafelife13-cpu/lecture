@@ -72,7 +72,10 @@ const {PGlite}=require('@electric-sql/pglite');
   let handler,driveReads=0;const files=new Map(),secret='synthetic-secret-for-tests-only-123456789';
   const edge={...core,crypto,TextEncoder,TextDecoder,Uint8Array,URL,AbortSignal,Request,Response,ReadableStream,atob,btoa,
    Deno:{env:{get:key=>({ODAP_PRIVATE_DRIVE_URL:'https://script.google.com/macros/s/synthetic/exec',ODAP_PRIVATE_DRIVE_SECRET:secret}[key]||'synthetic')},serve:fn=>handler=fn},
-   createClient:()=>({rpc:async(_name,args)=>{try{return {data:await rpc(args.p_action,args.p_payload,args.p_id,args.p_role),error:null};}catch(e){return {data:null,error:{message:e.message}};}}}),
+   createClient:()=>({rpc:async(name,args)=>{try{
+    if(name==='odap_rpc'){assert.equal(args.p_action,'GET /api/students');assert.equal(args.p_role,'teacher');return {data:{students:[{id:'a',school_id:1},{id:'b',school_id:1}],schools:[{id:1,name:context.school}]},error:null};}
+    return {data:await rpc(args.p_action,args.p_payload,args.p_id,args.p_role),error:null};
+   }catch(e){return {data:null,error:{message:e.message}};}}}),
    fetch:async(_url,options)=>{
     const req=JSON.parse(options.body),[claims,signature]=req.token.split('.');
     assert.equal(signature,createHmac('sha256',secret).update(claims).digest('base64url'));
@@ -84,7 +87,8 @@ const {PGlite}=require('@electric-sql/pglite');
   const source=(fs.readFileSync('supabase/functions/odap-private-weekly/services.ts','utf8')+'\n'+fs.readFileSync('supabase/functions/odap-private-weekly/index.ts','utf8')).replace(/^import .*;\r?\n/gm,'').replace(/^export /gm,'');
   vm.runInContext(stripTypeScriptTypes(source),edge);
   const call=async(action,payload,id='t',role='teacher')=>{const res=await handler(new Request('https://edge.example.test',{method:'POST',body:JSON.stringify({credentials:{id,pw:'test-only',role},action,payload})}));return {status:res.status,body:await res.json()};};
-  const made=await call('create',{student_id:'b',school:context.school,week_start:'2026-11-02',packet});assert.equal(made.status,200);
+  const made=await call('create',{student_id:'b',week_start:'2026-11-02',packet});assert.equal(made.status,200);
+  assert.equal((await rpc('get',{id:made.body.id})).school,context.school);
   const eid=made.body.id;
   assert.equal((await call('revise',{id:eid,packet:{...packet,title:'Revised synthetic'}})).body.id,eid);
   assert.equal((await call('approve',{id:eid,confirmed:true})).status,403);
@@ -104,6 +108,8 @@ const {PGlite}=require('@electric-sql/pglite');
   assert.equal((await call('submit',{id:eid,answers},'b','student')).status,400);
   assert.equal((await call('open',{id:eid},'b','student')).body.attempt.results[0].answer,'O');
   files.get('file-1').items[0].answer='2';assert.equal((await call('open',{id:eid},'b','student')).status,400);
+  const forged=await call('create',{student_id:'b',school:'Forged school',week_start:'2026-11-09',packet});assert.equal(forged.status,200);
+  assert.equal((await rpc('get',{id:forged.body.id})).school,context.school);
  }finally{await db.close();}
  console.log('PASS: 20/40-item validation, OX-only student privacy and grading, evidence/year/school gates, image preservation, answer stripping, server grading, private ownership, approval flow, one submission, anon RPC denial');
 })().catch(e=>{console.error(e);process.exitCode=1;});
