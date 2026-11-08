@@ -52,7 +52,34 @@
  function badge(text,tone){const c={green:'var(--green,#16a34a)',red:'var(--red,#dc2626)',amber:'var(--amber,#d97706)',muted:'var(--text3,#888)',blue:'var(--accent,#4f7cff)'}[tone]||'inherit';return '<span style="display:inline-block;border:1px solid '+c+';color:'+c+';border-radius:999px;padding:2px 9px;font-size:12px;font-weight:600;margin-left:6px">'+esc(text)+'</span>';}
  function thumbs(urls){return (urls||[]).map(u=>'<a href="'+esc(u)+'" target="_blank" rel="noopener"><img src="'+esc(u)+'" alt="필기 사진" style="width:84px;height:104px;object-fit:cover;border-radius:8px;border:1px solid var(--border,#ddd);margin:4px 4px 0 0"></a>').join('');}
 
- let dialog=null,busy=false;
+ let dialog=null,busy=false;const shots={};
+
+ // 앱 안 카메라: 휴대폰 기본 카메라 앱을 쓰지 않아 셔터 소리가 나지 않는다.
+ function silentCamera(){
+  return new Promise(async resolve=>{
+   let stream;
+   try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1440}},audio:false});}
+   catch(e){notify('카메라를 열 수 없어요. 카메라 권한을 허용하거나 갤러리에서 사진을 골라 주세요.','error');return resolve(null);}
+   const box=document.createElement('div');
+   box.style.cssText='position:fixed;inset:0;z-index:99999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px';
+   box.innerHTML='<video playsinline autoplay muted style="max-width:100%;max-height:78vh"></video><div style="display:flex;gap:12px"><button class="btn blue" data-shoot style="font-size:17px;padding:12px 26px">찍기</button><button class="btn" data-cancel style="font-size:17px;padding:12px 20px">취소</button></div>';
+   (dialog&&dialog.open?dialog:document.body).append(box);
+   const v=box.querySelector('video');v.srcObject=stream;
+   const done=b=>{stream.getTracks().forEach(t=>t.stop());box.remove();resolve(b);};
+   box.querySelector('[data-cancel]').onclick=()=>done(null);
+   box.querySelector('[data-shoot]').onclick=()=>{
+    const c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;
+    if(!c.width){return;}
+    c.getContext('2d').drawImage(v,0,0);
+    c.toBlob(b=>done(b?new File([b],'shot_'+Date.now()+'.jpg',{type:'image/jpeg'}):null),'image/jpeg',0.9);
+   };
+  });
+ }
+ function showShots(row,key){
+  const list=shots[key]||[];row.querySelector('[data-shots]').textContent=list.length?'찍은 사진 '+list.length+'장':'';
+  const box=row.querySelector('[data-shotprev]');box.replaceChildren();
+  list.forEach(f=>{const img=document.createElement('img'),u=URL.createObjectURL(f);img.src=u;img.alt='찍은 사진';img.style.cssText='width:70px;height:90px;object-fit:cover;border-radius:6px;margin:4px 4px 0 0';img.onload=()=>URL.revokeObjectURL(u);box.append(img);});
+ }
  function openDialog(title,intro){
   dialog?.remove();busy=false;
   dialog=document.createElement('dialog');dialog.className='consultation-dialog';dialog.setAttribute('aria-label',title);
@@ -84,7 +111,8 @@
    const rows=pr.nums.map(n=>{
     const urls=pr.map[n]||[];
     return '<div data-row style="border-top:1px solid var(--border,#e5e5e5);padding:10px 0" data-k="'+k+'" data-n="'+n+'"><b>'+n+'번</b> '+(urls.length?badge('사진 '+urls.length+'장','green'):badge('미제출','muted'))+'<div>'+thumbs(urls)+'</div>'+
-     '<label style="display:block;margin-top:6px">필기 사진 선택<input data-files type="file" accept="image/*" capture="environment" multiple style="display:block;margin-top:4px"></label>'+
+     '<label style="display:block;margin-top:6px">갤러리에서 사진 고르기 (여러 장 가능)<input data-files type="file" accept="image/*" multiple style="display:block;margin-top:4px"></label>'+
+     '<button class="btn btn-sm" data-cam style="margin-top:6px">📷 무음으로 찍기</button> <span data-shots style="font-size:12px"></span><div data-shotprev></div>'+
      '<button class="btn blue btn-sm" data-save style="margin-top:6px">'+n+'번 사진 올리기</button> <span role="status" data-result style="font-size:12px"></span></div>';
    }).join('');
    return '<section class="card" style="padding:16px;margin:12px 0">'+head+'<p style="margin:8px 0">진행: '+pr.done+' / '+pr.total+' 문항 · <button class="btn btn-sm" data-video>해설영상 보러 가기</button></p>'+rows+'</section>';
@@ -99,10 +127,12 @@
   catch(e){setStatus('불러오지 못했습니다. 잠시 후 다시 열어 주세요.');console.error(e);return;}
   dialog.addEventListener('click',async e=>{
    if(e.target.closest('[data-video]')){dialog.close();dialog.remove();if(typeof sNav==='function')sNav('clinic-lectures');return;}
+   const cam=e.target.closest('[data-cam]');
+   if(cam&&!busy&&!studentPreviewMode){const row=cam.closest('[data-row]'),key=row.dataset.k+'_'+row.dataset.n;const f=await silentCamera();if(f){(shots[key]||(shots[key]=[])).push(f);showShots(row,key);}return;}
    const btn=e.target.closest('[data-save]');if(!btn||busy||studentPreviewMode)return;
    const row=btn.closest('[data-row]'),x=sData[Number(row.dataset.k)],n=Number(row.dataset.n),out=row.querySelector('[data-result]');
-   const files=[...row.querySelector('[data-files]').files];
-   if(!files.length||files.length>5||files.some(f=>!valid(f))){out.textContent='사진을 1~5장 골라 주세요 (장당 '+MAX_MB+'MB 이하).';return;}
+   const key=row.dataset.k+'_'+row.dataset.n,files=[...row.querySelector('[data-files]').files,...(shots[key]||[])];
+   if(!files.length||files.length>8||files.some(f=>!valid(f))){out.textContent='사진을 1~8장 골라 주세요 (장당 '+MAX_MB+'MB 이하).';return;}
    if(!weeklyLogin||weeklyLogin.id!==session.id||session.id!==owner){out.textContent='본인 계정으로 다시 로그인해 주세요.';return;}
    busy=true;dialog.querySelectorAll('button').forEach(b=>b.disabled=true);out.textContent='올리는 중… 창을 닫지 마세요.';
    try{
@@ -118,7 +148,7 @@
     const payload={item_id:id,student_id:owner,school_id:schoolOf(x.exam),status:'pending',photo_url:JSON.stringify(urls),submitted_at:new Date().toISOString()};
     if(fresh)await q(sb.from('cert_submissions').update(payload).eq('id',fresh.id));
     else await q(sb.from('cert_submissions').insert(Object.assign({id:'cs_cwc_'+Date.now()+'_'+Math.random().toString(36).slice(2,7)},payload)));
-    await loadStudent();renderStudent();setStatus(n+'번 사진 '+files.length+'장 저장 완료');
+    delete shots[key];await loadStudent();renderStudent();setStatus(n+'번 사진 '+files.length+'장 저장 완료');
    }catch(err){out.textContent='저장되지 않았어요. 다시 시도하거나 선생님께 알려 주세요.';console.error(err);}
    finally{busy=false;dialog&&dialog.querySelectorAll('button').forEach(b=>b.disabled=false);}
   });
