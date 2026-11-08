@@ -33,6 +33,7 @@
 <script src="personal-review.js?v=1"></script>
 <link rel="stylesheet" href="clinic-check.css?v=3">
 <script src="clinic-home.js?v=3"></script>
+<script src="clinic-wrong-cert.js?v=1"></script>
 <script src="grammar-ox-data.js?v=2"></script>
 <script src="grammar-ox-data-kimhayan.js?v=2"></script>
 <script src="grammar-review.js?v=3"></script>
@@ -663,6 +664,7 @@ input,button{font-family:var(--font)}
       <!-- 클리닉 관리 -->
       <div class="panel" id="panel-clinic">
         <div class="page-header"><h1>클리닉 관리</h1><p>학교별 클리닉 시간대와 정원을 설정하고 신청 현황을 확인하세요</p></div>
+        <section class="card" style="padding:16px 20px;margin-bottom:20px"><h2>클리닉 오답 필기 인증</h2><p>70점 이하 필수 · 학생별 틀린 문항 사진 제출 현황과 승인/반려</p><button class="btn blue" onclick="openClinicWrongCertTeacher()">오답 인증 현황 열기</button></section>
         <section class="card" id="clinic-home-teacher" style="padding:20px;margin-bottom:20px">
           <h2>클리닉 귀가 신청</h2>
           <p>학생의 시험지 수령·가정 채점 또는 클리닉 미완·당일 마무리 신청을 확인하고 수락하거나 거절하세요.</p>
@@ -1152,6 +1154,7 @@ input,button{font-family:var(--font)}
           <button onclick="sNav('clinic')"><strong>클리닉 시간 변경</strong><span>내 일정 확인 · 변경 신청</span></button>
           <button onclick="sNav('clinic-notices')"><strong>클리닉 공지</strong><span>클리닉 준비물과 전달 사항</span></button>
           <button onclick="sNav('exam','clinic')"><strong>클리닉 시험지 채점</strong><span>시험 답안 입력하고 결과 확인</span></button>
+          <button onclick="openClinicWrongCert()"><strong>클리닉 오답 필기 인증</strong><span>해설영상 보고 틀린 문항별 필기 사진 올리기 · 70점 이하 필수</span></button>
         </div></div>
       <div class="panel" id="panel-clinic-notices"><div class="page-header"><h1>클리닉 공지</h1></div><div class="card" id="s-clinic-notice-list" style="padding:16px"></div></div>
       <div class="panel" id="panel-notice-hub"><div class="page-header"><h1>공지사항</h1><p>과제 안내와 나에게 지정된 인증을 확인해요.</p></div><div class="student-clinic-actions">
@@ -10319,6 +10322,11 @@ function buildReportCardHTML(studentName,exam,response,allResponses,academyName,
       '<tr style="background:#2d5fa6;color:#fff"><th style="padding:8px">내점수/만점</th><th style="padding:8px">전체 평균</th><th style="padding:8px">표준편차</th><th style="padding:8px">상위 30%</th><th style="padding:8px">최고점</th>'+(showRank?'<th style="padding:8px">전체 석차</th>':'')+'</tr>'+
       '<tr><td style="padding:8px;font-weight:700;font-size:16px">'+my.earned+'/'+my.total+'</td><td style="padding:8px">'+stats.avg+'</td><td style="padding:8px">'+stats.stddev+'</td><td style="padding:8px">'+stats.top30+'</td><td style="padding:8px">'+stats.max+'</td>'+(showRank?'<td style="padding:8px;font-weight:700">'+myRank+' / '+stats.n+'</td>':'')+'</tr>'+
     '</table>'+
+    (function(){var wn=itemRows.filter(function(r){return r.isWrong;}).map(function(r){return r.num;});
+      return '<div style="border:2px solid #c0392b;border-radius:10px;padding:12px 14px;margin-bottom:20px;background:#fff6f5">'+
+        '<div style="font-size:14px;font-weight:800;color:#c0392b;margin-bottom:8px">틀린 문항 '+wn.length+'개 한눈에 보기</div>'+
+        (wn.length?'<div style="display:flex;flex-wrap:wrap;gap:6px">'+wn.map(function(n){return '<span style="display:inline-block;min-width:34px;text-align:center;padding:5px 9px;border-radius:8px;background:#c0392b;color:#fff;font-weight:800;font-size:15px">'+n+'</span>';}).join('')+'</div>':'<div style="font-size:13px;color:#2a7a52;font-weight:700">모두 맞았어요 🎉</div>')+
+      '</div>';})()+
     historyHTML+
     (analysisText?'<div style="background:#eef6f1;border:1px solid #cfe8db;border-radius:8px;padding:12px 16px;margin-bottom:20px">'+
       '<div style="font-size:12px;font-weight:700;color:#2a7a52;margin-bottom:4px">📋 학습 분석 및 제안</div>'+
@@ -11123,9 +11131,9 @@ async function loadSResWrongFeedback(wrong){
   if(!wrong.length||sResWrongFeedbackLoading)return;
   sResWrongFeedbackLoading=true;
   var source=wrong.map(function(w){return '['+(w.idx+1)+'번] 학생이 고른 오답: '+w.my+'번\n문제: '+(w.q.text||'종이 시험지 참조')+'\n교사용 해설: '+(w.q.explanation||'없음');}).join('\n---\n');
-  var prompt='학생이 고른 선택지가 왜 틀렸는지만 설명하세요. 정답 번호, 정답 선택지의 내용, "정답은"이라는 표현은 절대 쓰지 마세요. 학생이 다시 스스로 풀 수 있도록 오답 판단의 문제점과 확인할 개념만 문항별 1~2문장으로 알려주세요. JSON 배열만 반환하세요: [{"num":문항번호,"feedback":"오답 이유"}]\n\n'+source;
+  var prompt='학생이 고른 선택지가 왜 틀렸는지만 설명하세요. 정답 번호, 정답 선택지의 내용, "정답은"이라는 표현은 절대 쓰지 마세요. 학생이 다시 스스로 풀 수 있도록 문항별로 3~5문장으로 자세히 설명하세요: (1) 학생이 고른 선지의 어느 부분이 틀렸는지 구체적으로 짚고, (2) 그 판단에 필요한 개념·문법 원리를 쉬운 말로 설명하고, (3) 다시 풀 때 지문·보기에서 확인할 곳을 알려주세요. 고등학생이 이해하기 쉬운 말로 쓰세요. JSON 배열만 반환하세요: [{"num":문항번호,"feedback":"오답 이유"}]\n\n'+source;
   try{
-    var data=await callClaudeServer({model:'claude-sonnet-5',max_tokens:1800,thinking:{type:'disabled'},messages:[{role:'user',content:prompt}]});
+    var data=await callClaudeServer({model:'claude-sonnet-5',max_tokens:4000,thinking:{type:'disabled'},messages:[{role:'user',content:prompt}]});
     var raw=(data.content||[]).map(function(c){return c.text||'';}).join('');
     var rows=JSON.parse(raw.replace(/```json|```/g,'').trim());
     rows.forEach(function(row){
@@ -11137,6 +11145,13 @@ async function loadSResWrongFeedback(wrong){
   }
   sResWrongFeedbackLoading=false;
   renderSResWrongList(sExamLastWrong);
+}
+function clinicChoiceExplanation(q,my){
+  var text=String(q&&q.explanation||'');if(!text)return '';
+  var marks='①②③④⑤',picked=String(my||'').match(/[1-5]/g)||[];
+  var parts={};var re=/([①②③④⑤])([^①②③④⑤]*)/g,m;
+  while((m=re.exec(text)))parts[marks.indexOf(m[1])+1]=(parts[marks.indexOf(m[1])+1]||'')+m[2].trim();
+  return picked.filter(function(n){return parts[n];}).map(function(n){return '<b>'+marks[n-1]+'</b> '+escHtml(parts[n]);}).join('<br>');
 }
 function renderSResWrongList(wrong){
   var wrongEl=document.getElementById('s-res-wrong-list');
@@ -11166,12 +11181,17 @@ function renderSResWrongList(wrong){
     }).join('')+'</div>';
     return;
   }
-  wrongEl.innerHTML='<div class="card-head"><h3>틀린 문제 ('+wrong.length+'개) · 정답 없이 다시 풀기</h3></div><div style="padding:0 1.25rem 0.75rem">'+wrong.map(function(w){
+  wrongEl.innerHTML='<div class="card-head"><h3>틀린 문제 ('+wrong.length+'개) · 정답 없이 다시 풀기</h3></div><div style="padding:0 1.25rem 0.75rem">'+
+    '<div style="border:2px solid var(--red);border-radius:10px;padding:10px 12px;margin:6px 0 12px;background:var(--red-bg)"><div style="font-size:13px;font-weight:800;color:var(--red);margin-bottom:6px">틀린 번호 한눈에</div><div style="display:flex;flex-wrap:wrap;gap:6px">'+wrong.map(function(w){var p=!!sResRetryPassed[w.idx];return '<a href="#s-res-w'+w.idx+'" style="text-decoration:none;min-width:34px;text-align:center;padding:5px 9px;border-radius:8px;font-weight:800;font-size:15px;background:'+(p?'var(--green)':'var(--red)')+';color:#fff">'+examQuestionNumber(sExamData,w.idx)+(p?' ✓':'')+'</a>';}).join('')+'</div>'+
+    '<div style="font-size:12px;color:var(--text2);margin-top:8px">정답은 공개하지 않아요. 아래 해설로 내가 고른 답이 왜 틀렸는지 확인하고 다시 풀어 보세요.</div>'+
+    (typeof openClinicWrongCert==='function'?'<button class="btn btn-sm blue" style="margin-top:8px" onclick="openClinicWrongCert()">📸 해설영상 보고 오답 필기 인증하기</button>':'')+'</div>'+
+    wrong.map(function(w){
     var idx=w.idx,q=w.q,picked=sResRetryAnswers[idx],passed=!!sResRetryPassed[idx];
     var feedback=sResWrongFeedback[idx];
-    return '<div class="card" style="margin:10px 0;border-left:3px solid '+(passed?'var(--green)':'var(--red)')+'"><div style="padding:12px">'+
+    var choiceNote=passed?'':clinicChoiceExplanation(q,w.my);
+    return '<div class="card" id="s-res-w'+idx+'" style="margin:10px 0;border-left:3px solid '+(passed?'var(--green)':'var(--red)')+'"><div style="padding:12px">'+
       '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="background:'+(passed?'var(--green-bg)':'var(--red-bg)')+';color:'+(passed?'var(--green)':'var(--red)')+';font-size:12px;font-weight:600;padding:2px 10px;border-radius:8px">'+examQuestionNumber(sExamData,idx)+'번</span><span style="font-size:13px;color:var(--text2)">처음 답: <strong style="color:var(--red)">'+w.my+'번</strong></span></div>'+
-      (!passed?'<div style="background:var(--red-bg);border-radius:8px;padding:10px;font-size:12.5px;color:var(--text2);line-height:1.6;margin-bottom:10px">💡 <strong>내 답이 틀린 이유</strong><br>'+(feedback?escHtml(feedback):'오답 이유를 분석하고 있어요...')+'</div>':'')+
+      (!passed?'<div style="background:var(--red-bg);border-radius:8px;padding:10px;font-size:12.5px;color:var(--text2);line-height:1.6;margin-bottom:10px">💡 <strong>내 답이 틀린 이유</strong><br>'+(feedback?escHtml(feedback):'오답 이유를 분석하고 있어요...')+'</div>'+(choiceNote?'<div style="background:var(--bg2);border-radius:8px;padding:10px;font-size:12.5px;color:var(--text2);line-height:1.7;margin-bottom:10px">📖 <strong>선생님 해설 · 내가 고른 선지</strong><br>'+choiceNote+'</div>':''):'')+
       (passed?'<div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:8px">✅ 다시 풀기 통과</div>'+(q.explanation?'<div style="background:var(--green-bg);border-radius:8px;padding:10px;font-size:12.5px;color:var(--text2);line-height:1.6">📖 <strong>통과 후 해설</strong><br>'+escHtml(q.explanation)+'</div>':''):
         '<div><div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px">답안을 다시 입력하세요</div><div style="display:flex;gap:6px;flex-wrap:wrap">'+[1,2,3,4,5].map(function(n){var sel=examAnswerSelected(picked,n);return '<button type="button" onclick="sResRetryPick('+idx+','+n+')" style="width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:14px;font-weight:700;border:1.5px solid '+(sel?'var(--accent)':'var(--border)')+';background:'+(sel?'var(--accent)':'var(--card)')+';color:'+(sel?'white':'var(--text2)')+'">'+n+'</button>';}).join('')+'</div>'+(picked?'<div style="font-size:12px;color:var(--red);margin-top:8px">❌ 아직 틀렸어요. 정답은 공개되지 않습니다. 다시 선택하세요.</div>':'')+'</div>')+
       '</div></div>';
@@ -11518,7 +11538,7 @@ function sExamShowResult(r){
       <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:6px">
         <span style="background:rgba(79,124,255,0.15);color:var(--accent);font-size:11px;padding:2px 8px;border-radius:8px">${m.qNum}번</span>
         <span style="font-size:13px;font-weight:500">${m.concept}</span>
-        <span style="font-size:11px;color:var(--text2)">내 답 ${m.myChoice}번 → 정답 ${m.correctAnswer}번</span>
+        <span style="font-size:11px;color:var(--text2)">내 답 ${m.myChoice}번</span>
         <span style="background:${uc[m.urgency]||'var(--red)'}20;color:${uc[m.urgency]||'var(--red)'};font-size:11px;padding:2px 8px;border-radius:8px;margin-left:auto">${ul[m.urgency]||'긴급'}</span>
       </div>
       <div style="font-size:13px;line-height:1.6;margin-bottom:8px">${m.thinking}</div>
