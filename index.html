@@ -6580,6 +6580,18 @@ function qaWeekNumber(w){
   return match?Number(match[1]):0;
 }
 function qaGroupedWeeksHtml(weeks,renderRow){
+  // ponytail: explicit exam-cycle titles separate finals from legacy midterm sets.
+  // Keep every final week visible for questions; legacy-only schools retain their existing grouping.
+  var finals=weeks.filter(function(w){return /기말/.test(String(w.name||''));});
+  if(finals.length){
+    var finalGroups={};
+    finals.forEach(function(w){var n=qaWeekNumber(w);(finalGroups[n]||(finalGroups[n]=[])).push(w);});
+    var finalHtml=Object.keys(finalGroups).sort(function(a,b){return Number(b)-Number(a);}).map(function(n){
+      return '<section style="grid-column:1/-1"><h3 style="margin:14px 0 10px">기말대비 '+(Number(n)?n+'주차':'기타 과제')+'</h3><div style="display:grid;gap:10px">'+finalGroups[n].sort(function(a,b){return String(a.name).localeCompare(String(b.name),'ko',{numeric:true});}).map(renderRow).join('')+'</div></section>';
+    }).join('');
+    var legacy=weeks.filter(function(w){return !/기말/.test(String(w.name||''));});
+    return finalHtml+(legacy.length?'<details style="grid-column:1/-1;margin-top:16px"><summary style="cursor:pointer;font-weight:700;padding:12px 0">중간대비·이전 자료 보기</summary>'+qaGroupedWeeksHtml(legacy,renderRow)+'</details>':'');
+  }
   var current=[],past=[];
   weeks.forEach(function(w){
     var name=String(w.name||'');
