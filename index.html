@@ -1239,6 +1239,7 @@ input,button{font-family:var(--font)}
                 </div>
               </div>
               <div style="padding:1rem 1.25rem">
+                <div id="s-qa-week-pdf" style="margin-bottom:12px" hidden></div>
                 <div id="s-qa-prob-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px"></div>
               </div>
             </div>
@@ -1868,6 +1869,7 @@ input,button{font-family:var(--font)}
       </div>
       <button class="modal-close" onclick="closeQaModal()">×</button>
     </div>
+    <div id="s-qa-question-pdf" style="flex-shrink:0;padding:10px 1.5rem 0" hidden></div>
     <div id="qa-solution-area" style="display:none;flex-shrink:0;padding:12px 1.5rem 0"></div>
     <div id="qa-chat-history" style="flex:1;overflow-y:auto;padding:1rem 1.5rem;display:flex;flex-direction:column;gap:12px;min-height:100px"></div>
     <div id="qa-input-area" style="flex-shrink:0;padding:1rem 1.5rem;border-top:1px solid var(--border)">
@@ -1898,6 +1900,7 @@ input,button{font-family:var(--font)}
       <!-- 왼쪽: PDF 뷰어 -->
       <div style="border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden">
         <div style="padding:10px 14px;border-bottom:1px solid var(--border);font-size:12px;font-weight:600;color:var(--text2);flex-shrink:0">📄 시험지 PDF</div>
+        <div id="tqa-pdf-link" style="flex-shrink:0;padding:8px 14px" hidden></div>
         <div id="tqa-pdf-area" style="flex:1;overflow:auto;background:var(--bg2);display:flex;align-items:center;justify-content:center">
           <div style="color:var(--text3);font-size:13px;text-align:center;padding:2rem">PDF가 등록되지 않았어요</div>
         </div>
@@ -6751,6 +6754,7 @@ function selectSQaWeek(wid){
   document.getElementById('s-qa-week-view').style.display='none';
   document.getElementById('s-qa-prob-view').style.display='block';
   document.getElementById('s-qa-prob-title').textContent=(school?school.name+' · ':'')+(week?week.name:'') +' · 문제 선택';
+  renderQaPdfLink('s-qa-week-pdf',week);
   renderSQaProbGrid();
 }
 
@@ -6876,7 +6880,31 @@ function qaPreparedSolutions(week){
   try{return JSON.parse(raw.slice('QA_SOLUTIONS_V1\n'.length));}catch(e){return null;}
 }
 
+function qaPdfUrl(week){
+  if(!week||!week.pdf_url)return '';
+  try{
+    var url=new URL(week.pdf_url,location.href);
+    return url.protocol==='https:'||url.protocol==='http:'?url.href:'';
+  }catch(e){return '';}
+}
+
+function renderQaPdfLink(containerId,week){
+  var container=document.getElementById(containerId);
+  var url=qaPdfUrl(week);
+  container.replaceChildren();
+  container.hidden=!url;
+  if(!url)return;
+  var link=document.createElement('a');
+  link.className='btn';
+  link.href=url;
+  link.target='_blank';
+  link.rel='noopener';
+  link.textContent='등록 PDF 열기';
+  container.appendChild(link);
+}
+
 function renderQaPreparedSolution(week,probNum){
+  renderQaPdfLink('s-qa-question-pdf',week);
   var area=document.getElementById('qa-solution-area');
   if(!area)return;
   var data=qaPreparedSolutions(week),item=data&&data.items&&data.items[String(probNum)];
@@ -6990,9 +7018,10 @@ function openTQaModal(qId){
   document.getElementById('tqa-reply-text').value='';
   // PDF 표시
   var pdfArea=document.getElementById('tqa-pdf-area');
-  if(week&&week.pdf_url){
-    // PDF URL이 있으면 iframe으로 표시
-    pdfArea.innerHTML='<iframe src="'+week.pdf_url+'#toolbar=1&navpanes=0" style="width:100%;height:100%;border:none;min-height:500px" type="application/pdf"></iframe>';
+  renderQaPdfLink('tqa-pdf-link',week);
+  var pdfUrl=qaPdfUrl(week);
+  if(pdfUrl){
+    pdfArea.innerHTML='<iframe title="시험지 PDF" src="'+escHtml(pdfUrl)+'#toolbar=1&navpanes=0" style="width:100%;height:100%;border:none;min-height:500px" type="application/pdf"></iframe>';
   } else {
     // PDF 없으면 직접 업로드 버튼 제공
     var wid=(week&&week.id)||'';
@@ -7028,8 +7057,11 @@ async function uploadWeekPdfFromModal(event, weekId){
     if(upRes.error){notify('업로드 실패: '+upRes.error.message,'error');return;}
     var urlRes=sb.storage.from('exam-photos').getPublicUrl(path);
     var pdfUrl=urlRes.data?.publicUrl||'';
-    await sb.from('qa_weeks').update({pdf_url:pdfUrl}).eq('id',weekId);
+    if(!pdfUrl)throw new Error('PDF 주소를 생성하지 못했습니다.');
+    var saved=await sb.from('qa_weeks').update({pdf_url:pdfUrl}).eq('id',weekId);
+    if(saved.error)throw saved.error;
     week.pdf_url=pdfUrl;
+    renderQaPdfLink('tqa-pdf-link',week);
     pdfArea.innerHTML='<iframe src="'+pdfUrl+'#toolbar=1&navpanes=0" style="width:100%;height:100%;border:none;min-height:500px" type="application/pdf"></iframe>';
     notify('PDF 업로드 완료!','success');
   }catch(e){notify('오류: '+e.message,'error');}
