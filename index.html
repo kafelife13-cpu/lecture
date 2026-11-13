@@ -1886,9 +1886,18 @@ input,button{font-family:var(--font)}
   </div>
 </div>
 
+<style>
+  #tqa-layout{flex:1;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);min-height:0;overflow:hidden}
+  #tqa-pdf-area canvas{display:block;width:100%;height:auto;background:white}
+  @media(max-width:680px){
+    #tqa-layout{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto}
+    #tqa-answer-history{max-height:12vh}
+    #tqa-question-box{max-height:13vh;overflow:auto}
+  }
+</style>
 <!-- 교사 Q&A 상세 모달 (PDF + 질문 + 답변) -->
 <div class="modal-bg" id="modal-qa-teacher">
-  <div class="modal" style="max-width:860px;display:flex;flex-direction:column;max-height:92vh;width:95vw">
+  <div class="modal" style="max-width:1100px;display:flex;flex-direction:column;height:92dvh;max-height:92vh;width:95vw">
     <div class="modal-head" style="flex-shrink:0">
       <div>
         <h3 id="tqa-modal-title">질문 검토</h3>
@@ -1896,12 +1905,12 @@ input,button{font-family:var(--font)}
       </div>
       <button class="modal-close" onclick="closeTQaModal()">×</button>
     </div>
-    <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:0;overflow:hidden;min-height:0">
+    <div id="tqa-layout">
       <!-- 왼쪽: PDF 뷰어 -->
       <div style="border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden">
         <div style="padding:10px 14px;border-bottom:1px solid var(--border);font-size:12px;font-weight:600;color:var(--text2);flex-shrink:0">📄 시험지 PDF</div>
         <div id="tqa-pdf-link" style="flex-shrink:0;padding:8px 14px" hidden></div>
-        <div id="tqa-pdf-area" style="flex:1;overflow:auto;background:var(--bg2);display:flex;align-items:center;justify-content:center">
+        <div id="tqa-pdf-area" style="flex:1;min-height:0;overflow:auto;background:var(--bg2)">
           <div style="color:var(--text3);font-size:13px;text-align:center;padding:2rem">PDF가 등록되지 않았어요</div>
         </div>
       </div>
@@ -6998,6 +7007,71 @@ async function submitQaQuestion(){
 
 // 교사 Q&A 상세 모달
 var tQaCurrentQ=null;
+var tQaPdfTask=null;
+
+function clearTQaPdf(){
+  var task=tQaPdfTask;
+  tQaPdfTask=null;
+  if(task)task.destroy().catch(function(){});
+}
+
+async function renderTQaPdf(url){
+  clearTQaPdf();
+  var area=document.getElementById('tqa-pdf-area');
+  var viewer=document.createElement('div');
+  viewer.textContent='시험지를 불러오는 중입니다…';
+  area.replaceChildren(viewer);
+  try{
+    var pdfjs=await ensurePdfJs();
+    if(viewer.parentNode!==area)return;
+    pdfjs.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    var task=pdfjs.getDocument({url:url,isEvalSupported:false});
+    tQaPdfTask=task;
+    var pdf=await task.promise;
+    if(tQaPdfTask!==task)return;
+
+    var controls=document.createElement('div');
+    controls.style.cssText='position:sticky;top:0;display:flex;align-items:center;justify-content:center;gap:8px;padding:6px;background:var(--bg2);z-index:1';
+    var prev=document.createElement('button');
+    var next=document.createElement('button');
+    var status=document.createElement('span');
+    status.setAttribute('aria-live','polite');
+    prev.className=next.className='btn';
+    prev.textContent='이전 쪽';
+    next.textContent='다음 쪽';
+    controls.append(prev,status,next);
+    var pageArea=document.createElement('div');
+    viewer.replaceChildren(controls,pageArea);
+
+    async function showPage(number){
+      prev.disabled=next.disabled=true;
+      status.textContent=number+' / '+pdf.numPages+'쪽';
+      try{
+        var page=await pdf.getPage(number);
+        if(tQaPdfTask!==task)return;
+        var canvas=document.createElement('canvas');
+        canvas.setAttribute('aria-label','시험지 '+number+'쪽');
+        var viewport=page.getViewport({scale:1.7});
+        canvas.width=Math.ceil(viewport.width);
+        canvas.height=Math.ceil(viewport.height);
+        await page.render({canvasContext:canvas.getContext('2d'),viewport:viewport}).promise;
+        if(tQaPdfTask!==task)return;
+        pageArea.replaceChildren(canvas);
+        area.scrollTop=0;
+        prev.onclick=function(){showPage(number-1);};
+        next.onclick=function(){showPage(number+1);};
+        prev.disabled=number===1;
+        next.disabled=number===pdf.numPages;
+      }catch(e){
+        if(tQaPdfTask===task)status.textContent='쪽을 표시할 수 없습니다. 등록 PDF 열기를 이용해 주세요.';
+      }
+    }
+    await showPage(1);
+  }catch(e){
+    if(viewer.parentNode===area)viewer.textContent='시험지 미리보기를 불러오지 못했습니다. 등록 PDF 열기를 이용해 주세요.';
+  }
+}
+
 function openTQaModal(qId){
   var q=qaDb.questions.find(function(q){return q.id===qId;});
   if(!q)return;
@@ -7016,12 +7090,13 @@ function openTQaModal(qId){
     histEl.innerHTML='<div style="background:rgba(79,124,255,0.08);border-radius:8px;padding:10px 12px"><div style="font-size:11px;color:var(--accent);font-weight:600;margin-bottom:4px">선생님 답변</div><div style="font-size:13px;line-height:1.7;white-space:pre-wrap">'+escHtml(q.teacher_reply)+'</div></div>';
   }
   document.getElementById('tqa-reply-text').value='';
+  clearTQaPdf();
   // PDF 표시
   var pdfArea=document.getElementById('tqa-pdf-area');
   renderQaPdfLink('tqa-pdf-link',week);
   var pdfUrl=qaPdfUrl(week);
   if(pdfUrl){
-    pdfArea.innerHTML='<iframe title="시험지 PDF" src="'+escHtml(pdfUrl)+'#toolbar=1&navpanes=0" style="width:100%;height:100%;border:none;min-height:500px" type="application/pdf"></iframe>';
+    renderTQaPdf(pdfUrl);
   } else {
     // PDF 없으면 직접 업로드 버튼 제공
     var wid=(week&&week.id)||'';
@@ -7041,6 +7116,8 @@ function openTQaModal(qId){
 
 function closeTQaModal(){
   document.getElementById('modal-qa-teacher').classList.remove('show');
+  clearTQaPdf();
+  document.getElementById('tqa-pdf-area').replaceChildren();
   tQaCurrentQ=null;
 }
 
@@ -7049,6 +7126,7 @@ async function uploadWeekPdfFromModal(event, weekId){
   if(!file||!weekId)return;
   var week=qaDb.weeks.find(function(w){return w.id===weekId;});
   if(!week)return;
+  var question=tQaCurrentQ;
   var pdfArea=document.getElementById('tqa-pdf-area');
   pdfArea.innerHTML='<div style="text-align:center;padding:2rem;color:var(--text2);font-size:13px"><div class="spinner" style="margin:0 auto 10px;width:24px;height:24px;border-width:2px"></div>업로드 중...</div>';
   try{
@@ -7061,8 +7139,10 @@ async function uploadWeekPdfFromModal(event, weekId){
     var saved=await sb.from('qa_weeks').update({pdf_url:pdfUrl}).eq('id',weekId);
     if(saved.error)throw saved.error;
     week.pdf_url=pdfUrl;
-    renderQaPdfLink('tqa-pdf-link',week);
-    pdfArea.innerHTML='<iframe src="'+pdfUrl+'#toolbar=1&navpanes=0" style="width:100%;height:100%;border:none;min-height:500px" type="application/pdf"></iframe>';
+    if(tQaCurrentQ===question){
+      renderQaPdfLink('tqa-pdf-link',week);
+      renderTQaPdf(pdfUrl);
+    }
     notify('PDF 업로드 완료!','success');
   }catch(e){notify('오류: '+e.message,'error');}
 }
