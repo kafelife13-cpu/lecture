@@ -1407,7 +1407,7 @@ input,button{font-family:var(--font)}
                 <div id="s-homework-wrong-input" hidden style="margin-bottom:12px">
                   <label for="s-homework-wrong-numbers">오답 번호만 입력</label>
                   <input id="s-homework-wrong-numbers" class="form-input" placeholder="예: 2, 5, 12" oninput="sHomeworkApplyWrongNumbers(true)" onchange="sHomeworkApplyWrongNumbers()">
-                  <p style="font-size:12px;color:var(--text2)">쉼표나 공백으로 구분해요. 아래 번호를 눌러도 돼요. 선택한 문제마다 학생이 고른 틀린 답도 입력하세요. 모두 맞았으면 비워 두고 제출하세요.</p>
+                  <p style="font-size:12px;color:var(--text2)">쉼표나 공백으로 구분해요. 아래 번호를 눌러도 돼요. <span id="s-homework-wrong-answer-help">선택한 문제마다 학생이 고른 틀린 답도 입력하세요. </span>모두 맞았으면 비워 두고 제출하세요.</p>
                 </div>
                 <div id="s-wrong-details" aria-live="polite"></div>
                 <div id="s-exam-q-grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:10px"></div>
@@ -10458,6 +10458,10 @@ async function renderSExam(scope){
 function sHomeworkRequired(exam){return !!exam&&exam.category==='homework'&&(/필수/.test(exam.name||'')||Number(exam.total_q)===40);}
 // 필수 여부는 전체 답안 입력의 검증에만 쓰고, 종이로 채점한 뒤 오답만 입력하는 방식은 모든 과제에서 허용한다.
 function sHomeworkAllowsWrongOnly(exam){return !!exam&&exam.category==='homework';}
+function sHomeworkNumbersOnly(exam){
+  return sHomeworkAllowsWrongOnly(exam)&&/^(한백|치동)고$/.test(exam.clinic_school||'')&&
+    /^기말\s*대비\s*[123]\s*주차?$/.test(String(exam.clinic_week||'').trim());
+}
 function sHomeworkWrongOnly(exam){return sHomeworkAllowsWrongOnly(exam)&&sExamCheckMode==='wrongonly';}
 function renderHomeworkEntry(list,responses){
   if(!list.length)return '<p>등록된 과제가 없어요.</p>';
@@ -10478,7 +10482,7 @@ function renderHomeworkEntry(list,responses){
     groups[key].items.push(e);
   });
   return Object.values(groups).sort(function(a,b){return b.order-a.order;}).map(function(g,i){
-    return '<details class="card"'+(i===0?' open':'')+' style="padding:12px;margin-bottom:12px"><summary style="cursor:pointer;font-weight:700">'+g.label+' · '+g.items.length+'개</summary><p style="font-size:12px;color:var(--text3)">전체 답안 입력 또는 틀린 문제만 입력 중 선택하세요.</p>'+renderSExamListCards(g.items,responses,'')+'</details>';
+    return '<details class="card"'+(i===0?' open':'')+' style="padding:12px;margin-bottom:12px"><summary style="cursor:pointer;font-weight:700">'+g.label+' · '+g.items.length+'개</summary><p style="font-size:12px;color:var(--text3)">'+(g.items.every(sHomeworkNumbersOnly)?'종이 시험지를 채점한 뒤 틀린 문제 번호만 입력하세요.':'과제별로 표시된 입력 방식을 선택하세요.')+'</p>'+renderSExamListCards(g.items,responses,'')+'</details>';
   }).join('');
 }
 function examQuestionNumber(exam,index){
@@ -10564,7 +10568,11 @@ function renderSExamListCards(list,respMap,emptyLabel){
     var resp=respMap[e.id];
     var safeName=(e.name||'').replace(/'/g,"\\'");
     var actionHtml;
-    if(!resp){
+    if(sHomeworkNumbersOnly(e)&&(!resp||resp.regrade_approved)){
+      actionHtml='<div style="display:flex;gap:6px;flex-wrap:wrap">'+
+        (resp?'<button class="btn btn-sm" onclick="sExamViewResult(\''+e.id+'\')">결과보기</button>':'')+
+        '<button class="btn blue btn-sm" onclick="sExamOpenForGrading(\''+e.id+'\',\'wrongonly\')">'+(resp?'오답 번호로 재채점':'오답 번호만 입력')+'</button></div>';
+    } else if(!resp){
       actionHtml='<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn blue btn-sm" onclick="sExamOpenForGrading(\''+e.id+'\')">'+(sHomeworkAllowsWrongOnly(e)?'전체 답안 입력':e.category==='homework'?e.total_q+'문항 입력':e.category==='naeshin'?'점수·오답 이유 입력':'바로 채점하기')+'</button>'+(sHomeworkAllowsWrongOnly(e)?'<button class="btn btn-sm" onclick="sExamOpenForGrading(\''+e.id+'\',\'wrongonly\')">틀린 문제만 입력</button>':'')+'</div>';
     } else if(resp.regrade_approved){
       actionHtml='<div style="display:flex;gap:6px">'+
@@ -10586,7 +10594,7 @@ function renderSExamListCards(list,respMap,emptyLabel){
       '<div style="padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">'+
         '<div>'+
           '<div style="font-size:14px;font-weight:600">'+e.name+'</div>'+
-          '<div style="font-size:12px;color:var(--text2);margin-top:2px">총 '+e.total_q+'문항'+(resp?' · 제출완료 '+(e.category==='naeshin'?repScore(e,resp).pct:resp.score)+'점'+(sExamIsScoreOnlyResponse(resp)?' · 점수만 입력':''):'')+'</div>'+
+          '<div style="font-size:12px;color:var(--text2);margin-top:2px">총 '+e.total_q+'문항'+(resp?' · 제출완료 '+(e.category==='naeshin'?repScore(e,resp).pct:resp.score)+'점'+(e.category==='mock'&&sExamIsScoreOnlyResponse(resp)?' · 점수만 입력':''):'')+'</div>'+
         '</div>'+
         actionHtml+clinicExplanationNotice(e,resp?resp.score:null)+
       '</div>'+
@@ -10614,8 +10622,9 @@ async function sExamOpenForGrading(examId,entryMode){
   sExamData=found;sExamPriorResponse=resp||null;sOmrCurrentPhoto=null;sExamFullPage=0;
   sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;sWrongChecked={};sExamFullAnswers={};
   if(found.category==='homework'&&resp&&resp.thoughts&&resp.thoughts._subjective_answers)Object.assign(sExamFullAnswers,resp.thoughts._subjective_answers);
-  sExamCheckMode=found.category==='naeshin'||(entryMode==='wrongonly'&&sHomeworkAllowsWrongOnly(found))?'wrongonly':'full';
+  sExamCheckMode=found.category==='naeshin'||sHomeworkNumbersOnly(found)||(entryMode==='wrongonly'&&sHomeworkAllowsWrongOnly(found))?'wrongonly':'full';
   document.getElementById('s-homework-wrong-input').hidden=!sHomeworkWrongOnly(found);
+  document.getElementById('s-homework-wrong-answer-help').hidden=sHomeworkNumbersOnly(found);
   document.getElementById('s-homework-wrong-numbers').value='';
   document.getElementById('s-homework-wrong-numbers').placeholder='예: '+examQuestionNumber(found,0)+', '+examQuestionNumber(found,Math.min(4,found.total_q-1));
   document.getElementById('s-wrong-details').innerHTML='';
@@ -10962,7 +10971,7 @@ function renderSExamAnswerGrid(){
     var isWrong=sWrongChecked[i];
     var q=sExamData.questions[i]||{};
     var heading=q.domain&&(i===0||q.domain!==(sExamData.questions[i-1]||{}).domain)?'<div style="grid-column:1/-1;text-align:left;margin-top:12px;font-weight:700">'+escHtml(q.domain)+'</div>':'';
-    if(sExamData.category==='homework'&&!isObjectiveAnswer(q.answer))return heading+'<span style="padding:10px 4px;text-align:center;color:var(--text3);font-size:12px">'+examQuestionNumber(sExamData,i)+' · 주관식<br>전체 답안에서 입력</span>';
+    if(sExamData.category==='homework'&&!isObjectiveAnswer(q.answer))return heading+'<span style="padding:10px 4px;text-align:center;color:var(--text3);font-size:12px">'+examQuestionNumber(sExamData,i)+' · 주관식<br>'+(sHomeworkNumbersOnly(sExamData)?'종이 시험지에서 확인':'전체 답안에서 입력')+'</span>';
     return heading+'<button type="button" '+
       'onclick="sToggleWrong('+i+')" '+
       'style="border:none;padding:10px 4px;text-align:center;cursor:pointer;font-size:13px;font-weight:600;border-radius:8px;transition:all 0.15s;user-select:none;-webkit-tap-highlight-color:transparent;'+
@@ -10991,6 +11000,7 @@ function updateWrongCountLabel(){
 function renderWrongDetails(){
   var el=document.getElementById('s-wrong-details');
   if(!el)return;
+  if(sHomeworkNumbersOnly(sExamData)){el.innerHTML='';return;}
   var wrongIdxs=Object.keys(sWrongChecked).map(Number).sort(function(a,b){return a-b;});
   if(!wrongIdxs.length){el.innerHTML='';return;}
   el.innerHTML=wrongIdxs.map(function(idx){
@@ -11067,7 +11077,7 @@ async function sExamSubmitScore(){
   var total=sExamData.category==='homework'?gradedQuestions.length:sExamData.total_q;
   var wrongIdxs=Object.keys(sWrongChecked).map(Number);
   document.getElementById('s-exam-check-err').textContent='';
-  if(sHomeworkWrongOnly(sExamData)||sExamData.category==='naeshin'){
+  if((sHomeworkWrongOnly(sExamData)&&!sHomeworkNumbersOnly(sExamData))||sExamData.category==='naeshin'){
     var missing=wrongIdxs.filter(function(i){return !(String(sExamData.questions[i].answer).indexOf('all:')===0?/^[1-5](,[1-5])*$/:/^[1-5]$/).test(String(sExamAnswers[i]||''));});
     var matching=wrongIdxs.filter(function(i){return examAnswerMatches(sExamAnswers[i],sExamData.questions[i]?.answer);});
     if(missing.length||matching.length){
