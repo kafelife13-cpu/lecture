@@ -4,6 +4,13 @@
   'use strict';
   // Seconds refer to the uploaded videos; cue just before each explanation.
   const catalogue={
+    // Hanbaek grade 1, final-exam clinic week 3: edited lesson cue sheet.
+    'vbZmrNkQd-o':[
+      ['개념 정리: 높임 표현',0],['1번',29],['2번',951],['3번',1047],['4번',1754],
+      ['개념 정리: 사동·피동',1863],['5번',1893],['6번',2233],['7번',2812],['8번',3023],['9번',3156],
+      ['개념 정리: 시간 표현',3770],['10번',3800],['11번',4026],['12번',4076],['13번',4166],['14번',4308],
+      ['개념 정리: 중세 국어',4398],['15번',4428],['16번',4482],['17번',4633],['18번',4846],['19번',4975],['20번',5147]
+    ],
     // Hanbaek grade 1, final-exam clinic week 2: reviewed merged lecture.
     '3pq_DTn7wS0':[
       ['1번',0],['2번',532],['3번',776],['4번',904],['5번',1135],
@@ -99,6 +106,6 @@
       return status+': '+(selected.length?selected.map(function(row){return row.label+(status==='일부 시청'?' ('+row.percent+'%)':'');}).join(', '):'없음');
     }).join(' / ');
   }
-  function duration(videoId){return videoId==='3pq_DTn7wS0'?4418:videoId==='yIWb_j_49oM'?5131:videoId==='Mml3RyA1TwU'?5635:videoId==='sJsIw7F6r_w'?2928:videoId==='8TwCCPBPyrA'?2839:0;}
+  function duration(videoId){return videoId==='vbZmrNkQd-o'?5356:videoId==='3pq_DTn7wS0'?4418:videoId==='yIWb_j_49oM'?5131:videoId==='Mml3RyA1TwU'?5635:videoId==='sJsIw7F6r_w'?2928:videoId==='8TwCCPBPyrA'?2839:0;}
   root.KkakkaVideoChapters={get:get,render:render,restore:restore,observe:observe,stats:stats,summary:summary,duration:duration};
 })(typeof window==='undefined'?globalThis:window);

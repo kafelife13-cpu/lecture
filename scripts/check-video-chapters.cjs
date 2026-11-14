@@ -6,6 +6,12 @@ function element(){return {children:[],style:{},attrs:{},hidden:false,classList:
 const elements={};const document={createElement:element,getElementById(id){return elements[id]||(elements[id]=element());}};
 const c={document};vm.createContext(c);vm.runInContext(fs.readFileSync(path.join(root,'video-chapters.js'),'utf8'),c);
 const chapter=c.KkakkaVideoChapters;
+const week3=chapter.get('vbZmrNkQd-o');
+assert.equal(week3.length,24,'20 questions and four concept sections');
+assert.deepEqual(Array.from(week3.filter(row=>/^\d+번$/.test(row.label)),row=>parseInt(row.label)),Array.from({length:20},(_,i)=>i+1));
+assert.deepEqual(Array.from(week3,row=>row.seconds),[0,29,951,1047,1754,1863,1893,2233,2812,3023,3156,3770,3800,4026,4076,4166,4308,4398,4428,4482,4633,4846,4975,5147]);
+assert.equal(chapter.duration('vbZmrNkQd-o'),5356);
+assert.ok(week3.every((row,i)=>Number.isInteger(row.seconds)&&row.seconds>=0&&row.seconds<5356&&(!i||row.seconds>week3[i-1].seconds)));
 const numbers=[];
 for(const [id,duration] of [['sJsIw7F6r_w',2928],['8TwCCPBPyrA',2839]]){
   const rows=chapter.get(id);assert.ok(rows.length);let previous=-1;
@@ -53,6 +59,7 @@ vm.runInContext(html.slice(html.indexOf('async function openPlay('),html.indexOf
     upsertProgress:async(...args)=>writes.push(args)});
   vm.runInContext(html.slice(html.indexOf('async function doAutoSave('),html.indexOf('function updateTrackUI(')),c);
   await c.doAutoSave(true);assert.equal(savedQuestions,1);assert.equal(writes[0][0],'test');assert.equal(writes[0][1],'lesson','async saves retain their original student and video');
-  assert.ok(fs.readFileSync(path.join(root,'sw.js'),'utf8').includes('/lecture/video-chapters.js?v=1'));
+  const chapterAsset=html.match(/src="(video-chapters\.js\?v=[^"]+)"/)[1];
+  assert.ok(fs.readFileSync(path.join(root,'sw.js'),'utf8').includes('/lecture/'+chapterAsset),'HTML and offline cache use the same chapter catalogue');
   console.log('PASS: 1–26 coverage, valid cues, rendering, unknown videos, seek readiness, stale player rejection, unchanged watched intervals and syntax');
 })().catch(e=>{console.error(e);process.exitCode=1;});
