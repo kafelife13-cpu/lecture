@@ -1028,7 +1028,7 @@ input,button{font-family:var(--font)}
               </div>
             </div>
             <div class="card">
-              <div class="card-head"><h3>발송 대상</h3><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"><select id="tres-notify-group" class="form-select" style="width:auto;min-width:145px;padding:6px 28px 6px 9px;font-size:12px" onchange="renderTResNotify()"><option value="">전체 반</option></select><button class="btn btn-sm" onclick="tResSelectNotifyType('taken')">응시 완료자만 선택</button><button class="btn btn-sm" onclick="tResSelectNotifyType('missing')">미응시자만 선택</button><button class="btn btn-sm" onclick="tResToggleNotifyAll(true)">전체 선택</button><button class="btn btn-sm" onclick="tResToggleNotifyAll(false)">선택 해제</button><button class="btn btn-sm blue" id="tres-solapi-send" onclick="tResSendSolapi()">📨 솔라피 문자 발송</button></div></div>
+              <div class="card-head"><h3>발송 대상</h3><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"><select id="tres-notify-group" class="form-select" style="width:auto;min-width:145px;padding:6px 28px 6px 9px;font-size:12px" onchange="renderTResNotify()"><option value="">전체 반</option></select><button class="btn btn-sm" onclick="tResSelectNotifyType('taken')">응시 완료자만 선택</button><button class="btn btn-sm" onclick="tResSelectNotifyType('missing')">미응시자만 선택</button><button class="btn btn-sm" onclick="tResToggleNotifyAll(true)">전체 선택</button><button class="btn btn-sm" onclick="tResToggleNotifyAll(false)">선택 해제</button><button class="btn btn-sm" onclick="tResComposePhoneMessage()">내 번호로 문자 보내기</button><button class="btn btn-sm blue" id="tres-solapi-send" onclick="tResSendSolapi()">📨 솔라피 문자 발송</button></div></div>
               <div id="tres-notify-list" style="padding:0 1.25rem 1rem"></div>
             </div>
             <div class="card" style="margin-top:1rem">
@@ -8749,6 +8749,31 @@ function tResToggleNotifyAll(checked){
 
 function tResSelectNotifyType(type){
   document.querySelectorAll('.tres-notify-check').forEach(function(el){el.checked=!el.disabled&&el.dataset.notifyType===type;});
+}
+
+function tResComposePhoneMessage(){
+  var checks=document.querySelectorAll('.tres-notify-check:checked:not(:disabled)');
+  if(checks.length!==1){alert('내 번호로 보낼 학생을 한 명 선택해 주세요.');return;}
+  var row=tResNotifyRows[Number(checks[0].dataset.notifyIndex)];
+  var phone=tResNormalizePhone(row&&row.student&&row.student.parent_phone||'');
+  if(!/^01\d{8,9}$/.test(phone)){alert('학부모 휴대폰 번호를 확인해 주세요.');return;}
+  var message=row.missing
+    ?tResBuildMissingMessage(row.student.name,tResCurrentExam)
+    :tResBuildParentMessage(row.student.name,row.response,tResCurrentExam);
+
+  if(/Android/i.test(navigator.userAgent)){
+    window.location.href='sms:'+phone+'?body='+encodeURIComponent(message);
+    return;
+  }
+
+  var dialog=document.createElement('dialog');
+  dialog.style.cssText='width:min(420px,90vw);padding:20px;border:1px solid var(--border);border-radius:12px;color:var(--text);background:var(--surface,#fff)';
+  dialog.innerHTML='<h3>내 번호로 보낼 문자</h3><p>노트북에서는 휴대폰과 연결의 새 메시지에 아래 번호와 문구를 넣어 보내세요. Codex에 이 문자를 보내 달라고 요청할 수도 있어요.</p><label>받는 번호 <input class="form-input" type="tel" readonly></label><label>문구 <textarea class="form-input" rows="7" readonly></textarea></label><form method="dialog"><button class="btn btn-sm">닫기</button></form>';
+  dialog.querySelector('input').value=phone;
+  dialog.querySelector('textarea').value=message;
+  dialog.addEventListener('close',function(){dialog.remove();},{once:true});
+  document.body.appendChild(dialog);
+  dialog.showModal();
 }
 
 function tResRequestSendPin(){
