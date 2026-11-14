@@ -437,7 +437,7 @@ input,button{font-family:var(--font)}
 
       <!-- 클리닉 영상 -->
       <div class="panel" id="panel-clinic-videos">
-        <div class="page-header"><h1>클리닉 영상</h1><p>매주 모든 학생에게 보여줄 클리닉 해설 영상을 등록하고 관리하세요</p></div>
+        <div class="page-header"><h1>클리닉 영상</h1><p>연결한 클리닉 시험의 성적을 입력한 학생만 해설 영상을 시청할 수 있습니다.</p></div>
         <div class="card" style="margin-bottom:1.5rem">
           <div class="card-head"><h3>새 클리닉 영상 등록</h3></div>
           <div class="card-body">
@@ -445,9 +445,11 @@ input,button{font-family:var(--font)}
             <div class="frow"><div style="flex:1"><label class="flabel">영상 제목</label><input id="cv-title" class="form-input" placeholder="예: 8월 3주 클리닉 해설"/></div></div>
             <div class="frow">
               <div style="flex:1"><label class="flabel">영상 설명 (선택)</label><input id="cv-desc" class="form-input" placeholder="이번 주 클리닉 해설 내용"/></div>
-              <div><label class="flabel">학교</label><select id="cv-school" class="form-select"><option value="sc_hanbaek">한백</option><option value="sc_chidong">치동</option><option value="all">공통</option></select></div>
+              <div><label class="flabel">학교</label><select id="cv-school" class="form-select" onchange="renderClinicExamOptions()"><option value="sc_hanbaek">한백</option><option value="sc_chidong">치동</option><option value="all">공통</option></select></div>
               <div style="display:flex;align-items:flex-end"><button class="btn blue" onclick="addClinicVideo()" style="height:40px;white-space:nowrap">클리닉 영상 등록</button></div>
             </div>
+            <label class="flabel" for="cv-exam">시청 전에 성적을 입력할 클리닉 시험 (필수)</label>
+            <select id="cv-exam" class="form-select"><option value="">시험을 불러오는 중...</option></select>
           </div>
         </div>
         <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>🏫</span> 등록된 클리닉 영상</div><div class="section-divider-line"></div></div>
@@ -1191,7 +1193,7 @@ input,button{font-family:var(--font)}
         <div id="student-lectures"></div>
       </div>
       <div class="panel" id="panel-clinic-lectures">
-        <div class="page-header"><h1>클리닉 강의</h1><p>클리닉 해설 영상을 확인하세요. 필수 시청은 지정된 학생에게만 표시됩니다</p></div>
+        <div class="page-header"><h1>클리닉 강의</h1><p>해당 클리닉 시험의 성적을 입력하면 해설영상이 열립니다. 필수 시청은 지정된 학생에게만 표시됩니다.</p></div>
         <div id="student-clinic-lectures"></div>
       </div>
       <div class="panel" id="panel-review">
@@ -2082,7 +2084,43 @@ function clinicVideoSchool(v){
   if(text.indexOf('치동')!==-1)return 'sc_chidong';
   return 'all';
 }
-function clinicVideoDescription(v){return String(v.description||'').replace(/\s*\[학교:(?:sc_hanbaek|sc_chidong|all)\]\s*/g,' ').trim();}
+function clinicVideoDescription(v){return String(v.description||'').replace(/\s*\[(?:학교:(?:sc_hanbaek|sc_chidong|all)|시험:[\w-]+)\]\s*/g,' ').trim();}
+// Existing live lessons have reviewed exam links; new lessons store an explicit link.
+// Never infer a prerequisite from calendar weeks or a different student's name.
+function clinicVideoExamId(v){
+  var marker=String(v.description||'').match(/\[시험:([\w-]+)\]/);
+  if(marker)return marker[1];
+  return {'3pq_DTn7wS0':'693b9b5b-7e2e-5064-943e-aa43b1526ebf','vbZmrNkQd-o':'4cd3f973-666a-5f36-acca-9f2b0d4b4ef4'}[ytId(v.url)]||'';
+}
+function clinicVideoScoreState(v,student,exams,responses){
+  var examId=clinicVideoExamId(v),exam=exams.find(e=>e.id===examId);
+  if(!exam||(exam.category||'school')!=='school')return {allowed:false,message:'선생님의 클리닉 시험 연결을 기다려 주세요.'};
+  var school=weeklyExamSchoolId(exam.clinic_school),target=clinicVideoSchool(v);
+  if((school&&school!==student.school_id)||(target!=='all'&&target!==student.school_id))return {allowed:false,message:'자기 학교의 클리닉 해설만 볼 수 있습니다.'};
+  var entered=responses.some(r=>r.student_id===student.id&&r.exam_id===examId&&r.score!=null&&String(r.score).trim()!==''&&Number.isFinite(Number(r.score))&&Number(r.score)>=0&&Number(r.score)<=100);
+  return {allowed:entered,examId:examId,message:entered?'성적 입력 완료':exam.name+' 성적을 먼저 입력해 주세요.'};
+}
+async function loadClinicVideoScores(videos,student){
+  var ids=Array.from(new Set(videos.map(clinicVideoExamId).filter(Boolean)));
+  if(!ids.length)return {exams:[],responses:[]};
+  var results=await Promise.all([
+    sb.from('exams').select('id,name,category,clinic_school').in('id',ids),
+    sb.from('exam_responses').select('exam_id,student_id,score').eq('student_id',student.id).in('exam_id',ids)
+  ]);
+  if(results.some(r=>r.error))throw Error('성적 확인 실패');
+  return {exams:results[0].data||[],responses:results[1].data||[]};
+}
+async function openClinicVideoExam(vid){
+  var v=db.videos.find(v=>v.id===vid),student=session;
+  if(!v||!student)return;
+  try{
+    var data=await loadClinicVideoScores([v],student);
+    if(session!==student)return;
+    var state=clinicVideoScoreState(v,student,data.exams,data.responses);
+    if(!state.examId){notify(state.message,'info');return;}
+    sNav('exam','clinic');
+  }catch(error){notify('성적을 확인하지 못했어요. 잠시 후 다시 시도해 주세요.','error');}
+}
 function clinicExplanationVideosForWeek(date){
   var base=new Date(date||new Date());
   var start=new Date(base);start.setHours(0,0,0,0);start.setDate(start.getDate()-start.getDay());
@@ -3326,6 +3364,7 @@ async function addVideo(){
   const url=document.getElementById('v-url').value.trim();
   const desc=document.getElementById('v-desc').value.trim();
   const category=document.getElementById('v-category').value;
+  if(category==='clinic'){notify('클리닉 영상 메뉴에서 시험을 연결해 등록해 주세요.','info');tNav('clinic-videos');return;}
   if(!title||!url){notify('제목과 URL을 입력하세요.','error');return;}
   if(!ytId(url)){notify('유효한 유튜브 URL을 입력하세요.','error');return;}
   const id='v'+Date.now();
@@ -3344,7 +3383,10 @@ async function addClinicVideo(){
   const url=document.getElementById('cv-url').value.trim();
   const school=document.getElementById('cv-school').value;
   const plainDesc=document.getElementById('cv-desc').value.trim();
-  const desc=(plainDesc?plainDesc+' ':'')+'[학교:'+school+']';
+  const examId=document.getElementById('cv-exam').value;
+  const exam=clinicVideoExamChoices.find(e=>e.id===examId);
+  if(!exam||(school!=='all'&&weeklyExamSchoolId(exam.clinic_school)!==school)){notify('해설영상에 맞는 클리닉 시험을 선택하세요.','error');return;}
+  const desc=(plainDesc?plainDesc+' ':'')+'[학교:'+school+'] [시험:'+examId+']';
   if(!title||!url){notify('영상 제목과 URL을 입력하세요.','error');return;}
   if(!ytId(url)){notify('유효한 유튜브 URL을 입력하세요.','error');return;}
   const id='v'+Date.now();
@@ -3420,8 +3462,19 @@ function renderVideos(){
   renderVideoGrid(reviewVideos(),'video-list-review');
 }
 
-function renderClinicVideos(){
+var clinicVideoExamChoices=[];
+function renderClinicExamOptions(){
+  var select=document.getElementById('cv-exam'),school=document.getElementById('cv-school').value,previous=select.value;
+  select.innerHTML='<option value="">클리닉 시험을 선택하세요</option>'+clinicVideoExamChoices.filter(e=>school==='all'||weeklyExamSchoolId(e.clinic_school)===school).map(e=>'<option value="'+escHtml(e.id)+'">'+escHtml((e.clinic_school||'공통')+' · '+e.name+' · '+(e.clinic_week||''))+'</option>').join('');
+  if(Array.from(select.options).some(o=>o.value===previous))select.value=previous;
+}
+async function renderClinicVideos(){
   renderVideoGrid(clinicVideos(),'video-list-clinic');
+  try{
+    var result=await sb.from('exams').select('id,name,category,clinic_school,clinic_week').eq('category','school').order('created_at',{ascending:false});
+    if(result.error)throw result.error;
+    clinicVideoExamChoices=result.data||[];renderClinicExamOptions();
+  }catch(error){clinicVideoExamChoices=[];document.getElementById('cv-exam').innerHTML='<option value="">시험을 불러오지 못했습니다. 메뉴를 다시 열어 주세요.</option>';}
 }
 
 /* ===== STUDENTS ===== */
@@ -4251,8 +4304,10 @@ function renderLectures(){
   el.innerHTML=normalTitle+normalHtml;
 }
 
-function renderClinicLectures(){
+var clinicVideoListRequest=0;
+async function renderClinicLectures(){
   const el=document.getElementById('student-clinic-lectures');
+  const request=++clinicVideoListRequest,student=session;
   const currentIds=new Set(studentClinicVideosForWeek(session,new Date()).map(v=>v.id));
   const vids=allStudentClinicVideos(session).slice().sort((a,b)=>{
     const ac=currentIds.has(a.id),bc=currentIds.has(b.id);
@@ -4262,11 +4317,17 @@ function renderClinicLectures(){
     return new Date(b.created_at)-new Date(a.created_at);
   });
   if(!vids.length){el.innerHTML='<div class="empty"><p>등록된 클리닉 강의가 없습니다.</p></div>';return;}
+  el.innerHTML='<p role="status">클리닉 성적 입력 여부를 확인하고 있어요...</p>';
+  var scoreData,scoreError=false;
+  try{scoreData=await loadClinicVideoScores(vids,student);}catch(error){scoreError=true;}
+  if(request!==clinicVideoListRequest||session!==student)return;
   el.innerHTML=vids.map(v=>{
     const p=getPct(session.id,v.id),ws=getWatchSec(session.id,v.id),lp=getLastPos(session.id,v.id),t=thumb(v.url);
     const required=hasAccess(session.id,v.id);
     const current=currentIds.has(v.id);
-    return`<div class="lecture-item" style="${required?'border:2px solid var(--amber);background:rgba(245,158,11,.05)':''}"><div class="lecture-thumb">${t?`<img src="${t}" alt="">`:'▶'}</div><div class="lecture-body"><h4>${v.title} <span class="badge ${required?'partial':'none'}">${required?'필수 시청':current?'이번 주':'지난 강의'}</span></h4><div class="lmeta">${clinicVideoDescription(v)||'클리닉 해설 강의'}${ws>0?` · <span style="color:var(--green)">${fmtTime(ws)} 시청</span>`:''}</div><div style="display:flex;align-items:center;gap:8px"><div class="pbar" style="width:110px"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div><span class="badge ${pctBadge(p)}">${pctLabel(p)}</span></div></div><button class="btn ${required?'amber':'blue'} btn-sm" onclick="openPlay('${v.id}')">▶ ${lp>0&&p<100?'이어보기':'시청하기'}</button></div>`;
+    const gate=scoreError?{allowed:false,message:'성적을 확인하지 못했어요. 다시 확인해 주세요.'}:clinicVideoScoreState(v,student,scoreData.exams,scoreData.responses);
+    const action=gate.allowed?`<button class="btn ${required?'amber':'blue'} btn-sm" onclick="openPlay('${v.id}')">▶ ${lp>0&&p<100?'이어보기':'시청하기'}</button>`:scoreError?'<button class="btn btn-sm" onclick="renderClinicLectures()">다시 확인</button>':gate.examId?`<button class="btn btn-sm" onclick="openClinicVideoExam('${v.id}')">성적 입력하기</button>`:'<button class="btn btn-sm" disabled>시청 잠김</button>';
+    return`<div class="lecture-item" style="${required?'border:2px solid var(--amber);background:rgba(245,158,11,.05)':''}"><div class="lecture-thumb">${t?`<img src="${t}" alt="">`:'▶'}</div><div class="lecture-body"><h4>${v.title} <span class="badge ${required?'partial':'none'}">${required?'필수 시청':current?'이번 주':'지난 강의'}</span></h4><div class="lmeta">${clinicVideoDescription(v)||'클리닉 해설 강의'}${ws>0?` · <span style="color:var(--green)">${fmtTime(ws)} 시청</span>`:''}</div><p class="lmeta">${gate.allowed?'✓':'🔒'} ${escHtml(gate.message)}</p><div style="display:flex;align-items:center;gap:8px"><div class="pbar" style="width:110px"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div><span class="badge ${pctBadge(p)}">${pctLabel(p)}</span></div></div>${action}</div>`;
   }).join('');
 }
 
@@ -4413,6 +4474,15 @@ async function openPlay(vid, forceStart){
   const v=db.videos.find(x=>x.id===vid);
   if(!v)return;
   if(session.role==='student'&&!studentVideoInScope(v)){notify('이전 시험 범위 강의는 현재 학생에게 제공되지 않습니다.','info');return;}
+  if(session.role==='student'&&v.category==='clinic'){
+    const student=session;
+    try{
+      const data=await loadClinicVideoScores([v],student);
+      if(request!==playRequest||session!==student)return;
+      const gate=clinicVideoScoreState(v,student,data.exams,data.responses);
+      if(!gate.allowed){notify(gate.message,'info');sNav('clinic-lectures');return;}
+    }catch(error){if(request===playRequest&&session===student)notify('성적을 확인하지 못해 영상을 열 수 없어요. 다시 시도해 주세요.','error');return;}
+  }
   if(v.category==='review'&&!hasAccess(session.id,vid)){notify('시청 권한이 없습니다.','error');return;}
   const lp=getLastPos(session.id,vid);
   const pct=getPct(session.id,vid);
