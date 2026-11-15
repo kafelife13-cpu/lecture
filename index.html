@@ -28,6 +28,7 @@
 <script src="classical-vocab.js?v=2"></script>
 <script src="classical-course.js"></script>
 <script src="classical-translations.js"></script>
+<script src="reopened-review-popup.js?v=20261116"></script>
 <script src="student-sections.js?v=20261105-homework-popup"></script>
 <script src="weekly-homework.js?v=20261015-activity"></script>
 <script src="personal-review.js?v=1"></script>
@@ -4149,6 +4150,7 @@ function sNav(panel,examScope){
   if(panel==='weekly')renderWeeklyHomework();
   if(panel==='home')renderSHome();
   if(panel==='home'||panel==='weekly')refreshSokTask(true);
+  if(panel==='home'&&window.showReopenedReviewPopup)setTimeout(showReopenedReviewPopup,600);
 }
 
 function renderClinicRequiredPicker(){
