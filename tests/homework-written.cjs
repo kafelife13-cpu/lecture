@@ -25,6 +25,7 @@ console.log('PASS: required written answer, numbering, storage, escaping, script
  let saved=null;ctx.sExamData=exam;ctx.session={name:'local test'};ctx.sExamFullAnswers={...answers,26:' '};
  ctx.sExamPriorResponse={thoughts:{existing:'keep'}};ctx.sOmrCurrentPhoto=null;ctx.alert=()=>{};
  ctx.sb={from:()=>({upsert:async data=>{saved=data;return {error:{message:'local test stops after payload'}};}})};
+ ctx.odapSaveResponse=async data=>{saved=data;return {error:{message:'local test stops after payload'}};};
  await ctx.sExamSubmitFull(true);assert.equal(saved,null,'27 must block forced submission');
  ctx.sExamFullAnswers[26]='ⓐ 을, ⓑ ㅅ';await ctx.sExamSubmitFull(true);
  assert.equal(saved.thoughts._subjective_answers[26],'ⓐ 을, ⓑ ㅅ');assert.equal(saved.thoughts.existing,'keep');
@@ -33,12 +34,12 @@ console.log('PASS: required written answer, numbering, storage, escaping, script
 })().catch(e=>{console.error(e);process.exitCode=1;});
 (async()=>{
  const c={};vm.createContext(c);
- for(const name of ['examAnswerMatches','isObjectiveAnswer','sExamSubmitScore']){
+ for(const name of ['examAnswerMatches','isObjectiveAnswer','sHomeworkAllowsWrongOnly','sHomeworkNumbersOnly','sExamSubmitScore']){
   const start=html.indexOf((name==='sExamSubmitScore'?'async ':'')+'function '+name+'(');
   const end=['isObjectiveAnswer','sHomeworkRequired','sHomeworkAllowsWrongOnly'].includes(name)?html.indexOf('\n',start):html.indexOf('\n}',start)+2;
   vm.runInContext(html.slice(start,end),c);
  }
- let saved;Object.assign(c,{session:{name:'local test'},sExamData:{category:'homework',total_q:3,questions:[{num:41,answer:'1',points:2},{num:42,answer:'2',points:2},{num:43,answer:'',points:1}]},sWrongChecked:{1:true},sExamAnswers:{1:'3'},sExamPhotos:{},sExamThoughts:{},sExamPriorResponse:{thoughts:{_subjective_answers:{2:'keep'}}},sHomeworkWrongOnly:()=>true,sHomeworkApplyWrongNumbers:()=>true,document:{getElementById:()=>({})},alert:()=>{},sb:{from:()=>({upsert:async data=>{saved=data;return {error:{message:'stop after payload'}};}})}});
+ let saved;Object.assign(c,{session:{name:'local test'},sExamData:{category:'homework',total_q:3,questions:[{num:41,answer:'1',points:2},{num:42,answer:'2',points:2},{num:43,answer:'',points:1}]},sWrongChecked:{1:true},sExamAnswers:{1:'3'},sExamPhotos:{},sExamThoughts:{},sExamPriorResponse:{thoughts:{_subjective_answers:{2:'keep'}}},sHomeworkWrongOnly:()=>true,sHomeworkApplyWrongNumbers:()=>true,document:{getElementById:()=>({})},alert:()=>{},sb:{from:()=>({upsert:async data=>{saved=data;return {error:{message:'stop after payload'}};}})},odapSaveResponse:async data=>{saved=data;return {error:{message:'stop after payload'}};}});
  await c.sExamSubmitScore();assert.equal(saved.total_q,2);assert.equal(saved.score,50);assert.equal(saved.points_total,4);assert.equal(saved.thoughts._subjective_answers[2],'keep');
  console.log('PASS: wrong-only scoring excludes subjective items and preserves written answers');
 })().catch(e=>{console.error(e);process.exitCode=1;});

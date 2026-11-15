@@ -1,7 +1,7 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 const ctx={};vm.createContext(ctx);
-for(const name of ['isObjectiveAnswer','examAnswerMatches','examToggleAnswer','examAnswerSelected','repIsWrong','examQuestionNumber','homeworkWrittenAnswers','sHomeworkRequired','sExamSubmitFull','sExamPickFullAnswer','renderSExamFullGrid']){
+for(const name of ['isObjectiveAnswer','examAnswerMatches','examToggleAnswer','examAnswerSelected','repIsWrong','examQuestionNumber','homeworkWrittenAnswers','sHomeworkRequired','sExamSubmitFull','sExamPickFullAnswer','sExamFullPageNav','renderSExamFullGrid']){
  const start=html.indexOf((name==='sExamSubmitFull'?'async ':'')+'function '+name+'(');
  const one=['isObjectiveAnswer','examAnswerSelected','sHomeworkRequired'].includes(name);
  const end=one?html.indexOf('\n',start):html.indexOf('\n}',start)+2;
@@ -17,7 +17,7 @@ const points=[3,3,2,3,4,3,4,4,3,3,4,4,3,2,4,3,4,4,3,4,4,4,4,4,2,4,2,3,2,4];
 assert.equal(points.reduce((a,b)=>a+b,0),100);
 const exam={id:'local-only',category:'clinic',total_q:30,questions:answers.map((answer,i)=>({num:i+1,answer,points:points[i]}))};
 let grid={innerHTML:''},saved;
-Object.assign(ctx,{sExamData:exam,sExamFullAnswers:{},escHtml:String,document:{getElementById:()=>grid},sExamIsTimedMock:()=>false,isLiteratureExam:()=>false,session:{name:'local test'},sExamPriorResponse:null,sOmrCurrentPhoto:null,alert:()=>{},sb:{from:()=>({upsert:async data=>{saved=data;return {error:{message:'stop locally'}};}})}});
+Object.assign(ctx,{sExamData:exam,sExamFullAnswers:{},escHtml:String,document:{getElementById:()=>grid},sExamIsTimedMock:()=>false,isLiteratureExam:()=>false,session:{name:'local test'},sExamPriorResponse:null,sOmrCurrentPhoto:null,alert:()=>{},sExamFullPage:0,sb:{from:()=>({upsert:async data=>{saved=data;return {error:{message:'stop locally'}};}})},odapSaveResponse:async data=>{saved=data;return {error:{message:'stop locally'}};}});
 ctx.sExamPickFullAnswer(7,4);ctx.sExamPickFullAnswer(7,1);assert.equal(ctx.sExamFullAnswers[7],'1,4');
 assert.ok(grid.innerHTML.includes('복수 선택'));ctx.sExamPickFullAnswer(7,1);assert.equal(ctx.sExamFullAnswers[7],'4');
 (async()=>{

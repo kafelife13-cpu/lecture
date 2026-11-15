@@ -4,11 +4,17 @@ for(const m of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g))if(m[1
 const ids=JSON.parse(fs.readFileSync('archived-midterm-video-ids.json'));
 const oldReview={id:'v1791932604597',category:'review'},oldClinic={id:'v1790800446265',category:'clinic'};
 const finalReview={id:'v_20261101_w2_hb_1',category:'review'},finalClinic={id:'v1793831773336',category:'clinic'};
-const ctx={session:{role:'student'},db:{videos:[oldReview,oldClinic,finalReview,finalClinic]}};vm.createContext(ctx);
+const ctx={session:{role:'student'},db:{videos:[oldReview,oldClinic,finalReview,finalClinic],access:[]},isAccessExpired:()=>false};vm.createContext(ctx);
 vm.runInContext(html.slice(html.indexOf('const archivedMidtermVideoIds='),html.indexOf('function reviewVideoVisible')),ctx);
 assert.deepEqual(Array.from(ctx.reviewVideos(),x=>x.id),[finalReview.id]);
 assert.deepEqual(Array.from(ctx.clinicVideos(),x=>x.id),[finalClinic.id]);
 for(const id of ids)assert.equal(ctx.studentVideoInScope({id}),false);
+// The two reopened medieval lessons return only for a fresh (after 11/14) review grant to that student.
+ctx.session.id='s1';ctx.db.access.push({student_id:'s1',video_id:'v1786872154770',access_kind:'review',granted_at:'2026-11-15T00:00:00Z'},{student_id:'s1',video_id:'v1786872166415',access_kind:'review',granted_at:'2026-10-10T00:00:00Z'});
+assert.equal(ctx.studentVideoInScope({id:'v1786872154770'}),true);
+assert.equal(ctx.studentVideoInScope({id:'v1786872166415'}),false,'old grant stays hidden');
+ctx.session.id='s2';assert.equal(ctx.studentVideoInScope({id:'v1786872154770'}),false,'other students stay hidden');
+delete ctx.session.id;
 ctx.session.role='teacher';assert.equal(ctx.reviewVideos().length,2);assert.equal(ctx.clinicVideos().length,2);
 assert.match(html,/if\(!v\|\|!studentVideoInScope\(v\)/);
 assert.match(html,/session.role==='student'&&!studentVideoInScope\(v\)/);

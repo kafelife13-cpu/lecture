@@ -24,6 +24,7 @@ const {replacement,noticeMatches}=require('../student-sections.js');
  for(const id of ['s-exam-clinic-groups','s-exam-list-homework','s-exam-list-mini-mock','s-exam-list-mock']){const card={};els[id]={closest:()=>card};}
  c.showSExamView=()=>{};c.sExamVisibleForStudent=()=>true;c.renderSExamClinicGroups=()=>{};c.renderSExamListCards=arr=>arr.map(e=>e.id).join(',');c.studentExamScope=null;
  c.sb={from:table=>({select:()=>({order:async()=>({data:[{id:'clinic',category:'school'},{id:'homework',category:'homework'},{id:'mock',category:'mock'}]}),eq:async()=>({data:[]})})})};
+ vm.runInContext(fs.readFileSync(path.join(__dirname,'../homework-split.js'),'utf8'),c);
  const examStart=html.indexOf('async function renderSExam(scope)'),examEnd=html.indexOf('function renderSExamClinicGroups()',examStart);vm.runInContext(html.slice(examStart,examEnd),c);
  await c.renderSExam('clinic');assert.equal(c.sExamClinicCache.length,1);assert.equal(els['s-exam-list-homework'].closest().hidden,true);assert.doesNotMatch(els['s-exam-list-homework'].innerHTML,/homework/);
  await c.renderSExam('homework');assert.equal(c.sExamClinicCache.length,0);assert.match(els['s-exam-list-homework'].innerHTML,/homework/);assert.equal(els['s-exam-clinic-groups'].closest().hidden,true);

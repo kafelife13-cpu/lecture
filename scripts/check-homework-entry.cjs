@@ -2,7 +2,7 @@ const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/st
 const html=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
 function source(start,end){const i=html.indexOf(start);assert.ok(i>=0);return html.slice(i,html.indexOf(end,i));}
 const fields={};let saved;
-const c={document:{getElementById:id=>fields[id]||(fields[id]={value:'',textContent:'',innerHTML:''})},
+const c={document:{getElementById:id=>fields[id]||(fields[id]={value:'',textContent:'',innerHTML:'',style:{},classList:{add(){},remove(){},toggle(){}}})},
   session:{id:'test',name:'test'},sExamCheckMode:'full',sWrongChecked:{},sExamAnswers:{},sExamPhotos:{},sExamThoughts:{},sExamPriorResponse:null,
   alert:msg=>{throw Error(msg)},sendStudentActivity:()=>{},showSExamView:()=>{},renderSExamResultView:()=>{},
   renderWrongDetails:()=>{},renderSExamAnswerGrid:()=>{},renderSExamListCards:list=>list.map(x=>x.name).join(','),
@@ -13,6 +13,9 @@ vm.runInContext(html.slice(objectiveStart,html.indexOf('\n',objectiveStart)),c);
 vm.runInContext(source('function sHomeworkRequired','function renderSExamClinicGroups'),c);
 vm.runInContext(source('function homeworkMissingAnswers','function homeworkWrittenAnswers'),c);
 vm.runInContext(source('async function sExamSubmitScore','// 클리닉 오답 재풀이'),c);
+vm.runInContext(source('function examAnswerMatches(','\n}')+'\n}',c);
+vm.runInContext(source('function examAnswerLabel(','\n'),c);
+c.sMockSourceLinks=()=>'';c.odapSaveResponse=async row=>{saved=row;return {};};
 (async()=>{
  const required={category:'homework',total_q:40,name:'필수시험'};
  const other={category:'homework',total_q:50,name:'추가시험'};
@@ -23,16 +26,17 @@ vm.runInContext(source('async function sExamSubmitScore','// 클리닉 오답 �
  assert.equal(c.sHomeworkWrongOnly(required),false);assert.equal(c.sHomeworkWrongOnly(other),false);
  assert.equal(c.sHomeworkAllowsWrongOnly(other),true);assert.equal(c.sHomeworkAllowsWrongOnly(required),true);c.sExamCheckMode='wrongonly';assert.equal(c.sHomeworkWrongOnly(other),true);assert.equal(c.sHomeworkWrongOnly(required),true);
  assert.equal(c.sHomeworkWrongOnly({category:'school',total_q:50}),false);
- const sections=c.renderHomeworkEntry([required,other],{}).split('<section style=');
- assert.match(sections[0],/필수 과제 입력/);assert.match(sections[0],/필수시험/);assert.doesNotMatch(sections[0],/추가시험/);assert.match(sections[1],/추가시험/);
- vm.runInContext(source('function renderSExamListCards','function showSExamView'),c);
+ // The entry list now groups homework by week in collapsible cards (latest open) instead of required/other sections.
+ const entry=c.renderHomeworkEntry([required,other],{});
+ assert.match(entry,/<details class="card" open/);assert.match(entry,/주차 미지정 과제 · 2개/);assert.match(entry,/필수시험/);assert.match(entry,/추가시험/);
+ vm.runInContext(source('function clinicExplanationNotice','function showSExamView'),c);
  assert.match(c.renderSExamListCards([other],{},''),/전체 답안 입력/);
  assert.match(c.renderSExamListCards([other],{},''),/틀린 문제만 입력/);
  for(const exam of [required,hanbaekWeek3,hanbaekWeek3Free,chidongWeek3,chidongWeek3Free])assert.match(c.renderSExamListCards([exam],{},''),/틀린 문제만 입력/);
  const saveClient=c.sb;c.sExamVisibleForStudent=()=>true;c.sExamTimerStart=()=>{};
  let found=other;c.sb={from:table=>({select:()=>({eq:()=>({single:async()=>({data:found}),eq:()=>({maybeSingle:async()=>({data:null})})})})})};
  vm.runInContext(source('async function sExamOpenForGrading','/* ── FULL 모드:'),c);
- for(const id of ['s-exam-check-full','s-exam-check-wrong','s-exam-full-choice','s-exam-full-camera','s-exam-full-loading','s-exam-full-grid-wrap','s-mock-score-only','s-mock-score-only-btn','s-mock-entry-notice'])fields[id]={style:{}};
+ for(const id of ['s-exam-check-full','s-exam-check-wrong','s-exam-full-choice','s-exam-full-camera','s-exam-full-loading','s-exam-full-grid-wrap','s-mock-score-only','s-mock-score-only-btn','s-mock-entry-notice'])fields[id]={style:{},classList:{add(){},remove(){},toggle(){}}};
  await c.sExamOpenForGrading('test');assert.equal(c.sExamCheckMode,'full');
  await c.sExamOpenForGrading('test','wrongonly');assert.equal(c.sExamCheckMode,'wrongonly');
  found=hanbaekWeek3;await c.sExamOpenForGrading('test','wrongonly');assert.equal(c.sExamCheckMode,'wrongonly');assert.equal(fields['s-homework-wrong-input'].hidden,false);

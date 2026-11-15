@@ -3,9 +3,9 @@ const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),
 const elements={};let saved,alerts=[],confirms=[],deferred=0;
 const ctx={document:{getElementById:id=>elements[id]||(elements[id]={value:'',style:{},focus(){}})},alert:m=>alerts.push(m),confirm:m=>(confirms.push(m),true),session:{id:'test',role:'student',name:'test'},weeklyLogin:{id:'test',pw:'local-test',role:'student'},studentPreviewMode:false,padMode:false,sExamPriorResponse:null,sOmrCurrentPhoto:null,sExamFullAnswers:{},sHomeworkRequired:()=>false,homeworkWrittenAnswers:()=>({}),sendStudentActivity:()=>{},isLiteratureExam:()=>false,sExamTimerStop:()=>{},showSExamView:()=>{},renderSExamResultView:()=>{},renderSExam:()=>deferred++,notify:()=>{},sb:{rpc:async (name,args)=>(assert.equal(name,'odap_save_response'),saved=args.p_payload,{error:null})}};
 vm.createContext(ctx);
-for(const name of ['odapSaveResponse','examAnswerMatches','isObjectiveAnswer','examQuestionNumber','parseHomeworkWrongNumbers','sExamIsScoreOnlyResponse','sMockSubmitWrongOnly','sExamSubmitFull','sExamSubmitReportedScore','repIsWrong','repScore','repDomainStats','sMockDeferGrading']){
+for(const name of ['odapSaveResponse','examAnswerMatches','isObjectiveAnswer','examDefaultAnswer','examQuestionNumber','parseHomeworkWrongNumbers','sExamIsScoreOnlyResponse','sMockSubmitWrongOnly','sExamSubmitFull','sExamSubmitReportedScore','repIsWrong','repScore','repDomainStats','sMockDeferGrading']){
  const start=html.indexOf((['odapSaveResponse','sMockSubmitWrongOnly','sExamSubmitFull','sExamSubmitReportedScore'].includes(name)?'async ':'')+'function '+name+'(');
- assert.ok(start>=0,name);const end=name==='isObjectiveAnswer'?html.indexOf('\n',start):html.indexOf('\n}',start)+2;vm.runInContext(html.slice(start,end),ctx);
+ assert.ok(start>=0,name);const end=['isObjectiveAnswer','examDefaultAnswer'].includes(name)?html.indexOf('\n',start):html.indexOf('\n}',start)+2;vm.runInContext(html.slice(start,end),ctx);
 }
 ctx.sExamData={id:'test',category:'mock',total_q:45,questions:Array.from({length:45},(_,i)=>({num:i+1,answer:String(i%5+1),points:[3,6,14,16,22,27,33,38,42,45].includes(i+1)?3:2,domain:i<10?'언어':'문학'}))};
 (async()=>{

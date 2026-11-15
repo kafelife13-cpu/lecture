@@ -1,6 +1,8 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8'),ctx={};vm.createContext(ctx);
 for(const name of ['renderHomeworkEntry','examQuestionNumber','parseHomeworkWrongNumbers']){let a=html.indexOf('function '+name+'('),b=html.indexOf('\n}',a)+2;vm.runInContext(html.slice(a,b),ctx);}
+const loadFn=n=>{const a=html.indexOf('function '+n+'(');if(a<0)throw Error('missing '+n);const line=html.slice(a,html.indexOf('\n',a)).trim();const one=(line.match(/\{/g)||[]).length===(line.match(/\}/g)||[]).length;vm.runInContext(one?line:html.slice(a,html.indexOf('\n}',a)+2),ctx);};
+["sHomeworkAllowsWrongOnly","sHomeworkNumbersOnly"].forEach(loadFn);
 ctx.renderSExamListCards=xs=>xs.map(x=>x.name).join('|');
 const out=ctx.renderHomeworkEntry([{name:'치동 3주차',clinic_week:'9월 2주차',created_at:'2026-09-12'},{name:'치동 4주차',clinic_week:'9월 4주차',created_at:'2026-09-19'},{name:'치동 1주차',clinic_week:'10월 1주차',created_at:'2026-10-01'}],[]);
 assert.ok(out.indexOf('10월 1주차')<out.indexOf('9월 4주차'));assert.ok(out.indexOf('9월 4주차')<out.indexOf('9월 3주차'));assert.equal((out.match(/ open/g)||[]).length,1);assert.ok(ctx.renderHomeworkEntry([],[]).includes('없어요'));

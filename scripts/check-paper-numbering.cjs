@@ -8,7 +8,11 @@ const c={sExamData:exam,sExamFullAnswers:{},sExamCheckMode:'wrongonly',sWrongChe
  document:{getElementById:id=>fields[id]||(fields[id]={value:'',innerHTML:'',style:{}})},escHtml:s=>s,isObjectiveAnswer:a=>/^[1-5]$/.test(a),updateWrongCountLabel:()=>{},
  renderWrongDetails:()=>{},sendStudentActivity:()=>{},showSExamView:()=>{},renderSExamResultView:()=>{},sb:{from:()=>({upsert:async row=>{saved=row;return {};}})}};
 vm.createContext(c);
-vm.runInContext(source('function sHomeworkAllowsWrongOnly','function renderSExamClinicGroups'),c);
+vm.runInContext(source('function sHomeworkRequired','function renderSExamClinicGroups'),c);
+c.sExamFullPage=0;c.odapSaveResponse=async row=>{saved=row;return {};};
+vm.runInContext(source('function examAnswerSelected(','\n'),c);
+vm.runInContext(source('function examAnswerMatches(','\n}')+'\n}',c);
+vm.runInContext(source('function sExamFullPageNav','function renderSExamFullGrid()'),c);
 vm.runInContext(source('function renderSExamFullGrid()','function sExamPickFullAnswer'),c);
 vm.runInContext(source('function renderSExamAnswerGrid()','function sToggleWrong'),c);
 vm.runInContext(source('async function sExamSubmitScore','// 클리닉 오답 재풀이'),c);
@@ -17,12 +21,13 @@ vm.runInContext(source('async function sExamSubmitScore','// 클리닉 오답 �
  for(const s of ['1','40','110','41.5','41-45','NaN'])assert.throws(()=>c.parseHomeworkWrongNumbers(s,exam));
  assert.equal(JSON.stringify(c.parseHomeworkWrongNumbers('1,3',3)),'[0,2]');
  c.renderSExamFullGrid();const full=fields['s-exam-full-grid'].innerHTML;
- for(const n of [41,60,61,72,100,101,109])assert.ok(full.includes('>'+n+'번</span>'));
- assert.ok(full.includes('서술형·주관식'));assert.equal((full.match(/<h3 /g)||[]).length,3);
+ for(const n of [41,60,61,100,101,109])assert.ok(full.includes('>'+n+'번</span>'));
+ assert.ok(full.includes('>72번 · 직접 입력'),'blank-key 72 is a written-answer field');
+ assert.equal((full.match(/<h3 /g)||[]).length,3);
  assert.ok(full.includes('sExamPickFullAnswer(0,4)'));
  c.sWrongChecked={0:true,68:true};c.renderSExamAnswerGrid();assert.equal(fields['s-homework-wrong-numbers'].value,'41, 109');
  assert.ok(fields['s-exam-q-grid'].innerHTML.includes('>109</button>'));
- c.sExamAnswers={0:'2',68:'3'};fields['s-homework-wrong-numbers'].value='41,109';await c.sExamSubmitScore();assert.deepEqual(Object.keys(saved.answers),['0','68']);assert.equal(saved.correct_count,67);
+ c.sExamAnswers={0:'2',68:'3'};fields['s-homework-wrong-numbers'].value='41,109';await c.sExamSubmitScore();assert.deepEqual(Object.keys(saved.answers),['0','68']);assert.equal(saved.correct_count,66);assert.equal(saved.total_q,68);
  fields['s-homework-wrong-numbers'].value='1';saved=null;await c.sExamSubmitScore();assert.equal(saved,null);
  for(const m of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g))new vm.Script(m[1]);
  console.log('PASS: paper numbers 41–109, three sections, subjective label, validation, index-safe storage, inline syntax');
