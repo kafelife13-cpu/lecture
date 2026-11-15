@@ -45,6 +45,7 @@ end $$;
 
 create or replace function public.odap_grade(a text,k text) returns boolean language sql immutable set search_path=public as $$
 select case when k ~ '^[1-5]$' and btrim(coalesce(a,'')) ~ '^[1-5]$' then btrim(a)=k
+when k ~ '^any:[1-5](,[1-5])+$' and btrim(coalesce(a,'')) ~ '^[1-5](\s*,\s*[1-5])*$' then btrim(a)=any(string_to_array(substr(k,5),','))
 when k ~ '^all:[1-5](,[1-5])+$' and btrim(coalesce(a,'')) ~ '^[1-5](\s*,\s*[1-5])*$' then
  (select array_agg(distinct x order by x) from regexp_split_to_table(regexp_replace(a,'\s','','g'),',') x)=(select array_agg(distinct x order by x) from regexp_split_to_table(substr(k,5),',') x)
 when upper(k) in ('O','X') and upper(a) in ('O','X') then upper(k)=upper(a) else null end $$;

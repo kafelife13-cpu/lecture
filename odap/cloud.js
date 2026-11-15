@@ -41,6 +41,7 @@
   }
   if(url.pathname==='/api/review-archive'){if(!auth||auth.role!=='teacher')throw Error('교사 로그인이 필요합니다.');return request('/functions/v1/odap-review-archive',{credentials:auth,action:payload.action,payload:payload.payload});}
   if(url.pathname==='/api/private-weekly'){if(!auth||auth.role!=='teacher')throw Error('교사 로그인이 필요합니다.');return request('/functions/v1/odap-private-weekly',{credentials:auth,action:payload.action,payload:payload.payload});}
+  if(url.pathname==='/api/clinic-practice'){if(!auth||auth.role!=='teacher')throw Error('교사 로그인이 필요합니다.');return request('/rest/v1/rpc/odap_clinic_practice_rpc',{p_id:auth.id,p_password:auth.pw,p_role:auth.role,p_action:payload.action,p_payload:payload.payload});}
   if(url.pathname==='/api/drive')return request('/rest/v1/rpc/odap_drive',{p_id:auth.id,p_password:auth.pw,p_action:payload.action||'list',p_payload:payload});
   if(url.pathname==='/api/input-status')return request('/rest/v1/rpc/odap_input_status',{p_id:auth.id,p_password:auth.pw});
   if(url.pathname==='/api/homework')return request('/rest/v1/rpc/odap_homework',{p_id:auth.id,p_password:auth.pw,p_action:payload.action||'list',p_payload:payload});

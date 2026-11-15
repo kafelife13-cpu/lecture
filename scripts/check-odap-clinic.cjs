@@ -73,6 +73,9 @@ assert.equal((await db.query("select questions->0->>'answer' a from exams where 
 assert.equal((await db.query("select answers->>'0' a from exam_responses where id='r3'")).rows[0].a,'2');
 assert.equal((await db.query("select odap_grade('4,1','all:1,4') ok")).rows[0].ok,true);
 assert.equal((await db.query("select odap_grade('4','all:1,4') ok")).rows[0].ok,false);
+for(const value of ['4','5',' 4 '])assert.equal((await db.query("select odap_grade($1,'any:4,5') ok",[value])).rows[0].ok,true,value);
+for(const value of ['1','2','3','1,2,3','4,5'])assert.equal((await db.query("select odap_grade($1,'any:4,5') ok",[value])).rows[0].ok,false,value);
+for(const value of ['',null,'any:4,5'])assert.equal((await db.query("select odap_grade($1,'any:4,5') ok",[value])).rows[0].ok,null,value);
 const retryPacket=large.body.packet_ids[0];
 await db.query("update odap_jobs set status='failed',error='test' where packet_id=$1",[retryPacket]);
 await assert.rejects(()=>clinic('retry',{student_id:'s2',packet_id:retryPacket}));
