@@ -419,10 +419,15 @@ input,button{font-family:var(--font)}
               <div style="flex:1"><label class="flabel">강의 설명 (선택)</label><input id="v-desc" class="form-input" placeholder="이 강의에서 배우는 내용"/></div>
               <div>
                 <label class="flabel">카테고리</label>
-                <select id="v-category" class="form-select" style="width:140px">
+                <select id="v-category" class="form-select" style="width:140px" onchange="document.getElementById('v-target-wrap').hidden=this.value!=='makeup'">
                   <option value="normal">📚 일반 강의</option>
                   <option value="review">🔁 복습 신청 영상</option>
+                  <option value="makeup">🧩 보강 영상</option>
                 </select>
+              </div>
+              <div id="v-target-wrap" hidden>
+                <label class="flabel" for="v-target">공개 대상</label>
+                <select id="v-target" class="form-select" style="width:150px"></select>
               </div>
               <div style="display:flex;align-items:flex-end"><button class="btn blue" onclick="addVideo()" style="height:40px;white-space:nowrap">등록</button></div>
             </div>
@@ -434,6 +439,9 @@ input,button{font-family:var(--font)}
         <!-- 복습 신청 영상 목록 -->
         <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>🔁</span> 복습 신청 영상</div><div class="section-divider-line"></div></div>
         <div id="video-list-review"></div>
+        <!-- 보강 영상 목록 -->
+        <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label"><span>🧩</span> 보강 영상</div><div class="section-divider-line"></div></div>
+        <div id="video-list-makeup"></div>
       </div>
 
       <!-- 클리닉 영상 -->
@@ -1168,7 +1176,9 @@ input,button{font-family:var(--font)}
         <button onclick="sNav('clinic-lectures')"><strong>클리닉 해설강의</strong><span>클리닉 시험 문제의 해설 보기</span></button>
         <button onclick="sNav('replacement')"><strong>영상대체 강의</strong><span>선생님이 지정한 미등원 대체 수업</span></button>
         <button onclick="sNav('review')"><strong>복습 신청강의</strong><span>관심 있는 강의를 골라 신청하기</span></button>
+        <button onclick="sNav('makeup')"><strong>보강영상</strong><span>우리 반·학교에 올라온 보강 강의 보기</span></button>
       </div></div>
+      <div class="panel" id="panel-makeup"><div class="page-header"><h1>보강영상</h1><p>선생님이 우리 반·학교에 올려 준 보강 강의예요.</p></div><div id="student-makeup-list"></div></div>
       <div class="panel" id="panel-replacement"><div class="page-header"><h1>영상대체 강의</h1><p>미등원한 수업 대신 선생님이 지정한 강의를 시청해요.</p></div><div id="student-replacement-list"></div></div>
       <div class="panel" id="panel-weekly"><div class="page-header"><h1>이번 주 할 일</h1><p>과제 안내, 사진 인증과 필수 과제를 한곳에서 확인하고 바로 시작하세요.</p></div>
         <div class="weekly-toolbar"><label>확인할 주 <input type="date" id="s-weekly-date" data-weekly-date></label><button class="btn" data-weekly-action="refresh">현황 새로고침</button></div>
@@ -1181,7 +1191,7 @@ input,button{font-family:var(--font)}
           <button class="student-section-card assignments" onclick="sNav('weekly')"><span class="student-section-icon" aria-hidden="true">✓</span><span><strong>과제수행</strong><small>과제 입력과 오답 정리, 완료 현황</small><em>OMR · 질문 · 오답 노트 · 공부 인증</em></span><span class="student-section-arrow" aria-hidden="true">→</span></button>
           <button class="student-section-card" onclick="sNav('clinic-hub')"><span class="student-section-icon" aria-hidden="true">◷</span><span><strong>클리닉</strong><small>시간 변경과 클리닉 안내, 시험지 채점</small><em>시간 변경 · 클리닉 공지 · 시험지 채점</em></span><span class="student-section-arrow" aria-hidden="true">→</span></button>
           <button class="student-section-card" onclick="sNav('notice-hub')"><span class="student-section-icon" aria-hidden="true">!</span><span><strong>공지사항</strong><small>선생님이 전하는 중요한 안내</small><em>과제 안내 · 개별 인증 안내</em></span><span class="student-section-arrow" aria-hidden="true">→</span></button>
-          <button class="student-section-card" onclick="sNav('video-hub')"><span class="student-section-icon" aria-hidden="true">▷</span><span><strong>영상강의</strong><small>수업 해설과 필요한 강의를 한곳에서</small><em>클리닉 해설 · 영상대체 · 복습 신청</em></span><span class="student-section-arrow" aria-hidden="true">→</span></button>
+          <button class="student-section-card" onclick="sNav('video-hub')"><span class="student-section-icon" aria-hidden="true">▷</span><span><strong>영상강의</strong><small>수업 해설과 필요한 강의를 한곳에서</small><em>클리닉 해설 · 영상대체 · 복습 신청 · 보강</em></span><span class="student-section-arrow" aria-hidden="true">→</span></button>
         </div>
         <div id="home-cert-alert"></div>
         <div id="home-announce-banner"></div>
@@ -2077,6 +2087,18 @@ function videoInCurrentView(v){return !session||session.role!=='student'||studen
 function clinicVideos(){return db.videos.filter(v=>v.category==='clinic'&&videoInCurrentView(v));}
 function reviewVideos(){return db.videos.filter(v=>v.category==='review'&&videoInCurrentView(v));}
 function reviewVideoVisible(v){return v.student_visible!==false;}
+/* 보강 영상: 공개 대상(전체·학교·반)을 클리닉 영상처럼 설명 끝 [대상:...] 표시로 저장한다. */
+const MAKEUP_SCHOOLS=[{id:'sc_hanbaek',label:'한백고 전체'},{id:'sc_chidong',label:'치동고 전체'}];
+function makeupTargets(){return [{id:'all',label:'전체 학생'}].concat(MAKEUP_SCHOOLS,STUDENT_CLASSES);}
+function makeupVideoTarget(v){var m=String(v.description||'').match(/\[대상:([\w-]+)\]/);return m?m[1]:'all';}
+function makeupTargetLabel(id){var t=makeupTargets().find(function(x){return x.id===id;});return t?t.label:'확인필요('+id+')';}
+function makeupVideoDescription(v){return String(v.description||'').replace(/\s*\[대상:[\w-]+\]\s*/g,' ').trim();}
+function makeupVideoForStudent(v,student){
+  if(!v||v.category!=='makeup'||!student)return false;
+  var t=makeupVideoTarget(v);
+  return t==='all'||t===student.school_id||t===student.group_id;
+}
+function makeupVideos(){return db.videos.filter(v=>v.category==='makeup');}
 function clinicVideoSchool(v){
   var text=((v.title||'')+' '+(v.description||'')).toLowerCase();
   var marker=text.match(/\[학교:(sc_hanbaek|sc_chidong|all)\]/);
@@ -3363,9 +3385,12 @@ async function vAutoFillFromYoutube(){
 async function addVideo(){
   const title=document.getElementById('v-title').value.trim();
   const url=document.getElementById('v-url').value.trim();
-  const desc=document.getElementById('v-desc').value.trim();
+  const plainDesc=document.getElementById('v-desc').value.trim();
   const category=document.getElementById('v-category').value;
   if(category==='clinic'){notify('클리닉 영상 메뉴에서 시험을 연결해 등록해 주세요.','info');tNav('clinic-videos');return;}
+  const target=document.getElementById('v-target').value;
+  if(category==='makeup'&&!makeupTargets().some(t=>t.id===target)){notify('보강 영상의 공개 대상을 선택하세요.','error');return;}
+  const desc=category==='makeup'?(plainDesc?plainDesc+' ':'')+'[대상:'+target+']':plainDesc;
   if(!title||!url){notify('제목과 URL을 입력하세요.','error');return;}
   if(!ytId(url)){notify('유효한 유튜브 URL을 입력하세요.','error');return;}
   const id='v'+Date.now();
@@ -3374,7 +3399,7 @@ async function addVideo(){
   db.videos.push({id,title,url,description:desc,category,created_at:new Date().toISOString()});
   ['v-title','v-url','v-desc'].forEach(i=>document.getElementById(i).value='');
   const thumbEl=document.getElementById('v-thumb-preview');if(thumbEl)thumbEl.style.display='none';
-  const categoryLabel=category==='review'?'복습 신청 영상':category==='clinic'?'클리닉 해설':'일반 강의';
+  const categoryLabel=category==='review'?'복습 신청 영상':category==='makeup'?'보강 영상 · '+makeupTargetLabel(target):category==='clinic'?'클리닉 해설':'일반 강의';
   notify(`강의가 등록되었습니다. (${categoryLabel})`, 'success');
   renderVideos();
 }
@@ -3424,16 +3449,17 @@ function renderVideoGrid(videos, containerId){
     const doneC=progs.filter(p=>p>=100).length;
     const isReview=v.category==='review';
     const isClinic=v.category==='clinic';
+    const isMakeup=v.category==='makeup';
     const studentVisible=reviewVideoVisible(v);
     return`<div class="video-card ${isReview?'review-card':''}">
       <div class="video-thumb">${t?`<img src="${t}" onerror="this.style.display='none'">`:''}<div class="thumb-fb"><div class="yt-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
       <div style="padding:12px 14px">
         <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
-          <span class="badge ${isReview?'review':'normal'}">${isReview?'🔁 복습':isClinic?'🏫 클리닉':'📚 일반'}</span>
-          ${isArchivedMidtermVideo(v)?'<span class="badge none">중간대비 · 학생에게 숨김</span>':isReview?`<span class="badge ${studentVisible?'done':'none'}">${studentVisible?'학생 표시 중':'학생에게 숨김'}</span>`:''}
+          <span class="badge ${isReview?'review':'normal'}">${isReview?'🔁 복습':isClinic?'🏫 클리닉':isMakeup?'🧩 보강':'📚 일반'}</span>
+          ${isMakeup?`<span class="badge done">${escHtml(makeupTargetLabel(makeupVideoTarget(v)))}</span>`:isArchivedMidtermVideo(v)?'<span class="badge none">중간대비 · 학생에게 숨김</span>':isReview?`<span class="badge ${studentVisible?'done':'none'}">${studentVisible?'학생 표시 중':'학생에게 숨김'}</span>`:''}
         </div>
         <div style="font-size:13px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(v.title)}</div>
-        <div style="font-size:11px;color:var(--text2);margin-bottom:8px">${escHtml(isClinic?(clinicVideoDescription(v)||'클리닉 해설 영상'):(v.description||'설명 없음'))}</div>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:8px">${escHtml(isClinic?(clinicVideoDescription(v)||'클리닉 해설 영상'):isMakeup?(makeupVideoDescription(v)||'보강 영상'):(v.description||'설명 없음'))}</div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
           <span style="font-size:11px;color:var(--text2)">${isReview?`권한 ${db.access.filter(a=>a.video_id===v.id).length}명`:doneC+'/'+sts.length+'명 완료'}</span>
           <strong style="font-size:12px;color:${pctColor(avgP)}">${avgP}%</strong>
@@ -3461,6 +3487,9 @@ async function toggleReviewVideoVisibility(id,visible){
 function renderVideos(){
   renderVideoGrid(normalVideos(),'video-list-normal');
   renderVideoGrid(reviewVideos(),'video-list-review');
+  renderVideoGrid(makeupVideos(),'video-list-makeup');
+  const target=document.getElementById('v-target');
+  if(target&&!target.options.length)target.innerHTML=makeupTargets().map(t=>`<option value="${t.id}">${escHtml(t.label)}</option>`).join('');
 }
 
 var clinicVideoExamChoices=[];
@@ -4132,6 +4161,7 @@ function sNav(panel,examScope){
   if(panel==='clinic-lectures')renderClinicLectures();
   if(panel==='review')renderStudentReview();
   if(panel==='replacement')renderReplacementLectures();
+  if(panel==='makeup')renderMakeupLectures();
   if(panel==='clinic-notices')renderSAnnounceList('clinic');
   if(panel==='mypage')renderMyPage();
   if(panel==='qa'){renderSQaSchoolList();renderSQaMyList();clearQaBadge();}
@@ -4143,7 +4173,7 @@ function sNav(panel,examScope){
   if(panel==='scores')renderSGrades();
 
   if(panel==='announce')renderSAnnounceList();
-  var section=['announce','notice-hub','cert'].includes(panel)?'announce':(['clinic-hub','clinic','clinic-notices','scores','oxreview'].includes(panel)?'clinic-hub':(['video-hub','replacement','clinic-lectures','review','lectures','mypage'].includes(panel)?'video-hub':(['weekly','weekly-notebook','weekly-concept','vocab','qa','study'].includes(panel)?'weekly':null)));
+  var section=['announce','notice-hub','cert'].includes(panel)?'announce':(['clinic-hub','clinic','clinic-notices','scores','oxreview'].includes(panel)?'clinic-hub':(['video-hub','replacement','makeup','clinic-lectures','review','lectures','mypage'].includes(panel)?'video-hub':(['weekly','weekly-notebook','weekly-concept','vocab','qa','study'].includes(panel)?'weekly':null)));
   if(panel==='exam')section=document.querySelector('.student-primary-nav [aria-current="page"]')?.dataset.studentSection||'clinic-hub';
   document.querySelectorAll('[data-student-section]').forEach(function(b){var active=b.dataset.studentSection===section;b.classList.toggle('active',active);if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
   if(panel==='clinic-hub')renderStudentClassAttendance();
@@ -4304,6 +4334,27 @@ function renderLectures(){
     </div>`;
   }).join('');
   el.innerHTML=normalTitle+normalHtml;
+}
+
+function renderMakeupLectures(){
+  const el=document.getElementById('student-makeup-list');
+  const vids=makeupVideos().filter(v=>makeupVideoForStudent(v,session)).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  if(!vids.length){el.innerHTML='<div class="weekly-empty">올라온 보강영상이 없어요.<p>선생님이 우리 반·학교에 보강영상을 올리면 여기에 표시돼요.</p></div>';return;}
+  el.innerHTML=vids.map(v=>{
+    const p=getPct(session.id,v.id),lp=getLastPos(session.id,v.id),t=thumb(v.url);
+    return`<div class="lecture-item">
+      <div class="lecture-thumb">${t?`<img src="${t}" alt="">`:'<div class="yt-icon" style="width:32px;height:32px"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>'}</div>
+      <div class="lecture-body">
+        <h4>${escHtml(v.title)}${(Date.now()-new Date(v.created_at).getTime())<7*24*3600*1000?' <span class="badge" style="background:var(--red-bg);color:var(--red);font-size:10px;vertical-align:middle">NEW</span>':''}</h4>
+        <div class="lmeta">${escHtml(makeupVideoDescription(v)||'보강 강의')} · ${escHtml(makeupTargetLabel(makeupVideoTarget(v)))}</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="pbar" style="width:110px"><div class="pbar-fill" style="width:${p}%;background:${pctColor(p)}"></div></div>
+          <span class="badge ${pctBadge(p)}">${pctLabel(p)}</span>
+        </div>
+      </div>
+      <button class="btn blue btn-sm" onclick="openPlay('${v.id}')">▶ ${lp>0&&p<100?'이어보기':'시청하기'}</button>
+    </div>`;
+  }).join('');
 }
 
 var clinicVideoListRequest=0;
@@ -4486,6 +4537,7 @@ async function openPlay(vid, forceStart){
     }catch(error){if(request===playRequest&&session===student)notify('성적을 확인하지 못해 영상을 열 수 없어요. 다시 시도해 주세요.','error');return;}
   }
   if(v.category==='review'&&!hasAccess(session.id,vid)){notify('시청 권한이 없습니다.','error');return;}
+  if(session.role==='student'&&v.category==='makeup'&&!makeupVideoForStudent(v,session)){notify('우리 반·학교에 공개된 보강 영상이 아닙니다.','error');return;}
   const lp=getLastPos(session.id,vid);
   const pct=getPct(session.id,vid);
   // 이전 기록이 있고 완료되지 않았으면 선택 모달 표시
