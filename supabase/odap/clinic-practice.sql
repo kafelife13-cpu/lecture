@@ -75,10 +75,12 @@ revoke all on function public.odap_clinic_practice_has_choices(jsonb) from publi
 -- One correspondence table for both clinic domains and homework domains.
 create or replace function public.odap_clinic_practice_domain(d text) returns text language sql immutable set search_path=public as $$
  select case
- when d ~ '고전소설' then '문학(고전소설)'
- when d ~ '현대시' then '문학(현대시)'
- when d ~ '고전시가|고전시' then '문학(고전시)'
- when d ~ '현대 국어 문법|중세 국어|한글 맞춤법|문법' then '문법'
+ -- Clinic papers label questions by topic (work or grammar unit); fold those into the homework domains.
+ when d ~ '고전소설|춘향전' then '문학(고전소설)'
+ when d ~ '현대시|진달래꽃' then '문학(현대시)'
+ when d ~ '고전시가|고전시|속미인곡' then '문학(고전시)'
+ when d ~ '현대 국어 문법|중세 국어|한글 맞춤법|문법|높임|사동|피동|시간 표현' then '문법'
+ when d ~ '화법|발표' then '화법'
  else null end
 $$;
 revoke all on function public.odap_clinic_practice_domain(text) from public,anon,authenticated;
@@ -201,14 +203,16 @@ begin
   end if;
   if chosen is null then
    domain:=public.odap_clinic_practice_domain(w.value->>'domain');
-   work_title:=substring(w.value->>'domain' from '\(([^)]+)\)');
+   -- Prefer homework on the same work/unit: "문학(현대시)" -> 현대시, "높임 표현" -> 높임, "중세 국어" -> 중세.
+   work_title:=coalesce(substring(w.value->>'domain' from '\(([^)]+)\)'),nullif(split_part(btrim(coalesce(w.value->>'domain','')),' ',1),''));
    if domain is null then fallback_reason:='no_domain';
    else
     select h->>'exam_id',(h->>'idx')::int,h->'body',h->>'content_key' into hw_exam,hw_idx,hw_body,content
     from jsonb_array_elements(homework_pool) h where h->>'domain'=domain and (h->>'choices_ok')::boolean
      and h->>'content_key'<>md5(regexp_replace(coalesce(w.value->>'text',''),'\s','','g'))
      and not exists(select 1 from public.odap_clinic_practice_items i where i.student_id=p_student_id and i.status<>'retired' and i.content_key=h->>'content_key')
-    order by case when nullif(work_title,'') is not null and position(work_title in h->>'name')>0 then 0 else 1 end,
+    order by case when nullif(work_title,'') is not null and position(replace(work_title,' ','') in
+      replace(coalesce(h->>'name','')||' '||coalesce(h->'body'->>'text','')||' '||coalesce(h->'body'->>'passage',''),' ',''))>0 then 0 else 1 end,
      (h->>'created_at')::timestamptz desc,h->>'exam_id',(h->>'idx')::int limit 1;
     if hw_exam is null then
      fallback_reason:=case when exists(select 1 from jsonb_array_elements(homework_pool) h where h->>'domain'=domain and not (h->>'choices_ok')::boolean) then 'no_choices' else 'no_homework_candidate' end;
