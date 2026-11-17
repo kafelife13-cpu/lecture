@@ -1,4 +1,4 @@
--- LOCAL REVIEW ONLY: do not execute on production until the supervisor releases it.
+-- Released 2026-11-18 by teacher ("운영 반영해").
 -- Legacy app login is not Supabase Auth: auth.uid() cannot identify these users.
 -- RLS denies direct anon/authenticated table access. The teacher RPC below is
 -- the sole browser path and checks the existing server-side password verifier.
@@ -85,6 +85,48 @@ revoke all on function public.sms_approval_rpc(text,text,text,text) from public;
 grant execute on function public.sms_approval_rpc(text,text,text,text) to anon, authenticated;
 revoke all on function public.sms_approval_immutable() from public;
 comment on table public.sms_approvals is 'Anonymous previews and immutable teacher decisions only; approval itself does not send SMS.';
+-- Academy PC path: no service_role key on the PC. The PC holds a random token
+-- (DPAPI-protected locally); only its sha256 is stored here, inserted
+-- separately and never committed to the repository.
+create table public.sms_approval_publishers (
+  token_hash text primary key check (token_hash ~ '^[a-f0-9]{64}$'),
+  label text not null,
+  created_at timestamptz not null default now()
+);
+alter table public.sms_approval_publishers enable row level security;
+revoke all on public.sms_approval_publishers from public, anon, authenticated;
+
+create function public.sms_approval_pc(p_token text, p_action text, p_row jsonb default null, p_id text default null)
+returns jsonb language plpgsql security definer
+set search_path = pg_catalog, public, extensions as $$
+declare saved public.sms_approvals%rowtype;
+begin
+  if p_token is null or length(p_token) < 32 or not exists (
+    select 1 from public.sms_approval_publishers where token_hash = encode(extensions.digest(p_token, 'sha256'), 'hex')) then
+    raise exception 'PUBLISHER_AUTH_REQUIRED' using errcode = '42501';
+  end if;
+  if p_action = 'create' then
+    insert into public.sms_approvals (id, job, slot, created_at, expires_at, recipient_count, preview, plan_digest)
+    values (p_row->>'id', p_row->>'job', (p_row->>'slot')::timestamptz, (p_row->>'created_at')::timestamptz,
+      (p_row->>'expires_at')::timestamptz, (p_row->>'recipient_count')::integer, p_row->'preview', p_row->>'plan_digest')
+    on conflict (job, slot) do nothing;
+    select * into saved from public.sms_approvals where id = p_row->>'id';
+  elsif p_action = 'get' then
+    select * into saved from public.sms_approvals where id = p_id;
+  elsif p_action = 'expire' then
+    update public.sms_approvals set status = 'expired'
+      where id = p_id and status = 'pending' and expires_at <= clock_timestamp();
+    select * into saved from public.sms_approvals where id = p_id;
+  else
+    raise exception 'APPROVAL_ACTION_INVALID';
+  end if;
+  if not found then return null; end if;
+  return to_jsonb(saved);
+end;
+$$;
+revoke all on function public.sms_approval_pc(text,text,jsonb,text) from public;
+grant execute on function public.sms_approval_pc(text,text,jsonb,text) to anon, authenticated;
+
 -- Push queue is intentionally not written by this migration or RPC. Existing
 -- push_queue is broadly writable; teacher-only delivery needs separate review.
 commit;
