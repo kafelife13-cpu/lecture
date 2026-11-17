@@ -1,0 +1,6 @@
+.sms-approval-card{border:1px solid var(--border);border-radius:14px;padding:18px;margin:14px 0;background:var(--surface);overflow-wrap:anywhere}
+.sms-approval-card h2{font-size:18px;margin-bottom:10px}.sms-approval-card h3{font-size:14px;margin-top:14px}
+.sms-approval-card p,.sms-approval-card li{line-height:1.8}.sms-approval-card ul{padding-left:20px}
+.sms-approval-card pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;font-size:14px;line-height:1.7;padding:12px;background:rgba(127,127,127,.08);border-radius:8px}
+.sms-approval-actions{display:flex;gap:12px;margin-top:16px}.sms-approval-actions button{flex:1;min-height:48px}
+#sms-approval-message{line-height:1.7;margin:12px 0}#panel-sms-approval{min-width:0}

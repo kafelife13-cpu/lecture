@@ -273,6 +273,7 @@ input,button{font-family:var(--font)}
 </style>
 <link rel="stylesheet" href="student-ui.css?v=3">
 <link rel="stylesheet" href="weekly-homework.css?v=2">
+<link rel="stylesheet" href="sms-approval.css?v=20261118">
 </head>
 <body>
 <div id="loading-screen"><div class="spinner"></div><div class="loading-text">서버에 연결 중...</div></div>
@@ -345,6 +346,7 @@ input,button{font-family:var(--font)}
         <div class="sidebar-user-info"><p id="t-name">강사</p><span class="badge teacher-role" style="font-size:10px">강사</span></div>
       </div>
       <nav class="sidebar-nav"><div class="nav-item" onclick="tNav('weekly')" data-p="weekly">이번 주 필수 과제</div>
+        <button class="nav-item" onclick="tNav('sms-approval')" data-p="sms-approval">문자 승인</button>
         <button class="nav-item clinic-check-nav" onclick="openClinicCheckout()" data-p="clinic">✓ 클리닉 귀가 신청</button>
         <div class="nav-item active" onclick="tNav('dashboard')" data-p="dashboard"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>대시보드</div>
         <div class="nav-item" onclick="tNav('announce')" data-p="announce" id="nav-announce"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>과제 안내</div>
@@ -374,12 +376,14 @@ input,button{font-family:var(--font)}
         <div id="t-weekly-body" aria-live="polite"></div><div id="t-weekly-editor" class="weekly-detail" hidden></div><div id="t-weekly-review" class="weekly-detail" hidden></div></div>
 
 
+<div class="panel" id="panel-sms-approval"><div class="page-header"><h1>문자 승인</h1><p>문구와 반별 인원을 확인하고 보내기를 선택해 주세요. 기한 내 승인하지 않으면 보내지 않습니다.</p></div><button type="button" class="btn" data-sms-refresh>새로고침</button><p id="sms-approval-message" role="status" aria-live="polite"></p><div id="sms-approval-list"></div></div>
       <!-- 대시보드 -->
       <div class="panel" id="panel-literature"><div class="page-header"><h1>문학 30분 모의고사</h1><p>회차별 문제지·해설 · 학생 채점과 오답노트</p></div><div id="t-literature-body"></div></div>
 <div class="panel" id="panel-grammar-ox"><div class="page-header"><h1>문법 복습OX 현황</h1></div><div id="t-grammar-ox-body"></div></div>
       <div class="panel active" id="panel-dashboard">
         <div class="page-header"><h1>대시보드</h1><p>오늘과 이번 주에 확인해야 할 학생을 한눈에 보세요 <span id="dash-date" style="display:none"></span></p></div>
         <button class="clinic-check-launch" onclick="openClinicCheckout()"><span class="clinic-check-launch-icon" aria-hidden="true">✓</span><span><strong>클리닉 귀가 신청</strong><small>학생 신청 확인 · 수락 · 거절</small></span><span aria-hidden="true">→</span></button>
+        <button class="btn blue" style="min-height:48px;margin-bottom:16px" onclick="tNav('sms-approval')">문자 승인 확인</button>
         <div class="stats-row" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))" id="t-stats"></div>
         <!-- Q&A 미답변 알림 -->
         <div id="dash-qa-alert" style="display:none;margin-bottom:1rem">
@@ -2852,6 +2856,7 @@ function renderHomeAnnounceBanner(){
 
 /* ===== TEACHER NAV ===== */
 function tNav(panel){
+  if(panel==='sms-approval')renderSmsApprovals();
   if(panel==='grammar-ox')renderGrammarOxTeacher();
   if(panel==='literature')renderLiterature();
   document.querySelectorAll('#page-teacher .nav-item').forEach(n=>n.classList.toggle('active',n.dataset.p===panel));
@@ -11931,5 +11936,6 @@ function installPWA(){
 <script src="odap-entry.js?v=1"></script>
 <script src="clinic-practice.js?v=20261105-similar"></script>
 <script src="consultation.js?v=20261105-homework-popup"></script>
+<script src="sms-approval.js?v=20261118"></script>
 </body>
 </html>
