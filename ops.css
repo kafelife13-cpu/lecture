@@ -1,0 +1,23 @@
+:root{font-family:system-ui,-apple-system,"Malgun Gothic",sans-serif;color:#203a34;background:#f3f6f3;line-height:1.6;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0}
+main{max-width:850px;margin:auto;padding:24px 16px calc(24px + env(safe-area-inset-bottom))}
+header,.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px}
+h1{font-size:1.6rem;margin:0 0 20px}h2{font-size:1.2rem}h3{font-size:1rem}
+.eyebrow{font-size:.8rem;letter-spacing:.08em;margin:0;color:#49645c}
+button,input{font:inherit;border:1px solid #79958d;border-radius:10px;min-height:48px;padding:10px 14px}
+button{cursor:pointer;background:white;color:#203a34;font-weight:600}
+button:disabled{opacity:.55;cursor:default}
+button:focus-visible,input:focus-visible{outline:3px solid #c06b19;outline-offset:3px}
+[hidden]{display:none!important}
+form,article{background:white;border:1px solid #c8d7d0;border-radius:16px;padding:20px;margin:16px 0;overflow-wrap:anywhere}
+label{display:block}input{display:block;width:100%;margin:8px 0 16px}
+form button,.primary,button[aria-pressed="true"]{background:#254e46;color:white}
+nav{display:flex;gap:8px;position:sticky;top:0;background:#f3f6f3;padding:12px 0;z-index:1}
+nav button{flex:1;padding:10px 6px;font-size:.95rem}
+pre{font:inherit;white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f6f3;padding:12px;border-radius:8px}
+ul{padding-left:22px}.actions{display:flex;gap:10px}.actions button{flex:1}
+.status{display:inline-block;font-weight:700;padding:2px 9px;background:#edf1ed;border-radius:6px}
+[data-state="실패"],[data-state="선생님할일"]{background:#fff0dc;color:#803b04}
+.muted{color:#54665f;font-size:.9rem}
+@media(max-width:380px){main{padding:16px 10px}article{padding:14px}nav{gap:4px}nav button{font-size:.85rem}}

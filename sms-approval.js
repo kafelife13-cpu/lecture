@@ -1,5 +1,22 @@
 (function(root){
  'use strict';
+ // Shared by the existing teacher panel and the standalone operations app.
+ root.smsApproval={
+  async rpc(client,credentials,action,id){
+   const result=await client.rpc('sms_approval_rpc',{p_id:credentials.id,p_password:credentials.pw,p_action:action,p_request_id:id||null});
+   if(result.error){
+    const error=Error(result.error.code==='PGRST202'?'문자 승인 기능은 운영 반영 전입니다.':'조회 또는 저장하지 못했습니다. 새로고침해 확인해 주세요.');
+    error.code=result.error.code;throw error;
+   }
+   return result.data;
+  },
+  confirm(row,action){
+   return row?.status==='pending'&&Date.parse(row.expires_at)>Date.now()&&['approve','reject'].includes(action)&&
+    confirm(action==='approve'?`${row.recipient_count}통의 문구와 대상을 확인했습니다. 예정 시각 발송을 승인할까요?`:'이 요청은 보내지 않을까요?');
+  },
+  message(saved){return saved.status==='approved'?'보내기를 승인했습니다. 예정 시각에 조건을 다시 확인합니다.':saved.status==='rejected'?'보내지 않기로 했습니다.':'승인 기한 또는 다른 기기의 결정으로 처리하지 않았습니다.';}
+ };
+ if(!document.getElementById('sms-approval-list'))return;
  const el=id=>document.getElementById(id);
  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const when=v=>new Date(v).toLocaleString('ko-KR',{timeZone:'Asia/Seoul',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false});
@@ -8,9 +25,7 @@
  function allowed(){return session?.role==='teacher'&&weeklyLogin?.role==='teacher'&&weeklyLogin.id===session.id&&!padMode&&!studentPreviewMode;}
  async function rpc(action,id){
   if(!allowed())throw Error('선생님 계정으로 다시 로그인해 주세요.');
-  const result=await sb.rpc('sms_approval_rpc',{p_id:weeklyLogin.id,p_password:weeklyLogin.pw,p_action:action,p_request_id:id||null});
-  if(result.error)throw Error(result.error.code==='PGRST202'?'문자 승인 기능은 운영 반영 전입니다.':'조회 또는 저장하지 못했습니다. 새로고침해 확인해 주세요.');
-  return result.data;
+  return root.smsApproval.rpc(sb,weeklyLogin,action,id);
  }
  function render(){
   el('sms-approval-list').innerHTML=rows.map(r=>{
@@ -33,9 +48,9 @@
   const row=rows.find(r=>r.id===button.dataset.smsId);
   if(!row||row.status!=='pending'||Date.parse(row.expires_at)<=Date.now()){root.renderSmsApprovals();return;}
   const action=button.dataset.smsDecision;
-  if(!confirm(action==='approve'?`${row.recipient_count}통의 문구와 대상을 확인했습니다. 예정 시각 발송을 승인할까요?`:'이 요청은 보내지 않을까요?'))return;
+  if(!root.smsApproval.confirm(row,action))return;
   const token=++run,who=session.id;busy=true;render();el('sms-approval-message').textContent='결정을 저장하고 있습니다…';
-  try{const saved=await rpc(action,row.id);if(token!==run||session?.id!==who||!allowed())return;rows=rows.map(r=>r.id===saved.id?saved:r);el('sms-approval-message').textContent=saved.status==='approved'?'보내기를 승인했습니다. 예정 시각에 조건을 다시 확인합니다.':saved.status==='rejected'?'보내지 않기로 했습니다.':'승인 기한 또는 다른 기기의 결정으로 처리하지 않았습니다.';}
+  try{const saved=await rpc(action,row.id);if(token!==run||session?.id!==who||!allowed())return;rows=rows.map(r=>r.id===saved.id?saved:r);el('sms-approval-message').textContent=root.smsApproval.message(saved);}
   catch(e){if(token===run&&session?.id===who){rows=[];el('sms-approval-message').textContent=e.message+' 자동으로 다시 요청하지 않습니다.';}}
   finally{busy=false;if(token===run&&session?.id===who&&allowed())render();else el('sms-approval-list').textContent='';}
  });
