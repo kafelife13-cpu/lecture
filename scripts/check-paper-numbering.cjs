@@ -7,7 +7,7 @@ exam.questions[31].answer='';
 const c={sExamData:exam,sExamFullAnswers:{},sExamCheckMode:'wrongonly',sWrongChecked:{},sExamAnswers:{},sExamPhotos:{},sExamThoughts:{},sExamPriorResponse:null,session:{id:'test'},
  document:{getElementById:id=>fields[id]||(fields[id]={value:'',innerHTML:'',style:{}})},escHtml:s=>s,isObjectiveAnswer:a=>/^[1-5]$/.test(a),updateWrongCountLabel:()=>{},
  renderWrongDetails:()=>{},sendStudentActivity:()=>{},showSExamView:()=>{},renderSExamResultView:()=>{},sb:{from:()=>({upsert:async row=>{saved=row;return {};}})}};
-vm.createContext(c);
+vm.createContext(c);vm.runInContext(html.match(/^function examChoiceNumbers.*$/m)[0],c);
 vm.runInContext(source('function sHomeworkRequired','function renderSExamClinicGroups'),c);
 c.sExamFullPage=0;c.odapSaveResponse=async row=>{saved=row;return {};};
 vm.runInContext(source('function examAnswerSelected(','\n'),c);

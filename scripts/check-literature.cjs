@@ -24,7 +24,7 @@ vm.createContext(c);vm.runInContext(source('async function sExamSubmitFull(force
  delete c.sExamFullAnswers[1];await c.sExamSubmitFull(true);assert.equal(saved.correct_count,15);assert.equal(saved.answers[1],'');
  const before=saved;fail=true;await assert.rejects(c.sExamSubmitFull(),/저장에 실패/);assert.equal(saved,before);
  const wrongField={innerHTML:''};const r={examAnswerSelected:(value,n)=>String(value||'').split(',').includes(String(n)),examAnswerMatches:(a,b)=>String(a)===String(b),document:{getElementById:()=>wrongField},sExamData:exams[0],sMockWrongNotes:{},isLiteratureExam,escHtml:s=>String(s).replaceAll('<','&lt;'),examQuestionNumber:(e,i)=>i+1,literatureQuestionResources:()=>'<details>원문</details>'};
- vm.createContext(r);vm.runInContext(source('function renderSResWrongList(wrong)','function sResRetryPick'),r);
+ vm.createContext(r);vm.runInContext(html.match(/^function examChoiceNumbers.*$/m)[0],r);vm.runInContext(source('function renderSResWrongList(wrong)','function sResRetryPick'),r);
  const wrong=[{idx:0,q:exams[0].questions[0],my:'1'}];r.renderSResWrongList(wrong);assert.match(wrongField.innerHTML,/오답노트 저장/);assert.ok(!wrongField.innerHTML.includes(exams[0].questions[0].explanation));
  r.sMockWrongNotes[0]={retry:'4'};r.renderSResWrongList(wrong);assert.ok(wrongField.innerHTML.includes(exams[0].questions[0].explanation));
  console.log('PASS 170 keys, 38-point totals, complete choices/assets; actual grading, unanswered answers, save failure; wrong-note reveal; weekday groups');
