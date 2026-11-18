@@ -5,7 +5,7 @@ const vm = require('node:vm');
 
 const source = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
 const functions = [
-  'isObjectiveAnswer', 'examAnswerMatches', 'repIsWrong', 'sHomeworkAllowsWrongOnly',
+  'isObjectiveAnswer', 'examAnswerMatches', 'examValidSelection', 'repIsWrong', 'sHomeworkAllowsWrongOnly',
   'sHomeworkNumbersOnly', 'sHomeworkWrongOnly', 'examQuestionNumber',
   'parseHomeworkWrongNumbers', 'renderSExamListCards', 'sHomeworkApplyWrongNumbers',
   'sExamSubmitScore'

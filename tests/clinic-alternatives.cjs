@@ -8,7 +8,9 @@ for(const name of ['isObjectiveAnswer','examDefaultAnswer','examAnswerLabel','ex
  vm.runInContext((html.slice(start-6,start)==='async '?'async ':'')+html.slice(start,end),ctx);
 }
 assert.equal(ctx.isObjectiveAnswer('any:4,5'),true);
-for(const key of ['any:4,6','any:4,','any:','4,5'])assert.equal(ctx.isObjectiveAnswer(key),false,key);
+assert.equal(ctx.isObjectiveAnswer('any:4,6',{choice_count:5}),false);
+assert.equal(ctx.isObjectiveAnswer('any:4,6',{choice_count:10}),true);
+for(const key of ['any:4,11','any:4,','any:','4,5'])assert.equal(ctx.isObjectiveAnswer(key),false,key);
 for(const value of ['4','5',' 4 '])assert.equal(ctx.examAnswerMatches(value,'any:4,5'),true,value);
 for(const value of ['1','2','3','','4,5','any:4,5'])assert.equal(ctx.examAnswerMatches(value,'any:4,5'),false,value);
 assert.equal(ctx.examAnswerMatches('1,4','all:1,4'),true);

@@ -12,6 +12,7 @@ vm.runInContext(source('function sHomeworkRequired','function renderSExamClinicG
 c.sExamFullPage=0;c.odapSaveResponse=async row=>{saved=row;return {};};
 vm.runInContext(source('function examAnswerSelected(','\n'),c);
 vm.runInContext(source('function examAnswerMatches(','\n}')+'\n}',c);
+vm.runInContext(source('function examValidSelection(','function homeworkMissingAnswers'),c);
 vm.runInContext(source('function sExamFullPageNav','function renderSExamFullGrid()'),c);
 vm.runInContext(source('function renderSExamFullGrid()','function sExamPickFullAnswer'),c);
 vm.runInContext(source('function renderSExamAnswerGrid()','function sToggleWrong'),c);

@@ -1,7 +1,7 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 const ctx={};vm.createContext(ctx);
-for(const name of ['examChoiceNumbers','isObjectiveAnswer','examAnswerMatches','examToggleAnswer','examAnswerSelected','repIsWrong','examQuestionNumber','homeworkWrittenAnswers','sHomeworkRequired','sExamSubmitFull','sExamPickFullAnswer','sExamFullPageNav','renderSExamFullGrid']){
+for(const name of ['examChoiceNumbers','isObjectiveAnswer','examAnswerMatches','examToggleAnswer','examAnswerSelected','repIsWrong','repScore','examQuestionNumber','examValidSelection','homeworkMissingAnswers','homeworkWrittenAnswers','sHomeworkRequired','sExamSubmitFull','sExamPickFullAnswer','sExamFullPageNav','renderSExamFullGrid']){
  const start=html.indexOf((name==='sExamSubmitFull'?'async ':'')+'function '+name+'(');
  const one=['examChoiceNumbers','isObjectiveAnswer','examAnswerSelected','sHomeworkRequired'].includes(name);
  const end=one?html.indexOf('\n',start):html.indexOf('\n}',start)+2;
@@ -40,6 +40,26 @@ assert.ok(grid.innerHTML.includes('복수 선택'));ctx.sExamPickFullAnswer(7,1)
  ctx.sExamFullAnswers[14]='10,6,1';await ctx.sExamSubmitFull(true);assert.equal(saved.score,100);
  for(const bad of ['1,6','1,6,10,2','1,6,11','1,6,0','']){ctx.sExamFullAnswers[14]=bad;await ctx.sExamSubmitFull(true);assert.equal(saved.score,96,bad);assert.equal(saved.correct_count,22,bad);}
  for(const key of ['all:0,10','all:1,11','all:1,','all:01,10','3,8'])assert.equal(ctx.isObjectiveAnswer(key),false,key);
+ const mixed={id:'local-regrade',category:'school',total_q:8,questions:['6','7','8','9','10','any:6,10','all:1,6,10','5'].map((answer,i)=>({num:i+1,answer,points:i===6?3:1,choice_count:i===7?5:10}))};
+ ctx.sExamData=mixed;ctx.sExamFullAnswers={};ctx.renderSExamFullGrid();
+ assert.equal((grid.innerHTML.match(/onclick="sExamPickFullAnswer/g)||[]).length,75);
+ for(let i=0;i<5;i++)ctx.sExamPickFullAnswer(i,i+6);
+ ctx.sExamPickFullAnswer(5,10);for(const n of [10,1,6])ctx.sExamPickFullAnswer(6,n);ctx.sExamPickFullAnswer(7,5);
+ assert.equal(ctx.homeworkMissingAnswers(mixed,ctx.sExamFullAnswers).length,0);
+ ctx.sExamFullAnswers[4]='9';await ctx.sExamSubmitFull(true);assert.equal(saved.score,90);
+ const prior=JSON.parse(JSON.stringify({...saved,regrade_approved:true,photo_urls:{omr:'keep'},thoughts:{note:'keep'}}));
+ const snapshot=JSON.stringify(prior);ctx.sExamPriorResponse=prior;
+ ctx.sExamPickFullAnswer(4,10);await ctx.sExamSubmitFull(true);
+ assert.equal(saved.score,100);assert.equal(saved.correct_count,8);assert.equal(saved.attempt_count,prior.attempt_count+1);
+ assert.equal(saved.regrade_approved,false);assert.equal(saved.regrade_requested,false);
+ assert.equal(saved.photo_urls.omr,'keep');assert.equal(saved.thoughts.note,'keep');assert.equal(JSON.stringify(prior),snapshot);
+ assert.equal(ctx.repScore(mixed,saved).pct,100);assert.equal(ctx.repIsWrong(saved,4,mixed),false);
+ for(const value of ['0','11','01','6,10','']){assert.equal(ctx.examValidSelection(mixed.questions[4],value),false);assert.equal(ctx.examAnswerMatches(value,'any:6,10',mixed.questions[5]),false);}
+ assert.equal(ctx.isObjectiveAnswer('6',{}),false,'legacy numeric written answer');
+ assert.equal(ctx.examValidSelection({answer:'1'},'6'),false,'five-choice bounds');
+ assert.equal(ctx.examValidSelection({answer:'all:1,4'},'1,6'),false,'five-choice multiple bounds');
+ assert.equal(ctx.homeworkMissingAnswers(mixed,{...ctx.sExamFullAnswers,4:'11'}).join(','),'5');
+ console.log('PASS: single 6–10, any/all, approved regrade, weighted reports, prior data preservation and selection bounds');
  console.log('PASS: 23-question ten-choice clinic, all 165 choice buttons, full/reordered answers, partial/extra/invalid/blank answers and 100-point normalization');
  console.log('PASS: 30-question weighted submission, multi selection/toggle, partial/extra/blank answers, result re-opening, corrected q30');
 })().catch(e=>{console.error(e);process.exitCode=1;});

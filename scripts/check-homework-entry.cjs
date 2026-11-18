@@ -11,7 +11,7 @@ vm.createContext(c);
 const objectiveStart=html.indexOf('function isObjectiveAnswer');
 vm.runInContext(html.slice(objectiveStart,html.indexOf('\n',objectiveStart)),c);
 vm.runInContext(source('function sHomeworkRequired','function renderSExamClinicGroups'),c);
-vm.runInContext(source('function homeworkMissingAnswers','function homeworkWrittenAnswers'),c);
+vm.runInContext(source('function examValidSelection','function homeworkWrittenAnswers'),c);
 vm.runInContext(source('async function sExamSubmitScore','// 클리닉 오답 재풀이'),c);
 vm.runInContext(source('function examAnswerMatches(','\n}')+'\n}',c);
 vm.runInContext(source('function examAnswerLabel(','\n'),c);
