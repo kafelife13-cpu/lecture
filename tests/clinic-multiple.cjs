@@ -1,9 +1,9 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 const ctx={};vm.createContext(ctx);
-for(const name of ['isObjectiveAnswer','examAnswerMatches','examToggleAnswer','examAnswerSelected','repIsWrong','examQuestionNumber','homeworkWrittenAnswers','sHomeworkRequired','sExamSubmitFull','sExamPickFullAnswer','sExamFullPageNav','renderSExamFullGrid']){
+for(const name of ['examChoiceNumbers','isObjectiveAnswer','examAnswerMatches','examToggleAnswer','examAnswerSelected','repIsWrong','examQuestionNumber','homeworkWrittenAnswers','sHomeworkRequired','sExamSubmitFull','sExamPickFullAnswer','sExamFullPageNav','renderSExamFullGrid']){
  const start=html.indexOf((name==='sExamSubmitFull'?'async ':'')+'function '+name+'(');
- const one=['isObjectiveAnswer','examAnswerSelected','sHomeworkRequired'].includes(name);
+ const one=['examChoiceNumbers','isObjectiveAnswer','examAnswerSelected','sHomeworkRequired'].includes(name);
  const end=one?html.indexOf('\n',start):html.indexOf('\n}',start)+2;
  vm.runInContext(html.slice(start,end),ctx);
 }
@@ -27,5 +27,19 @@ assert.ok(grid.innerHTML.includes('복수 선택'));ctx.sExamPickFullAnswer(7,1)
  ctx.sExamFullAnswers[7]='4,1';await ctx.sExamSubmitFull(true);assert.equal(saved.score,100);assert.equal(ctx.repIsWrong(saved,7,exam),false);
  ctx.sExamFullAnswers[29]='2';await ctx.sExamSubmitFull(true);assert.equal(saved.score,96);assert.equal(ctx.repIsWrong(saved,29,exam),true);
  ctx.sExamFullAnswers={};await ctx.sExamSubmitFull(true);assert.equal(saved.score,0);assert.equal(saved.correct_count,0);
+ const tenKeys=['3,8','1,6,10','4,9','2,5,8','3,10','1,4,7','6,9','2,7,9','4,10','1,5,6'];
+ const han={id:'ten-choice-local',category:'school',total_q:23,questions:Array.from({length:23},(_,i)=>({num:i+1,answer:i<13?'2':'all:'+tenKeys[i-13],points:4,...(i>=13?{choice_count:10}:{})}))};
+ ctx.sExamData=han;ctx.sExamFullAnswers={};ctx.renderSExamFullGrid();
+ assert.equal((grid.innerHTML.match(/onclick="sExamPickFullAnswer/g)||[]).length,165);
+ assert.ok(grid.innerHTML.includes('sExamPickFullAnswer(22,10)'));
+ assert.ok(!grid.innerHTML.includes('자동채점 대상 아님'));
+ ctx.sExamPickFullAnswer(14,10);ctx.sExamPickFullAnswer(14,1);ctx.sExamPickFullAnswer(14,6);
+ assert.equal(ctx.sExamFullAnswers[14],'1,6,10');
+ ctx.sExamFullAnswers=Object.fromEntries(han.questions.map((q,i)=>[i,q.answer.replace('all:','')]));
+ await ctx.sExamSubmitFull(true);assert.equal(saved.score,100);assert.equal(saved.correct_count,23);assert.equal(saved.total_q,23);assert.equal(saved.points_total,92);
+ ctx.sExamFullAnswers[14]='10,6,1';await ctx.sExamSubmitFull(true);assert.equal(saved.score,100);
+ for(const bad of ['1,6','1,6,10,2','1,6,11','1,6,0','']){ctx.sExamFullAnswers[14]=bad;await ctx.sExamSubmitFull(true);assert.equal(saved.score,96,bad);assert.equal(saved.correct_count,22,bad);}
+ for(const key of ['all:0,10','all:1,11','all:1,','all:01,10','3,8'])assert.equal(ctx.isObjectiveAnswer(key),false,key);
+ console.log('PASS: 23-question ten-choice clinic, all 165 choice buttons, full/reordered answers, partial/extra/invalid/blank answers and 100-point normalization');
  console.log('PASS: 30-question weighted submission, multi selection/toggle, partial/extra/blank answers, result re-opening, corrected q30');
 })().catch(e=>{console.error(e);process.exitCode=1;});
