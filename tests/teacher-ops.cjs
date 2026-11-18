@@ -19,7 +19,7 @@ const weekly=()=>({updated_at:'2026-11-19T10:30:00+09:00',week:{label:'기말대
  {class_id:'class-b',label:'주간 다른반',students:[{name:'주간학생라',attendance:'확인 불가',clinic:'입력완료',score:100,retest:false,homework:'완료',absence_dates:[]}]}]}});
 function fixture(stored){
  const ids=[...read('ops.html').matchAll(/id="([^"]+)"/g)].map(m=>m[1]);
- const els=Object.fromEntries(ids.map(id=>[id,element()])),tabs=['pending','daily','weekly','board','history'].map(tab=>Object.assign(element(),{dataset:{opsTab:tab}}));
+ const els=Object.fromEntries(ids.map(id=>[id,element()])),tabs=['pending','absence','daily','weekly','board','history'].map(tab=>Object.assign(element(),{dataset:{opsTab:tab}}));
  els['ops-app'].hidden=true;els['ops-logout'].hidden=true;
  const events={},windowEvents={},values=new Map(stored?[["teacher_ops_password",stored]]:[]),calls=[],dialogs=[],timers=new Map();
  let allow=true,handler=async(name,args)=>{
@@ -28,6 +28,7 @@ function fixture(stored){
   if(args.p_action==='pending')return {data:{teacher_id:'fixture-teacher',approvals:[approval()]}};
   if(args.p_action==='weekly')return {data:weekly()};
   if(args.p_action==='daily')return {data:daily()};
+  if(args.p_action==='reject')return {data:{id:'reject-1',status:'rejected'}};
   if(args.p_action==='forward')return {data:{id:'request-1',status:'pending',done_at:null}};
   if(args.p_action==='board')return {data:{updated_at:new Date().toISOString(),board:{items:['됨','진행중','대기','실패','선생님할일'].map(status=>({name:'작업 '+status,status,memo:'메모'})),tasks:[{name:'예약 작업',last_run_at:new Date().toISOString(),result:'성공'},{name:'오류 작업',last_run_at:new Date().toISOString(),result:'실패'}]}}};
   return {data:['approved','rejected','expired'].map((status,i)=>({...approval(),status,sent_count:i===0?2:i===1?0:null}))};
@@ -43,19 +44,20 @@ function fixture(stored){
   },addEventListener:(key,fn)=>windowEvents[key]=fn};
  Object.defineProperty(c,'localStorage',{get(){throw Error('localStorage forbidden');}});c.window=c;
  vm.createContext(c);vm.runInContext(read('sms-approval.js'),c);vm.runInContext(read('ops.js'),c);
- const click=async(selector,dataset,disabled=false)=>{const target={dataset,disabled,closest:s=>s===selector?target:null};await events.click({target});await tick();};
+ const click=async(selector,dataset,disabled=false)=>{const target={dataset,disabled,closest:s=>s===selector?target:null};await events.click({target,preventDefault(){}});await tick();};
  return {c,els,values,calls,dialogs,windowEvents,timers,set handler(value){handler=value;},set confirm(value){allow=value;},
   login:async(pw='fixture-password')=>{els['ops-password'].value=pw;els['ops-login'].events.submit({preventDefault(){}});await tick();},
   tab:tab=>click('[data-ops-tab]',{opsTab:tab}),decision:action=>click('[data-ops-decision]',{opsDecision:action,opsId:'fixture-approval'}),
   filter:filter=>click('[data-ops-filter]',{opsFilter:filter}),
-  forward:()=>click('[data-ops-forward]',{}),date:value=>events.change({target:{id:'ops-date',value}}),
+  forward:(date='2026-11-18')=>click('[data-ops-forward]',{opsForward:date}),reject:(date='2026-11-18')=>click('[data-ops-reject]',{opsReject:date}),
+  check:(index,checked,date='2026-11-18')=>events.change({target:{dataset:{opsStudent:String(index),opsDate:date},checked}}),date:value=>events.change({target:{id:'ops-date',value}}),
   lock:()=>els['ops-logout'].events.click(),refresh:()=>els['ops-refresh'].events.click(),content:()=>els['ops-content'].innerHTML};
 }
 const daily=()=>[{clinic_date:'2026-11-18',updated_at:'2026-11-19T10:30:00+09:00',forward:null,day:{label:'11/18(수) 클리닉',at:'2026-11-19T10:00:00+09:00',issues:[],unresolved:0,
  scheduled:[
-  {name:'등원학생',class_label:'클리닉반',start:'17:00',arrived:true,arrived_at:'2026-11-18T17:03:00+09:00',arrived_by:'맥가이',macgai_record:true,exam_done:false},
-  {name:'미등원미응시학생',class_label:'클리닉반',start:'18:00',arrived:false,arrived_at:null,arrived_by:null,macgai_record:false,exam_done:false},
-  {name:'미등원응시학생',class_label:'클리닉반',start:'19:00',arrived:false,arrived_at:null,arrived_by:null,macgai_record:true,exam_done:true}],
+  {key:'s-'+'a'.repeat(64),name:'등원학생',class_label:'클리닉반',start:'17:00',arrived:true,arrived_at:'2026-11-18T17:03:00+09:00',arrived_by:'맥가이',macgai_record:true,exam_done:false},
+  {key:'s-'+'b'.repeat(64),name:'미등원미응시학생',class_label:'클리닉반',start:'18:00',arrived:false,arrived_at:null,arrived_by:null,macgai_record:false,exam_done:false},
+  {key:'s-'+'c'.repeat(64),name:'미등원응시학생',class_label:'클리닉반',start:'19:00',arrived:false,arrived_at:null,arrived_by:null,macgai_record:true,exam_done:true}],
  sms:[{name:'문자학생',class_label:'문자반',recipients:['student','parent']}]
 }}];
 (async()=>{
@@ -100,16 +102,18 @@ const daily=()=>[{clinic_date:'2026-11-18',updated_at:'2026-11-19T10:30:00+09:00
  await f.login();await f.tab('daily');assert.equal(f.calls.at(-1).args.p_action,'daily');assert.equal(f.calls.at(-1).args.p_arg,undefined);
  for(const value of ['value="2026-11-18"','① 등원 명단 (1명)','② 미등원 명단 (1명)','맥가이 기록 없음 (1명)','③ 미등원 학원 전달명단 (1명)','④ 미응시 문자 발송명단 (1명)','학생 · 학부모','17:03','(맥가이)','패드 기록 0건은 참고 사항'])assert.ok(f.content().includes(value),value);
  assert.match(f.content(),/<pre>11\/18\(수\) 클리닉 미등원\n미등원미응시학생 \(1명\)<\/pre>/);
- assert.doesNotMatch(f.content(),/data-ops-forward disabled/);
+ assert.doesNotMatch(f.content(),/data-ops-forward/);assert.match(f.content(),/미등원 승인에서 보내요/);
+ const readOnly=f.calls.length;await f.forward();assert.equal(f.calls.length,readOnly);
+ await f.tab('absence');assert.equal(f.els['ops-title'].textContent,'미등원 승인');assert.match(f.content(),/승인 전/);assert.match(f.content(),/type="checkbox"[^>]*checked/);
  f.confirm=false;const beforeForward=f.calls.length;await f.forward();assert.equal(f.calls.length,beforeForward);
  f.confirm=true;await f.forward();assert.equal(f.calls.at(-1).args.p_action,'forward');
- assert.deepEqual(f.calls.at(-1).args.p_arg,{clinic_date:'2026-11-18',updated_at:daily()[0].updated_at});
+ assert.deepEqual(f.calls.at(-1).args.p_arg,{clinic_date:'2026-11-18',updated_at:daily()[0].updated_at,selected:['s-'+'b'.repeat(64)]});
  assert.match(f.dialogs.at(-1),/미등원미응시학생/);assert.doesNotMatch(f.dialogs.at(-1),/미등원응시학생|등원학생/);
- assert.match(f.content(),/대기 · 학원 PC가 1분 안에 보냅니다/);assert.match(f.content(),/data-ops-forward disabled/);
+ assert.match(f.content(),/전달 대기\(학원 PC 처리 중\)/);assert.match(f.content(),/data-ops-forward="2026-11-18" disabled/);
  const queued=f.calls.length;await f.forward();assert.equal(f.calls.length,queued);
  const sent=daily();sent[0].forward={id:'sent-id',status:'sent',done_at:'2026-11-19T10:32:00+09:00'};
  f.handler=async()=>({data:sent});const poll=[...f.timers.values()].find(t=>t.ms===15000);assert.ok(poll);await poll.fn();
- assert.match(f.content(),/전달됨 10:32/);assert.match(f.content(),/>다시 전달<\/button>/);
+ assert.match(f.content(),/전달됨 10:32/);assert.match(f.content(),/>다시 보내기<\/button>/);
  assert.equal([...f.timers.values()].some(t=>t.ms===15000),false);
  const beforeResend=f.calls.length;f.confirm=[true,false];await f.forward();assert.equal(f.calls.length,beforeResend,'second confirmation cancellation never writes');
  f.confirm=[true,true];f.handler=async()=>({data:{id:'request-2',status:'pending'}});const dialogsBefore=f.dialogs.length;await f.forward();
@@ -120,17 +124,17 @@ const daily=()=>[{clinic_date:'2026-11-18',updated_at:'2026-11-19T10:30:00+09:00
  f=fixture();await f.login();await f.tab('daily');f.handler=async()=>({data:[]});await f.date('2026-11-17');
  assert.deepEqual(f.calls.at(-1).args.p_arg,{clinic_date:'2026-11-17'});assert.match(f.content(),/value="2026-11-17"/);assert.match(f.content(),/명단이 없습니다/);assert.doesNotMatch(f.content(),/data-ops-forward/);
  const dateCalls=f.calls.length;await f.date('invalid');assert.equal(f.calls.length,dateCalls);
- const emptyDay=daily();emptyDay[0].day.scheduled=[];emptyDay[0].day.sms=[];f.handler=async()=>({data:emptyDay});await f.refresh();assert.match(f.content(),/data-ops-forward disabled/);await f.forward();assert.equal(f.calls.length,dateCalls+1);
+ const emptyDay=daily();emptyDay[0].day.scheduled=[];emptyDay[0].day.sms=[];f.handler=async()=>({data:emptyDay});await f.tab('absence');assert.match(f.content(),/data-ops-forward="2026-11-18" disabled/);await f.forward();assert.equal(f.calls.length,dateCalls+1);
  const unsafeDay=daily(),dailyAttack='<img src=x onerror=alert(1)> 010-1234-5678';
  unsafeDay[0].day.label=dailyAttack;unsafeDay[0].day.issues=[dailyAttack];unsafeDay[0].day.unresolved=2;
  Object.assign(unsafeDay[0].day.scheduled[1],{name:dailyAttack,class_label:dailyAttack,start:dailyAttack});unsafeDay[0].day.sms[0].name=dailyAttack;
  unsafeDay[0].forward={status:'failed'};f.handler=async()=>({data:unsafeDay});await f.refresh();assert.match(f.content(),/확인 필요 2명/);assert.match(f.content(),/실패/);assert.doesNotMatch(f.content(),/<img|010-1234-5678/);assert.match(f.content(),/&lt;img/);
  f.handler=async()=>({error:{code:'40001'}});await f.forward();assert.equal(f.content(),'');assert.match(f.els['ops-message'].textContent,/명단이 갱신/);
- f=fixture();await f.login();await f.tab('daily');let releaseDaily;f.handler=()=>new Promise(resolve=>releaseDaily=resolve);
+ f=fixture();await f.login();await f.tab('absence');let releaseDaily;f.handler=()=>new Promise(resolve=>releaseDaily=resolve);
  const forwarding=f.forward();await tick();const inFlight=f.calls.length;await f.forward();assert.equal(f.calls.length,inFlight);f.lock();releaseDaily({data:{status:'pending'}});await forwarding;assert.equal(f.content(),'');assert.equal(f.timers.size,0);
- f=fixture();await f.login();f.handler=()=>new Promise(resolve=>releaseDaily=resolve);const readingDaily=f.tab('daily');await tick();f.windowEvents.pagehide();releaseDaily({data:daily()});await readingDaily;assert.equal(f.content(),'');assert.equal(f.timers.size,0);
- f=fixture();await f.login();await f.tab('daily');f.handler=async()=>({error:{code:'42501'}});await f.refresh();assert.equal(f.content(),'');assert.equal(f.values.has('teacher_ops_password'),false);
- f=fixture();await f.login();await f.tab('daily');f.handler=async()=>{throw Error('network secret');};await f.forward();const failForward=f.calls.length;await tick();assert.equal(f.calls.length,failForward);assert.equal(f.timers.size,0);assert.match(f.els['ops-message'].textContent,/자동으로 다시 요청하지/);
+ f=fixture();await f.login();f.handler=()=>new Promise(resolve=>releaseDaily=resolve);const readingDaily=f.tab('absence');await tick();f.windowEvents.pagehide();releaseDaily({data:daily()});await readingDaily;assert.equal(f.content(),'');assert.equal(f.timers.size,0);
+ f=fixture();await f.login();await f.tab('absence');f.handler=async()=>({error:{code:'42501'}});await f.refresh();assert.equal(f.content(),'');assert.equal(f.values.has('teacher_ops_password'),false);
+ f=fixture();await f.login();await f.tab('absence');f.handler=async()=>{throw Error('network secret');};await f.forward();const failForward=f.calls.length;await tick();assert.equal(f.calls.length,failForward);assert.equal(f.timers.size,0);assert.match(f.els['ops-message'].textContent,/자동으로 다시 요청하지/);
 
  f=fixture();await f.login();await f.decision('reject');assert.match(f.els['ops-message'].textContent,/보내지 않기로/);
  f=fixture('wrong');await tick();assert.equal(f.content(),'');assert.equal(f.values.has('teacher_ops_password'),false);
@@ -156,6 +160,40 @@ const daily=()=>[{clinic_date:'2026-11-18',updated_at:'2026-11-19T10:30:00+09:00
  f=fixture();f.handler=()=>new Promise(resolve=>release=resolve);await f.login();f.windowEvents.pagehide();release({data:{teacher_id:'fixture-teacher',approvals:[approval()]}});await tick();assert.equal(f.content(),'');assert.equal(f.values.has('teacher_ops_password'),false);
  f=fixture();await f.login();f.handler=async()=>({error:{code:'42501'}});await f.refresh();assert.equal(f.content(),'');assert.equal(f.values.has('teacher_ops_password'),false);
  f=fixture();await f.login();f.handler=async()=>{throw Error('timeout');};await f.decision('approve');const failedCalls=f.calls.length;await tick();assert.equal(f.calls.length,failedCalls);assert.equal(f.content(),'');assert.match(f.els['ops-message'].textContent,/자동으로 다시 요청하지/);
+
+ // Selection is kept in memory, survives refresh, and never falls back to names.
+ f=fixture();await f.login();const twins=daily();twins[0].day.scheduled.push({...twins[0].day.scheduled[1],key:'s-'+'d'.repeat(64)});
+ f.handler=async(name,args)=>({data:args.p_action==='daily'?twins:{id:'selected-request',status:'pending'}});
+ await f.tab('absence');const preview=element(),send=element();
+ f.els['ops-content'].querySelector=selector=>selector.startsWith('[data-ops-preview')?preview:send;
+ await f.check(0,false);assert.equal(preview.textContent,'11/18(수) 클리닉 미등원\n미등원미응시학생 (1명)');assert.equal(send.disabled,false);
+ await f.check(1,false);assert.match(preview.textContent,/\(0명\)/);assert.equal(send.disabled,true);
+ const none=f.calls.length;await f.forward();assert.equal(f.calls.length,none);
+ await f.check(1,true);await f.refresh();assert.match(f.content(),/\(1명\)<\/pre>/);
+ await f.forward();assert.deepEqual(f.calls.at(-1).args.p_arg.selected,['s-'+'d'.repeat(64)]);
+ assert.match(f.dialogs.at(-1),/미등원미응시학생 \(1명\)/);assert.doesNotMatch(JSON.stringify([...f.values]),/s-dddd|미등원/);
+
+ f=fixture();await f.login();await f.tab('absence');f.confirm=false;const rejectCalls=f.calls.length;await f.reject();assert.equal(f.calls.length,rejectCalls);
+ f.confirm=true;await f.reject();assert.equal(f.calls.at(-1).args.p_action,'reject');assert.deepEqual(f.calls.at(-1).args.p_arg,{clinic_date:'2026-11-18',updated_at:daily()[0].updated_at});assert.match(f.content(),/보내지 않음/);
+ await f.reject();assert.equal(f.calls.length,rejectCalls+1);await f.forward();assert.equal(f.calls.at(-1).args.p_action,'forward');
+ const pendingCalls=f.calls.length;await f.reject();assert.equal(f.calls.length,pendingCalls);
+
+ f=fixture();await f.login();const older=daily()[0],newer=daily()[0];older.clinic_date='2026-11-17';newer.forward={status:'sent'};
+ f.handler=async()=>({data:[newer,older]});await f.tab('absence');assert.ok(f.content().indexOf('data-ops-day="2026-11-17"')<f.content().indexOf('data-ops-day="2026-11-18"'));
+ const sentCalls=f.calls.length;await f.reject();assert.equal(f.calls.length,sentCalls);
+ const legacyDay=daily();delete legacyDay[0].day.scheduled[1].key;f.handler=async()=>({data:legacyDay});await f.refresh();assert.match(f.content(),/학원 PC의 명단 갱신/);const legacyCalls=f.calls.length;await f.forward();assert.equal(f.calls.length,legacyCalls);
+ f.handler=async()=>({data:[]});await f.refresh();assert.match(f.content(),/최근 클리닉 명단이 없습니다/);
+
+ const selectionSql=read('supabase_patch_ops_forward_selection.sql');
+ assert.match(selectionSql,/p_arg jsonb default null/);assert.match(selectionSql,/authenticate_user\(candidate.id, p_password, 'teacher'\)/);
+ assert.match(selectionSql,/status in \('pending','sent','failed','rejected'\)/);assert.match(selectionSql,/OPS_SELECTION_INVALID/);
+ assert.match(selectionSql,/jsonb_array_length\(chosen\) <> jsonb_array_length\(p_arg->'selected'\)/);
+ assert.match(selectionSql,/jsonb_set\(daily.day, '\{scheduled\}', chosen\)/);assert.match(selectionSql,/jsonb_agg\(s order by ordinal\)/);
+ assert.match(selectionSql,/not \(p_arg \? 'selected'\)/);assert.match(selectionSql,/count\(distinct value\)/);
+ assert.match(selectionSql,/for update/);assert.match(selectionSql,/OPS_DAILY_CHANGED.*40001/);
+ assert.doesNotMatch(selectionSql,/create policy|grant\s+(select|insert|update|all)\s+on/i);
+ // Unrelated RPC actions and authentication are copied without changes.
+ assert.equal(selectionSql.slice(selectionSql.indexOf("  if p_action = 'pending' then")),read('supabase_add_ops_daily.sql').slice(read('supabase_add_ops_daily.sql').indexOf("  if p_action = 'pending' then")));
 
  // Existing teacher panel still uses the same RPC, confirms decisions and rejects non-teachers.
  const els={'sms-approval-list':element(),'sms-approval-message':element()},events={},calls=[];
@@ -236,8 +274,8 @@ const daily=()=>[{clinic_date:'2026-11-18',updated_at:'2026-11-19T10:30:00+09:00
  for(const icon of manifest.icons)assert.ok(fs.existsSync(path.join(root,icon.src.split('?')[0])));
  assert.match(read('ops.html'),/rel="manifest" href="ops-manifest.json"/);assert.doesNotMatch(read('ops.html'),/href="manifest.json"/);
  for(const file of ['ops.html','ops.js','ops.css','ops-manifest.json'])assert.ok(read('sw.js').includes('/lecture/'+file));
- assert.match(read('sw.js'),/const CACHE_NAME = 'kukeo-wang-v202-ops-daily-macgai'/);
- assert.match(read('ops.html'),/data-ops-tab="pending"[^\n]+\n\s*<button[^\n]+data-ops-tab="daily"[^\n]+\n\s*<button[^\n]+data-ops-tab="weekly"/);
+ assert.match(read('sw.js'),/const CACHE_NAME = 'kukeo-wang-v203-ops-absence-approval'/);
+ assert.match(read('ops.html'),/data-ops-tab="pending"[^\n]+\n\s*<button[^\n]+data-ops-tab="absence"[^\n]+\n\s*<button[^\n]+data-ops-tab="daily"[^\n]+\n\s*<button[^\n]+data-ops-tab="weekly"/);
  console.log('PASS: ops authentication/privacy, daily rosters/dates/forward/resend/polling/lock/races, weekly filters, shared approvals, legacy RPC preservation, manifest/cache and static SQL guards (fake RPC only; SQL not executed)');
  if(process.argv.includes('--browser'))await browserChecks();
 })().catch(error=>{console.error(error);process.exitCode=1;});
@@ -290,19 +328,27 @@ async function browserChecks(){
   await page.screenshot({path:path.join(require('node:os').tmpdir(),'teacher-ops-weekly-mobile.png'),fullPage:true});
   await page.getByRole('button',{name:'클리닉 명단',exact:true}).click();await page.getByText('③ 미등원 학원 전달명단 (1명)',{exact:true}).waitFor();
   assert.equal(await page.getByLabel('클리닉 날짜').inputValue(),'2026-11-18');
-  assert.equal(await page.getByRole('button',{name:'잔디 등하원방에 전달',exact:true}).isEnabled(),true);
+  assert.equal(await page.locator('[data-ops-forward]').count(),0);
+  await page.getByRole('link',{name:'미등원 승인에서 보내요'}).click();await page.getByRole('checkbox').waitFor();
+  assert.equal(await page.getByRole('checkbox').isChecked(),true);
+  await page.getByRole('checkbox').focus();await page.keyboard.press('Space');
+  assert.equal(await page.getByRole('checkbox').evaluate(el=>el===document.activeElement),true);
+  assert.equal(await page.getByRole('button',{name:'잔디로 보내기',exact:true}).isDisabled(),true);
+  assert.match(await page.locator('[data-ops-preview]').innerText(),/\(0명\)/);
+  await page.keyboard.press('Space');assert.match(await page.locator('[data-ops-preview]').innerText(),/미등원미응시학생 \(1명\)/);
   for(const width of [320,390,850]){await page.setViewportSize({width,height:844});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,'daily no horizontal overflow at '+width);}
   await page.setViewportSize({width:390,height:844});await page.screenshot({path:path.join(require('node:os').tmpdir(),'teacher-ops-daily-mobile.png'),fullPage:true});
-  page.once('dialog',dialog=>{assert.match(dialog.message(),/클리닉반 · 미등원미응시학생 · 예정 18:00/);return dialog.accept();});
-  await page.getByRole('button',{name:'잔디 등하원방에 전달',exact:true}).click();await page.getByText('대기 · 학원 PC가 1분 안에 보냅니다',{exact:true}).waitFor();
-  assert.equal(await page.getByRole('button',{name:'잔디 등하원방에 전달',exact:true}).isDisabled(),true);
+  page.once('dialog',dialog=>{assert.match(dialog.message(),/11\/18\(수\) 클리닉 미등원\n미등원미응시학생 \(1명\)/);return dialog.accept();});
+  await page.getByRole('button',{name:'잔디로 보내기',exact:true}).click();await page.locator('#ops-content').getByText('전달 대기(학원 PC 처리 중)',{exact:true}).waitFor();
+  assert.equal(await page.getByRole('button',{name:'잔디로 보내기',exact:true}).isDisabled(),true);
   dailyRows[0].forward={id:'browser-request',status:'sent',done_at:'2026-11-19T10:32:00+09:00'};
   await page.getByRole('button',{name:'새로고침',exact:true}).click();await page.getByText('전달됨 10:32',{exact:true}).waitFor();
   let resendDialogs=0;const acceptResend=dialog=>{resendDialogs++;return dialog.accept();};page.on('dialog',acceptResend);
-  await page.getByRole('button',{name:'다시 전달',exact:true}).click();await page.getByText('대기 · 학원 PC가 1분 안에 보냅니다',{exact:true}).waitFor();page.off('dialog',acceptResend);assert.equal(resendDialogs,2);
+  await page.getByRole('button',{name:'다시 보내기',exact:true}).click();await page.locator('#ops-content').getByText('전달 대기(학원 PC 처리 중)',{exact:true}).waitFor();page.off('dialog',acceptResend);assert.equal(resendDialogs,2);
   assert.equal(calls.at(-1).p_arg.resend_of,'browser-request');
+  await page.getByRole('button',{name:'클리닉 명단',exact:true}).click();
   await page.getByLabel('클리닉 날짜').fill('2026-11-17');await page.getByText('학원 PC가 올린 해당 날짜의 클리닉 명단이 없습니다.',{exact:true}).waitFor();
-  assert.equal(await page.getByRole('button',{name:'잔디 등하원방에 전달',exact:true}).count(),0);
+  assert.equal(await page.getByRole('button',{name:'잔디로 보내기',exact:true}).count(),0);
   await page.getByRole('button',{name:'자동화 현황',exact:true}).click();await page.getByText('자동화 작업',{exact:true}).waitFor();
   await page.getByRole('button',{name:'최근 기록',exact:true}).click();await page.getByText('보낸 수: 2통').waitFor();
   assert.equal(await page.evaluate(()=>localStorage.length),0);assert.equal(await page.evaluate(()=>sessionStorage.getItem('teacher_ops_password')),'fixture-password');

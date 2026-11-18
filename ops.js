@@ -5,10 +5,11 @@
  const esc=value=>String(value??'').replace(phone,'$1[전화번호 숨김]').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const when=value=>Number.isFinite(Date.parse(value))?new Date(value).toLocaleString('ko-KR',{timeZone:'Asia/Seoul',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false}):'기록 없음';
  const labels={pending:'승인 대기',approved:'승인',rejected:'거절',expired:'만료'};
- const titles={pending:'문자 승인',daily:'클리닉 명단',weekly:'이번 주 명단',board:'자동화 현황',history:'최근 7일 기록'};
+ const titles={pending:'문자 승인',absence:'미등원 승인',daily:'클리닉 명단',weekly:'이번 주 명단',board:'자동화 현황',history:'최근 7일 기록'};
  const weeklyFilters={all:['전체',()=>true],absent:['미등원',s=>s.attendance==='미등원'],missing:['미입력',s=>s.clinic==='미입력'],retest:['재시험',s=>s.retest===true],homework:['과제 미완',s=>s.homework==='미완']};
  let password='',teacherId='',rows=[],weekData=null,weeklyFilter='all',tab='pending',busy=false,run=0;
  let dailyData=null,dailyDate='',dailyTimer;
+ let absenceDays=[];const excluded=new Map(),studentKey=/^s-[a-p]{64}$/;
  // Native fetch keeps the standalone shell independent of a CDN and stores no RPC responses.
  const client={async rpc(name,args){
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),20000);
@@ -22,10 +23,10 @@
   }finally{clearTimeout(timer);}
  }};
  function message(text){el('ops-message').textContent=text;}
- function clear(){clearTimeout(dailyTimer);rows=[];weekData=null;dailyData=null;el('ops-content').textContent='';}
+ function clear(){clearTimeout(dailyTimer);rows=[];weekData=null;dailyData=null;absenceDays=[];el('ops-content').textContent='';}
  function setBusy(value){busy=value;el('ops-content').setAttribute('aria-busy',String(value));el('ops-refresh').disabled=value;el('ops-login-button').disabled=value;}
  function lock(text='잠겼습니다. 비밀번호를 다시 입력해 주세요.'){
-  ++run;password='';teacherId='';dailyDate='';sessionStorage.removeItem(passwordKey);clear();setBusy(false);
+  ++run;password='';teacherId='';dailyDate='';excluded.clear();sessionStorage.removeItem(passwordKey);clear();setBusy(false);
   el('ops-password').value='';el('ops-login').hidden=false;el('ops-app').hidden=true;el('ops-logout').hidden=true;message(text);
  }
  function failed(error){
@@ -70,47 +71,64 @@
   }).join('')||'<p>등록된 반이 없습니다.</p>'}`;
  }
  const forwarding=data=>data.day.scheduled.filter(s=>s.arrived===false&&s.exam_done===false);
- function forwardText(data){
+ function forwardText(data,list=forwarding(data)){
   // 선생님 11/19 "간단하게": 학원 PC(ops-forward.mjs buildForwardText)와 같은 문구.
-  const list=forwarding(data);return `${data.day.label} 미등원\n${list.map(s=>s.name).join(', ')} (${list.length}명)`;
+  return `${data.day.label} 미등원\n${list.map(s=>s.name).join(', ')} (${list.length}명)`;
  }
  function pollDaily(){
   clearTimeout(dailyTimer);
-  if(dailyData?.forward?.status==='pending')dailyTimer=setTimeout(refresh,15000);
+  if(dailyData?.forward?.status==='pending'||absenceDays.some(d=>d.forward?.status==='pending'))dailyTimer=setTimeout(refresh,15000);
  }
  function renderDaily(){
   const selector=`<label for="ops-date">클리닉 날짜</label><input id="ops-date" type="date" value="${esc(dailyDate)}">`;
   if(!dailyData){el('ops-content').innerHTML=selector+'<p>학원 PC가 올린 해당 날짜의 클리닉 명단이 없습니다.</p>';return;}
-  const {day,forward}=dailyData,arrived=day.scheduled.filter(s=>s.arrived===true),absent=day.scheduled.filter(s=>s.arrived===false&&s.macgai_record!==false),unrecorded=day.scheduled.filter(s=>s.arrived===false&&s.macgai_record===false),targets=forwarding(dailyData);
+  const {day}=dailyData,arrived=day.scheduled.filter(s=>s.arrived===true),absent=day.scheduled.filter(s=>s.arrived===false&&s.macgai_record!==false),unrecorded=day.scheduled.filter(s=>s.arrived===false&&s.macgai_record===false),targets=forwarding(dailyData);
   const list=(students,sms=false)=>students.length?`<ul>${students.map(s=>`<li><strong>${esc(s.name)}</strong> · ${esc(s.class_label)} · ${sms?s.recipients.map(r=>r==='student'?'학생':'학부모').join(' · '):`예정 ${esc(s.start)}${s.arrived?` · 등원 ${esc(when(s.arrived_at))}${s.arrived_by?` (${esc(s.arrived_by)})`:''}`:''}${s.macgai_record===false?' · 맥가이 기록 없음':''} · 시험 ${s.exam_done?'응시':'미응시'}`}</li>`).join('')}</ul>`:'<p>해당 학생이 없습니다.</p>';
-  const status=forward?.status,doneTime=Number.isFinite(Date.parse(forward?.done_at))?new Date(forward.done_at).toLocaleTimeString('ko-KR',{timeZone:'Asia/Seoul',hour:'2-digit',minute:'2-digit',hour12:false}):'시각 미기록';
-  el('ops-content').innerHTML=`${selector}<h3>${esc(day.label)}</h3><p class="muted">맥가이 등원 시각을 우선하며 패드 등원도 반영합니다. 맥가이는 10분 간격으로 조회하고, 02:30~03:30에는 저장된 기록을 사용합니다. 패드 기록 0건은 참고 사항입니다.</p><p>집계 ${esc(when(day.at))} · 갱신 ${esc(when(dailyData.updated_at))}</p>${day.issues.length||day.unresolved?`<p class="weekly-warning" role="alert">확인 필요 ${esc(day.unresolved)}명 · ${day.issues.map(esc).join(' · ')}</p>`:''}<article><h3>① 등원 명단 (${arrived.length}명)</h3>${list(arrived)}</article><article><h3>② 미등원 명단 (${absent.length}명)</h3>${list(absent)}<h3>맥가이 기록 없음 (${unrecorded.length}명)</h3>${list(unrecorded)}</article><article><h3>③ 미등원 학원 전달명단 (${targets.length}명)</h3>${list(targets)}<h3>잔디로 보낼 문구 미리보기</h3><pre>${esc(forwardText(dailyData))}</pre><p role="status">${status==='sent'?`전달됨 ${esc(doneTime)}`:status==='pending'?'대기 · 학원 PC가 1분 안에 보냅니다':status==='failed'?'실패 · 전달 결과를 확인하고 다시 요청해 주세요.':'전달 요청 전'}</p><button type="button" class="primary" data-ops-forward ${busy||status==='pending'||!targets.length?'disabled':''}>${status==='sent'?'다시 전달':'잔디 등하원방에 전달'}</button></article><article><h3>④ 미응시 문자 발송명단 (${day.sms.length}명)</h3>${list(day.sms,true)}</article>`;
+  el('ops-content').innerHTML=`${selector}<h3>${esc(day.label)}</h3><p class="muted">맥가이 등원 시각을 우선하며 패드 등원도 반영합니다. 맥가이는 10분 간격으로 조회하고, 02:30~03:30에는 저장된 기록을 사용합니다. 패드 기록 0건은 참고 사항입니다.</p><p>집계 ${esc(when(day.at))} · 갱신 ${esc(when(dailyData.updated_at))}</p>${day.issues.length||day.unresolved?`<p class="weekly-warning" role="alert">확인 필요 ${esc(day.unresolved)}명 · ${day.issues.map(esc).join(' · ')}</p>`:''}<article><h3>① 등원 명단 (${arrived.length}명)</h3>${list(arrived)}</article><article><h3>② 미등원 명단 (${absent.length}명)</h3>${list(absent)}<h3>맥가이 기록 없음 (${unrecorded.length}명)</h3>${list(unrecorded)}</article><article><h3>③ 미등원 학원 전달명단 (${targets.length}명)</h3>${list(targets)}<h3>잔디로 보낼 문구 미리보기</h3><pre>${esc(forwardText(dailyData))}</pre><a href="#absence" data-ops-tab="absence">미등원 승인에서 보내요</a></article><article><h3>④ 미응시 문자 발송명단 (${day.sms.length}명)</h3>${list(day.sms,true)}</article>`;
  }
- async function forwardDaily(){
-  if(busy||!teacherId||!password||tab!=='daily'||!dailyData||dailyData.forward?.status==='pending'||!forwarding(dailyData).length)return;
-  const data=dailyData,resend=data.forward?.status==='sent';
-  const warning=data.day.issues.length||data.day.unresolved?`\n확인 필요 ${data.day.unresolved}명: ${data.day.issues.join(' · ')}\n`:'';
-  if(!window.confirm(`잔디 등하원방에 다음 문구를 ${resend?'다시 ':''}전달할까요?${warning}\n\n${forwardText(data)}`))return;
-  if(resend&&!window.confirm('이미 전달된 명단입니다. 같은 날짜의 명단을 다시 전달할까요?'))return;
-  clearTimeout(dailyTimer);const token=++run;setBusy(true);renderDaily();message('전달 요청을 저장하고 있습니다…');
+ const selectedStudents=data=>forwarding(data).filter(s=>!excluded.get(data.clinic_date)?.has(s.key));
+ function forwardStatus(forward){
+  const time=Number.isFinite(Date.parse(forward?.done_at))?new Date(forward.done_at).toLocaleTimeString('ko-KR',{timeZone:'Asia/Seoul',hour:'2-digit',minute:'2-digit',hour12:false}):'시각 미기록';
+  return forward?.status==='sent'?'전달됨 '+time:forward?.status==='pending'?'전달 대기(학원 PC 처리 중)':forward?.status==='rejected'?'보내지 않음':forward?.status==='failed'?'실패':'승인 전';
+ }
+ const selectable=data=>{const targets=forwarding(data);return targets.every(s=>studentKey.test(s.key))&&new Set(targets.map(s=>s.key)).size===targets.length;};
+ function renderAbsence(){
+  el('ops-content').innerHTML=[...absenceDays].sort((a,b)=>Number(a.forward?.status==='sent')-Number(b.forward?.status==='sent')||b.clinic_date.localeCompare(a.clinic_date)).map(data=>{
+   const {day,forward,clinic_date:date}=data,targets=forwarding(data),selected=selectedStudents(data),pending=forward?.status==='pending',ready=selectable(data);
+   return `<article data-ops-day="${esc(date)}"><h3>${esc(day.label)}</h3><p>집계 ${esc(when(day.at))} · 갱신 ${esc(when(data.updated_at))}</p>${day.issues.length||day.unresolved?`<p class="weekly-warning" role="alert">확인 필요 ${esc(day.unresolved)}명 · ${day.issues.map(esc).join(' · ')}</p>`:''}<h3>③ 미등원 학원 전달명단 (${targets.length}명)</h3>${targets.length?`<ul class="absence-students">${targets.map((s,i)=>`<li><label><input type="checkbox" data-ops-student="${i}" data-ops-date="${esc(date)}" ${!excluded.get(date)?.has(s.key)?'checked':''} ${busy||pending||!ready?'disabled':''}><span><strong>${esc(s.name)}</strong> · ${esc(s.class_label)} · 예정 ${esc(s.start)}${s.macgai_record===false?' · 맥가이 기록 없음':''}</span></label></li>`).join('')}</ul>`:'<p>해당 학생이 없습니다.</p>'}${!ready?'<p role="alert">학원 PC의 명단 갱신 후 학생을 선택할 수 있습니다.</p>':''}<h3>잔디로 보낼 문구 미리보기</h3><pre data-ops-preview="${esc(date)}" aria-live="polite">${esc(forwardText(data,selected))}</pre><p role="status">${esc(forwardStatus(forward))}</p><div class="actions"><button type="button" class="primary" data-ops-forward="${esc(date)}" ${busy||pending||!ready||!selected.length?'disabled':''}>${forward?.status==='sent'?'다시 보내기':'잔디로 보내기'}</button><button type="button" data-ops-reject="${esc(date)}" ${busy||pending||['sent','rejected'].includes(forward?.status)?'disabled':''}>안 보내기</button></div></article>`;
+  }).join('')||'<p>최근 클리닉 명단이 없습니다.</p>';
+ }
+ async function decideAbsence(date,action){
+  const data=absenceDays.find(d=>d.clinic_date===date);
+  if(busy||!teacherId||!password||tab!=='absence'||!data||data.forward?.status==='pending')return;
+  const selected=selectedStudents(data),resend=data.forward?.status==='sent';
+  if(action==='forward'&&(!selectable(data)||!selected.length))return;
+  if(action==='reject'&&(resend||data.forward?.status==='rejected'))return;
+  if(action==='forward'){
+   const warning=data.day.issues.length||data.day.unresolved?`\n확인 필요 ${data.day.unresolved}명: ${data.day.issues.join(' · ')}\n`:'';
+   if(!window.confirm(`잔디 등하원방에 다음 문구를 ${resend?'다시 ':''}전달할까요?${warning}\n\n${forwardText(data,selected)}`))return;
+   if(resend&&!window.confirm('이미 전달된 명단입니다. 같은 날짜의 명단을 다시 전달할까요?'))return;
+  }else if(!window.confirm(data.day.label+' 미등원 명단을 보내지 않을까요?'))return;
+  clearTimeout(dailyTimer);const token=++run;setBusy(true);renderAbsence();message('결정을 저장하고 있습니다…');
   try{
-   const saved=await read('forward',password,{clinic_date:data.clinic_date,updated_at:data.updated_at,...(resend?{resend_of:data.forward.id}:{})});if(token!==run)return;
-   data.forward=saved;message(saved.status==='pending'?'학원 PC가 1분 안에 보냅니다':saved.status==='sent'?'이미 전달된 명단입니다.':'전달에 실패했습니다.');
+   const saved=await read(action,password,{clinic_date:date,updated_at:data.updated_at,...(action==='forward'?{selected:selected.map(s=>s.key)}:{}),...(resend?{resend_of:data.forward.id}:{})});if(token!==run)return;
+   data.forward=saved;message(forwardStatus(saved));
   }catch(error){if(token===run){clear();failed(error);}}
-  finally{if(token===run){setBusy(false);if(dailyData){renderDaily();pollDaily();}}}
+  finally{if(token===run){setBusy(false);if(absenceDays.length){renderAbsence();pollDaily();}}}
  }
  async function refresh(){
   if(!password||!teacherId||busy)return;
   const token=++run,selected=tab;clear();setBusy(true);message('확인하고 있습니다…');
   try{
-   const data=await read(selected,password,selected==='daily'&&dailyDate?{clinic_date:dailyDate}:undefined);if(token!==run)return;
+   const data=await read(selected==='absence'?'daily':selected,password,selected==='daily'&&dailyDate?{clinic_date:dailyDate}:undefined);if(token!==run)return;
    if(selected==='pending'){rows=data.approvals;renderPending();}
+   else if(selected==='absence'){absenceDays=data;renderAbsence();pollDaily();}
    else if(selected==='weekly'){weekData=data;renderWeekly();}
    else if(selected==='daily'){dailyData=data[0]||null;if(dailyData)dailyDate=dailyData.clinic_date;renderDaily();pollDaily();}
    else if(selected==='board')renderBoard(data);else renderHistory(data);
    message(selected==='pending'?'명단과 문구를 확인해 주세요. 승인해도 예정 시각에 응시 여부를 다시 확인합니다.':'최신 조회를 완료했습니다.');
   }catch(error){if(token===run){clear();failed(error);}}
-  finally{if(token===run){setBusy(false);if(selected==='pending'&&rows.length)renderPending();if(selected==='daily'&&dailyData)renderDaily();}}
+  finally{if(token===run){setBusy(false);if(selected==='pending'&&rows.length)renderPending();if(selected==='daily'&&dailyData)renderDaily();if(selected==='absence'&&absenceDays.length)renderAbsence();}}
  }
  async function login(pw){
   if(busy||!pw)return;
@@ -142,14 +160,32 @@
  el('ops-logout').addEventListener('click',()=>lock());
  el('ops-refresh').addEventListener('click',refresh);
  document.addEventListener('change',async event=>{
+  const target=event.target;
+  if(target.dataset?.opsStudent!==undefined){
+   if(!teacherId||!password||busy||tab!=='absence')return;
+   const data=absenceDays.find(d=>d.clinic_date===target.dataset.opsDate);
+   if(!data||!selectable(data)||data.forward?.status==='pending')return;
+   const student=forwarding(data)[target.dataset.opsStudent];if(!student)return;
+   if(!excluded.has(data.clinic_date))excluded.set(data.clinic_date,new Set());
+   const omissions=excluded.get(data.clinic_date);if(target.checked)omissions.delete(student.key);else omissions.add(student.key);
+   // Update only the preview/button so checkbox keyboard focus stays in place.
+   const selected=selectedStudents(data),content=el('ops-content');
+   const preview=content.querySelector('[data-ops-preview="'+data.clinic_date+'"]');
+   if(preview)preview.textContent=forwardText(data,selected).replace(phone,'$1[전화번호 숨김]');
+   const button=content.querySelector('[data-ops-forward="'+data.clinic_date+'"]');
+   if(button)button.disabled=!selected.length;
+   return;
+  }
   if(event.target.id!=='ops-date'||!teacherId||busy||tab!=='daily'||!/^\d{4}-\d{2}-\d{2}$/.test(event.target.value))return;
   dailyDate=event.target.value;await refresh();
  });
  document.addEventListener('click',async event=>{
   const menu=event.target.closest('[data-ops-tab]');
-  if(menu){if(!teacherId||busy)return;tab=menu.dataset.opsTab;weeklyFilter='all';dailyDate='';selectTab();await refresh();return;}
+  if(menu){event.preventDefault();if(!teacherId||busy)return;tab=menu.dataset.opsTab;weeklyFilter='all';dailyDate='';selectTab();await refresh();return;}
   const forward=event.target.closest('[data-ops-forward]');
-  if(forward){if(!forward.disabled)await forwardDaily();return;}
+  if(forward){if(!forward.disabled)await decideAbsence(forward.dataset.opsForward,'forward');return;}
+  const reject=event.target.closest('[data-ops-reject]');
+  if(reject){if(!reject.disabled)await decideAbsence(reject.dataset.opsReject,'reject');return;}
   const filter=event.target.closest('[data-ops-filter]');
   if(filter){if(!teacherId||!password||busy||tab!=='weekly'||!Object.hasOwn(weeklyFilters,filter.dataset.opsFilter))return;weeklyFilter=filter.dataset.opsFilter;renderWeekly();el('ops-content').querySelector(`[data-ops-filter="${weeklyFilter}"]`)?.focus();return;}
   const button=event.target.closest('[data-ops-decision]');
@@ -165,7 +201,7 @@
   finally{if(token===run){setBusy(false);if(rows.length)renderPending();}}
  });
  // Clear private DOM before bfcache snapshots; restoring always reauthenticates.
- window.addEventListener('pagehide',()=>{++run;password='';teacherId='';clear();setBusy(false);el('ops-app').hidden=true;el('ops-login').hidden=false;el('ops-logout').hidden=true;});
+ window.addEventListener('pagehide',()=>{++run;password='';teacherId='';excluded.clear();clear();setBusy(false);el('ops-app').hidden=true;el('ops-login').hidden=false;el('ops-logout').hidden=true;});
  window.addEventListener('pageshow',event=>{if(event.persisted)login(sessionStorage.getItem(passwordKey)||'');});
  if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
  login(sessionStorage.getItem(passwordKey)||'');
