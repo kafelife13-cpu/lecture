@@ -71,7 +71,8 @@
  }
  const forwarding=data=>data.day.scheduled.filter(s=>s.arrived===false&&s.exam_done===false);
  function forwardText(data){
-  return `${data.day.label} · 미등원 학원 전달명단\n${forwarding(data).map(s=>`${s.class_label} · ${s.name} · 예정 ${s.start}`).join('\n')}`;
+  // 선생님 11/19 "간단하게": 학원 PC(ops-forward.mjs buildForwardText)와 같은 문구.
+  const list=forwarding(data);return `${data.day.label} 미등원\n${list.map(s=>s.name).join(', ')} (${list.length}명)`;
  }
  function pollDaily(){
   clearTimeout(dailyTimer);

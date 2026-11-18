@@ -99,7 +99,7 @@ const daily=()=>[{clinic_date:'2026-11-18',updated_at:'2026-11-19T10:30:00+09:00
  f=fixture();await f.tab('daily');await f.forward();await f.date('2026-11-18');assert.equal(f.calls.length,0);assert.equal(f.content(),'');
  await f.login();await f.tab('daily');assert.equal(f.calls.at(-1).args.p_action,'daily');assert.equal(f.calls.at(-1).args.p_arg,undefined);
  for(const value of ['value="2026-11-18"','① 등원 명단 (1명)','② 미등원 명단 (1명)','맥가이 기록 없음 (1명)','③ 미등원 학원 전달명단 (1명)','④ 미응시 문자 발송명단 (1명)','학생 · 학부모','17:03','(맥가이)','패드 기록 0건은 참고 사항'])assert.ok(f.content().includes(value),value);
- assert.match(f.content(),/<pre>11\/18\(수\) 클리닉 · 미등원 학원 전달명단\n클리닉반 · 미등원미응시학생 · 예정 18:00<\/pre>/);
+ assert.match(f.content(),/<pre>11\/18\(수\) 클리닉 미등원\n미등원미응시학생 \(1명\)<\/pre>/);
  assert.doesNotMatch(f.content(),/data-ops-forward disabled/);
  f.confirm=false;const beforeForward=f.calls.length;await f.forward();assert.equal(f.calls.length,beforeForward);
  f.confirm=true;await f.forward();assert.equal(f.calls.at(-1).args.p_action,'forward');
