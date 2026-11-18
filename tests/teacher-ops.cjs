@@ -53,9 +53,9 @@ function fixture(stored){
 }
 const daily=()=>[{clinic_date:'2026-11-18',updated_at:'2026-11-19T10:30:00+09:00',forward:null,day:{label:'11/18(수) 클리닉',at:'2026-11-19T10:00:00+09:00',issues:[],unresolved:0,
  scheduled:[
-  {name:'등원학생',class_label:'클리닉반',start:'17:00',arrived:true,arrived_at:'2026-11-18T17:03:00+09:00',exam_done:false},
-  {name:'미등원미응시학생',class_label:'클리닉반',start:'18:00',arrived:false,arrived_at:null,exam_done:false},
-  {name:'미등원응시학생',class_label:'클리닉반',start:'19:00',arrived:false,arrived_at:null,exam_done:true}],
+  {name:'등원학생',class_label:'클리닉반',start:'17:00',arrived:true,arrived_at:'2026-11-18T17:03:00+09:00',arrived_by:'맥가이',macgai_record:true,exam_done:false},
+  {name:'미등원미응시학생',class_label:'클리닉반',start:'18:00',arrived:false,arrived_at:null,arrived_by:null,macgai_record:false,exam_done:false},
+  {name:'미등원응시학생',class_label:'클리닉반',start:'19:00',arrived:false,arrived_at:null,arrived_by:null,macgai_record:true,exam_done:true}],
  sms:[{name:'문자학생',class_label:'문자반',recipients:['student','parent']}]
 }}];
 (async()=>{
@@ -98,7 +98,7 @@ const daily=()=>[{clinic_date:'2026-11-18',updated_at:'2026-11-19T10:30:00+09:00
  // Daily roster and forwarding: fake RPC only, never contact Jandi or the real database.
  f=fixture();await f.tab('daily');await f.forward();await f.date('2026-11-18');assert.equal(f.calls.length,0);assert.equal(f.content(),'');
  await f.login();await f.tab('daily');assert.equal(f.calls.at(-1).args.p_action,'daily');assert.equal(f.calls.at(-1).args.p_arg,undefined);
- for(const value of ['value="2026-11-18"','① 등원 명단 (1명)','② 미등원 명단 (2명)','③ 미등원 학원 전달명단 (1명)','④ 미응시 문자 발송명단 (1명)','학생 · 학부모','17:03'])assert.ok(f.content().includes(value),value);
+ for(const value of ['value="2026-11-18"','① 등원 명단 (1명)','② 미등원 명단 (1명)','맥가이 기록 없음 (1명)','③ 미등원 학원 전달명단 (1명)','④ 미응시 문자 발송명단 (1명)','학생 · 학부모','17:03','(맥가이)','패드 기록 0건은 참고 사항'])assert.ok(f.content().includes(value),value);
  assert.match(f.content(),/<pre>11\/18\(수\) 클리닉 · 미등원 학원 전달명단\n클리닉반 · 미등원미응시학생 · 예정 18:00<\/pre>/);
  assert.doesNotMatch(f.content(),/data-ops-forward disabled/);
  f.confirm=false;const beforeForward=f.calls.length;await f.forward();assert.equal(f.calls.length,beforeForward);
@@ -191,6 +191,12 @@ const daily=()=>[{clinic_date:'2026-11-18',updated_at:'2026-11-19T10:30:00+09:00
   .replace("('roster','board','weekly')","('roster','board')").replace("('pending','board','history','weekly')","('pending','board','history')")
   .replace(/  elsif p_action = 'weekly' then\n[\s\S]*?(?=  else\n|  elsif p_action = 'board' then)/g,'');
  assert.equal(legacy.trim(),sql.slice(sql.indexOf('create function public.ops_pc(')).trim(),'existing auth, roster, board, pending and history behavior stays unchanged');
+ const sourcePatch=read('supabase_patch_ops_daily_source.sql');
+ assert.match(sourcePatch,/create or replace function public.ops_valid_daily/);
+ assert.match(sourcePatch,/s \? 'arrived_by' and s \? 'macgai_record'/);
+ assert.match(sourcePatch,/jsonb_typeof\(s->'macgai_record'\) = 'boolean'/);
+ assert.match(sourcePatch,/s->>'arrived_by' in \('맥가이','패드'\)/);
+ assert.doesNotMatch(sourcePatch,/create table|create policy|grant execute|function public.ops_(pc|teacher)|update public\./i);
  const dailySql=read('supabase_add_ops_daily.sql').replace(/\r\n/g,'\n');
  for(const table of ['ops_daily','ops_forward_requests'])assert.ok(dailySql.includes(`alter table public.${table} enable row level security`));
  assert.match(dailySql,/revoke all on public.ops_daily, public.ops_forward_requests from public, anon, authenticated/);
@@ -230,7 +236,7 @@ const daily=()=>[{clinic_date:'2026-11-18',updated_at:'2026-11-19T10:30:00+09:00
  for(const icon of manifest.icons)assert.ok(fs.existsSync(path.join(root,icon.src.split('?')[0])));
  assert.match(read('ops.html'),/rel="manifest" href="ops-manifest.json"/);assert.doesNotMatch(read('ops.html'),/href="manifest.json"/);
  for(const file of ['ops.html','ops.js','ops.css','ops-manifest.json'])assert.ok(read('sw.js').includes('/lecture/'+file));
- assert.match(read('sw.js'),/const CACHE_NAME = 'kukeo-wang-v201-ops-daily'/);
+ assert.match(read('sw.js'),/const CACHE_NAME = 'kukeo-wang-v202-ops-daily-macgai'/);
  assert.match(read('ops.html'),/data-ops-tab="pending"[^\n]+\n\s*<button[^\n]+data-ops-tab="daily"[^\n]+\n\s*<button[^\n]+data-ops-tab="weekly"/);
  console.log('PASS: ops authentication/privacy, daily rosters/dates/forward/resend/polling/lock/races, weekly filters, shared approvals, legacy RPC preservation, manifest/cache and static SQL guards (fake RPC only; SQL not executed)');
  if(process.argv.includes('--browser'))await browserChecks();
