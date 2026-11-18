@@ -14,7 +14,7 @@ form,article{background:white;border:1px solid #c8d7d0;border-radius:16px;paddin
 label{display:block}input{display:block;width:100%;margin:8px 0 16px}
 form button,.primary,button[aria-pressed="true"]{background:#254e46;color:white}
 nav{display:flex;flex-wrap:wrap;gap:8px;position:sticky;top:0;background:#f3f6f3;padding:12px 0;z-index:1}
-nav button{flex:1;padding:10px 6px;font-size:.95rem}
+nav button{flex:1 1 100px;padding:10px 6px;font-size:.95rem;word-break:keep-all}
 pre{font:inherit;white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f6f3;padding:12px;border-radius:8px}
 ul{padding-left:22px}.actions{display:flex;gap:10px}.actions button{flex:1}
 .status{display:inline-block;font-weight:700;padding:2px 9px;background:#edf1ed;border-radius:6px}
