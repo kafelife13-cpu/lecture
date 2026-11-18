@@ -10896,6 +10896,7 @@ async function sExamOpenForGrading(examId,entryMode){
   }
   sExamData=found;sExamPriorResponse=resp||null;sOmrCurrentPhoto=null;sExamFullPage=0;
   sExamAnswers={};sExamPhotos={};sExamThoughts={};sExamSelectedQ=null;sWrongChecked={};sExamFullAnswers={};
+  if(found.category==='school'&&resp&&resp.regrade_approved)Object.assign(sExamFullAnswers,resp.answers||{});
   if(found.category==='homework'&&resp&&resp.thoughts&&resp.thoughts._subjective_answers)Object.assign(sExamFullAnswers,resp.thoughts._subjective_answers);
   sExamCheckMode=found.category==='naeshin'||sHomeworkNumbersOnly(found)||(entryMode==='wrongonly'&&sHomeworkAllowsWrongOnly(found))?'wrongonly':'full';
   document.getElementById('s-homework-wrong-input').hidden=!sHomeworkWrongOnly(found);
@@ -11082,7 +11083,7 @@ async function sExamSubmitFull(forceSubmit){
   },0);
   const score=pointsTotal?Math.round(pointsEarned/pointsTotal*100):0;
   const nextAttempt=(sExamPriorResponse&&sExamPriorResponse.attempt_count)?sExamPriorResponse.attempt_count+1:1;
-  let photoUrls={};
+  let photoUrls=Object.assign({},sExamPriorResponse&&sExamPriorResponse.photo_urls||{});
   if(sOmrCurrentPhoto){
     try{
       const path='exam-photos/'+sExamData.id+'/'+(session.name||session.id)+'/omr_'+Date.now()+'.jpg';
@@ -11445,8 +11446,8 @@ async function loadSResWrongFeedback(wrong){
 }
 function clinicChoiceExplanation(q,my){
   var text=String(q&&q.explanation||'');if(!text)return '';
-  var marks='①②③④⑤',picked=String(my||'').match(/[1-5]/g)||[];
-  var parts={};var re=/([①②③④⑤])([^①②③④⑤]*)/g,m;
+  var marks='①②③④⑤⑥⑦⑧⑨⑩',picked=String(my||'').split(',').map(function(n){return n.trim();}).filter(function(n){return /^(?:10|[1-9])$/.test(n);});
+  var parts={};var re=/([①②③④⑤⑥⑦⑧⑨⑩])([^①②③④⑤⑥⑦⑧⑨⑩]*)/g,m;
   while((m=re.exec(text)))parts[marks.indexOf(m[1])+1]=(parts[marks.indexOf(m[1])+1]||'')+m[2].trim();
   return picked.filter(function(n){return parts[n];}).map(function(n){return '<b>'+marks[n-1]+'</b> '+escHtml(parts[n]);}).join('<br>');
 }
