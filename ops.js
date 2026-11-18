@@ -5,8 +5,9 @@
  const esc=value=>String(value??'').replace(phone,'$1[전화번호 숨김]').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const when=value=>Number.isFinite(Date.parse(value))?new Date(value).toLocaleString('ko-KR',{timeZone:'Asia/Seoul',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false}):'기록 없음';
  const labels={pending:'승인 대기',approved:'승인',rejected:'거절',expired:'만료'};
- const titles={pending:'문자 승인',board:'자동화 현황',history:'최근 7일 기록'};
- let password='',teacherId='',rows=[],tab='pending',busy=false,run=0;
+ const titles={pending:'문자 승인',weekly:'이번 주 명단',board:'자동화 현황',history:'최근 7일 기록'};
+ const weeklyFilters={all:['전체',()=>true],absent:['미등원',s=>s.attendance==='미등원'],missing:['미입력',s=>s.clinic==='미입력'],retest:['재시험',s=>s.retest===true],homework:['과제 미완',s=>s.homework==='미완']};
+ let password='',teacherId='',rows=[],weekData=null,weeklyFilter='all',tab='pending',busy=false,run=0;
  // Native fetch keeps the standalone shell independent of a CDN and stores no RPC responses.
  const client={async rpc(name,args){
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),20000);
@@ -20,7 +21,7 @@
   }finally{clearTimeout(timer);}
  }};
  function message(text){el('ops-message').textContent=text;}
- function clear(){rows=[];el('ops-content').textContent='';}
+ function clear(){rows=[];weekData=null;el('ops-content').textContent='';}
  function setBusy(value){busy=value;el('ops-content').setAttribute('aria-busy',String(value));el('ops-refresh').disabled=value;el('ops-login-button').disabled=value;}
  function lock(text='잠겼습니다. 비밀번호를 다시 입력해 주세요.'){
   ++run;password='';teacherId='';sessionStorage.removeItem(passwordKey);clear();setBusy(false);
@@ -57,12 +58,22 @@
  function renderHistory(data){
   el('ops-content').innerHTML=data.map(r=>`<article><h3>${r.job==='clinic-missing-evening'?'클리닉 미응시 · 저녁':'클리닉 미응시 · 아침'}</h3><p>${esc(labels[r.status]||'확인 필요')} · ${esc(when(r.slot))}</p><p>보낸 수: ${Number.isInteger(r.sent_count)&&r.sent_count>=0?`${r.sent_count}통`:'미집계'}</p></article>`).join('')||'<p>최근 7일 처리 기록이 없습니다.</p>';
  }
+ function renderWeekly(){
+  if(!weekData){el('ops-content').textContent='학원 PC가 올린 이번 주 명단이 없습니다.';return;}
+  const week=weekData.week;
+  const summary=week.classes.map(c=>`<p><strong>${esc(c.label)}</strong><br>${Object.values(weeklyFilters).slice(1).map(([label,match])=>`${esc(label)} ${esc(c.students.filter(match).length)}`).join(' · ')}</p>`).join('');
+  el('ops-content').innerHTML=`<h3>${esc(week.label)}</h3><p>집계 ${esc(when(week.at))} · 갱신 ${esc(when(weekData.updated_at))}</p>${week.blocked?`<p class="weekly-warning" role="alert">집계가 완전하지 않음: ${week.issues.map(esc).join(' · ')||'사유 미등록'}</p>`:''}${summary?`<article aria-label="반별 요약"><h3>반별 요약</h3>${summary}</article>`:''}<div class="weekly-filters" role="group" aria-label="학생 상태 필터">${Object.entries(weeklyFilters).map(([key,[label]])=>`<button type="button" data-ops-filter="${esc(key)}" aria-pressed="${esc(key===weeklyFilter)}">${esc(label)}</button>`).join('')}</div>${week.classes.map(c=>{
+   const students=c.students.filter(weeklyFilters[weeklyFilter][1]);
+   return `<article><h3>${esc(c.label)}</h3><ul class="weekly-students">${students.map(s=>`<li><strong>${esc(s.name)}</strong><p>출결: ${esc(s.attendance)} · 클리닉: ${esc(s.clinic)} · 점수: ${esc(s.score===null?'미집계':s.score)} · 재시험: ${esc(s.retest?'대상':'아님')} · 과제: ${esc(s.homework)}</p><p class="muted">결석일: ${s.absence_dates.length?s.absence_dates.map(esc).join(', '):'없음'}</p></li>`).join('')}</ul>${students.length?'':'<p>해당 학생이 없습니다.</p>'}</article>`;
+  }).join('')||'<p>등록된 반이 없습니다.</p>'}`;
+ }
  async function refresh(){
   if(!password||!teacherId||busy)return;
   const token=++run,selected=tab;clear();setBusy(true);message('확인하고 있습니다…');
   try{
    const data=await read(selected);if(token!==run)return;
    if(selected==='pending'){rows=data.approvals;renderPending();}
+   else if(selected==='weekly'){weekData=data;renderWeekly();}
    else if(selected==='board')renderBoard(data);else renderHistory(data);
    message(selected==='pending'?'명단과 문구를 확인해 주세요. 승인해도 예정 시각에 응시 여부를 다시 확인합니다.':'최신 조회를 완료했습니다.');
   }catch(error){if(token===run){clear();failed(error);}}
@@ -99,7 +110,9 @@
  el('ops-refresh').addEventListener('click',refresh);
  document.addEventListener('click',async event=>{
   const menu=event.target.closest('[data-ops-tab]');
-  if(menu){if(!teacherId||busy)return;tab=menu.dataset.opsTab;selectTab();await refresh();return;}
+  if(menu){if(!teacherId||busy)return;tab=menu.dataset.opsTab;weeklyFilter='all';selectTab();await refresh();return;}
+  const filter=event.target.closest('[data-ops-filter]');
+  if(filter){if(!teacherId||!password||busy||tab!=='weekly'||!Object.hasOwn(weeklyFilters,filter.dataset.opsFilter))return;weeklyFilter=filter.dataset.opsFilter;renderWeekly();el('ops-content').querySelector(`[data-ops-filter="${weeklyFilter}"]`)?.focus();return;}
   const button=event.target.closest('[data-ops-decision]');
   if(!button||button.disabled||busy||!password||!teacherId)return;
   const row=rows.find(r=>r.id===button.dataset.opsId),action=button.dataset.opsDecision;
