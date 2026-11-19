@@ -9,7 +9,7 @@
  const weeklyFilters={all:['전체',()=>true],absent:['미등원',s=>s.attendance==='미등원'],missing:['미입력',s=>s.clinic==='미입력'],retest:['재시험',s=>s.retest===true],homework:['과제 미완',s=>s.homework==='미완'],video:['영상 미시청',s=>s.video==='미완']};
 const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음':s.video_percent===null?s.video+'(시청률 미확인)':s.video+' '+s.video_percent+'%';
  let password='',teacherId='',rows=[],weekData=null,weeklyFilter='all',tab='pending',busy=false,run=0;
- let dailyData=null,dailyDate='',dailyTimer,checkData=null,textData=null,recent=[],videoRows=null,clinicWatch=null,videoKind='replacement',videoOpen=false;
+ let dailyData=null,dailyDate='',dailyTimer,checkData=null,textData=null,recent=[],videoRows=null,clinicWatch=null,videoKind='replacement',videoOpen=false,excludes=[];
  let absenceDays=[];const excluded=new Map(),studentKey=/^s-[a-p]{64}$/;
  // Native fetch keeps the standalone shell independent of a CDN and stores no RPC responses.
  const client={async rpc(name,args){
@@ -45,7 +45,8 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음
   if(!Array.isArray(classes)||!classes.length)return '<p>명단이 아직 올라오지 않았습니다. 명단 등록 후 승인해 주세요.</p>';
   return classes.map(c=>{
    const students=c.students||[],studentCount=students.filter(s=>s.recipients.includes('student')).length,parentCount=students.filter(s=>s.recipients.includes('parent')).length;
-   return `<h3>${esc(c.label)}</h3><p>학생 ${studentCount}통 · 학부모 ${parentCount}통</p><ul>${students.map(s=>`<li>${esc(s.name)} <span class="muted">${s.recipients.map(r=>r==='parent'?'학부모':'학생').join(' · ')}</span></li>`).join('')}</ul>`;
+   const school=/^한백고/.test(c.label)?'sc_hanbaek':/^치동고/.test(c.label)?'sc_chidong':'';
+   return `<h3>${esc(c.label)}</h3><p>학생 ${studentCount}통 · 학부모 ${parentCount}통</p><ul class="check">${students.map(s=>{const ex=excludes.find(e=>e.name.replace(/\s/g,'')===String(s.name).replace(/\s/g,'')&&(!e.school||!school||e.school===school));return `<li class="${ex?'st-skip':''}">${ex?'<s>':''}${esc(s.name)}${ex?'</s>':''} <span class="muted">${s.recipients.map(r=>r==='parent'?'학부모':'학생').join(' · ')}</span> ${ex?`<span class="status">제외됨(${esc(ex.until.slice(5))}까지)</span> <button type="button" class="secondary" data-ex-remove="${esc(ex.id)}">되돌리기</button>`:`<button type="button" class="secondary" data-ex-add="${esc(s.name)}" data-ex-school="${esc(school)}">이번 주 제외</button>`}</li>`;}).join('')}</ul>`;
   }).join('');
  }
 
@@ -221,7 +222,7 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음
     message(selected==='today'?'승인이 필요한 항목은 주황 버튼을 누르면 [문자 승인] 화면으로 갑니다.':'문구를 고친 뒤 [이 문구로 저장]을 눌러 주세요.');return;
    }
    const data=await read(selected==='absence'?'daily':selected,password,selected==='daily'&&dailyDate?{clinic_date:dailyDate}:undefined);if(token!==run)return;
-   if(selected==='pending'){rows=data.approvals;if(!rows.length){try{recent=await read('history');}catch{recent=[];}if(token!==run)return;}renderPending();}
+   if(selected==='pending'){rows=data.approvals;try{excludes=(await read('templates')).excludes||[];}catch{excludes=[];}if(token!==run)return;if(!rows.length){try{recent=await read('history');}catch{recent=[];}if(token!==run)return;}renderPending();}
    else if(selected==='absence'){absenceDays=data;renderAbsence();pollDaily();}
    else if(selected==='weekly'){weekData=data;renderWeekly();}
    else if(selected==='daily'){dailyData=data[0]||null;if(dailyData)dailyDate=dailyData.clinic_date;renderDaily();pollDaily();}
@@ -240,6 +241,7 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음
    if(!data?.teacher_id||!Array.isArray(data.approvals))throw Error('OPS_RESPONSE_INVALID');
    sessionStorage.setItem(passwordKey,pw);sessionStorage.removeItem('login_failures');sessionStorage.removeItem('login_lock_until');
    password=pw;teacherId=data.teacher_id;rows=data.approvals;tab='pending';
+   try{excludes=(await read('templates',pw)).excludes||[];}catch{excludes=[];}if(token!==run)return;
    if(!rows.length){try{recent=await read('history',pw);}catch{recent=[];}if(token!==run)return;}
    el('ops-login').hidden=true;el('ops-app').hidden=false;el('ops-logout').hidden=false;selectTab();renderPending();
    message('명단과 문구를 확인해 주세요. 승인 자체로 문자를 발송하지 않습니다.');
@@ -284,6 +286,22 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음
  document.addEventListener('click',async event=>{
   const menu=event.target.closest('[data-ops-tab]');
   if(menu){event.preventDefault();if(!teacherId||busy)return;tab=menu.dataset.opsTab;weeklyFilter='all';dailyDate='';selectTab();await refresh();return;}
+  const exAdd=event.target.closest('[data-ex-add]'),exRemove=event.target.closest('[data-ex-remove]');
+  if(exAdd||exRemove){
+   if(!teacherId||busy||tab!=='pending')return;
+   const kst=new Date(Date.now()+9*3600000),sun=new Date(kst);sun.setUTCDate(kst.getUTCDate()+((7-kst.getUTCDay())%7));
+   const until=sun.toISOString().slice(0,10);
+   if(exAdd&&!confirm(exAdd.dataset.exAdd+' 학생을 '+until.slice(5)+'(일)까지 모든 자동 문자에서 뺄까요? 학생·학부모 모두 안 보냅니다.'))return;
+   const token=++run;setBusy(true);
+   try{
+    if(exAdd)await read('exclude_add',password,{name:exAdd.dataset.exAdd,school:exAdd.dataset.exSchool||null,until});
+    else await read('exclude_remove',password,{id:exRemove.dataset.exRemove});
+    if(token!==run)return;excludes=(await read('templates')).excludes||[];
+    message(exAdd?'뺐습니다. 승인해도 이 학생에게는 보내지 않습니다.':'되돌렸습니다.');
+   }catch(e){if(token===run)message('저장하지 못했습니다. 서버 준비(영상명단_켜기) 전이면 채팅으로 이름을 알려 주세요.');}
+   finally{if(token===run){setBusy(false);renderPending();}}
+   return;
+  }
   const vk=event.target.closest('[data-video-kind]');
   if(vk){if(tab!=='videos'||busy)return;videoKind=vk.dataset.videoKind;renderVideos();return;}
   const tplSave=event.target.closest('[data-tpl-save]');

@@ -30,6 +30,16 @@ create table if not exists public.sms_requests (
   created_by text not null,
   status text not null default 'pending' check (status in ('pending','done','rejected'))
 );
+create table if not exists public.sms_excludes (
+  id uuid primary key default gen_random_uuid(),
+  name text not null check (length(name) between 1 and 50),
+  school text check (school is null or school ~ '^sc_[a-z]+$'),
+  until date not null,
+  created_at timestamptz not null default now(),
+  created_by text not null
+);
+alter table public.sms_excludes enable row level security;
+revoke all on public.sms_excludes from public, anon, authenticated;
 alter table public.ops_checklist enable row level security;
 alter table public.sms_templates enable row level security;
 alter table public.sms_requests enable row level security;
@@ -93,6 +103,7 @@ begin
   elsif p_action = 'templates' then
     if p_row <> '{}'::jsonb then raise exception 'OPS_PAYLOAD_INVALID'; end if;
     return jsonb_build_object(
+      'excludes', (select coalesce(jsonb_agg(jsonb_build_object('id', x.id, 'name', x.name, 'school', x.school, 'until', x.until) order by x.until, x.name), '[]'::jsonb) from public.sms_excludes x where x.until >= (now() at time zone 'Asia/Seoul')::date),
       'templates', (select coalesce(jsonb_agg(jsonb_build_object('job', t.job, 'recipient_type', t.recipient_type, 'variant', t.variant, 'body', t.body, 'updated_at', t.updated_at) order by t.job, t.recipient_type, t.variant), '[]'::jsonb) from public.sms_templates t),
       'requests', (select coalesce(jsonb_agg(jsonb_build_object('id', r.id, 'body', r.body, 'target', r.target, 'when_text', r.when_text, 'created_at', r.created_at) order by r.created_at), '[]'::jsonb) from public.sms_requests r where r.status = 'pending'));
   else
@@ -125,7 +136,7 @@ begin
     end loop;
   end if;
   if teacher_id is null then raise exception 'TEACHER_AUTH_REQUIRED' using errcode = '42501'; end if;
-  if p_action is null or p_action not in ('pending','board','history','weekly','daily','forward','reject','checklist','templates','template_save','template_reset','sms_request','videos','clinic_watch') then raise exception 'APPROVAL_ACTION_INVALID'; end if;
+  if p_action is null or p_action not in ('pending','board','history','weekly','daily','forward','reject','checklist','templates','template_save','template_reset','sms_request','videos','clinic_watch','exclude_add','exclude_remove') then raise exception 'APPROVAL_ACTION_INVALID'; end if;
   -- 11/19: 영상 시청 조회(주차별 영상대체 / 보강신청 / 클리닉 해설강의). 국어왕 시청률 기준.
   if p_action = 'videos' then
     if p_arg is not null and ((jsonb_typeof(p_arg) = 'object' and p_arg - 'days' = '{}'::jsonb
@@ -178,6 +189,7 @@ begin
     return result;
   elsif p_action = 'templates' then
     return jsonb_build_object(
+      'excludes', (select coalesce(jsonb_agg(jsonb_build_object('id', x.id, 'name', x.name, 'school', x.school, 'until', x.until) order by x.until, x.name), '[]'::jsonb) from public.sms_excludes x where x.until >= (now() at time zone 'Asia/Seoul')::date),
       'templates', (select coalesce(jsonb_agg(jsonb_build_object('job', t.job, 'recipient_type', t.recipient_type, 'variant', t.variant, 'body', t.body, 'updated_at', t.updated_at) order by t.job, t.recipient_type, t.variant), '[]'::jsonb) from public.sms_templates t),
       'requests', (select coalesce(jsonb_agg(jsonb_build_object('id', r.id, 'body', r.body, 'target', r.target, 'when_text', r.when_text, 'created_at', r.created_at, 'status', r.status) order by r.created_at desc), '[]'::jsonb) from (select * from public.sms_requests order by created_at desc limit 30) r));
   elsif p_action in ('template_save','template_reset') then
@@ -192,6 +204,16 @@ begin
         values(p_arg->>'job', p_arg->>'recipient_type', p_arg->>'variant', p_arg->>'body', clock_timestamp(), teacher_id)
         on conflict (job, recipient_type, variant) do update set body = excluded.body, updated_at = excluded.updated_at, updated_by = excluded.updated_by;
     end if;
+    return jsonb_build_object('ok', true);
+  elsif p_action = 'exclude_add' then
+    if (jsonb_typeof(p_arg) = 'object' and p_arg - 'name' - 'school' - 'until' = '{}'::jsonb and jsonb_typeof(p_arg->'name') = 'string'
+      and jsonb_typeof(p_arg->'until') = 'string' and p_arg->>'until' ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'
+      and (not (p_arg ? 'school') or jsonb_typeof(p_arg->'school') in ('string','null'))) is not true then raise exception 'OPS_PAYLOAD_INVALID'; end if;
+    insert into public.sms_excludes(name, school, until, created_by) values(trim(p_arg->>'name'), nullif(p_arg->>'school',''), (p_arg->>'until')::date, teacher_id);
+    return jsonb_build_object('ok', true);
+  elsif p_action = 'exclude_remove' then
+    if (jsonb_typeof(p_arg) = 'object' and p_arg - 'id' = '{}'::jsonb and p_arg->>'id' ~ '^[0-9a-fA-F-]{36}$') is not true then raise exception 'OPS_PAYLOAD_INVALID'; end if;
+    delete from public.sms_excludes where id = (p_arg->>'id')::uuid;
     return jsonb_build_object('ok', true);
   elsif p_action = 'sms_request' then
     if (jsonb_typeof(p_arg) = 'object' and p_arg - 'body' - 'target' - 'when_text' = '{}'::jsonb
