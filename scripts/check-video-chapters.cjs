@@ -12,6 +12,11 @@ assert.deepEqual(Array.from(week3.filter(row=>/^\d+번$/.test(row.label)),row=>p
 assert.deepEqual(Array.from(week3,row=>row.seconds),[0,29,951,1047,1754,1863,1893,2233,2812,3023,3156,3770,3800,4026,4076,4166,4308,4398,4428,4482,4633,4846,4975,5147]);
 assert.equal(chapter.duration('vbZmrNkQd-o'),5356);
 assert.ok(week3.every((row,i)=>Number.isInteger(row.seconds)&&row.seconds>=0&&row.seconds<5356&&(!i||row.seconds>week3[i-1].seconds)));
+const week4=chapter.get('ugwQYQKvvY4');
+assert.deepEqual(Array.from(week4,row=>row.label),Array.from({length:23},(_,i)=>(i+1)+'번'),'week 4 lists questions 1-23 by number only');
+assert.deepEqual(Array.from(week4,row=>row.seconds),[0,229,408,690,1193,1656,1864,2155,2540,2727,2886,3073,3384,3499,3789,3976,4214,4400,4659,4906,5013,5209,5385]);
+assert.equal(chapter.duration('ugwQYQKvvY4'),5488);
+assert.ok(week4.every((row,i)=>Number.isInteger(row.seconds)&&row.seconds>=0&&row.seconds<5488&&(!i||row.seconds>week4[i-1].seconds)));
 const numbers=[];
 for(const [id,duration] of [['sJsIw7F6r_w',2928],['8TwCCPBPyrA',2839]]){
   const rows=chapter.get(id);assert.ok(rows.length);let previous=-1;

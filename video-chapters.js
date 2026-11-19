@@ -4,6 +4,14 @@
   'use strict';
   // Seconds refer to the uploaded videos; cue just before each explanation.
   const catalogue={
+    // Hanbaek grade 1, final-exam clinic week 4: edited lesson (grammar 1-13, literature 14-23).
+    ugwQYQKvvY4:[
+      ['1번',0],['2번',229],['3번',408],['4번',690],['5번',1193],
+      ['6번',1656],['7번',1864],['8번',2155],['9번',2540],['10번',2727],
+      ['11번',2886],['12번',3073],['13번',3384],['14번',3499],['15번',3789],
+      ['16번',3976],['17번',4214],['18번',4400],['19번',4659],['20번',4906],
+      ['21번',5013],['22번',5209],['23번',5385]
+    ],
     // Hanbaek grade 1, final-exam clinic week 3: edited lesson cue sheet.
     'vbZmrNkQd-o':[
       ['개념 정리: 높임 표현',0],['1번',29],['2번',951],['3번',1047],['4번',1754],
@@ -106,6 +114,6 @@
       return status+': '+(selected.length?selected.map(function(row){return row.label+(status==='일부 시청'?' ('+row.percent+'%)':'');}).join(', '):'없음');
     }).join(' / ');
   }
-  function duration(videoId){return videoId==='vbZmrNkQd-o'?5356:videoId==='3pq_DTn7wS0'?4418:videoId==='yIWb_j_49oM'?5131:videoId==='Mml3RyA1TwU'?5635:videoId==='sJsIw7F6r_w'?2928:videoId==='8TwCCPBPyrA'?2839:0;}
+  function duration(videoId){return videoId==='ugwQYQKvvY4'?5488:videoId==='vbZmrNkQd-o'?5356:videoId==='3pq_DTn7wS0'?4418:videoId==='yIWb_j_49oM'?5131:videoId==='Mml3RyA1TwU'?5635:videoId==='sJsIw7F6r_w'?2928:videoId==='8TwCCPBPyrA'?2839:0;}
   root.KkakkaVideoChapters={get:get,render:render,restore:restore,observe:observe,stats:stats,summary:summary,duration:duration};
 })(typeof window==='undefined'?globalThis:window);
