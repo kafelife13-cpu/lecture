@@ -2,7 +2,7 @@ const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/st
 const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
 const ctx={ytId:url=>url.split('/').pop(),weeklyExamSchoolId:s=>s==='한백고'?'sc_hanbaek':s==='치동고'?'sc_chidong':''};
 vm.createContext(ctx);
-for(const name of ['clinicVideoSchool','clinicVideoDescription','clinicVideoExamId','clinicVideoScoreState','loadClinicVideoScores','renderClinicLectures','openPlay']){
+for(const name of ['clinicVideoSchool','clinicVideoDescription','clinicVideoExamIds','clinicVideoExamId','clinicVideoScoreState','loadClinicVideoScores','renderClinicLectures','openPlay']){
   const start=html.indexOf('function '+name+'('),lineEnd=html.indexOf('\n',start);
   const end=html.slice(start,lineEnd).trim().endsWith('}')?lineEnd:html.indexOf('\n}',start)+2;
   vm.runInContext((html.slice(start-6,start)==='async '?'async ':'')+html.slice(start,end),ctx);
@@ -26,6 +26,20 @@ assert.equal(state([response],[exam],{...student,school_id:'sc_chidong'}).allowe
 assert.equal(state([response],[exam],student,{...video,url:'https://youtu.be/unmapped'}).allowed,false);
 assert.equal(ctx.clinicVideoExamId({...video,description:'설명 [학교:sc_hanbaek] [시험:explicit-id]'}),'explicit-id');
 assert.equal(ctx.clinicVideoDescription({description:'설명 [학교:sc_hanbaek] [시험:explicit-id]'}),'설명');
+{
+  const main={...exam,id:'main-4'},redo={...exam,id:'redo-4',name:'4주차 다시 입력'},v4={...video,url:'https://youtu.be/w4',description:'해설 [학교:sc_hanbaek] [시험:main-4,redo-4]'};
+  assert.deepEqual(Array.from(ctx.clinicVideoExamIds(v4)),['main-4','redo-4']);
+  assert.equal(ctx.clinicVideoDescription(v4),'해설');
+  const s4=(rs,exams=[main,redo],s=student)=>ctx.clinicVideoScoreState(v4,s,exams,rs);
+  assert.equal(s4([{...response,exam_id:'main-4'}]).allowed,true,'main exam score unlocks');
+  assert.equal(s4([{...response,exam_id:'redo-4',score:70}]).allowed,true,'re-entry exam score unlocks');
+  assert.equal(s4([]).allowed,false,'no score stays locked');
+  assert.equal(s4([{...response,exam_id:'redo-4',score:''}]).allowed,false);
+  assert.equal(s4([{...response,exam_id:'redo-4',student_id:'another'}]).allowed,false);
+  assert.equal(s4([{...response,exam_id:'redo-4'}],[main,{...redo,clinic_school:'치동고'}]).allowed,false,'other-school re-entry exam never unlocks');
+  assert.equal(s4([{...response,exam_id:'redo-4'}],[main,{...redo,category:'homework'}]).allowed,false);
+  assert.equal(s4([{...response,exam_id:'redo-4'}],[redo]).allowed,false,'missing main exam stays locked');
+}
 let filters=[],fail=false;
 ctx.sb={from(table){const query={select(){return this;},eq(k,v){filters.push([table,k,v]);return this;},in(){return Promise.resolve({data:table==='exams'?[exam]:[response],error:fail?Error('offline'):null});}};return query;}};
 (async()=>{
