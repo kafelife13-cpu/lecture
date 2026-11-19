@@ -9,7 +9,7 @@
  const weeklyFilters={all:['전체',()=>true],absent:['미등원',s=>s.attendance==='미등원'],missing:['미입력',s=>s.clinic==='미입력'],retest:['재시험',s=>s.retest===true],homework:['과제 미완',s=>s.homework==='미완'],video:['영상 미시청',s=>s.video==='미완']};
 const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음':s.video_percent===null?s.video+'(시청률 미확인)':s.video+' '+s.video_percent+'%';
  let password='',teacherId='',rows=[],weekData=null,weeklyFilter='all',tab='pending',busy=false,run=0;
- let dailyData=null,dailyDate='',dailyTimer,checkData=null,textData=null;
+ let dailyData=null,dailyDate='',dailyTimer,checkData=null,textData=null,recent=[];
  let absenceDays=[];const excluded=new Map(),studentKey=/^s-[a-p]{64}$/;
  // Native fetch keeps the standalone shell independent of a CDN and stores no RPC responses.
  const client={async rpc(name,args){
@@ -94,7 +94,7 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음
   el('ops-content').innerHTML=rows.map(r=>{
    const pending=r.status==='pending'&&Date.parse(r.expires_at)>Date.now(),hasRoster=!!r.roster?.classes?.length;
    return `<article><h3>${esc(jobLabel(r.job))}</h3><p><strong>${esc(labels[pending?r.status:r.status==='pending'?'expired':r.status])}</strong> · ${esc(r.recipient_count)}통 예정</p><p>발송 ${esc(when(r.slot))}<br>승인 기한 ${esc(when(r.expires_at))}</p>${roster(r)}${(r.preview?.examples||[]).map(e=>`<h3>${e.recipient_type==='parent'?'학부모':'학생'} 문구 예시</h3><pre>${esc(e.text)}</pre>`).join('')}<div class="actions"><button type="button" class="primary" data-ops-decision="approve" data-ops-id="${esc(r.id)}" ${!pending||busy||!hasRoster?'disabled':''}>보내기</button><button type="button" data-ops-decision="reject" data-ops-id="${esc(r.id)}" ${!pending||busy?'disabled':''}>안 보내기</button></div></article>`;
-  }).join('')||'<p>승인 대기 요청이 없습니다.</p>';
+  }).join('')||`<article class="mine"><h3>지금 승인할 문자가 없습니다</h3><p>문자 승인은 정해진 시간에만 열립니다. 이 시간 안에 이 화면에서 [보내기]를 눌러야 나갑니다.</p><ul class="check"><li><strong>클리닉 미응시 · 저녁 학부모</strong> (수·목·금) 20:00~21:00 · 발송 20:50</li><li><strong>클리닉 미응시 · 아침 학생·학부모</strong> (목·금·토) 07:20~08:15 · 발송 08:00</li><li><strong>목요일 영상 미시청</strong> (목) 08:30~09:15 · 발송 09:00</li><li><strong>금요일 재시·보강</strong> (금) 20:10~20:45 · 발송 20:30</li></ul>${recent.length?`<h3>최근 요청</h3><ul class="check">${recent.slice(0,6).map(r=>`<li class="${r.status==='approved'?'st-done':'st-fail'}"><strong>${esc(jobLabel(r.job))}</strong> · ${esc(when(r.slot))}<br><span class="status">${r.status==='approved'?'승인함 · 보낸 수 '+esc(Number.isInteger(r.sent_count)?r.sent_count:'확인 중'):r.status==='rejected'?'거절함 · 안 보냄':'승인 기한 지남 · 안 보냄'}</span></li>`).join('')}</ul>`:''}</article>`;
  }
  function renderBoard(data){
   if(!data){el('ops-content').textContent='학원 PC가 올린 현황판이 없습니다.';return;}
@@ -164,12 +164,13 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음
   const token=++run,selected=tab;clear();setBusy(true);message('확인하고 있습니다…');
   try{
    if(selected==='today'||selected==='texts'){
-    checkData=await read('checklist');if(token!==run)return;
+    try{checkData=await read('checklist');}catch(e){if(token!==run)return;clear();el('ops-content').innerHTML='<article class="mine"><h3>이 화면은 서버 준비가 아직 안 됐습니다</h3><p>학원 컴퓨터에서 <strong>영상명단_켜기</strong>를 한 번 실행하면 켜집니다. 그 전에도 [문자 승인]은 그대로 쓸 수 있습니다.</p></article>';message('');return;}
+    if(token!==run)return;
     if(selected==='texts'){textData=await read('templates');if(token!==run)return;renderTexts();}else renderToday();
     message(selected==='today'?'승인이 필요한 항목은 주황 버튼을 누르면 [문자 승인] 화면으로 갑니다.':'문구를 고친 뒤 [이 문구로 저장]을 눌러 주세요.');return;
    }
    const data=await read(selected==='absence'?'daily':selected,password,selected==='daily'&&dailyDate?{clinic_date:dailyDate}:undefined);if(token!==run)return;
-   if(selected==='pending'){rows=data.approvals;renderPending();}
+   if(selected==='pending'){rows=data.approvals;if(!rows.length){try{recent=await read('history');}catch{recent=[];}if(token!==run)return;}renderPending();}
    else if(selected==='absence'){absenceDays=data;renderAbsence();pollDaily();}
    else if(selected==='weekly'){weekData=data;renderWeekly();}
    else if(selected==='daily'){dailyData=data[0]||null;if(dailyData)dailyDate=dailyData.clinic_date;renderDaily();pollDaily();}
@@ -188,6 +189,7 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음
    if(!data?.teacher_id||!Array.isArray(data.approvals))throw Error('OPS_RESPONSE_INVALID');
    sessionStorage.setItem(passwordKey,pw);sessionStorage.removeItem('login_failures');sessionStorage.removeItem('login_lock_until');
    password=pw;teacherId=data.teacher_id;rows=data.approvals;tab='pending';
+   if(!rows.length){try{recent=await read('history',pw);}catch{recent=[];}if(token!==run)return;}
    el('ops-login').hidden=true;el('ops-app').hidden=false;el('ops-logout').hidden=false;selectTab();renderPending();
    message('명단과 문구를 확인해 주세요. 승인 자체로 문자를 발송하지 않습니다.');
   }catch(error){
