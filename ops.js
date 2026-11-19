@@ -59,7 +59,9 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음
   const days=c.days.days.filter(d=>d.date>=kst).slice(0,3);
   const mine=(c.board?.items||[]).filter(i=>i.who==='선생님'&&i.status!=='됨');
   const approveBtn='<button type="button" class="go-approve" data-ops-tab="pending">문자 승인 화면 열기 → 문구 보고 [보내기]</button>';
-  el('ops-content').innerHTML=`<p class="muted">학원 PC 갱신 ${esc(when(checkData.updated_at))}</p>`+
+  const sms=c.sms||[];
+  const smsHtml=sms.length?`<article><h3>자동 문자 한눈에</h3><ul class="check">${sms.map(s=>`<li class="st-${s.state==='켜짐'?'done':'fail'}"><strong>${esc(s.name)}</strong> <span class="status">${esc(s.state)}</span><br>${esc(s.who)} · ${esc(s.when)} · ${esc(s.approve)}<br><span class="muted">명단 만들기 마지막 ${s.last?esc(when(s.last.at))+(s.last.ok?' 정상 실행':' <b>실행 오류</b>'):'기록 없음'}${s.next?' · 다음 '+esc(when(s.next)):''}</span></li>`).join('')}</ul><p class="muted">실제로 몇 통 나갔는지는 [최근 기록]에서 볼 수 있습니다.</p></article>`:'';
+  el('ops-content').innerHTML=`<p class="muted">학원 PC 갱신 ${esc(when(checkData.updated_at))}</p>`+smsHtml+
    (mine.length?`<article class="mine"><h3>선생님이 하실 일</h3><ul class="check">${mine.map(i=>`<li><strong>${esc(i.task)}</strong><br><span class="muted">${esc(i.due||'날짜 미정')}${i.memo?' · '+esc(i.memo):''}</span></li>`).join('')}</ul></article>`:'')+
    days.map(d=>`<article><h3>${esc(d.label)}${d.date===kst?' · 오늘':''}</h3><ul class="check">${(d.auto||[]).map(a=>{
      const need=a.approve&&!['됨','실패','건너뜀','지남'].includes(a.st);
