@@ -5,11 +5,11 @@
  const esc=value=>String(value??'').replace(phone,'$1[전화번호 숨김]').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const when=value=>Number.isFinite(Date.parse(value))?new Date(value).toLocaleString('ko-KR',{timeZone:'Asia/Seoul',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false}):'기록 없음';
  const labels={pending:'승인 대기',approved:'승인',rejected:'거절',expired:'만료'};
- const titles={pending:'문자 승인',absence:'미등원 승인',daily:'클리닉 명단',weekly:'이번 주 명단',board:'자동화 현황',history:'최근 7일 기록'};
+ const titles={today:'오늘 체크리스트',texts:'문자 문구',pending:'문자 승인',absence:'미등원 승인',daily:'클리닉 명단',weekly:'이번 주 명단',board:'자동화 현황',history:'최근 7일 기록'};
  const weeklyFilters={all:['전체',()=>true],absent:['미등원',s=>s.attendance==='미등원'],missing:['미입력',s=>s.clinic==='미입력'],retest:['재시험',s=>s.retest===true],homework:['과제 미완',s=>s.homework==='미완'],video:['영상 미시청',s=>s.video==='미완']};
 const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음':s.video_percent===null?s.video+'(시청률 미확인)':s.video+' '+s.video_percent+'%';
  let password='',teacherId='',rows=[],weekData=null,weeklyFilter='all',tab='pending',busy=false,run=0;
- let dailyData=null,dailyDate='',dailyTimer;
+ let dailyData=null,dailyDate='',dailyTimer,checkData=null,textData=null;
  let absenceDays=[];const excluded=new Map(),studentKey=/^s-[a-p]{64}$/;
  // Native fetch keeps the standalone shell independent of a CDN and stores no RPC responses.
  const client={async rpc(name,args){
@@ -48,10 +48,52 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음
    return `<h3>${esc(c.label)}</h3><p>학생 ${studentCount}통 · 학부모 ${parentCount}통</p><ul>${students.map(s=>`<li>${esc(s.name)} <span class="muted">${s.recipients.map(r=>r==='parent'?'학부모':'학생').join(' · ')}</span></li>`).join('')}</ul>`;
   }).join('');
  }
+
+ // ---- 11/19 오늘 체크리스트 ----
+ const jobLabel=job=>({'clinic-missing-evening':'클리닉 미응시 · 저녁 학부모','clinic-missing-morning':'클리닉 미응시 · 아침 학생·학부모','clinic-retest-friday':'금요일 재시·보강 안내','video-incomplete-thursday':'목요일 영상 미시청 안내'}[job]||'문자');
+ const stClass=s=>({'됨':'done','예정':'wait','실패':'fail','승인 안 됨':'fail','안됨':'fail','건너뜀':'skip','지남':'skip','진행중':'doing'}[s]||'wait');
+ function renderToday(){
+  const c=checkData?.data;
+  if(!c?.days?.days){el('ops-content').textContent='학원 PC가 올린 체크리스트가 없습니다.';return;}
+  const now=new Date(),kst=new Date(now.getTime()+9*3600000).toISOString().slice(0,10);
+  const days=c.days.days.filter(d=>d.date>=kst).slice(0,3);
+  const mine=(c.board?.items||[]).filter(i=>i.who==='선생님'&&i.status!=='됨');
+  const approveBtn='<button type="button" class="go-approve" data-ops-tab="pending">문자 승인 화면 열기 → 문구 보고 [보내기]</button>';
+  el('ops-content').innerHTML=`<p class="muted">학원 PC 갱신 ${esc(when(checkData.updated_at))}</p>`+
+   (mine.length?`<article class="mine"><h3>선생님이 하실 일</h3><ul class="check">${mine.map(i=>`<li><strong>${esc(i.task)}</strong><br><span class="muted">${esc(i.due||'날짜 미정')}${i.memo?' · '+esc(i.memo):''}</span></li>`).join('')}</ul></article>`:'')+
+   days.map(d=>`<article><h3>${esc(d.label)}${d.date===kst?' · 오늘':''}</h3><ul class="check">${(d.auto||[]).map(a=>{
+     const need=a.approve&&!['됨','실패','건너뜀','지남'].includes(a.st);
+     return `<li class="st-${stClass(a.st)}${need?' need':''}"><span class="tm">${esc(a.time||'')}</span> <strong>${esc(a.name)}</strong> <span class="status">${esc(need?'승인 필요':a.st)}</span>${a.why?`<br><span class="muted">${esc(a.why)}</span>`:''}${need?'<br>'+approveBtn:''}</li>`;
+   }).join('')||'<li>자동화 없음</li>'}</ul></article>`).join('');
+ }
+ // ---- 11/19 문자 문구 수정·새 문자 요청 ----
+ const varHelp={'이름':'학생 이름','날짜':'클리닉 날짜','사유':'재시 사유(점수 미달/미입력)','일요일':'일요일 날짜','시각':'시각','퍼센트':'영상 시청률'};
+ function renderTexts(){
+  const defaults=checkData?.data?.defaults||[],jobs=checkData?.data?.jobs||{},saved=textData?.templates||[];
+  if(!defaults.length){el('ops-content').textContent='학원 PC가 아직 기본 문구를 올리지 않았습니다. 잠시 뒤 새로고침해 주세요.';return;}
+  const key=t=>t.job+'|'+t.recipient_type+'|'+(t.variant||'');
+  el('ops-content').innerHTML=`<p class="muted">고친 문구는 <strong>다음 미리보기부터</strong> 쓰입니다. 미리보기에 그대로 보이고, [문자 승인]에서 승인해야만 나갑니다. 이미 승인 대기 중인 회차는 바뀌지 않습니다(그 사이에 고치면 그 회차는 보내지 않고 막힙니다).</p>`+
+   defaults.map(d=>{
+    const s=saved.find(t=>key(t)===key(d)),vars=(jobs[d.job]?.vars||[]).map(v=>`{${v}}=${varHelp[v]||v}`).join(' · ');
+    const id=esc(key(d));
+    return `<article><h3>${esc(jobLabel(d.job))} · ${d.recipient_type==='parent'?'학부모':'학생'}${d.variant?' · '+esc(d.variant):''}</h3><p><strong>${s?'고친 문구 사용 중':'기본 문구 사용 중'}</strong>${s?' · '+esc(when(s.updated_at)):''}</p><p class="muted">쓸 수 있는 칸: ${esc(vars)} ({이름}은 꼭 넣기, 전화번호·링크는 넣을 수 없음)</p><textarea rows="6" data-tpl="${id}">${esc(s?s.body:d.body)}</textarea><p><button type="button" data-tpl-save="${id}">이 문구로 저장</button> ${s?`<button type="button" class="secondary" data-tpl-reset="${id}">기본 문구로 되돌리기</button>`:''}</p></article>`;
+   }).join('')+
+   `<article><h3>새 문자 추가 요청</h3><p class="muted">새 종류의 문자는 대상 고르기·발송 시각을 만들어야 해서 총괄(Claude)이 만들어 드립니다. 여기 적으면 체크리스트에 할 일로 올라갑니다.</p><label>보낼 내용<textarea rows="4" id="req-body"></textarea></label><label>누구에게 (예: 한백고 클리닉 미응시 학부모)<input id="req-target"></label><label>언제 (예: 매주 토 10:00)<input id="req-when"></label><p><button type="button" data-req-send>요청 보내기</button></p>${(textData?.requests||[]).length?`<h3>보낸 요청</h3><ul>${textData.requests.map(r=>`<li>${esc(r.when_text)} · ${esc(r.target)} · <span class="muted">${esc(r.status==='done'?'완료':r.status==='rejected'?'안 함':'만드는 중')}</span><br>${esc(r.body)}</li>`).join('')}</ul>`:''}</article>`;
+ }
+ async function saveText(action,keyText,body){
+  const [job,recipient_type,variant]=keyText.split('|');
+  const token=++run;setBusy(true);message('저장하고 있습니다…');
+  try{
+   await read(action,password,action==='template_save'?{job,recipient_type,variant,body}:{job,recipient_type,variant});
+   if(token!==run)return;
+   textData=await read('templates');renderTexts();message(action==='template_save'?'저장했습니다. 다음 미리보기부터 이 문구가 쓰입니다.':'기본 문구로 되돌렸습니다.');
+  }catch(error){if(token===run)message(error.code==='OPS_RPC_FAILED'||!error.code?'저장하지 못했습니다. {이름}이 들어 있는지, 쓸 수 없는 칸·전화번호·링크가 없는지 확인해 주세요.':'저장하지 못했습니다. ('+error.code+')');}
+  finally{if(token===run)setBusy(false);}
+ }
  function renderPending(){
   el('ops-content').innerHTML=rows.map(r=>{
    const pending=r.status==='pending'&&Date.parse(r.expires_at)>Date.now(),hasRoster=!!r.roster?.classes?.length;
-   return `<article><h3>${r.job==='clinic-missing-evening'?'클리닉 미응시 · 저녁 학부모':'클리닉 미응시 · 아침 학생·학부모'}</h3><p><strong>${esc(labels[pending?r.status:r.status==='pending'?'expired':r.status])}</strong> · ${esc(r.recipient_count)}통 예정</p><p>발송 ${esc(when(r.slot))}<br>승인 기한 ${esc(when(r.expires_at))}</p>${roster(r)}${(r.preview?.examples||[]).map(e=>`<h3>${e.recipient_type==='parent'?'학부모':'학생'} 문구 예시</h3><pre>${esc(e.text)}</pre>`).join('')}<div class="actions"><button type="button" class="primary" data-ops-decision="approve" data-ops-id="${esc(r.id)}" ${!pending||busy||!hasRoster?'disabled':''}>보내기</button><button type="button" data-ops-decision="reject" data-ops-id="${esc(r.id)}" ${!pending||busy?'disabled':''}>안 보내기</button></div></article>`;
+   return `<article><h3>${esc(jobLabel(r.job))}</h3><p><strong>${esc(labels[pending?r.status:r.status==='pending'?'expired':r.status])}</strong> · ${esc(r.recipient_count)}통 예정</p><p>발송 ${esc(when(r.slot))}<br>승인 기한 ${esc(when(r.expires_at))}</p>${roster(r)}${(r.preview?.examples||[]).map(e=>`<h3>${e.recipient_type==='parent'?'학부모':'학생'} 문구 예시</h3><pre>${esc(e.text)}</pre>`).join('')}<div class="actions"><button type="button" class="primary" data-ops-decision="approve" data-ops-id="${esc(r.id)}" ${!pending||busy||!hasRoster?'disabled':''}>보내기</button><button type="button" data-ops-decision="reject" data-ops-id="${esc(r.id)}" ${!pending||busy?'disabled':''}>안 보내기</button></div></article>`;
   }).join('')||'<p>승인 대기 요청이 없습니다.</p>';
  }
  function renderBoard(data){
@@ -60,7 +102,7 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음
   el('ops-content').innerHTML=`<p>갱신 ${esc(when(data.updated_at))}</p><h3>작업 현황</h3>${board.items.map(item=>`<article><h3>${esc(item.name)}</h3><span class="status" data-state="${esc(item.status)}">${esc(item.status)}</span><p>${esc(item.memo)}</p></article>`).join('')||'<p>등록된 항목이 없습니다.</p>'}<h3>예약 작업 · 마지막 실행</h3>${board.tasks.map(task=>`<article><h3>${esc(task.name)}</h3><p><span class="status" data-state="${esc(task.result)}">${esc(task.result)}</span> · ${esc(when(task.last_run_at))}</p></article>`).join('')||'<p>예약 작업 기록이 없습니다.</p>'}`;
  }
  function renderHistory(data){
-  el('ops-content').innerHTML=data.map(r=>`<article><h3>${r.job==='clinic-missing-evening'?'클리닉 미응시 · 저녁':'클리닉 미응시 · 아침'}</h3><p>${esc(labels[r.status]||'확인 필요')} · ${esc(when(r.slot))}</p><p>보낸 수: ${Number.isInteger(r.sent_count)&&r.sent_count>=0?`${r.sent_count}통`:'미집계'}</p></article>`).join('')||'<p>최근 7일 처리 기록이 없습니다.</p>';
+  el('ops-content').innerHTML=data.map(r=>`<article><h3>${esc(jobLabel(r.job))}</h3><p>${esc(labels[r.status]||'확인 필요')} · ${esc(when(r.slot))}</p><p>보낸 수: ${Number.isInteger(r.sent_count)&&r.sent_count>=0?`${r.sent_count}통`:'미집계'}</p></article>`).join('')||'<p>최근 7일 처리 기록이 없습니다.</p>';
  }
  function renderWeekly(){
   if(!weekData){el('ops-content').textContent='학원 PC가 올린 이번 주 명단이 없습니다.';return;}
@@ -121,6 +163,11 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음
   if(!password||!teacherId||busy)return;
   const token=++run,selected=tab;clear();setBusy(true);message('확인하고 있습니다…');
   try{
+   if(selected==='today'||selected==='texts'){
+    checkData=await read('checklist');if(token!==run)return;
+    if(selected==='texts'){textData=await read('templates');if(token!==run)return;renderTexts();}else renderToday();
+    message(selected==='today'?'승인이 필요한 항목은 주황 버튼을 누르면 [문자 승인] 화면으로 갑니다.':'문구를 고친 뒤 [이 문구로 저장]을 눌러 주세요.');return;
+   }
    const data=await read(selected==='absence'?'daily':selected,password,selected==='daily'&&dailyDate?{clinic_date:dailyDate}:undefined);if(token!==run)return;
    if(selected==='pending'){rows=data.approvals;renderPending();}
    else if(selected==='absence'){absenceDays=data;renderAbsence();pollDaily();}
@@ -183,6 +230,20 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음
  document.addEventListener('click',async event=>{
   const menu=event.target.closest('[data-ops-tab]');
   if(menu){event.preventDefault();if(!teacherId||busy)return;tab=menu.dataset.opsTab;weeklyFilter='all';dailyDate='';selectTab();await refresh();return;}
+  const tplSave=event.target.closest('[data-tpl-save]');
+  if(tplSave){if(!teacherId||busy||tab!=='texts')return;const k=tplSave.dataset.tplSave;const box=[...document.querySelectorAll('[data-tpl]')].find(x=>x.dataset.tpl===k);if(box&&confirm('이 문구로 저장할까요? 다음 미리보기부터 쓰입니다.'))await saveText('template_save',k,box.value.trim());return;}
+  const tplReset=event.target.closest('[data-tpl-reset]');
+  if(tplReset){if(!teacherId||busy||tab!=='texts')return;if(confirm('기본 문구로 되돌릴까요?'))await saveText('template_reset',tplReset.dataset.tplReset);return;}
+  if(event.target.closest('[data-req-send]')){
+   if(!teacherId||busy||tab!=='texts')return;
+   const body=el('req-body').value.trim(),target=el('req-target').value.trim(),when_text=el('req-when').value.trim();
+   if(!body||!target||!when_text){message('보낼 내용·대상·시각을 모두 적어 주세요.');return;}
+   const token=++run;setBusy(true);
+   try{await read('sms_request',password,{body,target,when_text});if(token!==run)return;textData=await read('templates');renderTexts();message('요청을 보냈습니다. 총괄이 만들어서 체크리스트에 올립니다.');}
+   catch(error){if(token===run)message('요청을 저장하지 못했습니다. 전화번호는 넣을 수 없습니다.');}
+   finally{if(token===run)setBusy(false);}
+   return;
+  }
   const forward=event.target.closest('[data-ops-forward]');
   if(forward){if(!forward.disabled)await decideAbsence(forward.dataset.opsForward,'forward');return;}
   const reject=event.target.closest('[data-ops-reject]');
