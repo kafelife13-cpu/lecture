@@ -5,7 +5,7 @@
  const esc=value=>String(value??'').replace(phone,'$1[전화번호 숨김]').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const when=value=>Number.isFinite(Date.parse(value))?new Date(value).toLocaleString('ko-KR',{timeZone:'Asia/Seoul',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false}):'기록 없음';
  const labels={pending:'승인 대기',approved:'승인',rejected:'거절',expired:'만료'};
- const titles={videos:'영상 시청',today:'오늘 체크리스트',texts:'문자 문구',pending:'문자 승인',absence:'미등원 승인',daily:'클리닉 명단',weekly:'이번 주 명단',board:'자동화 현황',history:'최근 7일 기록'};
+ const titles={videos:'영상 시청',today:'오늘 체크리스트',texts:'문자 문구',pending:'문자 승인',absence:'미등원 승인',daily:'클리닉 명단',weekly:'이번 주 명단',attendance:'출석부',board:'자동화 현황',history:'최근 7일 기록'};
  const weeklyFilters={all:['전체',()=>true],absent:['미등원',s=>s.attendance==='미등원'],missing:['미입력',s=>s.clinic==='미입력'],retest:['재시험',s=>s.retest===true],homework:['과제 미완',s=>s.homework==='미완'],video:['영상 미시청',s=>s.video==='미완']};
 const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'미시청 없음(다 봤거나 배정 없음)':s.video_percent===null?s.video+'(시청률 미확인)':s.video+' '+s.video_percent+'%';
  let password='',teacherId='',rows=[],weekData=null,weeklyFilter='all',tab='pending',busy=false,run=0;
@@ -160,6 +160,21 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'미시청 없
  function renderHistory(data){
   el('ops-content').innerHTML=data.map(r=>`<article><h3>${esc(jobLabel(r.job))}</h3><p>${esc(labels[r.status]||'확인 필요')} · ${esc(when(r.slot))}</p><p>보낸 수: ${Number.isInteger(r.sent_count)&&r.sent_count>=0?`${r.sent_count}통`:'미집계'}</p></article>`).join('')||'<p>최근 7일 처리 기록이 없습니다.</p>';
  }
+
+ // ---- 11/20 출석부: 학원 PC가 맥가이 출결(정규반)·클리닉 등원/시험지 입력을 읽어 올림 ----
+ let attData=null;
+ const md=d=>{const [,m,dd]=d.split('-');return `${+m}/${+dd}(${'일월화수목금토'[new Date(d+'T12:00:00Z').getUTCDay()]})`;};
+ const attCls=st=>({'출석':'done','등원':'done','지각':'wait','조퇴':'wait','결석':'fail','통보결석':'skip','미입력':'fail','예정':'skip'}[st]||'wait');
+ function renderAttendance(){
+  const b=attData?.book;
+  if(!b){el('ops-content').textContent='학원 PC가 올린 출석부가 없습니다.';return;}
+  const reg=b.regular.map(c=>{
+   const cnt={};for(const s of c.students)for(const d of c.dates){const st=s.cells[d]?.st||'';cnt[st]=(cnt[st]||0)+1;}
+   return `<article><h3>${esc(c.label)}</h3><p class="muted">${c.dates.map(md).join(', ')} · ${esc(c.students.length)}명 · ${Object.entries(cnt).map(([k,v])=>esc(k)+' '+esc(v)).join(' · ')}</p><ul class="check">${c.students.map(s=>c.dates.map(d=>{const v=s.cells[d];if(!v)return '';return `<li class="st-${attCls(v.st)}"><strong>${esc(s.name)}</strong> <span class="status">${esc(v.st)}</span>${v.in?` <span class="muted">${esc(v.in)}${v.out?'~'+esc(v.out):''}</span>`:''}${v.memo?`<br><span class="muted">메모: ${esc(v.memo)}</span>`:''}</li>`;}).join('')).join('')}</ul></article>`;}).join('');
+  const cl=b.clinic.map(c=>{const arr=c.students.filter(s=>s.arrived).length,ex=c.students.filter(s=>s.exam).length;
+   return `<article><h3>클리닉 ${esc(md(c.date))}</h3><p class="muted">예약 ${esc(c.students.length)}명 · 등원 ${esc(arr)} · 시험지 입력 ${esc(ex)}</p><ul class="check">${c.students.map(s=>`<li class="st-${s.exam?'done':s.arrived?'wait':'fail'}"><strong>${esc(s.name)}</strong> <span class="status">${s.exam?'입력완료':s.arrived?'등원·미입력':'미등원'}</span><br><span class="muted">${esc(s.cls)}${s.start?' · '+esc(s.start):''}${s.in?' · 등원 '+esc(s.in):''}</span></li>`).join('')}</ul></article>`;}).join('');
+  el('ops-content').innerHTML=`<h3>${esc(b.label)}</h3><p class="muted">맥가이·국어왕 조회 ${esc(when(b.at))} · 학원 PC가 30분마다 갱신</p>${b.issues.length?`<p class="weekly-warning" role="alert">${b.issues.map(esc).join('<br>')}</p>`:''}<h3>정규반 (맥가이 출결)</h3>${reg||'<p>이번 주 정규반 기록이 없습니다.</p>'}<h3>클리닉 (등원·시험지)</h3>${cl||'<p>이번 주 클리닉 기록이 없습니다.</p>'}`;
+ }
  function renderWeekly(){
   if(!weekData){el('ops-content').textContent='학원 PC가 올린 이번 주 명단이 없습니다.';return;}
   const week=weekData.week;
@@ -219,6 +234,11 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'미시청 없
   if(!password||!teacherId||busy)return;
   const token=++run,selected=tab;clear();setBusy(true);message('확인하고 있습니다…');
   try{
+   if(selected==='attendance'){
+    const r=await client.rpc('ops_teacher_attendance',{p_password:password});if(token!==run)return;
+    if(r.error){clear();el('ops-content').innerHTML='<article class="mine"><h3>출석부를 불러오지 못했습니다</h3><p>잠시 뒤 [새로고침]을 눌러 주세요.</p></article>';return;}
+    attData=r.data;renderAttendance();message('초록=출석·입력완료, 주황=지각·등원만, 빨강=결석·미입력·미등원');return;
+   }
    if(selected==='videos'){
     try{videoRows=await read('videos');if(token!==run)return;clinicWatch=await read('clinic_watch');}catch(e){if(token!==run)return;clear();el('ops-content').innerHTML='<article class="mine"><h3>이 화면은 서버 준비가 아직 안 됐습니다</h3><p>학원 컴퓨터에서 <strong>영상명단_켜기</strong>를 한 번 실행하면 켜집니다.</p></article>';message('');return;}
     if(token!==run)return;renderVideos();message('영상 종류를 눌러 바꿔 보세요.');return;
