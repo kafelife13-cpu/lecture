@@ -46,3 +46,5 @@ button.secondary{background:#fff;color:#254e46;border:1px solid #254e46}
 label.inline{display:inline-flex!important;align-items:center;gap:6px;margin:0!important}label.inline input{width:22px;height:22px}
 
 .sms-sec{margin:18px 0 8px;padding-top:6px;border-top:3px solid #254e46}.sms-sec h2{font-size:1.1rem;margin:6px 0 2px}
+
+.sent-ok{background:#e6f4ea;border-left:5px solid #2f7a4a;padding:8px 10px;margin:6px 0;border-radius:6px}

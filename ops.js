@@ -7,7 +7,7 @@
  const labels={pending:'승인 대기',approved:'승인',rejected:'거절',expired:'만료'};
  const titles={videos:'영상 시청',today:'오늘 체크리스트',texts:'문자 문구',pending:'문자 승인',absence:'미등원 승인',daily:'클리닉 명단',weekly:'이번 주 명단',board:'자동화 현황',history:'최근 7일 기록'};
  const weeklyFilters={all:['전체',()=>true],absent:['미등원',s=>s.attendance==='미등원'],missing:['미입력',s=>s.clinic==='미입력'],retest:['재시험',s=>s.retest===true],homework:['과제 미완',s=>s.homework==='미완'],video:['영상 미시청',s=>s.video==='미완']};
-const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음':s.video_percent===null?s.video+'(시청률 미확인)':s.video+' '+s.video_percent+'%';
+const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'미시청 없음(다 봤거나 배정 없음)':s.video_percent===null?s.video+'(시청률 미확인)':s.video+' '+s.video_percent+'%';
  let password='',teacherId='',rows=[],weekData=null,weeklyFilter='all',tab='pending',busy=false,run=0;
  let dailyData=null,dailyDate='',dailyTimer,checkData=null,textData=null,recent=[],videoRows=null,clinicWatch=null,videoKind='replacement',videoOpen=false,excludes=[];
  let absenceDays=[];const excluded=new Map(),studentKey=/^s-[a-p]{64}$/;
@@ -147,7 +147,9 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음
   const order=['clinic-missing-evening','clinic-missing-morning','video-incomplete-thursday','clinic-retest-friday'];
   el('ops-content').innerHTML=order.map(job=>{
    const list=rows.filter(r=>r.job===job),last=(Array.isArray(recent)?recent:[]).filter(r=>r.job===job)[0];
-   return `<section class="sms-sec"><h2>${esc(jobLabel(job))}</h2><p class="muted">${esc(jobInfo[job])}</p>${list.map(card).join('')||`<p class="muted"><b>지금 승인할 요청 없음</b>${last?` · 지난 회차 ${esc(when(last.slot))}: ${last.status==='approved'?'보냄 '+esc(Number.isInteger(last.sent_count)?last.sent_count+'통':''):last.status==='rejected'?'안 보냄(거절)':'기한 지남·안 보냄'}`:''}</p>`}</section>`;
+   const done=(checkData?.data?.results||[]).filter(x=>x.job===job).slice(0,3);
+   const doneHtml=done.map(x=>`<p class="sent-ok">✅ <b>발송 완료</b> · ${esc(when(x.at))} · ${esc(x.label||'')} · 접수 <b>${esc(x.accepted)}통</b>${x.failed?` · 실패 ${esc(x.failed)}통`:''}${x.excluded?` · 제외 ${esc(x.excluded)}통`:''}</p>`).join('');
+   return `<section class="sms-sec"><h2>${esc(jobLabel(job))}</h2><p class="muted">${esc(jobInfo[job])}</p>${doneHtml}${list.map(card).join('')||`<p class="muted"><b>지금 승인할 요청 없음</b>${last?` · 지난 회차 ${esc(when(last.slot))}: ${last.status==='approved'?'보냄 '+esc(Number.isInteger(last.sent_count)?last.sent_count+'통':''):last.status==='rejected'?'안 보냄(거절)':'기한 지남·안 보냄'}`:''}</p>`}</section>`;
   }).join('');
  }
  function renderBoard(data){
@@ -228,7 +230,7 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음
     message(selected==='today'?'승인이 필요한 항목은 주황 버튼을 누르면 [문자 승인] 화면으로 갑니다.':'문구를 고친 뒤 [이 문구로 저장]을 눌러 주세요.');return;
    }
    const data=await read(selected==='absence'?'daily':selected,password,selected==='daily'&&dailyDate?{clinic_date:dailyDate}:undefined);if(token!==run)return;
-   if(selected==='pending'){rows=data.approvals;try{excludes=(await read('templates')).excludes||[];}catch{excludes=[];}if(token!==run)return;try{recent=await read('history');}catch{recent=[];}if(token!==run)return;renderPending();}
+   if(selected==='pending'){rows=data.approvals;try{checkData=await read('checklist');}catch{}if(token!==run)return;try{excludes=(await read('templates')).excludes||[];}catch{excludes=[];}if(token!==run)return;try{recent=await read('history');}catch{recent=[];}if(token!==run)return;renderPending();}
    else if(selected==='absence'){absenceDays=data;renderAbsence();pollDaily();}
    else if(selected==='weekly'){weekData=data;renderWeekly();}
    else if(selected==='daily'){dailyData=data[0]||null;if(dailyData)dailyDate=dailyData.clinic_date;renderDaily();pollDaily();}
@@ -247,6 +249,7 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음
    if(!data?.teacher_id||!Array.isArray(data.approvals))throw Error('OPS_RESPONSE_INVALID');
    sessionStorage.setItem(passwordKey,pw);sessionStorage.removeItem('login_failures');sessionStorage.removeItem('login_lock_until');
    password=pw;teacherId=data.teacher_id;rows=data.approvals;tab='pending';
+   try{checkData=await read('checklist',pw);}catch{}if(token!==run)return;
    try{excludes=(await read('templates',pw)).excludes||[];}catch{excludes=[];}if(token!==run)return;
    try{recent=await read('history',pw);}catch{recent=[];}if(token!==run)return;
    el('ops-login').hidden=true;el('ops-app').hidden=false;el('ops-logout').hidden=false;selectTab();renderPending();
