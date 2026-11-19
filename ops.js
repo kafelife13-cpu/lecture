@@ -97,7 +97,7 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'미시청 없
  }
  // ---- 11/19 오늘 체크리스트 ----
  const jobLabel=job=>({'clinic-missing-evening':'클리닉 미등원 안내 (당일 저녁 · 학부모)','clinic-missing-morning':'클리닉 시험지 미입력 안내 (다음날 · 학생·학부모)','clinic-retest-friday':'금요일 재시·보강 안내','video-incomplete-thursday':'목요일 영상 미시청 안내'}[job]||'문자');
- const jobInfo={'clinic-missing-evening':'수·목·금 20:50 자동 발송(문구 상시 승인). 오늘 클리닉에 안 온 학생의 학부모에게 "등원해서 시험지 받기" 안내. 안 보내려면 20:50 전에 [안 보내기].','clinic-missing-morning':'수 시험→목 20:50, 목 시험→금 20:50, 금 시험→토 08:00. 왔든 안 왔든 국어왕에 시험지 입력이 없는 학생·학부모. 명단: 목·금 12:05, 토요일분은 금 21:05.','video-incomplete-thursday':'목 09:00. 이번 주 영상 미시청 학생·학부모. 명단: 수 21:05.','clinic-retest-friday':'금 20:30. 70점 이하·미입력 학생·학부모(일요일 재시·보강). 명단: 금 20:10.'};
+ const jobInfo={'clinic-missing-evening':'수·목·금 20:50 자동 발송(문구 상시 승인). 오늘 클리닉에 안 온 학생의 학부모에게 "등원해서 시험지 받기" 안내. 안 보내려면 20:50 전에 [안 보내기].','clinic-missing-morning':'목·금·토 08:00 자동 발송(문구 상시 승인, 07:20 명단 조회). 전날 클리닉 시험지를 국어왕에 입력하지 않은 학생(등원 여부 상관없음)의 학생·학부모에게 입력 안내. 07:20 이후 이 화면에 명단이 뜨면, 보강 등으로 뺄 학생은 [빼기]를 누르면 그 학생만 빠지고 나머지는 08:00에 나갑니다.','video-incomplete-thursday':'목 09:00. 이번 주 영상 미시청 학생·학부모. 명단: 수 21:05.','clinic-retest-friday':'금 20:30. 70점 이하·미입력 학생·학부모(일요일 재시·보강). 명단: 금 20:10.'};
  const stClass=s=>({'됨':'done','예정':'wait','실패':'fail','승인 안 됨':'fail','안됨':'fail','건너뜀':'skip','지남':'skip','진행중':'doing'}[s]||'wait');
  function renderToday(){
   const c=checkData?.data;
@@ -142,7 +142,7 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'미시청 없
  function renderPending(){
   const card=r=>{
    const pending=r.status==='pending'&&Date.parse(r.expires_at)>Date.now(),hasRoster=!!r.roster?.classes?.length;
-   return `<article><h3>${esc(jobLabel(r.job))}</h3><p><strong>${esc(r.job==='clinic-missing-evening'&&pending?'자동 발송 예정 (안 보내려면 [안 보내기])':labels[pending?r.status:r.status==='pending'?'expired':r.status])}</strong> · ${esc(r.recipient_count)}통 예정</p><p>발송 ${esc(when(r.slot))}<br>승인 기한 ${esc(when(r.expires_at))}</p>${roster(r)}${(r.preview?.examples||[]).map(e=>`<h3>${e.recipient_type==='parent'?'학부모':'학생'} 문구 예시</h3><pre>${esc(e.text)}</pre>`).join('')}<div class="actions"><button type="button" class="primary" data-ops-decision="approve" data-ops-id="${esc(r.id)}" ${!pending||busy||!hasRoster?'disabled':''}>보내기</button><button type="button" data-ops-decision="reject" data-ops-id="${esc(r.id)}" ${!pending||busy?'disabled':''}>안 보내기</button></div></article>`;
+   return `<article><h3>${esc(jobLabel(r.job))}</h3><p><strong>${esc((r.job==='clinic-missing-evening'||r.job==='clinic-missing-morning')&&pending?'자동 발송 예정 · 뺄 학생은 [빼기], 전체를 안 보내려면 [안 보내기]':labels[pending?r.status:r.status==='pending'?'expired':r.status])}</strong> · ${esc(r.recipient_count)}통 예정</p><p>발송 ${esc(when(r.slot))}<br>승인 기한 ${esc(when(r.expires_at))}</p>${roster(r)}${(r.preview?.examples||[]).map(e=>`<h3>${e.recipient_type==='parent'?'학부모':'학생'} 문구 예시</h3><pre>${esc(e.text)}</pre>`).join('')}<div class="actions"><button type="button" class="primary" data-ops-decision="approve" data-ops-id="${esc(r.id)}" ${!pending||busy||!hasRoster?'disabled':''}>보내기</button><button type="button" data-ops-decision="reject" data-ops-id="${esc(r.id)}" ${!pending||busy?'disabled':''}>안 보내기</button></div></article>`;
   };
   const order=['clinic-missing-evening','clinic-missing-morning','video-incomplete-thursday','clinic-retest-friday'];
   el('ops-content').innerHTML=order.map(job=>{
