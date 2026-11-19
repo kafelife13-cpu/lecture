@@ -274,7 +274,7 @@ const daily=()=>[{clinic_date:'2026-11-18',updated_at:'2026-11-19T10:30:00+09:00
  for(const icon of manifest.icons)assert.ok(fs.existsSync(path.join(root,icon.src.split('?')[0])));
  assert.match(read('ops.html'),/rel="manifest" href="ops-manifest.json"/);assert.doesNotMatch(read('ops.html'),/href="manifest.json"/);
  for(const file of ['ops.html','ops.js','ops.css','ops-manifest.json'])assert.ok(read('sw.js').includes('/lecture/'+file));
- assert.match(read('sw.js'),/const CACHE_NAME = 'kukeo-wang-v203-ops-absence-approval'/);
+ assert.match(read('sw.js'),/const CACHE_NAME = 'kukeo-wang-v205-clinic-redo-link'/);
  assert.match(read('ops.html'),/data-ops-tab="pending"[^\n]+\n\s*<button[^\n]+data-ops-tab="absence"[^\n]+\n\s*<button[^\n]+data-ops-tab="daily"[^\n]+\n\s*<button[^\n]+data-ops-tab="weekly"/);
  console.log('PASS: ops authentication/privacy, daily rosters/dates/forward/resend/polling/lock/races, weekly filters, shared approvals, legacy RPC preservation, manifest/cache and static SQL guards (fake RPC only; SQL not executed)');
  if(process.argv.includes('--browser'))await browserChecks();
