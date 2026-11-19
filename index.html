@@ -4637,9 +4637,12 @@ function startTracking(){
     if(!ytPlayer||!ytPlayer.getCurrentTime)return;
     if(totalDur===0){try{totalDur=ytPlayer.getDuration()||0;}catch(e){}if(totalDur===0)return;document.getElementById('trk-total').textContent=fmtTime(totalDur);}
     const cur=Math.floor(ytPlayer.getCurrentTime());
-    KkakkaVideoChapters.observe(chapterWatchedSet,lastPos,cur,totalDur);
+    // 배속·화면 꺼짐으로 기록 간격이 길어져도, 실제 흐른 시간×배속만큼은 정상 시청으로 센다(11/19).
+    const tickNow=Date.now();let tickRate=1;try{tickRate=ytPlayer.getPlaybackRate()||1;}catch(e){}
+    const allowJump=lastTickAt?Math.min(120,Math.max(3,Math.ceil((tickNow-lastTickAt)/1000*tickRate)+2)):3;lastTickAt=tickNow;
+    KkakkaVideoChapters.observe(chapterWatchedSet,lastPos,cur,totalDur,allowJump);
     if(chapterTrackingEnabled){watchedSet=new Set(chapterWatchedSet);}
-    else if(lastPos>=0&&cur>lastPos&&cur-lastPos<=3){for(let i=lastPos;i<=cur;i++)watchedSet.add(i);}
+    else if(lastPos>=0&&cur>lastPos&&cur-lastPos<=allowJump){for(let i=lastPos;i<=cur;i++)watchedSet.add(i);}
     else{watchedSet.add(cur);}
     lastPos=cur;
     try{const rate=ytPlayer.getPlaybackRate();if(rate>maxRateSeen)maxRateSeen=rate;}catch(e){}
@@ -4647,7 +4650,8 @@ function startTracking(){
     updateTrackUI(pct);scheduleSave();
   },1000);
 }
-function stopTracking(){if(trackTimer){clearInterval(trackTimer);trackTimer=null;}lastPos=-1;}
+let lastTickAt=0;
+function stopTracking(){if(trackTimer){clearInterval(trackTimer);trackTimer=null;}lastPos=-1;lastTickAt=0;}
 function scheduleSave(){
   if(saveTimer)return;
   saveTimer=setTimeout(async()=>{saveTimer=null;await doAutoSave();},2000);

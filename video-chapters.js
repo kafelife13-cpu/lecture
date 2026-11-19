@@ -92,8 +92,9 @@
     if(!record||record.youtubeId!==videoId||!Array.isArray(record.seconds))return new Set();
     return new Set(record.seconds.filter(function(s){return Number.isInteger(s)&&s>=0&&s<86400;}));
   }
-  function observe(set,previous,current,duration){
-    if(!Number.isFinite(previous)||previous<0||!Number.isFinite(current)||current<=previous||current-previous>3)return;
+  // maxJump: 실제 흐른 시간×배속으로 허용하는 한 번의 진행 폭(기본 3초). 건너뛰기(검색 이동)는 이보다 커서 세지 않는다.
+  function observe(set,previous,current,duration,maxJump){
+    if(!Number.isFinite(previous)||previous<0||!Number.isFinite(current)||current<=previous||current-previous>(Number.isFinite(maxJump)&&maxJump>3?maxJump:3))return;
     // Only elapsed, continuously played seconds count; landing on a cue does not.
     for(let second=Math.floor(previous);second<Math.min(Math.floor(current),Math.floor(duration));second++)set.add(second);
   }
