@@ -44,3 +44,5 @@ button.secondary{background:#fff;color:#254e46;border:1px solid #254e46}
 .chip{display:inline-block;border-radius:6px;padding:2px 7px;margin:2px 2px 0 0;font-size:.9rem;font-weight:700}
 .chip.ok{background:#dff1e6;color:#1f5c37}.chip.mid{background:#fff1d6;color:#7a4d00}.chip.no{background:#fde2e0;color:#8c1d18}
 label.inline{display:inline-flex!important;align-items:center;gap:6px;margin:0!important}label.inline input{width:22px;height:22px}
+
+.sms-sec{margin:18px 0 8px;padding-top:6px;border-top:3px solid #254e46}.sms-sec h2{font-size:1.1rem;margin:6px 0 2px}

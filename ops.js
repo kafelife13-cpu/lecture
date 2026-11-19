@@ -96,7 +96,8 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음
   }).join('');
  }
  // ---- 11/19 오늘 체크리스트 ----
- const jobLabel=job=>({'clinic-missing-evening':'클리닉 미응시 · 저녁 학부모','clinic-missing-morning':'클리닉 미응시 · 아침 학생·학부모','clinic-retest-friday':'금요일 재시·보강 안내','video-incomplete-thursday':'목요일 영상 미시청 안내'}[job]||'문자');
+ const jobLabel=job=>({'clinic-missing-evening':'클리닉 미등원 안내 (당일 저녁 · 학부모)','clinic-missing-morning':'클리닉 시험지 미입력 안내 (다음날 · 학생·학부모)','clinic-retest-friday':'금요일 재시·보강 안내','video-incomplete-thursday':'목요일 영상 미시청 안내'}[job]||'문자');
+ const jobInfo={'clinic-missing-evening':'수·목·금 20:50 자동 발송(문구 상시 승인). 오늘 클리닉에 안 온 학생의 학부모에게 "등원해서 시험지 받기" 안내. 안 보내려면 20:50 전에 [안 보내기].','clinic-missing-morning':'수 시험→목 20:50, 목 시험→금 20:50, 금 시험→토 08:00. 왔든 안 왔든 국어왕에 시험지 입력이 없는 학생·학부모. 명단: 목·금 12:05, 토요일분은 금 21:05.','video-incomplete-thursday':'목 09:00. 이번 주 영상 미시청 학생·학부모. 명단: 수 21:05.','clinic-retest-friday':'금 20:30. 70점 이하·미입력 학생·학부모(일요일 재시·보강). 명단: 금 20:10.'};
  const stClass=s=>({'됨':'done','예정':'wait','실패':'fail','승인 안 됨':'fail','안됨':'fail','건너뜀':'skip','지남':'skip','진행중':'doing'}[s]||'wait');
  function renderToday(){
   const c=checkData?.data;
@@ -139,10 +140,15 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음
   finally{if(token===run)setBusy(false);}
  }
  function renderPending(){
-  el('ops-content').innerHTML=rows.map(r=>{
+  const card=r=>{
    const pending=r.status==='pending'&&Date.parse(r.expires_at)>Date.now(),hasRoster=!!r.roster?.classes?.length;
    return `<article><h3>${esc(jobLabel(r.job))}</h3><p><strong>${esc(r.job==='clinic-missing-evening'&&pending?'자동 발송 예정 (안 보내려면 [안 보내기])':labels[pending?r.status:r.status==='pending'?'expired':r.status])}</strong> · ${esc(r.recipient_count)}통 예정</p><p>발송 ${esc(when(r.slot))}<br>승인 기한 ${esc(when(r.expires_at))}</p>${roster(r)}${(r.preview?.examples||[]).map(e=>`<h3>${e.recipient_type==='parent'?'학부모':'학생'} 문구 예시</h3><pre>${esc(e.text)}</pre>`).join('')}<div class="actions"><button type="button" class="primary" data-ops-decision="approve" data-ops-id="${esc(r.id)}" ${!pending||busy||!hasRoster?'disabled':''}>보내기</button><button type="button" data-ops-decision="reject" data-ops-id="${esc(r.id)}" ${!pending||busy?'disabled':''}>안 보내기</button></div></article>`;
-  }).join('')||`<article class="mine"><h3>지금 승인할 문자가 없습니다</h3><p>문자 승인은 정해진 시간에만 열립니다. 이 시간 안에 이 화면에서 [보내기]를 눌러야 나갑니다.</p><ul class="check"><li><strong>클리닉 미응시 · 저녁 학부모</strong> (수·목·금) 20:50 <b>자동 발송</b>(문구 상시 승인) · 안 보내려면 20:00~20:50에 [안 보내기]</li><li><strong>클리닉 미응시 · 아침 학생·학부모</strong> (목·금·토) 전날 21:05~당일 08:15 · 발송 08:00</li><li><strong>목요일 영상 미시청</strong> 수 21:05~목 09:15 · 발송 09:00</li><li><strong>금요일 재시·보강</strong> (금) 20:10~20:45 · 발송 20:30</li></ul>${recent.length?`<h3>최근 요청</h3><ul class="check">${recent.slice(0,6).map(r=>`<li class="${r.status==='approved'?'st-done':'st-fail'}"><strong>${esc(jobLabel(r.job))}</strong> · ${esc(when(r.slot))}<br><span class="status">${r.status==='approved'?'승인함 · 보낸 수 '+esc(Number.isInteger(r.sent_count)?r.sent_count:'확인 중'):r.status==='rejected'?'거절함 · 안 보냄':'승인 기한 지남 · 안 보냄'}</span></li>`).join('')}</ul>`:''}</article>`;
+  };
+  const order=['clinic-missing-evening','clinic-missing-morning','video-incomplete-thursday','clinic-retest-friday'];
+  el('ops-content').innerHTML=order.map(job=>{
+   const list=rows.filter(r=>r.job===job),last=(Array.isArray(recent)?recent:[]).filter(r=>r.job===job)[0];
+   return `<section class="sms-sec"><h2>${esc(jobLabel(job))}</h2><p class="muted">${esc(jobInfo[job])}</p>${list.map(card).join('')||`<p class="muted"><b>지금 승인할 요청 없음</b>${last?` · 지난 회차 ${esc(when(last.slot))}: ${last.status==='approved'?'보냄 '+esc(Number.isInteger(last.sent_count)?last.sent_count+'통':''):last.status==='rejected'?'안 보냄(거절)':'기한 지남·안 보냄'}`:''}</p>`}</section>`;
+  }).join('');
  }
  function renderBoard(data){
   if(!data){el('ops-content').textContent='학원 PC가 올린 현황판이 없습니다.';return;}
@@ -222,7 +228,7 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음
     message(selected==='today'?'승인이 필요한 항목은 주황 버튼을 누르면 [문자 승인] 화면으로 갑니다.':'문구를 고친 뒤 [이 문구로 저장]을 눌러 주세요.');return;
    }
    const data=await read(selected==='absence'?'daily':selected,password,selected==='daily'&&dailyDate?{clinic_date:dailyDate}:undefined);if(token!==run)return;
-   if(selected==='pending'){rows=data.approvals;try{excludes=(await read('templates')).excludes||[];}catch{excludes=[];}if(token!==run)return;if(!rows.length){try{recent=await read('history');}catch{recent=[];}if(token!==run)return;}renderPending();}
+   if(selected==='pending'){rows=data.approvals;try{excludes=(await read('templates')).excludes||[];}catch{excludes=[];}if(token!==run)return;try{recent=await read('history');}catch{recent=[];}if(token!==run)return;renderPending();}
    else if(selected==='absence'){absenceDays=data;renderAbsence();pollDaily();}
    else if(selected==='weekly'){weekData=data;renderWeekly();}
    else if(selected==='daily'){dailyData=data[0]||null;if(dailyData)dailyDate=dailyData.clinic_date;renderDaily();pollDaily();}
@@ -242,7 +248,7 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음
    sessionStorage.setItem(passwordKey,pw);sessionStorage.removeItem('login_failures');sessionStorage.removeItem('login_lock_until');
    password=pw;teacherId=data.teacher_id;rows=data.approvals;tab='pending';
    try{excludes=(await read('templates',pw)).excludes||[];}catch{excludes=[];}if(token!==run)return;
-   if(!rows.length){try{recent=await read('history',pw);}catch{recent=[];}if(token!==run)return;}
+   try{recent=await read('history',pw);}catch{recent=[];}if(token!==run)return;
    el('ops-login').hidden=true;el('ops-app').hidden=false;el('ops-logout').hidden=false;selectTab();renderPending();
    message('명단과 문구를 확인해 주세요. 승인 자체로 문자를 발송하지 않습니다.');
   }catch(error){
