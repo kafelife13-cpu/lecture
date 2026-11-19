@@ -125,7 +125,53 @@ begin
     end loop;
   end if;
   if teacher_id is null then raise exception 'TEACHER_AUTH_REQUIRED' using errcode = '42501'; end if;
-  if p_action is null or p_action not in ('pending','board','history','weekly','daily','forward','reject','checklist','templates','template_save','template_reset','sms_request') then raise exception 'APPROVAL_ACTION_INVALID'; end if;
+  if p_action is null or p_action not in ('pending','board','history','weekly','daily','forward','reject','checklist','templates','template_save','template_reset','sms_request','videos','clinic_watch') then raise exception 'APPROVAL_ACTION_INVALID'; end if;
+  -- 11/19: 영상 시청 조회(주차별 영상대체 / 보강신청 / 클리닉 해설강의). 국어왕 시청률 기준.
+  if p_action = 'videos' then
+    if p_arg is not null and ((jsonb_typeof(p_arg) = 'object' and p_arg - 'days' = '{}'::jsonb
+      and jsonb_typeof(p_arg->'days') = 'number' and (p_arg->>'days')::int between 1 and 120) is not true) then raise exception 'OPS_PAYLOAD_INVALID'; end if;
+    with tv as (
+      select v.id, v.title, v.category, v.created_at,
+        substring(v.description from '\[학교:([a-z_]+)\]') school,
+        case when v.description ~ '\[시험:[^\]]+\]' then regexp_split_to_array(substring(v.description from '\[시험:([^\]]+)\]'), '\s*,\s*') end exams
+      from public.videos v where v.category in ('makeup','clinic') and v.created_at >= now() - make_interval(days => coalesce((p_arg->>'days')::int, 21))
+    ), rows as (
+      select 'replacement' kind, u.name student, u.school_id school, g.name grp, v.title, a.granted_at at, a.absence_date, a.expires_at, coalesce(pr.percent, 0) percent, pr.updated_at watched_at
+      from public.video_access a join public.videos v on v.id = a.video_id
+        join public.users u on u.id = a.student_id and u.role = 'student' and u.status = 'active'
+        left join public.groups g on g.id = u.group_id
+        left join public.progress pr on pr.student_id = a.student_id and pr.video_id = a.video_id
+      where a.access_kind = 'replacement' and a.granted_at >= now() - make_interval(days => coalesce((p_arg->>'days')::int, 21))
+      union all
+      select tv.category, u.name, u.school_id, g.name, tv.title, tv.created_at, null, null, coalesce(pr.percent, 0), pr.updated_at
+      from tv join public.users u on u.role = 'student' and u.status = 'active' and (tv.school is null or u.school_id = tv.school)
+        left join public.groups g on g.id = u.group_id
+        left join public.progress pr on pr.student_id = u.id and pr.video_id = tv.id
+      where tv.exams is null or exists (select 1 from public.exam_responses r where r.student_id::text = u.id::text and r.exam_id::text = any(tv.exams))
+    )
+    select coalesce(jsonb_agg(jsonb_build_object('kind', kind, 'student', student, 'school', school, 'group', grp, 'title', title,
+      'at', at, 'absence_date', absence_date, 'expires_at', expires_at, 'percent', percent, 'watched_at', watched_at) order by at desc, title, student), '[]'::jsonb) into result from rows;
+    return result;
+  elsif p_action = 'clinic_watch' then
+    -- 해설강의 번호별 시청: 시험 태그가 있는 클리닉 영상별로 응시 학생의 답안과 시청 초(초 단위 배열)를 준다.
+    with tv as (
+      select v.id, v.title, v.url, v.created_at,
+        regexp_split_to_array(substring(v.description from '\[시험:([^\]]+)\]'), '\s*,\s*') exams
+      from public.videos v where v.category = 'clinic' and v.description ~ '\[시험:[^\]]+\]' and v.created_at >= now() - interval '60 days'
+    )
+    select coalesce(jsonb_agg(jsonb_build_object('video_id', tv.id, 'title', tv.title, 'url', tv.url, 'created_at', tv.created_at,
+      'exams', (select coalesce(jsonb_agg(jsonb_build_object('id', e.id, 'name', e.name, 'questions',
+          (select coalesce(jsonb_agg(jsonb_build_object('num', q->'num', 'answer', q->'answer', 'type', q->'type')), '[]'::jsonb) from jsonb_array_elements(e.questions) q))), '[]'::jsonb)
+        from public.exams e where e.id::text = any(tv.exams)),
+      'rows', (select coalesce(jsonb_agg(jsonb_build_object('student', u.name, 'school', u.school_id, 'group', g.name, 'exam_id', r.exam_id, 'score', r.score, 'answers', r.answers,
+          'watch', (select coalesce(jsonb_agg(jsonb_build_object('source_id', w.source_id, 'seconds', w.seconds, 'updated_at', w.updated_at)), '[]'::jsonb)
+            from public.video_chapter_watch w where w.student_id::text = u.id::text and w.video_id::text = tv.id::text)) order by g.name, u.name), '[]'::jsonb)
+        from (select distinct on (r.student_id) r.* from public.exam_responses r where r.exam_id::text = any(tv.exams) order by r.student_id, array_position(tv.exams, r.exam_id::text)) r
+          join public.users u on u.id::text = r.student_id::text and u.role = 'student' and u.status = 'active'
+          left join public.groups g on g.id = u.group_id)
+    ) order by tv.created_at desc), '[]'::jsonb) into result from tv;
+    return result;
+  end if;
   -- 11/19: 오늘 체크리스트·문자 문구·새 문자 요청
   if p_action = 'checklist' then
     select jsonb_build_object('data', data, 'updated_at', updated_at) into result from public.ops_checklist where id = 'main';

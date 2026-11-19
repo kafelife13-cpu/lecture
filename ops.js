@@ -5,11 +5,11 @@
  const esc=value=>String(value??'').replace(phone,'$1[전화번호 숨김]').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const when=value=>Number.isFinite(Date.parse(value))?new Date(value).toLocaleString('ko-KR',{timeZone:'Asia/Seoul',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false}):'기록 없음';
  const labels={pending:'승인 대기',approved:'승인',rejected:'거절',expired:'만료'};
- const titles={today:'오늘 체크리스트',texts:'문자 문구',pending:'문자 승인',absence:'미등원 승인',daily:'클리닉 명단',weekly:'이번 주 명단',board:'자동화 현황',history:'최근 7일 기록'};
+ const titles={videos:'영상 시청',today:'오늘 체크리스트',texts:'문자 문구',pending:'문자 승인',absence:'미등원 승인',daily:'클리닉 명단',weekly:'이번 주 명단',board:'자동화 현황',history:'최근 7일 기록'};
  const weeklyFilters={all:['전체',()=>true],absent:['미등원',s=>s.attendance==='미등원'],missing:['미입력',s=>s.clinic==='미입력'],retest:['재시험',s=>s.retest===true],homework:['과제 미완',s=>s.homework==='미완'],video:['영상 미시청',s=>s.video==='미완']};
 const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음':s.video_percent===null?s.video+'(시청률 미확인)':s.video+' '+s.video_percent+'%';
  let password='',teacherId='',rows=[],weekData=null,weeklyFilter='all',tab='pending',busy=false,run=0;
- let dailyData=null,dailyDate='',dailyTimer,checkData=null,textData=null,recent=[];
+ let dailyData=null,dailyDate='',dailyTimer,checkData=null,textData=null,recent=[],videoRows=null,clinicWatch=null,videoKind='replacement',videoOpen=false;
  let absenceDays=[];const excluded=new Map(),studentKey=/^s-[a-p]{64}$/;
  // Native fetch keeps the standalone shell independent of a CDN and stores no RPC responses.
  const client={async rpc(name,args){
@@ -49,6 +49,51 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음
   }).join('');
  }
 
+
+ // ---- 11/19 영상 시청: 주차별 영상대체 / 보강신청 / 클리닉 해설 / 해설 번호별 ----
+ const videoKinds={replacement:'주차별 영상대체',makeup:'보강신청 영상',clinic:'클리닉 해설강의',chapters:'해설 번호별(틀린 문제)'};
+ const schoolName=s=>({sc_hanbaek:'한백고',sc_chidong:'치동고'}[s]||s||'');
+ const pctClass=p=>p>=100?'done':p>0?'doing':'fail';
+ function youtubeId(url){const m=/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/.exec(url||'');return m?m[1]:'';}
+ function isWrong(q,given){
+  const ans=String(q.answer??'').trim(),g=String(given??'').trim();
+  if(/^any:/i.test(ans))return g?false:true;
+  if(/^all:/i.test(ans)){const want=ans.slice(4).split(',').map(s=>s.trim()).filter(Boolean).sort().join(','),got=g.split(/[,\s]+/).filter(Boolean).sort().join(',');return want!==got;}
+  if(/^\d+$/.test(ans))return g!==ans;
+  return null; // 서술형 등은 판단하지 않음
+ }
+ function renderVideos(){
+  const tabs=Object.entries(videoKinds).map(([k,l])=>`<button type="button" data-video-kind="${k}" aria-pressed="${k===videoKind}">${esc(l)}</button>`).join(' ');
+  const head=`<div class="filters">${tabs}</div><p class="muted">국어왕 시청 기록 기준입니다. 유튜브로 따로 본 것은 0%로 보일 수 있습니다. <label class="inline"><input type="checkbox" data-video-open ${videoOpen?'checked':''}> 다 본 학생도 보기</label></p>`;
+  if(videoKind==='chapters'){el('ops-content').innerHTML=head+renderChapters();return;}
+  const rows=(videoRows||[]).filter(r=>r.kind===videoKind);
+  const byTitle=new Map();rows.forEach(r=>{if(!byTitle.has(r.title))byTitle.set(r.title,[]);byTitle.get(r.title).push(r);});
+  el('ops-content').innerHTML=head+([...byTitle].map(([title,list])=>{
+   const done=list.filter(r=>Number(r.percent)>=100).length,shown=list.filter(r=>videoOpen||Number(r.percent)<100).sort((a,b)=>Number(a.percent)-Number(b.percent));
+   return `<article><h3>${esc(title)}</h3><p><strong>다 본 학생 ${done} / ${list.length}명</strong>${videoKind==='replacement'?'':''}</p><ul class="check">${shown.map(r=>`<li class="st-${pctClass(Number(r.percent))}"><strong>${esc(r.student)}</strong> <span class="muted">${esc(r.group||schoolName(r.school))}</span> <span class="status">${esc(Math.round(Number(r.percent)))}%</span>${r.absence_date?`<br><span class="muted">결석일 ${esc(r.absence_date)}${r.expires_at?' · 볼 수 있는 기한 '+esc(when(r.expires_at)):''}</span>`:''}</li>`).join('')||'<li>모두 다 봤습니다.</li>'}</ul></article>`;
+  }).join('')||'<p>최근 3주 안에 해당 영상이 없습니다.</p>');
+ }
+ function renderChapters(){
+  const videos=clinicWatch||[];
+  if(!videos.length)return '<p>번호별로 볼 수 있는 해설강의가 없습니다. (영상 설명에 [시험:…] 연결이 있는 클리닉 해설만 나옵니다.)</p>';
+  const C=window.KkakkaVideoChapters;
+  return videos.map(v=>{
+   const yt=youtubeId(v.url)||(v.rows.find(r=>r.watch?.length)?.watch[0].source_id)||'';
+   const hasChapters=!!(C&&yt&&C.get(yt).length);
+   const exams=new Map((v.exams||[]).map(e=>[String(e.id),e]));
+   const people=v.rows.map(r=>{
+    const exam=exams.get(String(r.exam_id));const qs=exam?.questions||[];
+    const wrong=qs.map((q,i)=>({num:q.num??i+1,w:isWrong(q,r.answers?.[i]??r.answers?.[String(i)])})).filter(x=>x.w===true).map(x=>Number(x.num));
+    const rec=(r.watch||[]).find(w=>w.source_id===yt)||(r.watch||[])[0];
+    const st=hasChapters?C.stats(yt,rec&&{youtubeId:rec.source_id,seconds:rec.seconds},C.duration(yt)):[];
+    const pct=n=>{const s=st.find(x=>x.label===n+'번');return s?s.percent:0;};
+    const items=wrong.map(n=>({n,p:pct(n)}));
+    const avg=items.length?Math.round(items.reduce((a,b)=>a+b.p,0)/items.length):100;
+    return {r,items,avg,full:items.filter(x=>x.p>=95).length};
+   }).filter(p=>videoOpen||p.avg<95).sort((a,b)=>a.avg-b.avg);
+   return `<article><h3>${esc(v.title)}</h3>${hasChapters?'':'<p class="weekly-warning">이 영상은 번호별 구간 정보가 없어 번호별 시청률을 계산할 수 없습니다.</p>'}<p class="muted">학생마다 틀린 번호의 해설 구간을 몇 % 봤는지 보여 줍니다. 95% 이상이면 다 본 것으로 봅니다.</p><ul class="check">${people.map(p=>`<li class="st-${p.avg>=95?'done':p.avg>0?'doing':'fail'}"><strong>${esc(p.r.student)}</strong> <span class="muted">${esc(p.r.group||schoolName(p.r.school))} · ${esc(p.r.score??'-')}점</span> <span class="status">틀린 ${p.items.length}개 중 다 봄 ${p.full}개 · 평균 ${p.avg}%</span><br>${p.items.map(x=>`<span class="chip ${x.p>=95?'ok':x.p>0?'mid':'no'}">${x.n}번 ${x.p}%</span>`).join(' ')||'<span class="muted">틀린 문제 없음</span>'}</li>`).join('')||'<li>모두 틀린 번호 해설을 다 봤습니다.</li>'}</ul></article>`;
+  }).join('');
+ }
  // ---- 11/19 오늘 체크리스트 ----
  const jobLabel=job=>({'clinic-missing-evening':'클리닉 미응시 · 저녁 학부모','clinic-missing-morning':'클리닉 미응시 · 아침 학생·학부모','clinic-retest-friday':'금요일 재시·보강 안내','video-incomplete-thursday':'목요일 영상 미시청 안내'}[job]||'문자');
  const stClass=s=>({'됨':'done','예정':'wait','실패':'fail','승인 안 됨':'fail','안됨':'fail','건너뜀':'skip','지남':'skip','진행중':'doing'}[s]||'wait');
@@ -165,6 +210,10 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음
   if(!password||!teacherId||busy)return;
   const token=++run,selected=tab;clear();setBusy(true);message('확인하고 있습니다…');
   try{
+   if(selected==='videos'){
+    try{videoRows=await read('videos');if(token!==run)return;clinicWatch=await read('clinic_watch');}catch(e){if(token!==run)return;clear();el('ops-content').innerHTML='<article class="mine"><h3>이 화면은 서버 준비가 아직 안 됐습니다</h3><p>학원 컴퓨터에서 <strong>영상명단_켜기</strong>를 한 번 실행하면 켜집니다.</p></article>';message('');return;}
+    if(token!==run)return;renderVideos();message('영상 종류를 눌러 바꿔 보세요.');return;
+   }
    if(selected==='today'||selected==='texts'){
     try{checkData=await read('checklist');}catch(e){if(token!==run)return;clear();el('ops-content').innerHTML='<article class="mine"><h3>이 화면은 서버 준비가 아직 안 됐습니다</h3><p>학원 컴퓨터에서 <strong>영상명단_켜기</strong>를 한 번 실행하면 켜집니다. 그 전에도 [문자 승인]은 그대로 쓸 수 있습니다.</p></article>';message('');return;}
     if(token!==run)return;
@@ -228,12 +277,15 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'배정 없음
    if(button)button.disabled=!selected.length;
    return;
   }
+  if(target.dataset?.videoOpen!==undefined){if(tab!=='videos')return;videoOpen=target.checked;renderVideos();return;}
   if(event.target.id!=='ops-date'||!teacherId||busy||tab!=='daily'||!/^\d{4}-\d{2}-\d{2}$/.test(event.target.value))return;
   dailyDate=event.target.value;await refresh();
  });
  document.addEventListener('click',async event=>{
   const menu=event.target.closest('[data-ops-tab]');
   if(menu){event.preventDefault();if(!teacherId||busy)return;tab=menu.dataset.opsTab;weeklyFilter='all';dailyDate='';selectTab();await refresh();return;}
+  const vk=event.target.closest('[data-video-kind]');
+  if(vk){if(tab!=='videos'||busy)return;videoKind=vk.dataset.videoKind;renderVideos();return;}
   const tplSave=event.target.closest('[data-tpl-save]');
   if(tplSave){if(!teacherId||busy||tab!=='texts')return;const k=tplSave.dataset.tplSave;const box=[...document.querySelectorAll('[data-tpl]')].find(x=>x.dataset.tpl===k);if(box&&confirm('이 문구로 저장할까요? 다음 미리보기부터 쓰입니다.'))await saveText('template_save',k,box.value.trim());return;}
   const tplReset=event.target.closest('[data-tpl-reset]');
