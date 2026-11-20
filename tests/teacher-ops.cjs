@@ -13,7 +13,7 @@ const approval=()=>({id:'fixture-approval',job:'clinic-missing-morning',slot:new
  roster:{classes:[{class_id:'class-a',label:'가상반',students:[{name:'가상학생가',recipients:['student','parent']},{name:'가상학생나',recipients:['parent']}]}]}});
 const weekly=()=>({updated_at:'2026-11-19T10:30:00+09:00',week:{label:'기말대비 4주차',at:'2026-11-19T10:00:00+09:00',blocked:true,issues:['가상반 출결 확인 중'],classes:[
  {class_id:'class-a',label:'주간 가상반',students:[
-  {name:'주간학생가',attendance:'미등원',clinic:'미입력',score:null,retest:false,homework:'미완',absence_dates:['2026-11-18']},
+  {name:'주간학생가',attendance:'미등원',clinic:'미입력',score:null,retest:false,homework:'미완',absence_dates:['2026-11-18'],video_weeks:[{week:1,video:'완료',percent:100},{week:2,video:'미완',percent:30},{week:3,video:'없음',percent:null}]},
   {name:'주간학생나',attendance:'등원',clinic:'입력완료',score:0,retest:true,homework:'완료',absence_dates:[]},
   {name:'주간학생다',attendance:'시험지만 수령',clinic:'확인 불가',score:null,retest:false,homework:'없음',absence_dates:[]}]},
  {class_id:'class-b',label:'주간 다른반',students:[{name:'주간학생라',attendance:'확인 불가',clinic:'입력완료',score:100,retest:false,homework:'완료',absence_dates:[]}]}]}});
@@ -82,6 +82,10 @@ const daily=()=>[{clinic_date:'2026-11-18',updated_at:'2026-11-19T10:30:00+09:00
  for(const word of ['기말대비 4주차','집계가 완전하지 않음: 가상반 출결 확인 중','갱신','집계','11. 19.','10:30','10:00','미등원 1 · 미입력 1 · 재시험 1 · 과제 미완 1','미등원 0 · 미입력 0 · 재시험 0 · 과제 미완 0','주간학생가','주간학생나','주간학생다','주간학생라','시험지만 수령','확인 불가','점수: 0','점수: 미집계','2026-11-18'])assert.ok(f.content().includes(word),word);
  const weeklyCalls=f.calls.length;
  for(const filter of ['absent','missing','homework']){await f.filter(filter);assert.match(f.content(),/주간학생가/);assert.doesNotMatch(f.content(),/주간학생[나다라]/);assert.match(f.content(),/미등원 1 · 미입력 1 · 재시험 1 · 과제 미완 1/);assert.match(f.content(),/해당 학생이 없습니다/);assert.ok(f.content().includes(`data-ops-filter="${filter}" aria-pressed="true"`));}
+ // 11/21 주차별 영상: 학생 줄, 반 요약, 영상 미시청 필터(주차 미완 포함).
+ assert.ok(f.content().includes('영상 주차: <span>1주 완료</span> · <strong class="vw-miss">2주 미완 30%</strong> · <span>3주 없음</span>'));
+ assert.ok(f.content().includes('영상 미시청 1주 0 · 2주 1 · 3주 0'));
+ await f.filter('video');assert.match(f.content(),/주간학생가/);assert.doesNotMatch(f.content(),/주간학생[나다라]/);
  await f.filter('retest');assert.match(f.content(),/주간학생나/);assert.doesNotMatch(f.content(),/주간학생[가다라]/);
  await f.filter('all');for(const name of ['가','나','다','라'])assert.ok(f.content().includes('주간학생'+name));
  await f.filter('__proto__');assert.equal(f.calls.length,weeklyCalls,'filtering must not call RPC');
