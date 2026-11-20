@@ -39,7 +39,7 @@ function fixture(stored){
   confirm:text=>{dialogs.push(text);return Array.isArray(allow)?allow.shift():allow;},
   fetch:async(url,options)=>{
    assert.equal(options.method,'POST');assert.equal(options.cache,'no-store');assert.equal(options.credentials,'omit');
-   const name=url.split('/').at(-1),args=JSON.parse(options.body);assert.ok(['ops_teacher','sms_approval_rpc'].includes(name));calls.push({name,args});
+   const name=url.split('/').at(-1),args=JSON.parse(options.body);assert.ok(['ops_teacher','sms_approval_rpc','ops_teacher_attendance','ops_teacher_absence'].includes(name));calls.push({name,args});
    const result=await handler(name,args);return {ok:!result.error,json:async()=>result.error||result.data};
   },addEventListener:(key,fn)=>windowEvents[key]=fn};
  Object.defineProperty(c,'localStorage',{get(){throw Error('localStorage forbidden');}});c.window=c;
@@ -49,6 +49,7 @@ function fixture(stored){
   login:async(pw='fixture-password')=>{els['ops-password'].value=pw;els['ops-login'].events.submit({preventDefault(){}});await tick();},
   tab:tab=>click('[data-ops-tab]',{opsTab:tab}),decision:action=>click('[data-ops-decision]',{opsDecision:action,opsId:'fixture-approval'}),
   filter:filter=>click('[data-ops-filter]',{opsFilter:filter}),
+  att:async dataset=>{const target={dataset,disabled:false,closest:sel=>sel.startsWith('[data-att-mark]')?target:null};await events.click({target,preventDefault(){}});await tick();},
   forward:(date='2026-11-18')=>click('[data-ops-forward]',{opsForward:date}),reject:(date='2026-11-18')=>click('[data-ops-reject]',{opsReject:date}),
   check:(index,checked,date='2026-11-18')=>events.change({target:{dataset:{opsStudent:String(index),opsDate:date},checked}}),date:value=>events.change({target:{id:'ops-date',value}}),
   lock:()=>els['ops-logout'].events.click(),refresh:()=>els['ops-refresh'].events.click(),content:()=>els['ops-content'].innerHTML};
@@ -278,7 +279,36 @@ const daily=()=>[{clinic_date:'2026-11-18',updated_at:'2026-11-19T10:30:00+09:00
  for(const icon of manifest.icons)assert.ok(fs.existsSync(path.join(root,icon.src.split('?')[0])));
  assert.match(read('ops.html'),/rel="manifest" href="ops-manifest.json"/);assert.doesNotMatch(read('ops.html'),/href="manifest.json"/);
  for(const file of ['ops.html','ops.js','ops.css','ops-manifest.json'])assert.ok(read('sw.js').includes('/lecture/'+file));
- assert.match(read('sw.js'),/const CACHE_NAME = 'kukeo-wang-v211-dongheong'/);
+ assert.match(read('sw.js'),/const CACHE_NAME = 'kukeo-wang-v212-ops-absence'/);
+ // 11/21 출석부 직접 체크 · 미등원 발송: 웹훅 없음, 체크 완료 전 발송 불가, 서버 거부 사유 표시
+ {
+  const day=new Date(Date.now()+9*3600000).toISOString().slice(0,10);
+  const book={label:'출석부',at:'2026-11-21T01:00:00Z',week:[],issues:[],clinic:[],regular:[{label:'가상반(토10:30)',dates:[day],times:{[day]:'10:30'},
+   students:[{name:'체크학생가',cells:{[day]:{st:'출석',in:'10:20',out:'',memo:''}}},{name:'체크학생나',cells:{[day]:{st:'미입력',in:'',out:'',memo:''}}}]}]};
+  let abs={settings:{destination:'self',room_ready:false},marks:[],sends:[]};const sends=[];
+  const g=fixture();g.handler=async(name,args)=>{
+   if(args.p_password!=='fixture-password')return {error:{code:'42501'}};
+   if(name==='ops_teacher_attendance')return {data:{book,updated_at:book.at}};
+   if(name==='ops_teacher_absence'){
+    if(args.p_action==='send'){sends.push(args.p_arg);if(sends.length>1)return {error:{code:'P0001',message:'ABSENCE_DUPLICATE'}};
+     abs={...abs,sends:[{class_label:'가상반(토10:30)',att_date:day,destination:'self',round:1,status:'pending'}]};}
+    return {data:args.p_action==='get'?abs:{ok:true}};}
+   if(args.p_action==='pending')return {data:{teacher_id:'fixture-teacher',approvals:[]}};
+   return {data:[]};
+  };
+  await g.login();await g.tab('attendance');
+  assert.match(g.content(),/받는 곳: 나와의 대화/);assert.match(g.content(),/전환할 수 없습니다/);assert.match(g.content(),/맥가이: 출석 10:20/);assert.match(g.content(),/수업 10:30/);
+  await g.att({attDest:'room'});assert.ok(!g.calls.some(c=>c.args.p_action==='dest'),'room switch blocked when room webhook missing is enforced by disabled button + server');
+  g.confirm=true;await g.att({attSend:'0'});assert.equal(sends.length,0);assert.match(g.els['ops-message'].textContent,/체크하지 않은 학생이 2명/);
+  await g.att({attMark:'미등원',attS:'0',attI:'1'});await g.att({attAll:'0'});
+  await g.att({attSend:'0'});assert.equal(sends.length,1);assert.deepEqual({...sends[0].marks},{'체크학생나':'미등원','체크학생가':'출석'});
+  assert.match(g.dialogs.at(-1),/나와의 대화[\s\S]*미등원 1명: 체크학생나/);assert.match(g.content(),/1회차 전달 대기/);
+  assert.ok([...g.timers.values()].some(t=>t.ms===15000),'polls while the PC has not sent yet');
+  abs={...abs,sends:[]};await g.att({attSend:'0'});assert.match(g.els['ops-message'].textContent,/이미 보냈습니다/);
+  assert.doesNotMatch(JSON.stringify(g.calls),/wh\.jandi|webhook/i);
+  g.lock();assert.equal(g.content(),'');
+ }
+
  assert.match(read('ops.html'),/data-ops-tab="pending"[^\n]+\n\s*<button[^\n]+data-ops-tab="absence"[^\n]+\n\s*<button[^\n]+data-ops-tab="daily"[^\n]+\n\s*<button[^\n]+data-ops-tab="weekly"/);
  console.log('PASS: ops authentication/privacy, daily rosters/dates/forward/resend/polling/lock/races, weekly filters, shared approvals, legacy RPC preservation, manifest/cache and static SQL guards (fake RPC only; SQL not executed)');
  if(process.argv.includes('--browser'))await browserChecks();

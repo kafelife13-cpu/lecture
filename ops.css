@@ -49,3 +49,10 @@ label.inline{display:inline-flex!important;align-items:center;gap:6px;margin:0!i
 
 .sent-ok{background:#e6f4ea;border-left:5px solid #2f7a4a;padding:8px 10px;margin:6px 0;border-radius:6px}
 .vw-miss{color:#b3261e}
+
+/* 11/21 출석부 직접 체크 · 미등원 발송 */
+.att-session{border-top:3px solid #254e46;margin-top:14px;padding-top:6px}.att-session h4{margin:6px 0 2px;font-size:1rem}
+ul.att-list{list-style:none;padding:0;margin:0}ul.att-list li{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px;padding:8px 0;border-top:1px solid #c8d7d0}
+.att-btns{display:flex;gap:4px}.att-btns button{min-height:44px;padding:6px 10px;font-size:.95rem}
+ul.att-list li.st-done{border-left:5px solid #2f7a4a;padding-left:8px}ul.att-list li.st-wait{border-left:5px solid #c06b19;padding-left:8px}ul.att-list li.st-fail{border-left:5px solid #b3261e;padding-left:8px}
+.att-btns button[data-att-mark="미등원"][aria-pressed="true"]{background:#b3261e;border-color:#b3261e}.att-btns button[data-att-mark="지각"][aria-pressed="true"]{background:#c06b19;border-color:#c06b19}

@@ -23,14 +23,14 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'미시청 없
     headers:{'Content-Type':'application/json',apikey:'sb_publishable_IbfVcXs5TmXfumrnK4Somg_7MzygCdh'},body:JSON.stringify(args)
    });
    const data=await response.json();
-   return response.ok?{data}:{error:{code:data.code}};
+   return response.ok?{data}:{error:{code:data.code,message:typeof data.message==='string'?data.message:''}};
   }finally{clearTimeout(timer);}
  }};
  function message(text){el('ops-message').textContent=text;}
- function clear(){clearTimeout(dailyTimer);rows=[];weekData=null;dailyData=null;absenceDays=[];el('ops-content').textContent='';}
+ function clear(){clearTimeout(dailyTimer);clearTimeout(attTimer);rows=[];weekData=null;dailyData=null;absenceDays=[];el('ops-content').textContent='';}
  function setBusy(value){busy=value;el('ops-content').setAttribute('aria-busy',String(value));el('ops-refresh').disabled=value;el('ops-login-button').disabled=value;}
  function lock(text='잠겼습니다. 비밀번호를 다시 입력해 주세요.'){
-  ++run;password='';teacherId='';dailyDate='';excluded.clear();sessionStorage.removeItem(passwordKey);clear();setBusy(false);
+  ++run;password='';teacherId='';dailyDate='';excluded.clear();attMarks.clear();absData=null;attData=null;sessionStorage.removeItem(passwordKey);clear();setBusy(false);
   el('ops-password').value='';el('ops-login').hidden=false;el('ops-app').hidden=true;el('ops-logout').hidden=true;message(text);
  }
  function failed(error){
@@ -165,18 +165,106 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'미시청 없
  }
 
  // ---- 11/20 출석부: 학원 PC가 맥가이 출결(정규반)·클리닉 등원/시험지 입력을 읽어 올림 ----
- let attData=null;
+ // 11/21 선생님 직접 체크(출석·지각·미등원) + [미등원 발송]. 앱은 체크와 발송 요청만 저장하고,
+ // 잔디 전송은 학원 PC가 한다(웹훅 주소는 앱에 없음). 맥가이 기록은 '맥가이:'로 따로 보여 준다.
+ let attData=null,absData=null,attSessions=[],attTimer;const attMarks=new Map();
  const md=d=>{const [,m,dd]=d.split('-');return `${+m}/${+dd}(${'일월화수목금토'[new Date(d+'T12:00:00Z').getUTCDay()]})`;};
- const attCls=st=>({'출석':'done','등원':'done','지각':'wait','조퇴':'wait','결석':'fail','통보결석':'skip','미입력':'fail','예정':'skip'}[st]||'wait');
+ const attCls=st=>({'출석':'done','등원':'done','지각':'wait','조퇴':'wait','결석':'fail','통보결석':'skip','미입력':'fail','예정':'skip','미등원':'fail'}[st]||'wait');
+ const kstDay=(offset=0)=>new Date(Date.now()+9*3600000+offset*86400000).toISOString().slice(0,10);
+ const destName=d=>d==='room'?'출결방':'나와의 대화';
+ const absReason=r=>({ABSENCE_STALE:'2시간이 지나 보내지 않음',JANDI_ROOM_WEBHOOK_MISSING:'학원 PC에 출결방 웹훅 없음',JANDI_SELF_WEBHOOK_MISSING:'학원 PC에 나와의 대화 웹훅 없음',ABSENCE_INVALID:'명단 대신 「조회 실패」만 보냄'}[r]||'전송 실패');
+ const attKey=s=>s.label+'|'+s.date;
+ const sessionMarks=s=>attMarks.get(attKey(s))?.marks||{};
+ function lastSend(s){return (absData?.sends||[]).filter(x=>x.class_label===s.label&&x.att_date===s.date&&x.destination===absData.settings?.destination).at(-1);}
+ function sendStatus(x){
+  if(!x)return '아직 보내지 않음';
+  const t=Number.isFinite(Date.parse(x.done_at))?new Date(x.done_at).toLocaleTimeString('ko-KR',{timeZone:'Asia/Seoul',hour:'2-digit',minute:'2-digit',hour12:false}):'';
+  return x.status==='sent'?`${x.round}회차 보냄 ${t} (${destName(x.destination)})`:x.status==='pending'?`${x.round}회차 전달 대기 — 학원 PC가 보냅니다`:`${x.round}회차 실패: ${absReason(x.reason)}`;
+ }
+ function attCount(s){const m=sessionMarks(s),n=s.students.filter(st=>m[st.name]).length,a=s.students.filter(st=>m[st.name]==='미등원').length;return `체크 ${n}/${s.students.length} · 미등원 ${a}명${attMarks.get(attKey(s))?.dirty?' · 저장 안 됨':''}`;}
+ function sessionHtml(s,i){
+  const m=sessionMarks(s),x=lastSend(s),pending=x?.status==='pending';
+  return `<section class="att-session" data-att-session="${i}"><h4>${esc(md(s.date))}${s.time?' 수업 '+esc(s.time):''} · 직접 체크</h4><p class="muted" data-att-count="${i}">${esc(attCount(s))}</p><ul class="att-list">${s.students.map((st,j)=>`<li data-att-row="${i}-${j}" class="${m[st.name]?'st-'+attCls(m[st.name]):''}"><span class="att-name"><strong>${esc(st.name)}</strong> <span class="muted">맥가이: ${esc(st.cell?.st||'기록 없음')}${st.cell?.in?' '+esc(st.cell.in):''}${st.cell?.memo?' · '+esc(st.cell.memo):''}</span></span><span class="att-btns" role="group" aria-label="${esc(st.name)} 직접 체크">${['출석','지각','미등원'].map(k=>`<button type="button" data-att-mark="${k}" data-att-s="${i}" data-att-i="${j}" aria-pressed="${m[st.name]===k}" ${busy?'disabled':''}>${k}</button>`).join('')}</span></li>`).join('')}</ul><div class="actions"><button type="button" class="secondary" data-att-all="${i}" ${busy?'disabled':''}>남은 학생 모두 출석</button><button type="button" class="secondary" data-att-save="${i}" ${busy?'disabled':''}>저장</button><button type="button" class="primary" data-att-send="${i}" ${busy||pending?'disabled':''}>미등원 발송</button></div><p role="status">${esc(sendStatus(x))}</p>${x?.body?`<pre>${esc(x.body)}</pre>`:''}</section>`;
+ }
  function renderAttendance(){
   const b=attData?.book;
   if(!b){el('ops-content').textContent='학원 PC가 올린 출석부가 없습니다.';return;}
+  const today=kstDay(),from=kstDay(-7),manual=!!absData;attSessions=[];
   const reg=b.regular.map(c=>{
    const cnt={};for(const s of c.students)for(const d of c.dates){const st=s.cells[d]?.st||'';cnt[st]=(cnt[st]||0)+1;}
-   return `<article><h3>${esc(c.label)}</h3><p class="muted">${c.dates.map(md).join(', ')} · ${esc(c.students.length)}명 · ${Object.entries(cnt).map(([k,v])=>esc(k)+' '+esc(v)).join(' · ')}</p><ul class="check">${c.students.map(s=>c.dates.map(d=>{const v=s.cells[d];if(!v)return '';return `<li class="st-${attCls(v.st)}"><strong>${esc(s.name)}</strong> <span class="status">${esc(v.st)}</span>${v.in?` <span class="muted">${esc(v.in)}${v.out?'~'+esc(v.out):''}</span>`:''}${v.memo?`<br><span class="muted">메모: ${esc(v.memo)}</span>`:''}</li>`;}).join('')).join('')}</ul></article>`;}).join('');
+   const parts=c.dates.map(d=>{
+    if(manual&&d<=today&&d>=from){
+     const s={label:c.label,date:d,time:c.times?.[d]||'',students:c.students.filter(st=>st.cells[d]).map(st=>({name:st.name,cell:st.cells[d]}))};
+     attSessions.push(s);return sessionHtml(s,attSessions.length-1);
+    }
+    return `<ul class="check">${c.students.map(s=>{const v=s.cells[d];if(!v)return '';return `<li class="st-${attCls(v.st)}"><strong>${esc(s.name)}</strong> <span class="muted">${esc(md(d))}</span> <span class="status">${esc(v.st)}</span>${v.in?` <span class="muted">${esc(v.in)}${v.out?'~'+esc(v.out):''}</span>`:''}${v.memo?`<br><span class="muted">메모: ${esc(v.memo)}</span>`:''}</li>`;}).join('')}</ul>`;
+   }).join('');
+   return `<article><h3>${esc(c.label)}</h3><p class="muted">${c.dates.map(md).join(', ')} · ${esc(c.students.length)}명 · 맥가이 ${Object.entries(cnt).map(([k,v])=>esc(k)+' '+esc(v)).join(' · ')}</p>${parts}</article>`;}).join('');
   const cl=b.clinic.map(c=>{const arr=c.students.filter(s=>s.arrived).length,ex=c.students.filter(s=>s.exam).length;
    return `<article><h3>클리닉 ${esc(md(c.date))}</h3><p class="muted">예약 ${esc(c.students.length)}명 · 등원 ${esc(arr)} · 시험지 입력 ${esc(ex)}</p><ul class="check">${c.students.map(s=>`<li class="st-${s.exam?'done':s.arrived?'wait':'fail'}"><strong>${esc(s.name)}</strong> <span class="status">${s.exam?'입력완료':s.arrived?'등원·미입력':'미등원'}</span><br><span class="muted">${esc(s.cls)}${s.start?' · '+esc(s.start):''}${s.in?' · 등원 '+esc(s.in):''}</span></li>`).join('')}</ul></article>`;}).join('');
-  el('ops-content').innerHTML=`<h3>${esc(b.label)}</h3><p class="muted">맥가이·국어왕 조회 ${esc(when(b.at))} · 학원 PC가 30분마다 갱신</p>${b.issues.length?`<p class="weekly-warning" role="alert">${b.issues.map(esc).join('<br>')}</p>`:''}<h3>정규반 (맥가이 출결)</h3>${reg||'<p>이번 주 정규반 기록이 없습니다.</p>'}<h3>클리닉 (등원·시험지)</h3>${cl||'<p>이번 주 클리닉 기록이 없습니다.</p>'}`;
+  const st=absData?.settings,dest=st?.destination==='room'?'room':'self';
+  const destBar=manual?`<article class="att-dest"><h3>미등원 발송 받는 곳: ${esc(destName(dest))}${dest==='self'?' (테스트)':''}</h3><div class="actions"><button type="button" data-att-dest="self" aria-pressed="${dest==='self'}" ${busy?'disabled':''}>나와의 대화</button><button type="button" data-att-dest="room" aria-pressed="${dest==='room'}" ${busy||!st?.room_ready?'disabled':''}>출결방</button></div>${st?.room_ready?'':'<p class="muted">출결방 웹훅이 학원 PC에 설정되어 있지 않아 전환할 수 없습니다.</p>'}<p class="muted">반마다 학생을 출석·지각·미등원으로 체크하고 [미등원 발송]을 누르면 학원 PC가 잔디로 보냅니다. 같은 명단은 다시 보내지 않습니다.</p></article>`:'<p class="weekly-warning" role="alert">직접 체크 기능은 아직 서버 반영 전입니다. 맥가이 기록만 보여 줍니다.</p>';
+  el('ops-content').innerHTML=`<h3>${esc(b.label)}</h3><p class="muted">맥가이·국어왕 조회 ${esc(when(b.at))} · 학원 PC가 30분마다 갱신</p>${b.issues.length?`<p class="weekly-warning" role="alert">${b.issues.map(esc).join('<br>')}</p>`:''}${destBar}<h3>정규반 (직접 체크 · 맥가이 출결)</h3>${reg||'<p>이번 주 정규반 기록이 없습니다.</p>'}<h3>클리닉 (등원·시험지)</h3>${cl||'<p>이번 주 클리닉 기록이 없습니다.</p>'}`;
+ }
+ function mergeAbsence(data){
+  absData=data;
+  for(const r of data.marks||[]){const key=r.class_label+'|'+r.att_date;if(!attMarks.get(key)?.dirty)attMarks.set(key,{marks:{...r.marks},dirty:false});}
+ }
+ function pollAttendance(){clearTimeout(attTimer);if(tab==='attendance'&&(absData?.sends||[]).some(x=>x.status==='pending'))attTimer=setTimeout(refreshAbsence,15000);}
+ async function absenceRpc(action,arg={}){
+  const r=await client.rpc('ops_teacher_absence',{p_password:password,p_action:action,p_arg:arg});
+  if(r.error){const e=Error('ABSENCE_RPC_FAILED');e.code=r.error.code;e.reason=r.error.message;throw e;}
+  return r.data;
+ }
+ async function refreshAbsence(){
+  if(tab!=='attendance'||busy||!password)return;
+  const token=run;
+  try{const data=await absenceRpc('get');if(token!==run||tab!=='attendance')return;mergeAbsence(data);renderAttendance();}catch{}
+  finally{if(token===run)pollAttendance();}
+ }
+ const absMessage=e=>({ABSENCE_DUPLICATE:'같은 미등원 명단을 이미 보냈습니다. 바뀐 학생이 있을 때만 다시 보낼 수 있습니다.',ABSENCE_PENDING:'앞 요청을 학원 PC가 아직 보내는 중입니다. 잠시 뒤 다시 확인해 주세요.',ABSENCE_UNMARKED:'체크하지 않은 학생이 있습니다.',ABSENCE_ROOM_NOT_READY:'출결방 웹훅이 학원 PC에 없어 출결방으로 보낼 수 없습니다.',ABSENCE_CLASS_NOT_FOUND:'출석부가 갱신되어 이 반·날짜를 찾지 못했습니다. 새로고침해 주세요.'}[e.reason]||'저장하지 못했습니다(조회 실패). 새로고침 후 다시 해 주세요. 잔디로는 아무것도 보내지 않았습니다.');
+ async function attendanceClick(btn){
+  if(btn.dataset.attMark){
+   const s=attSessions[btn.dataset.attS],st=s?.students[btn.dataset.attI];if(!st)return;
+   const key=attKey(s),entry=attMarks.get(key)||{marks:{},dirty:false},k=btn.dataset.attMark;
+   if(entry.marks[st.name]===k)delete entry.marks[st.name];else entry.marks[st.name]=k;
+   entry.dirty=true;attMarks.set(key,entry);
+   // 포커스가 그대로 있도록 그 줄의 버튼과 개수만 바꾼다.
+   const row=el('ops-content').querySelector(`[data-att-row="${btn.dataset.attS}-${btn.dataset.attI}"]`);
+   if(row){row.className=entry.marks[st.name]?'st-'+attCls(entry.marks[st.name]):'';row.querySelectorAll('[data-att-mark]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.attMark===entry.marks[st.name])));}
+   const count=el('ops-content').querySelector(`[data-att-count="${btn.dataset.attS}"]`);if(count)count.textContent=attCount(s);
+   return;
+  }
+  if(btn.dataset.attAll!==undefined){
+   const s=attSessions[btn.dataset.attAll];if(!s)return;const entry=attMarks.get(attKey(s))||{marks:{},dirty:false};
+   for(const st of s.students)if(!entry.marks[st.name])entry.marks[st.name]='출석';
+   entry.dirty=true;attMarks.set(attKey(s),entry);renderAttendance();return;
+  }
+  let action,arg,s;
+  if(btn.dataset.attDest){
+   const d=btn.dataset.attDest;if(d===absData?.settings?.destination)return;
+   if(d==='room'&&!absData?.settings?.room_ready){message('출결방 웹훅이 학원 PC에 없어 전환할 수 없습니다.');return;}
+   if(!confirm(`미등원 발송 받는 곳을 「${destName(d)}」(으)로 바꿀까요?`))return;
+   action='dest';arg={destination:d};
+  }else{
+   s=attSessions[btn.dataset.attSave??btn.dataset.attSend];if(!s)return;
+   const m=sessionMarks(s);arg={class_label:s.label,att_date:s.date,marks:m};
+   if(btn.dataset.attSave!==undefined)action='save';
+   else{
+    const left=s.students.filter(st=>!m[st.name]).length;if(left){message(`체크하지 않은 학생이 ${left}명 있습니다. 모두 체크한 뒤 보내 주세요.`);return;}
+    const absent=s.students.filter(st=>m[st.name]==='미등원').map(st=>st.name);
+    if(!confirm(`잔디 「${destName(absData?.settings?.destination)}」(으)로 보낼까요?\n${s.label} ${md(s.date)}\n미등원 ${absent.length}명${absent.length?': '+absent.join(', '):' (전원 등원)'}`))return;
+    action='send';
+   }
+  }
+  const token=++run;setBusy(true);renderAttendance();message('저장하고 있습니다…');
+  try{
+   await absenceRpc(action,arg);if(token!==run)return;
+   if(s)attMarks.set(attKey(s),{marks:{...arg.marks},dirty:false});
+   mergeAbsence(await absenceRpc('get'));if(token!==run)return;
+   message(action==='send'?'발송 요청을 저장했습니다. 학원 PC가 잔디로 보내면 여기에 「보냄」으로 바뀝니다.':action==='dest'?'받는 곳을 바꿨습니다.':'저장했습니다.');
+  }catch(e){if(token!==run)return;if(e.code==='42501'){lock('선생님 비밀번호를 확인해 주세요.');return;}message(absMessage(e));}
+  finally{if(token===run){setBusy(false);renderAttendance();pollAttendance();}}
  }
  function renderWeekly(){
   if(!weekData){el('ops-content').textContent='학원 PC가 올린 이번 주 명단이 없습니다.';return;}
@@ -240,7 +328,9 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'미시청 없
    if(selected==='attendance'){
     const r=await client.rpc('ops_teacher_attendance',{p_password:password});if(token!==run)return;
     if(r.error){clear();el('ops-content').innerHTML='<article class="mine"><h3>출석부를 불러오지 못했습니다</h3><p>잠시 뒤 [새로고침]을 눌러 주세요.</p></article>';return;}
-    attData=r.data;renderAttendance();message('초록=출석·입력완료, 주황=지각·등원만, 빨강=결석·미입력·미등원');return;
+    attData=r.data;
+    try{mergeAbsence(await absenceRpc('get'));}catch(e){if(token!==run)return;absData=null;if(e.code==='42501'){lock('선생님 비밀번호를 확인해 주세요.');return;}}
+    if(token!==run)return;renderAttendance();pollAttendance();message('반마다 출석·지각·미등원을 체크하고 [미등원 발송]을 눌러 주세요. 「맥가이:」는 맥가이 기록입니다.');return;
    }
    if(selected==='videos'){
     try{videoRows=await read('videos');if(token!==run)return;clinicWatch=await read('clinic_watch');}catch(e){if(token!==run)return;clear();el('ops-content').innerHTML='<article class="mine"><h3>이 화면은 서버 준비가 아직 안 됐습니다</h3><p>학원 컴퓨터에서 <strong>영상명단_켜기</strong>를 한 번 실행하면 켜집니다.</p></article>';message('');return;}
@@ -260,7 +350,7 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'미시청 없
    else if(selected==='board')renderBoard(data);else renderHistory(data);
    message(selected==='pending'?'명단과 문구를 확인해 주세요. 승인해도 예정 시각에 응시 여부를 다시 확인합니다.':'최신 조회를 완료했습니다.');
   }catch(error){if(token===run){clear();failed(error);}}
-  finally{if(token===run){setBusy(false);if(selected==='pending'&&rows.length)renderPending();if(selected==='daily'&&dailyData)renderDaily();if(selected==='absence'&&absenceDays.length)renderAbsence();}}
+  finally{if(token===run){setBusy(false);if(selected==='pending'&&rows.length)renderPending();if(selected==='daily'&&dailyData)renderDaily();if(selected==='absence'&&absenceDays.length)renderAbsence();if(selected==='attendance'&&attData&&tab==='attendance')renderAttendance();}}
  }
  async function login(pw){
   if(busy||!pw)return;
@@ -318,6 +408,8 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'미시청 없
  document.addEventListener('click',async event=>{
   const menu=event.target.closest('[data-ops-tab]');
   if(menu){event.preventDefault();if(!teacherId||busy)return;tab=menu.dataset.opsTab;weeklyFilter='all';dailyDate='';selectTab();await refresh();return;}
+  const att=event.target.closest('[data-att-mark],[data-att-all],[data-att-save],[data-att-send],[data-att-dest]');
+  if(att){if(tab!=='attendance'||!teacherId||!password||busy||att.disabled)return;await attendanceClick(att);return;}
   const exAdd=event.target.closest('[data-ex-add]'),exRemove=event.target.closest('[data-ex-remove]');
   if(exAdd||exRemove){
    if(!teacherId||busy||tab!=='pending')return;
@@ -369,7 +461,7 @@ const videoText=s=>!('video' in s)?'미집계':s.video==='없음'?'미시청 없
   finally{if(token===run){setBusy(false);if(rows.length)renderPending();}}
  });
  // Clear private DOM before bfcache snapshots; restoring always reauthenticates.
- window.addEventListener('pagehide',()=>{++run;password='';teacherId='';excluded.clear();clear();setBusy(false);el('ops-app').hidden=true;el('ops-login').hidden=false;el('ops-logout').hidden=true;});
+ window.addEventListener('pagehide',()=>{++run;password='';teacherId='';excluded.clear();attMarks.clear();absData=null;attData=null;clear();setBusy(false);el('ops-app').hidden=true;el('ops-login').hidden=false;el('ops-logout').hidden=true;});
  window.addEventListener('pageshow',event=>{if(event.persisted)login(sessionStorage.getItem(passwordKey)||'');});
  if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
  login(sessionStorage.getItem(passwordKey)||'');
