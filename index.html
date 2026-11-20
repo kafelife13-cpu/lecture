@@ -373,6 +373,7 @@ input,button{font-family:var(--font)}
     <div class="main"><div class="main-inner">
       <div class="panel" id="panel-weekly"><div class="page-header"><h1>이번 주 필수 과제</h1><p>4개 과제를 모두 마치면 전체 완료예요. 제출 기록이 자동으로 연결됩니다.</p></div>
         <div class="weekly-toolbar"><label>확인할 주 <input type="date" id="t-weekly-date" data-weekly-date></label><button class="btn" data-weekly-action="refresh">현황 새로고침</button><button class="btn blue" data-weekly-action="create">주간 과제 등록</button></div>
+        <section class="card" style="padding:16px 20px;margin-bottom:16px"><h2>동형모의고사 인증 (한백고·치동고)</h2><p>월·화 하루 1회 · 날짜·학교별 인증 현황과 승인/반려</p><button class="btn blue" onclick="openDongheongCertTeacher()">동형 인증 현황 열기</button></section>
         <div id="t-weekly-body" aria-live="polite"></div><div id="t-weekly-editor" class="weekly-detail" hidden></div><div id="t-weekly-review" class="weekly-detail" hidden></div></div>
 
 
@@ -1186,6 +1187,7 @@ input,button{font-family:var(--font)}
       <div class="panel" id="panel-replacement"><div class="page-header"><h1>영상대체 강의</h1><p>미등원한 수업 대신 선생님이 지정한 강의를 시청해요.</p></div><div id="student-replacement-list"></div></div>
       <div class="panel" id="panel-weekly"><div class="page-header"><h1>이번 주 할 일</h1><p>과제 안내, 사진 인증과 필수 과제를 한곳에서 확인하고 바로 시작하세요.</p></div>
         <div class="weekly-toolbar"><label>확인할 주 <input type="date" id="s-weekly-date" data-weekly-date></label><button class="btn" data-weekly-action="refresh">현황 새로고침</button></div>
+        <div class="student-clinic-actions" data-dongheong-entry style="display:none;margin-bottom:16px"><button onclick="openDongheongCert()"><strong>동형모의고사 인증</strong><span>월·화 하루 1회 · 푼 회차와 채점한 시험지 사진 올리기</span></button></div>
         <div id="s-weekly-body" aria-live="polite"></div></div>
 <div class="panel" id="panel-weekly-notebook"><div class="page-header"><h1>클리닉 오답 노트</h1><button class="btn" onclick="sNav('weekly')">← 필수 과제로</button></div><div id="s-weekly-notebook" class="weekly-detail"></div></div>
       <div class="panel active" id="panel-home">
@@ -11968,5 +11970,6 @@ function installPWA(){
 <script src="clinic-practice.js?v=20261105-similar"></script>
 <script src="consultation.js?v=20261105-homework-popup"></script>
 <script src="sms-approval.js?v=20261118"></script>
+<script src="dongheong-cert.js?v=1"></script>
 </body>
 </html>
