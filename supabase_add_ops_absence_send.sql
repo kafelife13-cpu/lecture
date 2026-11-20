@@ -24,13 +24,18 @@ create table if not exists public.ops_absence_sends (
   absent jsonb not null check (jsonb_typeof(absent) = 'array'),
   arrived jsonb not null check (jsonb_typeof(arrived) = 'array'),
   example boolean not null default false,
-  status text not null default 'pending' check (status in ('pending', 'sent', 'failed')),
+  status text not null default 'pending' check (status in ('pending', 'sent', 'failed', 'cancelled')),
+  claimed_at timestamptz,
   reason text check (reason is null or reason ~ '^[A-Z_]{1,60}$'),
   body text check (body is null or length(body) <= 2000),
   requested_at timestamptz not null default now(),
   requested_by text,
   done_at timestamptz
 );
+-- 11/21 [발송 취소]: 이미 만든 테이블에도 취소 상태·PC 처리 시작 시각을 더한다.
+alter table public.ops_absence_sends add column if not exists claimed_at timestamptz;
+alter table public.ops_absence_sends drop constraint if exists ops_absence_sends_status_check;
+alter table public.ops_absence_sends add constraint ops_absence_sends_status_check check (status in ('pending', 'sent', 'failed', 'cancelled'));
 create index if not exists ops_absence_sends_class_idx on public.ops_absence_sends (class_label, att_date, requested_at desc);
 
 create table if not exists public.ops_absence_settings (
@@ -63,7 +68,7 @@ begin
     end loop;
   end if;
   if teacher_id is null then raise exception 'TEACHER_AUTH_REQUIRED' using errcode = '42501'; end if;
-  if p_action is null or p_action not in ('get', 'save', 'send', 'dest') then raise exception 'ABSENCE_ACTION_INVALID'; end if;
+  if p_action is null or p_action not in ('get', 'save', 'send', 'dest', 'cancel') then raise exception 'ABSENCE_ACTION_INVALID'; end if;
   if p_arg is null or jsonb_typeof(p_arg) <> 'object' then raise exception 'ABSENCE_INVALID'; end if;
 
   if p_action = 'get' then
@@ -80,6 +85,15 @@ begin
     if p_arg->>'destination' = 'room' and settings.room_ready is not true then raise exception 'ABSENCE_ROOM_NOT_READY'; end if;
     update public.ops_absence_settings set destination = p_arg->>'destination', updated_at = now(), updated_by = teacher_id where id = 'current';
     return (select jsonb_build_object('destination', destination, 'room_ready', room_ready, 'room_checked_at', room_checked_at) from public.ops_absence_settings where id = 'current');
+  end if;
+
+  if p_action = 'cancel' then
+    -- 학원 PC가 아직 집어 가지 않은(claimed_at 없음) 대기 요청만 취소한다.
+    begin update public.ops_absence_sends set status = 'cancelled', done_at = now()
+      where id = (p_arg->>'id')::uuid and status = 'pending' and claimed_at is null returning * into saved;
+    exception when invalid_text_representation then raise exception 'ABSENCE_INVALID'; end;
+    if saved.id is null then raise exception 'ABSENCE_NOT_CANCELLABLE'; end if;
+    return to_jsonb(saved) - 'requested_by';
   end if;
 
   -- save / send: 반·날짜는 학원 PC가 올린 현재 출석부에 있어야 하고, 이름도 그 반 명단 안에서만 받는다.
@@ -133,7 +147,7 @@ begin
     select 1 from public.sms_approval_publishers where token_hash = encode(extensions.digest(p_token, 'sha256'), 'hex')) then
     raise exception 'PUBLISHER_AUTH_REQUIRED' using errcode = '42501';
   end if;
-  if p_action is null or p_action not in ('status', 'list', 'done') or p_row is null or jsonb_typeof(p_row) <> 'object' then raise exception 'ABSENCE_INVALID'; end if;
+  if p_action is null or p_action not in ('status', 'list', 'claim', 'done') or p_row is null or jsonb_typeof(p_row) <> 'object' then raise exception 'ABSENCE_INVALID'; end if;
   if p_action = 'status' then
     if jsonb_typeof(p_row->'room_ready') <> 'boolean' then raise exception 'ABSENCE_INVALID'; end if;
     update public.ops_absence_settings set room_ready = (p_row->>'room_ready')::boolean, room_checked_at = now() where id = 'current';
@@ -142,6 +156,12 @@ begin
     return coalesce((select jsonb_agg(jsonb_build_object('id', id, 'class_label', class_label, 'att_date', att_date, 'class_time', class_time, 'round', round,
       'destination', destination, 'absent', absent, 'arrived', arrived, 'example', example, 'requested_at', requested_at) order by requested_at)
       from public.ops_absence_sends where status = 'pending'), '[]'::jsonb);
+  end if;
+  if p_action = 'claim' then
+    -- 보내기 직전에 PC가 집어 간다. 취소된 요청은 여기서 거부되어 보내지 않는다.
+    update public.ops_absence_sends set claimed_at = now() where id = (p_row->>'id')::uuid and status = 'pending' and claimed_at is null returning * into request;
+    if request.id is null then raise exception 'ABSENCE_NOT_PENDING'; end if;
+    return jsonb_build_object('ok', true);
   end if;
   -- done
   if p_row->>'status' not in ('sent', 'failed') then raise exception 'ABSENCE_INVALID'; end if;

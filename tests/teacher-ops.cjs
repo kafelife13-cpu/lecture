@@ -16,7 +16,7 @@ const weekly=()=>({updated_at:'2026-11-19T10:30:00+09:00',week:{label:'기말대
   {name:'주간학생가',attendance:'미등원',clinic:'미입력',score:null,retest:false,homework:'미완',absence_dates:['2026-11-18'],video_weeks:[{week:1,video:'완료',percent:100},{week:2,video:'미완',percent:30},{week:3,video:'없음',percent:null}]},
   {name:'주간학생나',attendance:'등원',clinic:'입력완료',score:0,retest:true,homework:'완료',absence_dates:[]},
   {name:'주간학생다',attendance:'시험지만 수령',clinic:'확인 불가',score:null,retest:false,homework:'없음',absence_dates:[]}]},
- {class_id:'class-b',label:'주간 다른반',students:[{name:'주간학생라',attendance:'확인 불가',clinic:'입력완료',score:100,retest:false,homework:'완료',absence_dates:[]}]}]}});
+ {class_id:'class-b',label:'주간 다른반',students:[{name:'주간학생라',attendance:'확인 불가',clinic:'입력완료',score:100,retest:false,retest_score:75,homework:'완료',absence_dates:[]}]}]}});
 function fixture(stored){
  const ids=[...read('ops.html').matchAll(/id="([^"]+)"/g)].map(m=>m[1]);
  const els=Object.fromEntries(ids.map(id=>[id,element()])),tabs=['pending','absence','daily','weekly','board','history'].map(tab=>Object.assign(element(),{dataset:{opsTab:tab}}));
@@ -78,9 +78,9 @@ const daily=()=>[{clinic_date:'2026-11-18',updated_at:'2026-11-19T10:30:00+09:00
  f.lock();assert.equal(f.content(),'');assert.equal(f.values.has('teacher_ops_password'),false);assert.equal(f.els['ops-app'].hidden,true);
  await f.tab('pending');assert.equal(f.content(),'');
 
- f=fixture();await f.login();await f.tab('weekly');assert.equal(f.calls.at(-1).args.p_action,'weekly');
+ f=fixture();await f.login();await f.tab('weekly');assert.ok(f.calls.some(c=>c.args.p_action==='weekly'));
  assert.equal(f.els['ops-title'].textContent,'이번 주 명단');
- for(const word of ['기말대비 4주차','집계가 완전하지 않음: 가상반 출결 확인 중','갱신','집계','11. 19.','10:30','10:00','미등원 1 · 미입력 1 · 재시험 1 · 과제 미완 1','미등원 0 · 미입력 0 · 재시험 0 · 과제 미완 0','주간학생가','주간학생나','주간학생다','주간학생라','시험지만 수령','확인 불가','점수: 0','점수: 미집계','2026-11-18'])assert.ok(f.content().includes(word),word);
+ for(const word of ['기말대비 4주차','집계가 완전하지 않음: 가상반 출결 확인 중','갱신','집계','11. 19.','10:30','10:00','미등원 1 · 미입력 1 · 재시험 1 · 과제 미완 1','미등원 0 · 미입력 0 · 재시험 0 · 과제 미완 0','주간학생가','주간학생나','주간학생다','주간학생라','시험지만 수령','확인 불가','미응시','미통과 0점','통과 100점','재시험 대상 · 재시험 기록 없음','재시험 75점 통과','통과 0 · 미통과 1 · 미응시 1 · 재시험 통과 0 · 미등원 0','통과 1 · 미통과 0 · 미응시 0 · 재시험 통과 1 · 미등원 0','출석부 없음','2026-11-18'])assert.ok(f.content().includes(word),word);
  const weeklyCalls=f.calls.length;
  for(const filter of ['absent','missing','homework']){await f.filter(filter);assert.match(f.content(),/주간학생가/);assert.doesNotMatch(f.content(),/주간학생[나다라]/);assert.match(f.content(),/미등원 1 · 미입력 1 · 재시험 1 · 과제 미완 1/);assert.match(f.content(),/해당 학생이 없습니다/);assert.ok(f.content().includes(`data-ops-filter="${filter}" aria-pressed="true"`));}
  // 11/21 주차별 영상: 학생 줄, 반 요약, 영상 미시청 필터(주차 미완 포함).
@@ -279,11 +279,11 @@ const daily=()=>[{clinic_date:'2026-11-18',updated_at:'2026-11-19T10:30:00+09:00
  for(const icon of manifest.icons)assert.ok(fs.existsSync(path.join(root,icon.src.split('?')[0])));
  assert.match(read('ops.html'),/rel="manifest" href="ops-manifest.json"/);assert.doesNotMatch(read('ops.html'),/href="manifest.json"/);
  for(const file of ['ops.html','ops.js','ops.css','ops-manifest.json'])assert.ok(read('sw.js').includes('/lecture/'+file));
- assert.match(read('sw.js'),/const CACHE_NAME = 'kukeo-wang-v212-ops-absence'/);
+ assert.match(read('sw.js'),/const CACHE_NAME = 'kukeo-wang-v213-weekly-retest'/);
  // 11/21 출석부 직접 체크 · 미등원 발송: 웹훅 없음, 체크 완료 전 발송 불가, 서버 거부 사유 표시
  {
   const day=new Date(Date.now()+9*3600000).toISOString().slice(0,10);
-  const book={label:'출석부',at:'2026-11-21T01:00:00Z',week:[],issues:[],clinic:[],regular:[{label:'가상반(토10:30)',dates:[day],times:{[day]:'10:30'},
+  const book={label:'출석부',at:'2026-11-21T01:00:00Z',week:[],issues:[],clinic:[],regular:[{label:'한백고1(토10:30)-김이내T',dates:[day],times:{[day]:'10:30'},
    students:[{name:'체크학생가',cells:{[day]:{st:'출석',in:'10:20',out:'',memo:''}}},{name:'체크학생나',cells:{[day]:{st:'미입력',in:'',out:'',memo:''}}}]}]};
   let abs={settings:{destination:'self',room_ready:false},marks:[],sends:[]};const sends=[];
   const g=fixture();g.handler=async(name,args)=>{
@@ -291,9 +291,11 @@ const daily=()=>[{clinic_date:'2026-11-18',updated_at:'2026-11-19T10:30:00+09:00
    if(name==='ops_teacher_attendance')return {data:{book,updated_at:book.at}};
    if(name==='ops_teacher_absence'){
     if(args.p_action==='send'){sends.push(args.p_arg);if(sends.length>1)return {error:{code:'P0001',message:'ABSENCE_DUPLICATE'}};
-     abs={...abs,sends:[{class_label:'가상반(토10:30)',att_date:day,destination:'self',round:1,status:'pending'}]};}
+     abs={...abs,sends:[{id:'req-1',class_label:book.regular[0].label,att_date:day,destination:'self',round:1,status:'pending'}]};}
+    if(args.p_action==='cancel'){abs={...abs,sends:[{...abs.sends[0],status:'cancelled'}]};return {data:abs.sends[0]};}
     return {data:args.p_action==='get'?abs:{ok:true}};}
    if(args.p_action==='pending')return {data:{teacher_id:'fixture-teacher',approvals:[]}};
+   if(args.p_action==='weekly')return {data:{updated_at:book.at,week:{label:'주간',at:book.at,blocked:false,issues:[],classes:[{class_id:'hanbaek_sat_1030',label:'한백고 토 10:30',students:[{name:'체크학생나',attendance:'등원',clinic:'입력완료',score:60,retest:true,retest_score:80,homework:'완료',absence_dates:[]}]}]}}};
    return {data:[]};
   };
   await g.login();await g.tab('attendance');
@@ -304,8 +306,14 @@ const daily=()=>[{clinic_date:'2026-11-18',updated_at:'2026-11-19T10:30:00+09:00
   await g.att({attSend:'0'});assert.equal(sends.length,1);assert.deepEqual({...sends[0].marks},{'체크학생나':'미등원','체크학생가':'출석'});
   assert.match(g.dialogs.at(-1),/나와의 대화[\s\S]*미등원 1명: 체크학생나/);assert.match(g.content(),/1회차 전달 대기/);
   assert.ok([...g.timers.values()].some(t=>t.ms===15000),'polls while the PC has not sent yet');
+  assert.match(g.content(),/발송 취소/);
+  await g.att({attCancel:'0'});const cancelCall=g.calls.find(c=>c.args.p_action==='cancel');assert.ok(cancelCall,'cancel RPC');assert.equal(cancelCall.args.p_arg.id,'req-1');
+  abs={...abs,sends:[{id:'req-2',class_label:book.regular[0].label,att_date:day,destination:'self',round:1,status:'pending',claimed_at:'2026-11-21T01:00:00Z'}]};await g.refresh();
+  assert.match(g.content(),/보내는 중\(취소 불가\)/);assert.doesNotMatch(g.content(),/data-att-cancel/);
   abs={...abs,sends:[]};await g.att({attSend:'0'});assert.match(g.els['ops-message'].textContent,/이미 보냈습니다/);
   assert.doesNotMatch(JSON.stringify(g.calls),/wh\.jandi|webhook/i);
+  await g.tab('weekly');const wk=g.content();
+  for(const w of ['클리닉 미통과 60점','재시험 80점 통과',`수업 출결 ${+day.slice(5,7)}/${+day.slice(8)}(`,'미등원(직접)','통과 0 · 미통과 1 · 미응시 0 · 재시험 통과 1 · 미등원 1'])assert.ok(wk.includes(w),w);
   g.lock();assert.equal(g.content(),'');
  }
 
