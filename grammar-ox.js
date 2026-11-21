@@ -23,8 +23,8 @@
  const err=e=>'<p role="alert">불러오지 못했습니다. '+esc(e.message||e)+' 다시 시도해 주세요.</p>';
  async function readRows(sid,days){
   const all=[];
-  // Supabase's default 1,000-row limit must not truncate class reports.
-  for(let from=0;;from+=1000){let query=sb.from('grammar_ox_attempts').select('*').order('submitted_at',{ascending:false}).order('id',{ascending:false});if(sid)query=query.eq('student_id',sid);if(days)query=query.gte('submitted_at',new Date(Date.now()-days*86400000).toISOString());const r=await query.range(from,from+999);if(r.error)throw r.error;all.push(...r.data);if(r.data.length<1000)return all;}
+  // Supabase's default 1,000-row limit must not truncate class reports. 고전시가 OX(topic 'ildong'·'yeonhaeng') 기록은 문법 통계에서 제외.
+  for(let from=0;;from+=1000){let query=sb.from('grammar_ox_attempts').select('*').order('submitted_at',{ascending:false}).order('id',{ascending:false});if(sid)query=query.eq('student_id',sid);if(days)query=query.gte('submitted_at',new Date(Date.now()-days*86400000).toISOString());const r=await query.range(from,from+999);if(r.error)throw r.error;all.push(...r.data.filter(x=>x.topic!=='ildong'&&x.topic!=='yeonhaeng'));if(r.data.length<1000)return all;}
  }
  const options=(pairs,value)=>pairs.map(([id,label])=>'<option value="'+esc(id)+'"'+(id===value?' selected':'')+'>'+esc(label)+'</option>').join('');
  root.renderGrammarOx=function(){

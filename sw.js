@@ -1,7 +1,7 @@
 // CACHE_NAME을 배포할 때마다 바꿔주면(v1→v2→...) 예전 캐시가 자동 폐기되고
 // 브라우저가 새 index.html을 다시 받아옵니다. 코드 수정 후에도 화면이 안
 // 바뀌어 보이면 이 버전을 한 칸 올려서 다시 배포하세요.
-const CACHE_NAME = 'kukeo-wang-v213-weekly-retest';
+const CACHE_NAME = 'kukeo-wang-v214-ildong-ox';
 const URLS_TO_CACHE = [
   '/lecture/ops.html',
   '/lecture/ops.js',
@@ -13,7 +13,10 @@ const URLS_TO_CACHE = [
   '/lecture/grammar-ox-data-kimhayan.js?v=2',
   '/lecture/grammar-review.js?v=3',
   '/lecture/grammar-ox-data.js?v=2',
-  '/lecture/grammar-ox.js?v=6',
+  '/lecture/grammar-ox.js?v=9',
+  '/lecture/ildong-ox-data.js?v=1',
+  '/lecture/yeonhaeng-ox-data.js?v=1',
+  '/lecture/ildong-ox.js?v=1',
   '/lecture/grammar-ox.css?v=2',
   '/lecture/consultation.js?v=20261105-homework-popup',
   '/lecture/literature.js?v=4',
