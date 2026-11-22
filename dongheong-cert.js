@@ -16,13 +16,16 @@
  const isCertDay=date=>DAYS.includes(dow(date));
  const mondayOf=date=>addDays(date,-((dow(date)+6)%7));
  const weekDays=date=>DAYS.map(d=>addDays(mondayOf(date),d-1));
+ // 주말에는 다가오는 월·화 과제를 미리 보여 준다. 인증 저장 날짜 규칙은 유지한다.
+ const studentDays=date=>weekDays([0,6].includes(dow(date))?addDays(date,dow(date)===0?1:2):date);
+ const assignedRound=(exam,date)=>mondayOf(date)==='2026-11-23'&&exam.category==='homework'&&/기말\s*대비\s*5\s*주차/.test(exam.clinic_week||'')?Number((exam.name||'').match(/동형모의고사\s*([12])회/)?.[1]||0):0;
  const itemId=(date,school)=>'ci_dh_'+date+'_'+school;
  const weekId=(date,school)=>'cw_dh_'+mondayOf(date)+'_'+school;
  function photos(raw){try{const a=JSON.parse(raw||'[]');return Array.isArray(a)?a:[];}catch(_){return raw?[raw]:[];}}
  const roundOf=raw=>{const m=String(photos(raw)[0]||'').match(/#(\d+)회$/);return m?Number(m[1]):null;};
  const certified=sub=>!!sub&&['pending','approved'].includes(sub.status)&&photos(sub.photo_url).length>0;
  function valid(f){return ['image/jpeg','image/png','image/webp','image/heic','image/heif'].includes(f.type)&&f.size>0&&f.size<=MAX_MB*1024*1024;}
- if(typeof module!=='undefined')module.exports={kstDate,isCertDay,mondayOf,weekDays,itemId,weekId,photos,roundOf,certified,SCHOOLS};
+ if(typeof module!=='undefined')module.exports={kstDate,isCertDay,mondayOf,weekDays,itemId,weekId,photos,roundOf,certified,SCHOOLS,studentDays,assignedRound};
  if(typeof document==='undefined')return;
 
  async function q(p){const r=await p;if(r.error)throw Error(r.error.message);return r.data;}
@@ -51,16 +54,18 @@
  const setStatus=t=>{const s=dialog&&dialog.querySelector('[data-status]');if(s)s.textContent=t;};
 
  // ───────── 학생 ─────────
- let sSubs=[];
- async function loadStudent(){const ids=weekDays(kstDate(Date.now())).map(d=>itemId(d,session.school_id));sSubs=await q(sb.from('cert_submissions').select('*').eq('student_id',session.id).in('item_id',ids));}
+ let sSubs=[],sExams=[];
+ async function loadStudent(){const ids=studentDays(kstDate(Date.now())).map(d=>itemId(d,session.school_id));[sSubs,sExams]=await Promise.all([q(sb.from('cert_submissions').select('*').eq('student_id',session.id).in('item_id',ids)),q(sb.from('exams').select('id,name,category,clinic_week,total_q').eq('clinic_school',SCHOOLS[session.school_id]).eq('category','homework').order('created_at',{ascending:false}))]);}
  function renderStudent(){
   const today=kstDate(Date.now());
-  dialog.querySelector('[data-list]').innerHTML=weekDays(today).map(date=>{
+  dialog.querySelector('[data-list]').innerHTML=studentDays(today).map(date=>{
    const sub=sSubs.find(s=>s.item_id===itemId(date,session.school_id)),round=roundOf(sub&&sub.photo_url);
-   const head='<h3 style="margin:0 0 6px">'+esc(date.slice(5).replace('-','/')+' '+dayName(date))+statusBadge(sub)+'</h3>'+(round?'<div>'+round+'회 인증</div>':'')+'<div>'+thumbs(photos(sub&&sub.photo_url))+'</div>';
+   const assigned=sExams.find(ex=>assignedRound(ex,date)===dow(date));
+   const examLink=assigned?'<p><b>'+esc(assigned.name)+'</b> · '+assigned.total_q+'문항</p><button class="btn blue" data-exam="'+esc(assigned.id)+'">오답 번호 입력 · 결과 확인</button>':'';
+   const head='<h3 style="margin:0 0 6px">'+esc(date.slice(5).replace('-','/')+' '+dayName(date))+statusBadge(sub)+'</h3>'+(round?'<div>'+round+'회 인증</div>':'')+'<div>'+thumbs(photos(sub&&sub.photo_url))+'</div>'+examLink;
    if(date!==today)return '<section class="card" style="padding:16px;margin:12px 0">'+head+'<p style="font-size:13px;color:var(--text3)">'+(date>today?'이 날이 되면 인증할 수 있어요.':'지난 날짜는 인증할 수 없어요.')+'</p></section>';
    return '<section class="card" style="padding:16px;margin:12px 0" data-today>'+head+
-    '<label style="display:block;margin-top:8px">푼 회차 <input data-round type="number" min="1" max="99" class="form-input" style="width:90px" value="'+(round||'')+'"> 회</label>'+
+    '<label style="display:block;margin-top:8px">푼 회차 <input data-round type="number" min="1" max="99" class="form-input" style="width:90px" value="'+(assigned?dow(date):round||'')+'"'+(assigned?' readonly':'')+'> 회</label>'+
     '<label style="display:block;margin-top:6px">채점한 시험지 사진 (1~4장)<input data-files type="file" accept="image/*" multiple style="display:block;margin-top:4px"></label>'+
     '<button class="btn blue" data-save style="margin-top:8px">'+(sub&&sub.status!=='rejected'?'사진 다시 올리기':'오늘 인증하기')+'</button> <span role="status" data-result style="font-size:12px"></span></section>';
   }).join('');
@@ -74,6 +79,11 @@
   try{await loadStudent();if(session.id!==owner)return;renderStudent();setStatus(studentPreviewMode?'학생 화면 미리보기 · 저장은 학생 본인 로그인에서만 됩니다.':(isCertDay(kstDate(Date.now()))?'':'오늘은 인증하는 날이 아니에요. (월·화만 인증)'));if(studentPreviewMode)dialog.querySelectorAll('input,[data-save]').forEach(e=>e.disabled=true);}
   catch(e){setStatus('불러오지 못했습니다. 잠시 후 다시 열어 주세요.');console.error(e);return;}
   dialog.addEventListener('click',async e=>{
+   const examButton=e.target.closest('[data-exam]');
+   if(examButton&&!busy){
+    const id=examButton.dataset.exam;dialog.close();dialog.remove();
+    sNav('literature-exam');await sExamOpenForGrading(id,'wrongonly');return;
+   }
    const btn=e.target.closest('[data-save]');if(!btn||busy||studentPreviewMode)return;
    const box=btn.closest('[data-today]'),out=box.querySelector('[data-result]'),today=kstDate(Date.now());
    const round=Number(box.querySelector('[data-round]').value),files=[...box.querySelector('[data-files]').files];

@@ -1,0 +1,11 @@
+const assert=require('node:assert/strict');
+const {studentDays,assignedRound,weekDays}=require('../dongheong-cert.js');
+assert.deepEqual(studentDays('2026-11-22'),['2026-11-23','2026-11-24']);
+assert.deepEqual(weekDays('2026-11-22'),['2026-11-16','2026-11-17']);
+assert.deepEqual(studentDays('2026-11-24'),['2026-11-23','2026-11-24']);
+const e={category:'homework',clinic_week:'기말대비 5주차',name:'[치동고1] 기말대비 5주차 과제 · 동형모의고사 2회 (23문항)'};
+assert.equal(assignedRound(e,'2026-11-24'),2);
+assert.equal(assignedRound(e,'2026-11-30'),0);
+assert.equal(assignedRound({...e,clinic_week:'중간대비 5주차'},'2026-11-24'),0);
+assert.equal(assignedRound({...e,name:'현대시 과제'},'2026-11-24'),0);
+console.log('PASS: weekend preview and dated round mapping');

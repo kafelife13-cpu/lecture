@@ -40,17 +40,17 @@ async function check() {
       {num: 48, answer: 'all:1,4', points: 2}]
   };
   for (const school of ['한백고', '치동고']) {
-    for (const week of [1, 2, 3]) {
+    for (const week of [1, 2, 3, 4, 5, 6]) {
       assert.equal(context.sHomeworkNumbersOnly({...exam, clinic_school: school, clinic_week: '기말대비 '+week+'주차'}), true);
     }
   }
   assert.equal(context.sHomeworkNumbersOnly({...exam, category: 'school'}), false);
-  assert.equal(context.sHomeworkNumbersOnly({...exam, clinic_week: '기말대비 4주차'}), false);
+  assert.equal(context.sHomeworkNumbersOnly({...exam, clinic_week: '기말대비 4주차'}), true);
   assert.doesNotMatch(context.renderSExamListCards([exam], {}, ''), /전체 답안 입력/);
   assert.match(context.renderSExamListCards([exam], {}, ''), /오답 번호만 입력/);
   context.sExamData = exam;
   await context.sExamSubmitScore();
-  assert.deepEqual({...saved.answers}, {0: '', 2: ''});
+  assert.deepEqual({...saved.answers}, {0: '자가채점 오답', 2: '자가채점 오답'});
   assert.equal(saved.score, 43);
   assert.equal(context.repIsWrong(saved, 0, exam), true);
   assert.equal(context.repIsWrong(saved, 1, exam), false);
@@ -66,8 +66,13 @@ async function check() {
   elements['s-homework-wrong-numbers'].value = '46';
   saved = undefined;
   await context.sExamSubmitScore();
-  assert.equal(saved, undefined);
-  assert.match(elements['s-exam-check-err'].textContent, /선택한 답/);
+  assert.equal(saved.score, 71);
+  context.sExamData={...exam, questions:[{num:46,answer:'',points:2},{num:47,answer:'4',points:3},{num:48,answer:'3',points:2}]};
+  await context.sExamSubmitScore();
+  assert.equal(saved.total_q,3);
+  assert.equal(saved.score,71);
+  assert.equal(context.repIsWrong(saved,0,context.sExamData),true);
+  assert.equal(context.repIsWrong({answers:{0:'written text'}},0,context.sExamData),false);
 }
 
 check().catch(error => { console.error(error); process.exitCode = 1; });

@@ -40,8 +40,8 @@ console.log('PASS: required written answer, numbering, storage, escaping, script
   vm.runInContext(html.slice(start,end),c);
  }
  let saved;Object.assign(c,{session:{name:'local test'},sExamData:{category:'homework',total_q:3,questions:[{num:41,answer:'1',points:2},{num:42,answer:'2',points:2},{num:43,answer:'',points:1}]},sWrongChecked:{1:true},sExamAnswers:{1:'3'},sExamPhotos:{},sExamThoughts:{},sExamPriorResponse:{thoughts:{_subjective_answers:{2:'keep'}}},sHomeworkWrongOnly:()=>true,sHomeworkApplyWrongNumbers:()=>true,document:{getElementById:()=>({})},alert:()=>{},sb:{from:()=>({upsert:async data=>{saved=data;return {error:{message:'stop after payload'}};}})},odapSaveResponse:async data=>{saved=data;return {error:{message:'stop after payload'}};}});
- await c.sExamSubmitScore();assert.equal(saved.total_q,2);assert.equal(saved.score,50);assert.equal(saved.points_total,4);assert.equal(saved.thoughts._subjective_answers[2],'keep');
- console.log('PASS: wrong-only scoring excludes subjective items and preserves written answers');
+ await c.sExamSubmitScore();assert.equal(saved.total_q,3);assert.equal(saved.score,60);assert.equal(saved.points_total,5);assert.equal(saved.thoughts._subjective_answers[2],'keep');
+ console.log('PASS: wrong-only self-scoring includes subjective items and preserves written answers');
 })().catch(e=>{console.error(e);process.exitCode=1;});
 
 assert.equal(ctx.sHomeworkRequired({category:"homework",name:"한백고 필수 50문항",total_q:50}),true);
