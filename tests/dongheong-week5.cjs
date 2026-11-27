@@ -9,3 +9,15 @@ assert.equal(assignedRound(e,'2026-11-30'),0);
 assert.equal(assignedRound({...e,clinic_week:'중간대비 5주차'},'2026-11-24'),0);
 assert.equal(assignedRound({...e,name:'현대시 과제'},'2026-11-24'),0);
 console.log('PASS: weekend preview and dated round mapping');
+// 6주차(11/30 주): 한백 월 4회·화 5회, 치동 월 3회·화 4회
+const h=(n,extra='')=>({category:'homework',clinic_week:'기말대비 6주차',clinic_school:'한백고',name:'[한백고1] 기말대비 6주차 과제 · 동형 '+n+'회'+extra+' (24문항)'});
+const c=n=>({category:'homework',clinic_week:'기말대비 6주차',clinic_school:'치동고',name:'[치동고1] 기말대비 6주차 과제 · 동형 '+n+'회 (28문항)'});
+assert.equal(assignedRound(h(4),'2026-11-30'),4);
+assert.equal(assignedRound(h(5),'2026-12-01'),5);
+assert.equal(assignedRound(h(5),'2026-11-30'),0);
+assert.equal(assignedRound(h(3,' 재시험지'),'2026-11-30'),0);
+assert.equal(assignedRound(c(3),'2026-11-30'),3);
+assert.equal(assignedRound(c(4),'2026-12-01'),4);
+assert.equal(assignedRound(c(4),'2026-11-30'),0);
+assert.equal(assignedRound({...c(3),clinic_school:undefined},'2026-11-30'),3);
+console.log('PASS: week6 mapping');

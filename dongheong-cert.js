@@ -18,7 +18,14 @@
  const weekDays=date=>DAYS.map(d=>addDays(mondayOf(date),d-1));
  // 주말에는 다가오는 월·화 과제를 미리 보여 준다. 인증 저장 날짜 규칙은 유지한다.
  const studentDays=date=>weekDays([0,6].includes(dow(date))?addDays(date,dow(date)===0?1:2):date);
- const assignedRound=(exam,date)=>mondayOf(date)==='2026-11-23'&&exam.category==='homework'&&/기말\s*대비\s*5\s*주차/.test(exam.clinic_week||'')?Number((exam.name||'').match(/동형모의고사\s*([12])회/)?.[1]||0):0;
+ // 주차별 동형 배정(선생님 지시): 5주차 월 1회·화 2회 / 6주차(11/30 주) 한백 월 4회·화 5회, 치동 월 3회·화 4회
+ const PLAN={
+  '2026-11-23':{week:/기말\s*대비\s*5\s*주차/,'한백고':{1:1,2:2},'치동고':{1:1,2:2},name:n=>new RegExp('동형모의고사\\s*'+n+'회')},
+  '2026-11-30':{week:/기말\s*대비\s*6\s*주차/,'한백고':{1:4,2:5},'치동고':{1:3,2:4},name:n=>new RegExp('동형\\s*(모의고사\\s*)?'+n+'회(?!\\s*재시험)')}
+ };
+ const schoolOf=exam=>exam.clinic_school||((exam.name||'').match(/\[(한백고|치동고)/)||[])[1]||'';
+ // 그 날짜에 배정된 시험이면 회차 번호, 아니면 0
+ const assignedRound=(exam,date)=>{const p=PLAN[mondayOf(date)];if(!p||exam.category!=='homework'||!p.week.test(exam.clinic_week||''))return 0;const r=(p[schoolOf(exam)]||{})[dow(date)];return r&&p.name(r).test(exam.name||'')?r:0;};
  const itemId=(date,school)=>'ci_dh_'+date+'_'+school;
  const weekId=(date,school)=>'cw_dh_'+mondayOf(date)+'_'+school;
  function photos(raw){try{const a=JSON.parse(raw||'[]');return Array.isArray(a)?a:[];}catch(_){return raw?[raw]:[];}}
@@ -60,12 +67,12 @@
   const today=kstDate(Date.now());
   dialog.querySelector('[data-list]').innerHTML=studentDays(today).map(date=>{
    const sub=sSubs.find(s=>s.item_id===itemId(date,session.school_id)),round=roundOf(sub&&sub.photo_url);
-   const assigned=sExams.find(ex=>assignedRound(ex,date)===dow(date));
+   const assigned=sExams.find(ex=>assignedRound(ex,date)>0);
    const examLink=assigned?'<p><b>'+esc(assigned.name)+'</b> · '+assigned.total_q+'문항</p><button class="btn blue" data-exam="'+esc(assigned.id)+'">오답 번호 입력 · 결과 확인</button>':'';
    const head='<h3 style="margin:0 0 6px">'+esc(date.slice(5).replace('-','/')+' '+dayName(date))+statusBadge(sub)+'</h3>'+(round?'<div>'+round+'회 인증</div>':'')+'<div>'+thumbs(photos(sub&&sub.photo_url))+'</div>'+examLink;
    if(date!==today)return '<section class="card" style="padding:16px;margin:12px 0">'+head+'<p style="font-size:13px;color:var(--text3)">'+(date>today?'이 날이 되면 인증할 수 있어요.':'지난 날짜는 인증할 수 없어요.')+'</p></section>';
    return '<section class="card" style="padding:16px;margin:12px 0" data-today>'+head+
-    '<label style="display:block;margin-top:8px">푼 회차 <input data-round type="number" min="1" max="99" class="form-input" style="width:90px" value="'+(assigned?dow(date):round||'')+'"'+(assigned?' readonly':'')+'> 회</label>'+
+    '<label style="display:block;margin-top:8px">푼 회차 <input data-round type="number" min="1" max="99" class="form-input" style="width:90px" value="'+(assigned?assignedRound(assigned,date):round||'')+'"'+(assigned?' readonly':'')+'> 회</label>'+
     '<label style="display:block;margin-top:6px">채점한 시험지 사진 (1~4장)<input data-files type="file" accept="image/*" multiple style="display:block;margin-top:4px"></label>'+
     '<button class="btn blue" data-save style="margin-top:8px">'+(sub&&sub.status!=='rejected'?'사진 다시 올리기':'오늘 인증하기')+'</button> <span role="status" data-result style="font-size:12px"></span></section>';
   }).join('');
