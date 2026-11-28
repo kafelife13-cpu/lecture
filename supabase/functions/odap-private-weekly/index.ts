@@ -36,6 +36,12 @@ Deno.serve(async req => {
       if (c.role!=='teacher') return reply({error:'교사 전용입니다.'},403);
       const previous=b.action==='revise'?await rpc('get',{id:p.id}):null;
       if(previous){if(previous.status!=='draft')throw Error('검수 대기 자료만 수정할 수 있습니다.');Object.assign(p,{student_id:previous.student_id,school:previous.school,week_start:previous.week_start});}
+      if(!previous){
+        const {data:directory,error}=await db.rpc('odap_rpc',{p_id:c.id,p_password:c.pw,p_role:'teacher',p_action:'GET /api/students',p_payload:{}});
+        if(error)throw Error('학생 학교 정보를 확인하지 못했습니다.');
+        const student=directory?.students?.find(s=>String(s.id)===String(p.student_id));
+        p.school=directory?.schools?.find(s=>String(s.id)===String(student?.school_id))?.name;
+      }
       if (typeof p.student_id!=='string' || typeof p.school!=='string' || !p.school.trim() || typeof p.week_start!=='string' || !/^\d{4}-\d{2}-\d{2}$/.test(p.week_start)) throw Error('학생·학교·주차를 확인하세요.');
       const date = new Date(p.week_start+'T00:00:00Z');
       if (Number.isNaN(date.valueOf()) || date.toISOString().slice(0,10)!==p.week_start || date.getUTCDay()!==1) throw Error('주차는 월요일이어야 합니다.');
